@@ -123,7 +123,7 @@ More details and evaluation scripts see [evaluation](evaluation/README.md).
 This section will introduce the way we used to train the general embedding. 
 The training scripts are in [universal_embedding](./universal_embedding/README.md), 
 and we provide some examples to do [pre-train](examples/pretrain/README.md) and [fine-tune](examples/finetune/README.md).
-To data collection is to be released in the future.
+
 
 **1. RetroMAE Pre-train**  
 We pre-train the model following the method [retromae](https://github.com/staoxiao/RetroMAE), 
@@ -149,60 +149,25 @@ Besides the negative in the triple, we also adopt in-batch negatives strategy.
 
 We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768. 
 We used the AdamW optimizer and the learning rate is 1e-5.
-The sequence length was limited to 128 tokens.  
-The temperature for contrastive loss is 0.01.
+The sequence length was limited to 128 tokens. The temperature for contrastive loss is 0.01.
+
+For the version with `*-instrcution`, we add instruction to the query for retrieval task in the training. 
+For english, the instruction is `Represent this sentence for searching relevant passages: `;
+For chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
+In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
+
 
 The finetune script is accessible in this repository: [universal_embedding](./universal_embedding/README.md). 
 You can easily finetune your model with it.
 
 **Training data**:
 
-English:
+- For English, we collect 230M text pairs from [wikipedia](https://huggingface.co/datasets/wikipedia), [cc-net](https://github.com/facebookresearch/cc_net), and so on.
 
-| Dataset       | Pairs  | Number of training pairs  |
-|------------|:------------:|:-------------:|
-| [sentence-transformers Data](https://huggingface.co/datasets/sentence-transformers/embedding-training-data) | -- | 119,837,845 |
-| [wikipedia](https://huggingface.co/datasets/wikipedia) | (title + section title, passage) | 15,000,000  |
-| [cc-net](https://github.com/facebookresearch/cc_net) | (title, passage) | 18,353,185  |
-| [stackexchange](https://huggingface.co/datasets/flax-sentence-embeddings/stackexchange_titlebody_best_voted_answer_jsonl) | (title, upvoted answer) (title+body, upvoted answer)  | 10,896,142 |
-| [reddit](https://huggingface.co/datasets/sentence-transformers/reddit-title-body) | (title, body) | 56,682,431 |
-| [S2orc](https://huggingface.co/datasets/sentence-transformers/reddit-title-body) | (title, abstract) (title,  citation title) | 12,174,793 |
-| Total | --  | 232,944,396  |
+- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), zhihu, news websites and so on.
 
+**The data collection is to be released in the future.**
 
-Chinese:
-
-| Dataset       | Pairs  | Number of training pairs  |
-|------------|:------------:|:-------------:|
-| [wudao](https://github.com/BAAI-WuDao/Data) | (title, passage) | 47,099,374  |
-| [cmrc2018](https://huggingface.co/datasets/cmrc2018) | (query, context)  | 10,142   |
-| [dureader_robust](https://github.com/baidu/DuReader) | (query, context) |  14,520 |
-| [dureader_retriever](https://github.com/baidu/DuReader) | (query, passage) |  86,395 |
-| [dureader_checklist](https://github.com/baidu/DuReader) | (query, passage) |  1,404 |
-| [simclue](https://github.com/CLUEbenchmark/SimCLUE) | (sentence_a, sentence_b) | 389,370 |
-| [csl](https://arxiv.org/abs/2209.05034)  |  (title, abstract)  | 395,927|
-| [amazon_reviews_multi](amazon_reviews_multi) | (title, body) | 200,000  |
-| [wiki_atomic_edits](https://huggingface.co/datasets/wiki_atomic_edits) | (base_sentence, edited_sentence)  | 1,213,780  |
-| [mlqa](https://huggingface.co/datasets/mlqa) | (question, context) | 76,285  |
-| [xlsum](https://huggingface.co/datasets/csebuetnlp/xlsum) | (title, summary) (title, text) | 93,404  |
-| zhihu* | (query, answer) | 30,000,000 |
-| baike* | (title, passage) | 18,257,816  |
-| news*  | (title, passage)  | 5,061,912 |
-| paper*  | (title, abstract)  |  948,795 | 
-|   WebQA*  |  (query, answer)   |  16,609,624   |
-| Total | --  | 120,458,748 |
-
-`*`: unpublished dataset collected by BAAI.
-
-After training on large-scale corpus, we finetune the model with 
-a small-scale but high-quality supervised dataset. The sequence length was limited to 512 tokens to improve the similarity between long texts.  
-- English: [Msmarco-passage](https://microsoft.github.io/msmarco/Datasets.html), [NQ](https://ai.google.com/research/NaturalQuestions), [NLI](https://github.com/princeton-nlp/SimCSE/blob/main/data/download_nli.sh), [S2orc(cited abstracts)](), [Quora](https://huggingface.co/datasets/sentence-transformers/embedding-training-data)
-- Chinese: [T2ranking](https://huggingface.co/datasets/THUIR/T2Ranking), [duretriever](https://github.com/baidu/DuReader), [nli-zh](https://huggingface.co/datasets/shibing624/nli_zh)
-
-For the version with `*-instrcution`, we add instruction to the query for retrieval task in the training. 
-For english, the instruction is `Represent this sentence for searching relevant passages: `;
-For chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
-In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
 
 
 
