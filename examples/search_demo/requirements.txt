@@ -1,0 +1,12 @@
+datasets==2.14.0
+faiss-gpu==1.7.2
+langchain==0.0.244
+numpy==1.23.3
+pyserini==0.21.0
+tiktoken==0.4.0
+torch==2.0.1
+torch_geometric==2.3.1
+tqdm==4.65.0
+transformers==4.30.2
+openai==0.27.4
+urllib3==1.25.11
