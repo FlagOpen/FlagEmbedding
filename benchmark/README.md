@@ -57,16 +57,17 @@ evaluation.run(model)
 ## Leaderboard
 
 ### overall
-| Model | Retrieval | STS | PairClassification | Classification | Reranking | Clustering | Avg |  
-|:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
-| luotuo-bert-medium | 44.4 | 39.41 | 66.62 | 65.29 | 49.25 | 44.39 | 49.37 |  
-| text2vec-large-chinese | 41.94 | 41.98 | 70.86 | 63.42 | 49.16 | 30.02 | 47.36 |  
-| text2vec-base-chinese | 38.79 | 41.71 | 67.41 | 65.18 | 49.45 | 37.66 | 47.63 |  
-| m3e-base | 56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 | 57.10 | 
-| m3e-large | 54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 | 57.05 |  
-| OpenAI(text-embedding-ada-002) | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 | 53.02 |  
-| universal-embedding | 70.55 | 50.98 | 76.77 | **72.49** | **65.63** | **50.01** | 63.62 |   
-| universal_embedding_instruction | **71.53** | **53.23** | **78.94** | 72.26 | 62.33 | 48.39 | **63.84** |  
+| Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
+|:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
+| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
+| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
+| [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
+| [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  
+| [luotuo](https://huggingface.co/silk-road/luotuo-bert-medium) | 1024 | 49.37 |  44.4 | 39.41 | 66.62 | 65.29 | 49.25 | 44.39 | 
+| [text2vec](https://huggingface.co/shibing624/text2vec-base-chinese) | 768 |  47.63 | 38.79 | 41.71 | 67.41 | 65.18 | 49.45 | 37.66 |  
+| [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 41.98 | 70.86 | 63.42 | 49.16 | 30.02 |  
+
 
 
 ### 1. Retrieval
@@ -130,8 +131,8 @@ evaluation.run(model)
 | m3e-base | 66.03 | 17.51 | 77.05 | 76.76 | 59.34 |   
 | m3e-large | 66.13 | 16.46 | 77.76 | 78.27 | 59.66 |  
 | OpenAI(text-embedding-ada-002) | 66.65 | 23.39 | 63.08 | 64.02 | 54.28 |  
-| universal-embedding | 66.16 | 27.1 | 84.64 | 84.64 | 65.63 |  
-| universal-embedding-instruction | 63.1 | 21.12 | 82.55 | 82.55 | 62.33 |  
+| baai-general-embedding-large-zh | 66.16 | 27.1 | 81.72 | 84.64 | 64.91 |  
+| baai-general-embedding-large-zh-instruction | 66.19 | 26.23 | 83.01 | 85.01 | 65.11 |  
 
 ### 6. Clustering  
 | Model | CLSClusteringS2S | CLSClusteringP2P | ThuNewsClusteringS2S | ThuNewsClusteringP2P | Avg |  
