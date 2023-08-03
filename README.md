@@ -14,10 +14,15 @@
     </a>
 </p>
 
+<div align='center'>
+|  [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list) | [Usage](https://github.com/FlagOpen/FlagEmbedding/tree/master#usage) |  [Evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master#evaluation) | [Train](https://github.com/FlagOpen/FlagEmbedding/tree/master#train) |
+</div>
+
 [English](README.md) | [中文](README_zh.md)
 
-Map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
-And it also can be used in vector database for  LLMs.
+**Best open-sourced embedding models!**
+FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
+And it also can be used in vector database for LLMs.
 
 ************* 🌟**Updates**🌟 *************
 - 08/02/2023: :tada: :tada: Release English embedding and Chinese embedding Models, **best performance on embedding benchmark!** 
@@ -31,7 +36,7 @@ And it also can be used in vector database for  LLMs.
 |:-------------------------------|:--------:| :--------:| :--------:|
 |  [BAAI/baai-general-embedding-large-en-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/baai-general-embedding-large-zh-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) |   Chinese | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | --  |
+|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark |   |
 
 
 ## Usage 
