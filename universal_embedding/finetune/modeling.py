@@ -26,7 +26,7 @@ class BiEncoderModel(nn.Module):
                  model_name: str = None,
                  normlized: bool = False,
                  sentence_pooling_method: str = 'cls',
-                 negatives_x_device: bool = False,
+                 negatives_cross_device: bool = False,
                  temperature: float = 1.0,
                  ):
         super().__init__()
@@ -36,8 +36,12 @@ class BiEncoderModel(nn.Module):
         self.normlized = normlized
         self.sentence_pooling_method = sentence_pooling_method
         self.temperature = temperature
-        self.negatives_x_device = negatives_x_device
-        if self.negatives_x_device:
+        if not normlized:
+            self.temperature = 1.0
+            logger.info("reset temperature = 1.0 due to using inner product to compute similarity")
+
+        self.negatives_cross_device = negatives_cross_device
+        if self.negatives_cross_device:
             if not dist.is_initialized():
                 raise ValueError('Distributed training has not been initialized for representation all gather.')
             self.process_rank = dist.get_rank()
@@ -73,7 +77,7 @@ class BiEncoderModel(nn.Module):
         p_reps = self.encode(passage)
 
         if self.training:
-            if self.negatives_x_device:
+            if self.negatives_cross_device:
                 q_reps = self._dist_gather_tensor(q_reps)
                 p_reps = self._dist_gather_tensor(p_reps)
 

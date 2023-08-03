@@ -17,8 +17,8 @@ class DataTrainingArguments:
                     "than this will be truncated. Default to the max input length of the model."
         },
     )
-    encoder_mlm_probability: float = field(default=0.3)
-    decoder_mlm_probability: float = field(default=0.5)
+    encoder_mlm_probability: float = field(default=0.3, metadata={"help": "mask ratio for encoder"})
+    decoder_mlm_probability: float = field(default=0.5, metadata={"help": "mask ratio for decoder"})
 
 
 @dataclass

@@ -71,7 +71,7 @@ def main():
     model = BiEncoderModel(model_name=model_args.model_name_or_path,
                            normlized=model_args.normlized,
                            sentence_pooling_method=model_args.sentence_pooling_method,
-                           negatives_x_device=training_args.negatives_x_device,
+                           negatives_cross_device=training_args.negatives_cross_device,
                            temperature=training_args.temperature)
 
     if training_args.fix_position_embedding:

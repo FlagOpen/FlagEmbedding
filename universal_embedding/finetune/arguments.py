@@ -23,7 +23,7 @@ class ModelArguments:
         default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
     )
 
-    sentence_pooling_method: str = field(default='cls')
+    sentence_pooling_method: str = field(default='cls', metadata={"help": "the pooling method, should be cls or mean"})
     normlized: bool = field(default=True)
 
 
@@ -31,9 +31,6 @@ class ModelArguments:
 class DataArguments:
     train_data: str = field(
         default=None, metadata={"help": "Path to train data"}
-    )
-    max_example_num_per_dataset: int = field(
-        default=1000000, metadata={"help": "sample negatives from top-k"}
     )
     train_group_size: int = field(default=8)
 
@@ -53,10 +50,12 @@ class DataArguments:
         },
     )
 
+    max_example_num_per_dataset: int = field(
+        default=100000000, metadata={"help": "the max number of examples for each dataset"}
+    )
 
 @dataclass
 class RetrieverTrainingArguments(TrainingArguments):
-    negatives_x_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
-    temperature: Optional[float] = field(default=1.0)
-    fix_position_embedding: bool = field(default=False,
-                                         metadata={"help": "Freeze the parameters of position embeddings"})
+    negatives_cross_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
+    temperature: Optional[float] = field(default=0.01)
+    fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})

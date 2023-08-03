@@ -14,35 +14,37 @@
     </a>
 </p>
 
+[English](README.md) | [中文](README_zh.md)
 
 
-Map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
-And it also can be used in vector database for  LLMs.
+将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持大模型为外部知识的调用。
 
-🌟**Updates**🌟
-- 08/02/2023: :tada: Release English embedding and Chinese embedding Models, ranking **1st**  in MTEB and C-MTEB respectively ! 
-- 08/01/2023: We release the Chinese Massive Text Embedding Benchmark (**C-MTEB**), consisting of 31 test dataset.   
+************* 🌟**Updates**🌟 *************
+- 08/02/2023: :tada: :tada: 发布中英文向量模型, **在MTEB和C-MTEB榜单上取得最好的性能** 
+- 08/01/2023: 发布大规模中文文本向量评测榜单(**C-MTEB**), 其包括31个测试任务.   
+
+
 
 
 ## Model List
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
-|  [BAAI/baai-general-embedding-large-en-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/baai-general-embedding-large-zh-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) |   Chinese | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | --  |
+|  [BAAI/baai-general-embedding-large-en-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名第一 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/baai-general-embedding-large-zh-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) |   Chinese | :trophy: 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第一 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第二 | --  |
 
 
 ## Usage 
 
 * Sentence-Transformers
 
-Using this model becomes easy when you have [sentence-transformers](https://www.SBERT.net) installed:
+安装 [sentence-transformers](https://www.SBERT.net):
 
 ```
 pip install -U sentence-transformers
 ```
 
-Then you can use the model like this:
+基于Sentence-Transformers的使用方法:
 
 ```python
 from sentence_transformers import SentenceTransformer
@@ -50,9 +52,10 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
 embeddings = model.encode(sentences, normalize_embeddings=True)
 print(embeddings)
-
-#For retrieval task, when you use the model whose name ends with `-instruction`
-#each query should start with a instruction. 
+```
+对于检索任务，当您使用名称以`-instruction`结尾的模型时，
+每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
+```python
 queries = ["手机开不了机怎么办？"]
 passages = ["样例段落-1", "样例段落-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
@@ -62,19 +65,24 @@ p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
 
-### HuggingFace Transformers
-With transformers package, you can use the model like this: First, you pass your input through the transformer model, then you have to apply the right pooling-operation on-top of the contextualized word embeddings.
+* HuggingFace Transformers
 
+使用transformers库时，您可以这样使用模型:首先，将输入传递给transformer模型，然后选择第一个标记的最后一个隐藏状态(即[CLS])作为句子嵌入。
 ```python
 from transformers import AutoTokenizer, AutoModel
 import torch
 # Sentences we want sentence embeddings for
 sentences = ["样例数据-1", "样例数据-2"]
+
 # Load model from HuggingFace Hub
 tokenizer = AutoTokenizer.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
 model = AutoModel.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
+
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
+# for retrieval task, add a instruction to query
+# encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
+
 # Compute token embeddings
 with torch.no_grad():
     model_output = model(**encoded_input)
@@ -82,21 +90,19 @@ with torch.no_grad():
     sentence_embeddings = model_output[0][:, 0]
 # normalize embeddings
 sentence_embeddings = torch.nn.functional.normalize(sentence_embeddings, p=2, dim=1)
-print("Sentence embeddings:")
-print(sentence_embeddings)
+print("Sentence embeddings:", sentence_embeddings)
 ```
 
 
-
-
-
-## Evaluation Results  
+## Evaluation  
+`baai-general-embedding` 模型在MTEB和C-MTEB排行榜上都实现了**最先进的性能**!
+更多细节和评估脚本请参见 [benchemark](benchmark/README.md). 
 
 - **MTEB**:   
 
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) | 0.67 | 1024 | 512 | 63.34 | 53.23 | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
+| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
@@ -116,9 +122,10 @@ print(sentence_embeddings)
 
 
 - **C-MTEB**:  
-We create a benchmark C-MTEB for chinese text embedding which consists of  31 datasets from 6 tasks. 
-More details and evaluation scripts see [evaluation](evaluation/README.md).   
- 
+
+我们建立了一个中文文本嵌入的基准测试集合C-MTEB，其包括6个任务的31个数据集。
+请参阅[benchmark](benchmark/README.md)获取详细介绍。
+
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
 | [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
@@ -133,19 +140,18 @@ More details and evaluation scripts see [evaluation](evaluation/README.md).
 
 
 
-
 ## Train
-This section will introduce the way we used to train the general embedding. 
-The training scripts are in [universal_embedding](./universal_embedding/README.md), 
-and we provide some examples to do [pre-train](examples/pretrain/README.md) and [fine-tune](examples/finetune/README.md).
 
+本节将介绍我们用于训练通用嵌入向量的方法。
+训练脚本在[universal_embedding](./universal_embedding/README.md)中。
+同时，我们提供了一些示例来进行[预训练](examples/pretrain/README.md)和[微调](examples/finetune/README.md)。
 
 **1. RetroMAE Pre-train**  
-We pre-train the model following the method [retromae](https://github.com/staoxiao/RetroMAE), 
-which shows promising improvement in retrieval task (see [https://aclanthology.org/2022.emnlp-main.35.pdf](https://aclanthology.org/2022.emnlp-main.35.pdf)). 
-The pre-training was conducted on 24 A100(40G) GPUs with a batch size of 720. 
-In retromae, the mask ratio of encoder and decoder are 0.3, 0.5 respectively.
-We used the AdamW optimizer and the learning rate is 2e-5.
+
+我们按照 [retromae](https://github.com/staoxiao/RetroMAE) 方法对模型进行预训练，
+其在检索任务中表现出了良好的性能( [参考论文](https://aclanthology.org/2022.emnlp-main.35.pdf) )。
+预训练是在24块A100(40G) gpu上进行的，batch大小为720。在retromae中，编码器和解码器的掩码率分别为0.3和0.5。
+使用AdamW优化器，学习率为2e-5。
 
 **Pre-training data**:
 - English: 
@@ -158,34 +164,49 @@ We used the AdamW optimizer and the learning rate is 2e-5.
 
 
 **2. Finetune**  
-We fine-tune the model using a contrastive objective. 
-The format of input data is a triple`(query, positive, negative)`. 
-Besides the negative in the triple, we also adopt in-batch negatives strategy. 
 
-We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768. 
-We used the AdamW optimizer and the learning rate is 1e-5.
-The sequence length was limited to 128 tokens. The temperature for contrastive loss is 0.01.
-
-For the version with `*-instrcution`, we add instruction to the query for retrieval task in the training. 
-For english, the instruction is `Represent this sentence for searching relevant passages: `;
-For chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
-In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
+我们使用对比学习训练模型，输入数据的格式是一个三元组' (query, positive, negative) '。
+除了三元组中的负样本，我们还使用了in-batch的负样本。
+我们在48块A100(40G) gpu上训练模型，batch大小为32,768。
+我们使用AdamW优化器，学习率为1e-5。
+对比损失的温度系数为0.01。
 
 
-The finetune script is accessible in this repository: [universal_embedding](./universal_embedding/README.md). 
-You can easily finetune your model with it.
+对于带有`*- instruction `的版本，我们在训练中为检索任务的查询添加了instruction。
+对于英语，说明是`Represent this sentence for searching relevant passages: `;
+对于中文,指令是`为这个句子生成表示以用于检索相关文章：`.
+在评测中，针对段落检索任务的任务需要在查询中添加指令。
+
+
+微调脚本可以在这个存储库中访问:[universal_embedding](./universal_embedding/README.md), 你可以用它轻松地微调你的模型。
+
+ 
 
 **Training data**:
 
-- For English, we collect 230M text pairs from [wikipedia](https://huggingface.co/datasets/wikipedia), [cc-net](https://github.com/facebookresearch/cc_net), and so on.
+-对于英语，我们从 [wikipedia](https://huggingface.co/datasets/wikipedia) ， [cc-net](https://github.com/facebookresearch/cc_net) 等收集了2.3亿个文本对。
+-对于中文，我们从 [悟道](https://github.com/BAAI-WuDao/Data) 、知乎、新闻网站等收集了1.2亿对文本。
 
-- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), zhihu, news websites and so on.
+我们计划在将来发布训练数据集。
 
-**The data collection is to be released in the future.**
+## Schedule
+- [x] Chinese Massive Text Embedding Benchmark
+- [x] release baai-general-embedding models
+- [x] release codes for training
+- [ ] Training Datasets 
+- [ ] Multilingual model
+- [ ] ...
+
+我们将不断更新向量模型和代码，希望能促进社区的发展。
+
+## Bugs or questions?
+如果您有任务疑问, 
+请提交issue或者发送邮件给 Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
+
 
 
 ## License
-MIT License
+FlagEmbedding is licensed under [MIT License](LICENSE).
 
 
 
