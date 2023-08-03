@@ -23,6 +23,9 @@ if __name__ == '__main__':
                                                       task_langs=['en']).tasks]
 
     for task in task_names:
+        if task in ['MSMARCOv2']:
+            print('Skip task: {}, since it has no test split'.format(task))
+            continue
         if 'CQADupstack' in task or task in ['Touche2020', 'SciFact', 'TRECCOVID', 'NQ',
                                              'NFCorpus', 'MSMARCO', 'HotpotQA', 'FiQA2018',
                                              'FEVER', 'DBPedia', 'ClimateFEVER', 'SCIDOCS', ]:

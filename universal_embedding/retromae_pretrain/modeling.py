@@ -2,8 +2,8 @@ import logging
 import os
 
 import torch
-from pretrain.arguments import ModelArguments
-from pretrain.enhancedDecoder import BertLayerForDecoder
+from .arguments import ModelArguments
+from .enhancedDecoder import BertLayerForDecoder
 from torch import nn
 from transformers import BertForMaskedLM, AutoModelForMaskedLM
 from transformers.modeling_outputs import MaskedLMOutput

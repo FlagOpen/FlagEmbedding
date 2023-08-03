@@ -33,11 +33,20 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
 embeddings = model.encode(sentences, normalize_embeddings=True)
 print(embeddings)
+
+#For retrieval task, when you use the model whose name ends with `-instruction`
+#each query should start with a instruction. 
+queries = ["手机开不了机怎么办？"]
+passages = ["样例段落-1", "样例段落-2"]
+instruction = "为这个句子生成表示以用于检索相关文章："
+model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
+q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
+p_embeddings = model.encode(passages, normalize_embeddings=True)
+scores = q_embeddings @ p_embeddings.T
 ```
 
-
 ### HuggingFace Transformers
-Without [sentence-transformers](https://www.SBERT.net), you can use the model like this: First, you pass your input through the transformer model, then you have to apply the right pooling-operation on-top of the contextualized word embeddings.
+With transformers package, you can use the model like this: First, you pass your input through the transformer model, then you have to apply the right pooling-operation on-top of the contextualized word embeddings.
 
 ```python
 from transformers import AutoTokenizer, AutoModel
@@ -61,19 +70,7 @@ print(sentence_embeddings)
 ```
 
 
-### Retrieval Task
-For retrieval task, when you use the model whose name ends with `-instruction`
-each query should start with a instruction. 
-```python
-from sentence_transformers import SentenceTransformer
-queries = ["手机开不了机怎么办？"]
-passages = ["样例段落-1", "样例段落-2"]
-instruction = "为这个句子生成表示以用于检索相关文章："
-model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
-q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
-p_embeddings = model.encode(passages, normalize_embeddings=True)
-scores = q_embeddings @ p_embeddings.T
-```
+
 
 
 ## Evaluation Results  
