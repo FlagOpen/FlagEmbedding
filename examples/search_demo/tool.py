@@ -64,11 +64,21 @@ class BMVectorIndex:
         self.bm_searcher = LuceneSearcher(bm_index_path)
         self.loader = data_loader
 
-    def search_for_doc(self, query, RANKING=1000, TOP_N=5):
+        if 'instruction' in model_path:
+            if '-en' in model_path:
+                raise NotImplementedError("only support chinese currently")
+            else:
+                self.instruction = "为这个句子生成表示以用于检索相关文章："
+        else:
+            self.instruction = None
+
+    def search_for_doc(self, query: str, RANKING: int=1000, TOP_N: int=5):
         hits = self.bm_searcher.search(query, RANKING)
         ids = [int(e.docid) for e in hits]
         use_docs = self.loader.doc_emb[ids]
 
+        if self.instruction is not None:
+            query = self.instruction + query
         encoded_input = self.tokenizer(query, max_length=512, padding=True, truncation=True, return_tensors='pt')
         with torch.no_grad():
             model_output = self.model(**encoded_input)

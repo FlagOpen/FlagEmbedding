@@ -24,10 +24,10 @@ See [toy_pretrain_data.jsonl]() for a toy data file.
 ## Train
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node {number of gpus} \
+torchrun --nproc_per_node {number of gpus} \
 -m retromae_pretrain.run \
 --output_dir {path to save model} \
---model_name_or_path Shitao/flag-text-embedding-chinese \
+--model_name_or_path BAAI/baai-general-embedding-large-zh \
 --train_data toy_pretrain_data.jsonl \
 --learning_rate 2e-5 \
 --num_train_epochs 5 \

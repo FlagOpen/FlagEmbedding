@@ -24,7 +24,7 @@ See [toy_finetune_data.jsonl]() for a toy data file.
 
 ## Train
 ```
-python -m torch.distributed.launch --nproc_per_node {number of gpus} \
+torchrun --nproc_per_node {number of gpus} \
 -m finetune.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/baai-general-embedding-large-zh-instruction \

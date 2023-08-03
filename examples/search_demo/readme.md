@@ -57,7 +57,7 @@ This script will build a Q&A dialogue scenario.
 from tool import LocalDatasetLoader, BMVectorIndex, Agent
 loader = LocalDatasetLoader(data_path="./data/dataset",
                             embedding_path="./data/emb/data.npy")
-index = BMVectorIndex(model_path="Shitao/flag-text-embedding-chinese",
+index = BMVectorIndex(model_path="BAAI/baai-general-embedding-large-zh-instruction",
                       bm_index_path="./data/index",
                       data_loader=loader)
 agent = Agent(index)
