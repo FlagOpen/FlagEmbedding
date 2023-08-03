@@ -19,7 +19,6 @@ class CLSClusteringS2S(AbsTaskClustering):
         }
 
 
-
 class CLSClusteringP2P(AbsTaskClustering):
     @property
     def description(self):
@@ -36,7 +35,6 @@ class CLSClusteringP2P(AbsTaskClustering):
             "eval_langs": ["zh"],
             "main_score": "v_measure",
         }
-
 
 
 class ThuNewsClusteringS2S(AbsTaskClustering):

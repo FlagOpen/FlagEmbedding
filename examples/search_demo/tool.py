@@ -3,11 +3,11 @@ import faiss
 import numpy as np
 import tiktoken
 import torch
+from datasets import load_from_disk
 from langchain import PromptTemplate, LLMChain
 from langchain.chat_models import ChatOpenAI
 from pyserini.search.lucene import LuceneSearcher
 from transformers import AutoTokenizer, AutoModel
-from datasets import load_from_disk
 
 
 class LocalDatasetLoader:
@@ -72,7 +72,7 @@ class BMVectorIndex:
         else:
             self.instruction = None
 
-    def search_for_doc(self, query: str, RANKING: int=1000, TOP_N: int=5):
+    def search_for_doc(self, query: str, RANKING: int = 1000, TOP_N: int = 5):
         hits = self.bm_searcher.search(query, RANKING)
         ids = [int(e.docid) for e in hits]
         use_docs = self.loader.doc_emb[ids]

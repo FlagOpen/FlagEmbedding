@@ -17,7 +17,6 @@ class ATEC(AbsTaskSTS):
         }
 
 
-
 class BQ(AbsTaskSTS):
     @property
     def description(self):
@@ -48,7 +47,6 @@ class LCQMC(AbsTaskSTS):
             "min_score": 0,
             "max_score": 1,
         }
-
 
 
 class PAWSX(AbsTaskSTS):
@@ -97,7 +95,6 @@ class AFQMC(AbsTaskSTS):
             "min_score": 0,
             "max_score": 1,
         }
-
 
 
 class QBQTC(AbsTaskSTS):

@@ -1,12 +1,13 @@
+import os
 import random
 from copy import deepcopy
 from dataclasses import dataclass
-import os
 
 import torch.utils.data.dataset
 from datasets import Dataset, load_dataset, concatenate_datasets
-from .utils import tensorize_batch
 from transformers import DataCollatorForWholeWordMask
+
+from .utils import tensorize_batch
 
 
 class DatasetForPretraining(torch.utils.data.Dataset):
@@ -35,7 +36,6 @@ class DatasetForPretraining(torch.utils.data.Dataset):
 
     def __len__(self):
         return len(self.dataset)
-
 
 
 @dataclass
@@ -98,4 +98,3 @@ class RetroMAECollator(DataCollatorForWholeWordMask):
         }
 
         return batch
-

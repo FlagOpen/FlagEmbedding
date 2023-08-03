@@ -1,6 +1,5 @@
-import os
 from dataclasses import dataclass, field
-from typing import Optional, Union
+from typing import Optional
 
 from transformers import TrainingArguments
 
@@ -26,7 +25,6 @@ class ModelArguments:
 
     sentence_pooling_method: str = field(default='cls')
     normlized: bool = field(default=True)
-
 
 
 @dataclass
@@ -56,9 +54,9 @@ class DataArguments:
     )
 
 
-
 @dataclass
 class RetrieverTrainingArguments(TrainingArguments):
     negatives_x_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
     temperature: Optional[float] = field(default=1.0)
-    fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})
+    fix_position_embedding: bool = field(default=False,
+                                         metadata={"help": "Freeze the parameters of position embeddings"})

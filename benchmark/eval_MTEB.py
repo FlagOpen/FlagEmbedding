@@ -1,8 +1,7 @@
 import argparse
 
-from mteb import MTEB
 from models import UniversalModel
-
+from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
     "BAAI/baai-general-embedding-large-en-instruction": "Represent this sentence for searching relevant passages: ",
@@ -39,6 +38,3 @@ if __name__ == '__main__':
 
         evaluation = MTEB(tasks=[task], task_langs=['zh'])
         evaluation.run(model, output_folder=f"en_results/{args.model_name_or_path.split('/')[-1]}")
-
-
-

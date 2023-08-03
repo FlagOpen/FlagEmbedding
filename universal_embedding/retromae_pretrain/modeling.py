@@ -2,11 +2,12 @@ import logging
 import os
 
 import torch
-from .arguments import ModelArguments
-from .enhancedDecoder import BertLayerForDecoder
 from torch import nn
 from transformers import BertForMaskedLM, AutoModelForMaskedLM
 from transformers.modeling_outputs import MaskedLMOutput
+
+from .arguments import ModelArguments
+from .enhancedDecoder import BertLayerForDecoder
 
 logger = logging.getLogger(__name__)
 

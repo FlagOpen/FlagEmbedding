@@ -1,3 +1,4 @@
+import math
 import os.path
 import random
 from dataclasses import dataclass
@@ -7,9 +8,8 @@ import datasets
 from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding
 from transformers import PreTrainedTokenizer, BatchEncoding
-import math
-from .arguments import DataArguments
 
+from .arguments import DataArguments
 
 
 class TrainDatasetForEmbedding(Dataset):
@@ -21,13 +21,16 @@ class TrainDatasetForEmbedding(Dataset):
         if os.path.isdir(args.train_data):
             train_datasets = []
             for file in os.listdir(args.train_data):
-                temp_dataset = datasets.load_dataset('json', data_files=os.path.join(args.train_data, file), split='train', cache_dir='/share/huggingface_cache/')
+                temp_dataset = datasets.load_dataset('json', data_files=os.path.join(args.train_data, file),
+                                                     split='train', cache_dir='/share/huggingface_cache/')
                 if len(temp_dataset) > args.max_example_num_per_dataset:
-                    temp_dataset = temp_dataset.select(random.sample(list(range(len(temp_dataset))), args.max_example_num_per_dataset))
+                    temp_dataset = temp_dataset.select(
+                        random.sample(list(range(len(temp_dataset))), args.max_example_num_per_dataset))
                 train_datasets.append(temp_dataset)
             self.dataset = datasets.concatenate_datasets(train_datasets)
         else:
-            self.dataset = datasets.load_dataset('json', data_files=args.train_data, split='train', cache_dir='/share/huggingface_cache/')
+            self.dataset = datasets.load_dataset('json', data_files=args.train_data, split='train',
+                                                 cache_dir='/share/huggingface_cache/')
 
         self.tokenizer = tokenizer
         self.args = args
@@ -36,7 +39,6 @@ class TrainDatasetForEmbedding(Dataset):
     def __len__(self):
         return self.total_len
 
-
     def __getitem__(self, item) -> Tuple[BatchEncoding, List[BatchEncoding]]:
         query = self.dataset[item]['query']
         passages = []
@@ -44,15 +46,13 @@ class TrainDatasetForEmbedding(Dataset):
         passages.append(pos)
 
         if len(self.dataset[item]['neg']) < self.args.train_group_size - 1:
-            num = math.ceil((self.args.train_group_size - 1)/len(self.dataset[item]['neg']))
-            negs = random.sample(self.dataset[item]['neg']*num, self.args.train_group_size - 1)
+            num = math.ceil((self.args.train_group_size - 1) / len(self.dataset[item]['neg']))
+            negs = random.sample(self.dataset[item]['neg'] * num, self.args.train_group_size - 1)
         else:
             negs = random.sample(self.dataset[item]['neg'], self.args.train_group_size - 1)
         passages.extend(negs)
 
         return query, passages
-
-
 
 
 @dataclass
@@ -74,7 +74,7 @@ class EmbedCollator(DataCollatorWithPadding):
         if group_size is None:
             return None
 
-        padding_scores = [100.0] + [0.0]*(group_size-1)
+        padding_scores = [100.0] + [0.0] * (group_size - 1)
         new_teacher_score = []
         for scores in teacher_score:
             if scores is None:
@@ -84,29 +84,26 @@ class EmbedCollator(DataCollatorWithPadding):
         return new_teacher_score
 
     def __call__(self, features):
-            query = [f[0] for f in features]
-            passage = [f[1] for f in features]
+        query = [f[0] for f in features]
+        passage = [f[1] for f in features]
 
-            if isinstance(query[0], list):
-                query = sum(query, [])
-            if isinstance(passage[0], list):
-                passage = sum(passage, [])
+        if isinstance(query[0], list):
+            query = sum(query, [])
+        if isinstance(passage[0], list):
+            passage = sum(passage, [])
 
-
-            q_collated = self.tokenizer(
-                query,
-                padding=True,
-                truncation=True,
-                max_length=self.query_max_len,
-                return_tensors="pt",
-            )
-            d_collated = self.tokenizer(
-                passage,
-                padding=True,
-                truncation=True,
-                max_length=self.passage_max_len,
-                return_tensors="pt",
-            )
-            return {"query": q_collated, "passage": d_collated}
-
-
+        q_collated = self.tokenizer(
+            query,
+            padding=True,
+            truncation=True,
+            max_length=self.query_max_len,
+            return_tensors="pt",
+        )
+        d_collated = self.tokenizer(
+            passage,
+            padding=True,
+            truncation=True,
+            max_length=self.passage_max_len,
+            return_tensors="pt",
+        )
+        return {"query": q_collated, "passage": d_collated}

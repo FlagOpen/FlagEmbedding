@@ -1,10 +1,10 @@
 import argparse
-from collections import defaultdict
-import os
 import json
+import os
+from collections import defaultdict
 
-from mteb import MTEB
 from C_MTEB import *
+from mteb import MTEB
 
 
 def read_results(task_types, except_tasks, args):
@@ -58,8 +58,8 @@ def output_markdown(tasks_results, model_names, save_file):
             for task_name in type_results.keys():
                 first_line += f" {task_name} |"
                 second_line += ":--------:|"
-            f.write(first_line+' Avg |  \n')
-            f.write(second_line+':--------:|  \n')
+            f.write(first_line + ' Avg |  \n')
+            f.write(second_line + ':--------:|  \n')
 
             for model in model_names:
                 write_line = f"| {model} |"
@@ -72,12 +72,11 @@ def output_markdown(tasks_results, model_names, save_file):
                         write_line += f"  |"
 
                 if len(all_res) == len(type_results.keys()):
-                    write_line += f" {round(sum(all_res)/len(all_res), 2)} |"
+                    write_line += f" {round(sum(all_res) / len(all_res), 2)} |"
                     task_type_res[t_type][model] = all_res
                 else:
                     write_line += f"  |"
-                f.write(write_line+'  \n')
-
+                f.write(write_line + '  \n')
 
         f.write(f'Overall  \n')
         first_line = "| Model |"
@@ -93,7 +92,7 @@ def output_markdown(tasks_results, model_names, save_file):
             all_res = []
             for type_name, results in task_type_res.items():
                 if model in results:
-                    write_line += f" {round(sum(results[model])/len(results[model]), 2)} |"
+                    write_line += f" {round(sum(results[model]) / len(results[model]), 2)} |"
                     all_res.extend(results[model])
                 else:
                     write_line += f"  |"
@@ -102,8 +101,6 @@ def output_markdown(tasks_results, model_names, save_file):
                 write_line += f" {round(sum(all_res) / len(all_res), 2)} |"
 
             f.write(write_line + '  \n')
-
-
 
 
 def get_args():
@@ -120,14 +117,12 @@ if __name__ == '__main__':
         task_types = ["Retrieval", "STS", "PairClassification", "Classification", "Reranking", "Clustering"]
         except_tasks = ['AmazonReviewsClassification', 'STS22']
     elif args.lang == 'en':
-        task_types = ["Retrieval", "STS", "Summarization", "PairClassification", "Classification", "Reranking", "Clustering"]
+        task_types = ["Retrieval", "STS", "Summarization", "PairClassification", "Classification", "Reranking",
+                      "Clustering"]
         except_tasks = []
     else:
         raise NotImplementedError(f"args.lang must be zh or en, but{args.lang}")
 
-
     task_results, model_dirs = read_results(task_types, except_tasks, args=args)
-    output_markdown(task_results, model_dirs.keys(), save_file=os.path.join(args.results_dir, f'{args.lang}_results.md'))
-
-
-
+    output_markdown(task_results, model_dirs.keys(),
+                    save_file=os.path.join(args.results_dir, f'{args.lang}_results.md'))

@@ -1,8 +1,7 @@
-from mteb import AbsTask, RerankingEvaluator, AbsTaskReranking
 import logging
 
 import numpy as np
-
+from mteb import RerankingEvaluator, AbsTaskReranking
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +44,8 @@ class ChineseRerankingEvaluator(RerankingEvaluator):
             # In case the query is a list of strings, we get the most similar embedding to any of the queries
             all_query_flattened = [q for sample in self.samples for q in sample["query"]]
             if hasattr(model, 'encode_queries'):
-                all_query_embs = model.encode_queries(all_query_flattened, convert_to_tensor=True, batch_size=self.batch_size)
+                all_query_embs = model.encode_queries(all_query_flattened, convert_to_tensor=True,
+                                                      batch_size=self.batch_size)
             else:
                 all_query_embs = model.encode(all_query_flattened, convert_to_tensor=True, batch_size=self.batch_size)
         else:
@@ -64,12 +64,12 @@ class ChineseRerankingEvaluator(RerankingEvaluator):
         query_idx, docs_idx = 0, 0
         for instance in self.samples:
             num_subqueries = len(instance["query"]) if isinstance(instance["query"], list) else 1
-            query_emb = all_query_embs[query_idx : query_idx + num_subqueries]
+            query_emb = all_query_embs[query_idx: query_idx + num_subqueries]
             query_idx += num_subqueries
 
             num_pos = len(instance["positive"])
             num_neg = len(instance["negative"])
-            docs_emb = all_docs_embs[docs_idx : docs_idx + num_pos + num_neg]
+            docs_emb = all_docs_embs[docs_idx: docs_idx + num_pos + num_neg]
             docs_idx += num_pos + num_neg
 
             if num_pos == 0 or num_neg == 0:
@@ -97,6 +97,7 @@ def evaluate(self, model, split="test", **kwargs):
     scores = evaluator(model)
 
     return dict(scores)
+
 
 AbsTaskReranking.evaluate = evaluate
 

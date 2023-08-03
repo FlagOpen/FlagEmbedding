@@ -2,16 +2,17 @@ import logging
 import os
 from pathlib import Path
 
-from .modeling import BiEncoderModel
-from .trainer import BiTrainer
-from .arguments import ModelArguments, DataArguments, \
-    RetrieverTrainingArguments as TrainingArguments
-from .data import TrainDatasetForEmbedding, EmbedCollator
 from transformers import AutoConfig, AutoTokenizer
 from transformers import (
     HfArgumentParser,
     set_seed,
 )
+
+from .arguments import ModelArguments, DataArguments, \
+    RetrieverTrainingArguments as TrainingArguments
+from .data import TrainDatasetForEmbedding, EmbedCollator
+from .modeling import BiEncoderModel
+from .trainer import BiTrainer
 
 logger = logging.getLogger(__name__)
 

@@ -5,7 +5,7 @@ from typing import Dict, Optional
 import torch
 import torch.distributed as dist
 from torch import nn, Tensor
-from transformers import PreTrainedModel, AutoModel
+from transformers import AutoModel
 from transformers.file_utils import ModelOutput
 
 logger = logging.getLogger(__name__)
@@ -68,7 +68,6 @@ class BiEncoderModel(nn.Module):
             return torch.matmul(q_reps, p_reps.transpose(0, 1))
         return torch.matmul(q_reps, p_reps.transpose(-2, -1))
 
-
     def forward(self, query: Dict[str, Tensor] = None, passage: Dict[str, Tensor] = None, teacher_score: Tensor = None):
         q_reps = self.encode(query)
         p_reps = self.encode(passage)
@@ -96,7 +95,6 @@ class BiEncoderModel(nn.Module):
             p_reps=p_reps,
         )
 
-
     def compute_loss(self, scores, target):
         return self.cross_entropy(scores, target)
 
@@ -113,7 +111,6 @@ class BiEncoderModel(nn.Module):
 
         return all_tensors
 
-
     def save(self, output_dir: str):
         state_dict = self.model.state_dict()
         state_dict = type(state_dict)(
@@ -121,4 +118,3 @@ class BiEncoderModel(nn.Module):
              for k,
                  v in state_dict.items()})
         self.model.save_pretrained(output_dir, state_dict=state_dict)
-

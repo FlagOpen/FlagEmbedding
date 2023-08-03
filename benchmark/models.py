@@ -1,8 +1,9 @@
-import numpy as np
 from typing import cast, List, Dict
+
+import numpy as np
 import torch
-from tqdm import tqdm
 from mteb import DRESModel
+from tqdm import tqdm
 
 
 class UniversalModel(DRESModel):
@@ -33,7 +34,6 @@ class UniversalModel(DRESModel):
         if num_gpus > 1:
             self.model = torch.nn.DataParallel(self.model)
 
-
     def encode_queries(self, queries: List[str], **kwargs) -> np.ndarray:
         '''
         encode queries for retrieval task
@@ -45,7 +45,6 @@ class UniversalModel(DRESModel):
             input_texts = queries
         return self.encode(input_texts)
 
-
     def encode_corpus(self, corpus: List[Dict[str, str]], **kwargs) -> np.ndarray:
         '''
         encode corpus for retrieval task
@@ -54,7 +53,6 @@ class UniversalModel(DRESModel):
         input_texts = ['{} {}'.format(doc.get('title', ''), doc['text']).strip() for doc in corpus]
         return self.encode(input_texts)
 
-
     @torch.no_grad()
     def encode(self, sentences: List[str], batch_size: int = 256, **kwargs) -> np.ndarray:
 
@@ -62,7 +60,7 @@ class UniversalModel(DRESModel):
         self.model.eval()
 
         all_embeddings = []
-        for start_index in tqdm(range(0, len(sentences), batch_size), desc="Batches", disable=len(sentences)<256):
+        for start_index in tqdm(range(0, len(sentences), batch_size), desc="Batches", disable=len(sentences) < 256):
             sentences_batch = sentences[start_index:start_index + batch_size]
             inputs = self.tokenizer(
                 sentences_batch,
@@ -79,10 +77,3 @@ class UniversalModel(DRESModel):
             all_embeddings.append(embeddings.cpu().numpy())
 
         return np.concatenate(all_embeddings, axis=0)
-
-
-
-
-
-
-

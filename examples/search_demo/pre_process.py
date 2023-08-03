@@ -1,15 +1,16 @@
+import json
 import os
 import subprocess
-import json
+
 import numpy as np
-from transformers import AutoTokenizer, HfArgumentParser
-from datasets import load_dataset
 import torch
+from arguments import ModelArguments, DataArguments
+from datasets import load_dataset
 from torch.utils.data import Dataset, SequentialSampler
 from torch_geometric.data import DataLoader
 from tqdm import tqdm
+from transformers import AutoTokenizer, HfArgumentParser
 from transformers import PreTrainedTokenizer, AutoModel
-from arguments import ModelArguments, DataArguments
 
 
 class EmbDataset(Dataset):
@@ -104,8 +105,3 @@ if __name__ == "__main__":
     inference(os.path.join(collection_path, 'documents.json'),
               os.path.join(emb_path, 'data.npy'),
               model_args.model_name_or_path)
-
-
-
-
-

@@ -169,6 +169,6 @@ You can easily finetune your model with it.
 
 
 
-## Citing & Authors
 
-<!--- Describe where people can find more information -->
+
+

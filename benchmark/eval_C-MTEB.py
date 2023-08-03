@@ -1,11 +1,9 @@
 import argparse
 
-from mteb import MTEB
-from models import UniversalModel
 from C_MTEB import *
 from C_MTEB import ChineseTaskList
-
-
+from models import UniversalModel
+from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
     "BAAI/baai-general-embedding-large-zh-instruction": "为这个句子生成表示以用于检索相关文章：",
@@ -18,7 +16,6 @@ def get_args():
     parser.add_argument('--model_name_or_path', default="BAAI/baai-general-embedding-large-zh-instruction", type=str)
     parser.add_argument('--task_type', default=None, type=str)
     return parser.parse_args()
-
 
 
 if __name__ == '__main__':
@@ -44,6 +41,3 @@ if __name__ == '__main__':
 
         evaluation = MTEB(tasks=[task], task_langs=['zh'])
         evaluation.run(model, output_folder=f"zh_results/{args.model_name_or_path.split('/')[-1]}")
-
-
-

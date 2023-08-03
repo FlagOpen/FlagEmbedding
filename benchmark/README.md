@@ -192,6 +192,4 @@ In retrieval task, we sample 100,000 candidates (including the ground truths) fr
 This work is inspired by [Massive Text Embedding Benchmark](https://github.com/embeddings-benchmark/mteb), 
 which lacks of the evaluation for chinese text.
 
-## Citing & Authors
 
-<!--- Describe where people can find more information -->

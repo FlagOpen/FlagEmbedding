@@ -3,10 +3,6 @@ import os
 import sys
 
 import transformers
-from .arguments import DataTrainingArguments, ModelArguments
-from .data import DatasetForPretraining, RetroMAECollator
-from .modeling import RetroMAEForPretraining
-from .trainer import PreTrainer
 from transformers import (
     AutoTokenizer,
     BertForMaskedLM,
@@ -19,6 +15,11 @@ from transformers import (
     TrainerControl
 )
 from transformers.trainer_utils import is_main_process
+
+from .arguments import DataTrainingArguments, ModelArguments
+from .data import DatasetForPretraining, RetroMAECollator
+from .modeling import RetroMAEForPretraining
+from .trainer import PreTrainer
 
 logger = logging.getLogger(__name__)
 
@@ -85,10 +86,8 @@ def main():
 
     set_seed(training_args.seed)
 
-
     model_class = RetroMAEForPretraining
     collator_class = RetroMAECollator
-
 
     if model_args.model_name_or_path:
         model = model_class.from_pretrained(model_args, model_args.model_name_or_path)
@@ -106,9 +105,9 @@ def main():
     dataset = DatasetForPretraining(data_args.train_data)
 
     data_collator = collator_class(tokenizer,
-                                     encoder_mlm_probability=data_args.encoder_mlm_probability,
-                                     decoder_mlm_probability=data_args.decoder_mlm_probability,
-                                     max_seq_length=data_args.max_seq_length)
+                                   encoder_mlm_probability=data_args.encoder_mlm_probability,
+                                   decoder_mlm_probability=data_args.decoder_mlm_probability,
+                                   max_seq_length=data_args.max_seq_length)
 
     # Initialize our Trainer
     trainer = PreTrainer(
