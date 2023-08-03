@@ -9,5 +9,6 @@ setup(
         'torch>=1.6.0',
         'transformers>=4.18.0',
         'datasets',
+        'accelerate>=0.20.1'
     ],
 )

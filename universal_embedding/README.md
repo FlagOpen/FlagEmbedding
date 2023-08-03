@@ -25,7 +25,7 @@ See [examples/pretrain](../examples/pretrain) for a toy data and training exampl
 #### 2. Train
 
 ```bash
-python -m torch.distributed.launch --nproc_per_node {number of gpus} \
+torchrun --nproc_per_node {number of gpus} \
 -m retromae_pretrain.run \
 --output_dir {path to save model} \
 --model_name_or_path {base model} \
@@ -47,7 +47,7 @@ See [examples/finetune](../examples/finetune) for a toy data and training exampl
 
 #### 2. Train
 ```
-python -m torch.distributed.launch --nproc_per_node {number of gpus} \
+torchrun --nproc_per_node {number of gpus} \
 -m finetune.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/baai-general-embedding-large-zh-instruction \

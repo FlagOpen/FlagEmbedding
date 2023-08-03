@@ -27,7 +27,7 @@ results = evaluation.run(model, output_folder=f"results/{model_name}")
 * Reproduce the results of universal_embedding  
 Using the provided python script (see [eval_C-MTEB.py]() )
 ```bash
-python eval_C-MTEB.py --model_name_or_path Shitao/universal-embedding
+python eval_C-MTEB.py --model_name_or_path BAAI/baai-general-embedding-large-zh-instruction
 ```
 
 * Using a custom model  
