@@ -9,7 +9,7 @@
     <a href="https://huggingface.co/C-MTEB">
         <img alt="License" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
-    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/universal_embedding">
+    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/flag_embedding">
         <img alt="License" src="https://img.shields.io/badge/universal embedding-1.0-red">
     </a>
 </p>
@@ -152,7 +152,7 @@ print("Sentence embeddings:", sentence_embeddings)
 ## Train
 
 本节将介绍我们用于训练通用嵌入向量的方法。
-训练脚本在[universal_embedding](./universal_embedding/README.md)中。
+训练脚本在[flag_embedding](./flag_embedding/README.md)中。
 同时，我们提供了一些示例来进行[预训练](examples/pretrain/README.md)和[微调](examples/finetune/README.md)。
 
 **1. RetroMAE Pre-train**  
@@ -175,7 +175,8 @@ print("Sentence embeddings:", sentence_embeddings)
 **2. Finetune**  
 
 我们使用对比学习训练模型，输入数据的格式是一个三元组' (query, positive, negative) '。
-除了三元组中的负样本，我们还使用了in-batch的负样本。
+除了三元组中的负样本，我们还使用了in-batch的负样本。我们采用 [跨设备负样本共享方法](https://github.com/microsoft/MoPQ) 
+在不同的gpu之间共享负样本，这会显著地**增加负样本的数量**。
 我们在48块A100(40G) gpu上训练模型，batch大小为32,768。
 我们使用AdamW优化器，学习率为1e-5。
 对比损失的温度系数为0.01。
@@ -187,7 +188,7 @@ print("Sentence embeddings:", sentence_embeddings)
 在评测中，针对段落检索任务的任务需要在查询中添加指令。
 
 
-微调脚本可以在这个存储库中访问:[universal_embedding](./universal_embedding/README.md), 你可以用它轻松地微调你的模型。
+微调脚本可以在这个存储库中访问:[flag_embedding](./flag_embedding/README.md), 你可以用它轻松地微调你的模型。
 
  
 
@@ -215,7 +216,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 
 ## License
-FlagEmbedding is licensed under [MIT License](LICENSE).
+FlagEmbedding基于[MIT License](LICENSE)开源协议，可商用。
 
 
 

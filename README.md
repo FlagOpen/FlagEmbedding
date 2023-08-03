@@ -1,16 +1,16 @@
 <h1 align="center">FlagEmbedding</h1>
 <p align="center">
     <a href="https://www.python.org/">
-            <img alt="Build" src="https://img.shields.io/badge/Made with-Python-purple">
+            <img alt="Build" src="https://img.shields.io/badge/Contribution-Welcome-blue">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE">
         <img alt="License" src="https://img.shields.io/badge/LICENSE-MIT-green">
     </a>
     <a href="https://huggingface.co/C-MTEB">
-        <img alt="License" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
+        <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
-    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/universal_embedding">
-        <img alt="License" src="https://img.shields.io/badge/universal embedding-1.0-red">
+    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/flag_embedding">
+        <img alt="Build" src="https://img.shields.io/badge/universal embedding-1.0-red">
     </a>
 </p>
 
@@ -26,12 +26,11 @@
 
 [English](README.md) | [中文](README_zh.md)
 
-**Best open-sourced embedding models!**
 FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
 And it also can be used in vector database for LLMs.
 
 ************* 🌟**Updates**🌟 *************
-- 08/02/2023: :tada: :tada: Release English embedding and Chinese embedding Models, **best performance on embedding benchmark!** 
+- 08/02/2023: Release English embedding and Chinese embedding Models, **best performance on MTEB and C-MTEB benchmark!** :tada: :tada: 
 - 08/01/2023: We release the Chinese Massive Text Embedding Benchmark (**C-MTEB**), consisting of 31 test dataset.   
 
 
@@ -153,7 +152,7 @@ Please refer to [benchemark](benchmark/README.md) for a detailed introduction.
 
 ## Train
 This section will introduce the way we used to train the general embedding. 
-The training scripts are in [universal_embedding](./universal_embedding/README.md), 
+The training scripts are in [flag_embedding](./flag_embedding/README.md), 
 and we provide some examples to do [pre-train](examples/pretrain/README.md) and [fine-tune](examples/finetune/README.md).
 
 
@@ -178,6 +177,8 @@ We used the AdamW optimizer and the learning rate is 2e-5.
 We fine-tune the model using a contrastive objective. 
 The format of input data is a triple`(query, positive, negative)`. 
 Besides the negative in the triple, we also adopt in-batch negatives strategy. 
+We employ the [cross-device negatives sharing method](https://github.com/microsoft/MoPQ) to sharing negatives among different GPUs, 
+which can dramatically **increase the number of negatives**.
 
 We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so there are **65,535** negatives for each query in a batch). 
 We used the AdamW optimizer and the learning rate is 1e-5.
@@ -189,7 +190,7 @@ For chinese, the instruction is `为这个句子生成表示以用于检索相�
 In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
 
 
-The finetune script is accessible in this repository: [universal_embedding](./universal_embedding/README.md). 
+The finetune script is accessible in this repository: [flag_embedding](./flag_embedding/README.md). 
 You can easily finetune your model with it.
 
 **Training data**:
@@ -212,13 +213,13 @@ We will continually update the embedding models and training codes,
 hoping to promote the development of the embedding model community.
 
 
-## Bugs or questions?
+## Contact
 If you have any question related to this project, 
 feel free to open a issue or email Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
 
 
 ## License
-FlagEmbedding is licensed under [MIT License](LICENSE).
+FlagEmbedding is licensed under [MIT License](LICENSE), which can be used for commercial purposes free of charge.
 
 
 

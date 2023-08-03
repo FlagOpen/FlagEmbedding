@@ -24,7 +24,7 @@ evaluation = MTEB(task_langs=['zh'])
 results = evaluation.run(model, output_folder=f"results/{model_name}")
 ```
 
-* Reproduce the results of universal_embedding  
+* Reproduce the results of flag_embedding  
 Using the provided python script (see [eval_C-MTEB.py]() )
 ```bash
 python eval_C-MTEB.py --model_name_or_path BAAI/baai-general-embedding-large-zh-instruction
