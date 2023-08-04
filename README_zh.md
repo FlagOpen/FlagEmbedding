@@ -19,17 +19,19 @@
         <a href=#model-list>Model List</a> | 
         <a href=#usage>Usage</a>  |
         <a href="#evaluation">Evaluation</a> |
-        <a href="#train">Train</a> 
+        <a href="#train">Train</a> |
+        <a href="#contact">Contact</a> |
+        <a href="#license">License</a> 
     <p>
 </h4>
 
 [English](README.md) | [中文](README_zh.md)
 
 
-将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持大模型为外部知识的调用。
+将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
-- 08/02/2023: :tada: :tada: 发布中英文向量模型, **在MTEB和C-MTEB榜单上取得最好的性能** 
+- 08/02/2023: :tada: :tada: 发布中英文向量模型BGE(BAAI General Embedding的缩写), **在MTEB和C-MTEB榜单上取得最好的性能** 
 - 08/01/2023: 发布大规模中文文本向量评测榜单(**C-MTEB**), 其包括31个测试任务.   
 
 
@@ -111,7 +113,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
+| [**bge-large-en**](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
@@ -137,8 +139,8 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
-| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
 | [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
 | [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
 | [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  

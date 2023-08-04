@@ -19,7 +19,9 @@
         <a href=#model-list>Model List</a> | 
         <a href=#usage>Usage</a>  |
         <a href="#evaluation">Evaluation</a> |
-        <a href="#train">Train</a> 
+        <a href="#train">Train</a> |
+        <a href="#contact">Contact</a> |
+        <a href="#license">License</a> 
     <p>
 </h4>
 
@@ -30,7 +32,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector database for LLMs.
 
 ************* 🌟**Updates**🌟 *************
-- 08/02/2023: Release English embedding and Chinese embedding Models, **best performance on MTEB and C-MTEB benchmark!** :tada: :tada: 
+- 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **best performance on MTEB and C-MTEB benchmark!** :tada: :tada: 
 - 08/01/2023: We release the Chinese Massive Text Embedding Benchmark (**C-MTEB**), consisting of 31 test dataset.   
 
 
@@ -115,7 +117,7 @@ More details and evaluation scripts see [benchemark](benchmark/README.md).
 
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [bge-large-en](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.98** |  **53.9** | **46.98** | 85.8 | **59.48** | 81.56 | 32.06 | **76.21** | 
+| [**bge-large-en**](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.98** |  **53.9** | **46.98** | 85.8 | **59.48** | 81.56 | 32.06 | **76.21** | 
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
@@ -199,7 +201,7 @@ You can easily finetune your model with it.
 
 - For English, we collect 230M text pairs from [wikipedia](https://huggingface.co/datasets/wikipedia), [cc-net](https://github.com/facebookresearch/cc_net), and so on.
 
-- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), zhihu, news websites and so on.
+- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), [simclue](https://github.com/CLUEbenchmark/SimCLUE) and so on.
 
 **The data collection is to be released in the future.**
 
