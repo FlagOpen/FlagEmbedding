@@ -36,8 +36,6 @@ And it also can be used in vector database for LLMs.
 - 08/01/2023: We release the Chinese Massive Text Embedding Benchmark (**C-MTEB**), consisting of 31 test dataset.   
 
 
-
-
 ## Model List
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
@@ -48,28 +46,37 @@ And it also can be used in vector database for LLMs.
 
 ## Usage 
 
-* FlagEmbedding
+* **Using FlagEmbedding**
 ```
-pip install flag-embedding
+pip install FlagEmbedding
 ```
 ```python
-from flag-embedding import FlagModel
+from FlagEmbedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
-model = FlagModel('BAAI/bge-large-zh')
-embeddings = model.encode(sentences, normalize_embeddings=True)
+model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
+embeddings = model.encode(sentences)
 print(embeddings)
+
+# for retrieval task, please use encode_queries() which will automatically add the instruction to each query
+# corpus in retrieval task can still use encode() or encode_corpus()
+queries = ['query_1', 'query_2']
+passages = ["样例段落-1", "样例段落-2"]
+q_embeddings = model.encode_queries(queries)
+p_embeddings = model.encode(passages)
+scores = q_embeddings @ p_embeddings.T
 ```
+The value of argument `query_instruction_for_retrieval` see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
 
-* Sentence-Transformers
+FlagModel will use all available GPUs when encoding, please set `os.environ["CUDA_VISIBLE_DEVICES"]` to choose GPU.
 
-Using this model becomes easy when you have [sentence-transformers](https://www.SBERT.net) installed:
+
+* **Using Sentence-Transformers**
+
+Using this model also is easy when you have [sentence-transformers](https://www.SBERT.net) installed:
 
 ```
 pip install -U sentence-transformers
 ```
-
-Then you can use the model like this:
-
 ```python
 from sentence_transformers import SentenceTransformer
 sentences = ["样例数据-1", "样例数据-2"]
@@ -91,7 +98,7 @@ p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
 
-* HuggingFace Transformers
+* **Using HuggingFace Transformers**
 
 With transformers package, you can use the model like this: First, you pass your input through the transformer model, then you select the last hidden state of first token (i.e., [CLS]) as the sentence embedding.
 
