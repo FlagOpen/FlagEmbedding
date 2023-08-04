@@ -1,13 +1,14 @@
 import argparse
-
-from C_MTEB import *
-from C_MTEB import ChineseTaskList
-from models import UniversalModel
 from mteb import MTEB
+
+from C_MTEB.tasks import *
+from C_MTEB import ChineseTaskList
+from flag_dres_model import FlagDRESModel
+
 
 query_instruction_for_retrieval_dict = {
     "BAAI/bge-large-zh": "为这个句子生成表示以用于检索相关文章：",
-    "BAAI/bge-large-zh-noinstruct": None
+    "BAAI/bge-large-zh-noinstruct": None,
 }
 
 
@@ -18,8 +19,12 @@ def get_args():
     return parser.parse_args()
 
 
+
 if __name__ == '__main__':
     args = get_args()
+
+    model = FlagDRESModel(model_name_or_path=args.model_name_or_path,
+                          query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
 
     task_names = [t.description["name"] for t in MTEB(task_types=None if args.task_type is None else args.task_type,
                                                       task_langs=['zh']).tasks]
@@ -31,13 +36,19 @@ if __name__ == '__main__':
                     'CovidRetrieval', 'CmedqaRetrieval',
                     'EcomRetrieval', 'MedicalRetrieval', 'VideoRetrieval',
                     'T2Reranking', 'MmarcoReranking', 'CMedQAv1', 'CMedQAv2']:
-            instruction = query_instruction_for_retrieval_dict[args.model_name_or_path]
+            if args.model_name_or_path not in query_instruction_for_retrieval_dict:
+                # instruction = "为这个句子生成表示以用于检索相关文章："
+                instruction = None
+                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=None")
+            else:
+                instruction = query_instruction_for_retrieval_dict[args.model_name_or_path]
         else:
             instruction = None
 
-        model = UniversalModel(model_name_or_path=args.model_name_or_path,
-                               normlized=True,
-                               query_instruction_for_retrieval=instruction)
+        model.query_instruction_for_retrieval = instruction
 
         evaluation = MTEB(tasks=[task], task_langs=['zh'])
         evaluation.run(model, output_folder=f"zh_results/{args.model_name_or_path.split('/')[-1]}")
+
+
+

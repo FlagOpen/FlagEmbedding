@@ -47,6 +47,30 @@
 
 ## Usage 
 
+* **Using FlagEmbedding**
+```
+pip install flag_embedding
+```
+```python
+from flag_embedding import FlagModel
+sentences = ["样例数据-1", "样例数据-2"]
+model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
+embeddings = model.encode(sentences)
+print(embeddings)
+
+# 对于检索任务中的查询问题，请使用 encode_queries() 函数，其会自动为每个查询加上指令
+# 检索中的候选集依然使用 encode() 或 encode_corpus() 函数
+queries = ['query_1', 'query_2']
+passages = ["样例段落-1", "样例段落-2"]
+q_embeddings = model.encode_queries(queries)
+p_embeddings = model.encode(passages)
+scores = q_embeddings @ p_embeddings.T
+```
+Instruction参数 `query_instruction_for_retrieval` 请参照： [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
+
+为提高效率，FlagModel默认会使用所有的GPU进行推理。如果想要使用具体的GPU，请设置`os.environ["CUDA_VISIBLE_DEVICES"]`。
+
+
 * Sentence-Transformers
 
 安装 [sentence-transformers](https://www.SBERT.net):

@@ -25,8 +25,8 @@ class FlagModel:
 
         self.num_gpus = torch.cuda.device_count()
         if self.num_gpus > 1:
+            print(f"----------using {self.num_gpus}*GPUs----------")
             self.model = torch.nn.DataParallel(self.model)
-            self.batch_size = self.batch_size * self.num_gpus
 
 
     def encode_queries(self, queries: List[str],

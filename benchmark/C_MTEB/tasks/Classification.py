@@ -1,6 +1,5 @@
 from mteb import AbsTaskClassification
 
-
 class TNews(AbsTaskClassification):
     @property
     def description(self):
@@ -51,6 +50,7 @@ class MultilingualSentiment(AbsTaskClassification):
             'main_score': 'accuracy',
             'samples_per_label': 32,
         }
+
 
 
 class JDReview(AbsTaskClassification):
