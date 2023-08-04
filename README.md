@@ -48,10 +48,10 @@ And it also can be used in vector database for LLMs.
 
 * **Using FlagEmbedding**
 ```
-pip install FlagEmbedding
+pip install flag_embedding
 ```
 ```python
-from FlagEmbedding import FlagModel
+from flag_embedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
 embeddings = model.encode(sentences)

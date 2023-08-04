@@ -1,0 +1,1 @@
+from .baai_general_embedding import FlagModel
