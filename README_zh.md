@@ -38,9 +38,9 @@
 ## Model List
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
-|  [BAAI/baai-general-embedding-large-en-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名第一 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/baai-general-embedding-large-zh-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) |   Chinese | :trophy: 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第一 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第二 | --  |
+|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名第一 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | :trophy: 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第一 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第二 | --  |
 
 
 ## Usage 
@@ -58,7 +58,7 @@ pip install -U sentence-transformers
 ```python
 from sentence_transformers import SentenceTransformer
 sentences = ["样例数据-1", "样例数据-2"]
-model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
+model = SentenceTransformer('BAAI/bge-large-zh')
 embeddings = model.encode(sentences, normalize_embeddings=True)
 print(embeddings)
 ```
@@ -68,7 +68,7 @@ print(embeddings)
 queries = ["手机开不了机怎么办？"]
 passages = ["样例段落-1", "样例段落-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
-model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
+model = SentenceTransformer('BAAI/bge-large-zh')
 q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
@@ -84,8 +84,8 @@ import torch
 sentences = ["样例数据-1", "样例数据-2"]
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
-model = AutoModel.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh')
+model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
@@ -111,7 +111,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
+| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
@@ -137,8 +137,8 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
-| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
+| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
 | [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
 | [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
 | [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  

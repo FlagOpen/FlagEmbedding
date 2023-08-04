@@ -27,7 +27,7 @@ See [toy_pretrain_data.jsonl]() for a toy data file.
 torchrun --nproc_per_node {number of gpus} \
 -m retromae_pretrain.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/baai-general-embedding-large-zh \
+--model_name_or_path BAAI/bge-large-zh-noinstruct \
 --train_data toy_pretrain_data.jsonl \
 --learning_rate 2e-5 \
 --num_train_epochs 5 \

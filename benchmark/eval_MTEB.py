@@ -4,13 +4,13 @@ from models import UniversalModel
 from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
-    "BAAI/baai-general-embedding-large-en-instruction": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-large-en": "Represent this sentence for searching relevant passages: ",
 }
 
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name_or_path', default="BAAI/baai-general-embedding-large-en-instruction", type=str)
+    parser.add_argument('--model_name_or_path', default="BAAI/bge-large-en", type=str)
     parser.add_argument('--task_type', default=None, type=str)
     return parser.parse_args()
 
@@ -36,5 +36,5 @@ if __name__ == '__main__':
                                normlized=False,
                                query_instruction_for_retrieval=instruction)
 
-        evaluation = MTEB(tasks=[task], task_langs=['zh'])
+        evaluation = MTEB(tasks=[task], task_langs=['en'])
         evaluation.run(model, output_folder=f"en_results/{args.model_name_or_path.split('/')[-1]}")

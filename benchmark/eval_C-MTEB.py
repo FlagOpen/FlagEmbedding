@@ -6,14 +6,14 @@ from models import UniversalModel
 from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
-    "BAAI/baai-general-embedding-large-zh-instruction": "为这个句子生成表示以用于检索相关文章：",
-    "BAAI/baai-general-embedding-large-zh": None
+    "BAAI/bge-large-zh": "为这个句子生成表示以用于检索相关文章：",
+    "BAAI/bge-large-zh-noinstruct": None
 }
 
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name_or_path', default="BAAI/baai-general-embedding-large-zh-instruction", type=str)
+    parser.add_argument('--model_name_or_path', default="BAAI/bge-large-zh", type=str)
     parser.add_argument('--task_type', default=None, type=str)
     return parser.parse_args()
 

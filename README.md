@@ -10,7 +10,7 @@
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/flag_embedding">
-        <img alt="Build" src="https://img.shields.io/badge/universal embedding-1.0-red">
+        <img alt="Build" src="https://img.shields.io/badge/flag_embedding-1.0-red">
     </a>
 </p>
 
@@ -39,9 +39,9 @@ And it also can be used in vector database for LLMs.
 ## Model List
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
-|  [BAAI/baai-general-embedding-large-en-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/baai-general-embedding-large-zh-instruction](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) |   Chinese | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark |   |
+|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark |   |
 
 
 ## Usage 
@@ -59,17 +59,19 @@ Then you can use the model like this:
 ```python
 from sentence_transformers import SentenceTransformer
 sentences = ["样例数据-1", "样例数据-2"]
-model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
+model = SentenceTransformer('BAAI/bge-large-zh')
 embeddings = model.encode(sentences, normalize_embeddings=True)
 print(embeddings)
 ```
-For retrieval task, when you use the model whose name ends with `-instruction`, 
+For retrieval task, 
 each query should start with a instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 ```python
+from sentence_transformers import SentenceTransformer
 queries = ["手机开不了机怎么办？"]
 passages = ["样例段落-1", "样例段落-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
-model = SentenceTransformer('BAAI/baai-general-embedding-large-zh-instruction')
+
+model = SentenceTransformer('BAAI/bge-large-zh')
 q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
@@ -86,8 +88,8 @@ import torch
 sentences = ["样例数据-1", "样例数据-2"]
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
-model = AutoModel.from_pretrained('BAAI/baai-general-embedding-large-zh-instruction')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh')
+model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
@@ -113,7 +115,7 @@ More details and evaluation scripts see [benchemark](benchmark/README.md).
 
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**baai-general-embedding-large-en-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-en-instruction) | 0.67 | 1024 | 512 | **63.34** | **53.23** | 48.47 | 86.34 | 59.87 | 81.89 | 30.55 | 72.28 |   
+| [bge-large-en](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.98** |  **53.9** | **46.98** | 85.8 | **59.48** | 81.56 | 32.06 | **76.21** | 
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
@@ -138,8 +140,8 @@ Please refer to [benchemark](benchmark/README.md) for a detailed introduction.
  
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/baai-general-embedding-large-zh-instruction) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
-| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/baai-general-embedding-large-zh) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
 | [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
 | [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
 | [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  
@@ -177,7 +179,7 @@ We used the AdamW optimizer and the learning rate is 2e-5.
 We fine-tune the model using a contrastive objective. 
 The format of input data is a triple`(query, positive, negative)`. 
 Besides the negative in the triple, we also adopt in-batch negatives strategy. 
-We employ the [cross-device negatives sharing method](https://github.com/microsoft/MoPQ) to sharing negatives among different GPUs, 
+We employ the cross-device negatives sharing method to sharing negatives among different GPUs, 
 which can dramatically **increase the number of negatives**.
 
 We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so there are **65,535** negatives for each query in a batch). 
