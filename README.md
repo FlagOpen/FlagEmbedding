@@ -48,6 +48,18 @@ And it also can be used in vector database for LLMs.
 
 ## Usage 
 
+* FlagEmbedding
+```
+pip install flag-embedding
+```
+```python
+from flag-embedding import FlagModel
+sentences = ["样例数据-1", "样例数据-2"]
+model = FlagModel('BAAI/bge-large-zh')
+embeddings = model.encode(sentences, normalize_embeddings=True)
+print(embeddings)
+```
+
 * Sentence-Transformers
 
 Using this model becomes easy when you have [sentence-transformers](https://www.SBERT.net) installed:
