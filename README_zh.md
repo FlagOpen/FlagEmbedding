@@ -31,6 +31,7 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
+- 08/05/2023: 发布更小的模型(base, small), **在同尺寸模型中取得最好的性能！ 🤗**
 - 08/02/2023: :tada: :tada: 发布中英文向量模型BGE(BAAI General Embedding的缩写), **在MTEB和C-MTEB榜单上取得最好的性能** 
 - 08/01/2023: 发布大规模中文文本向量评测榜单(**C-MTEB**), 其包括31个测试任务.   
 
@@ -41,8 +42,12 @@
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
 |  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名第一 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English |  rank **2nd** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | small-scale模型，性能高于很多开源large-scale模型，推理更高效  | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | :trophy: 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第一 | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) 榜单上排名第二 | --  |
+|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  base-scale模型，与bge-large性能类似，但推理更快，向量维度更小 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | small-scale模型，推理比base模型更快  | `为这个句子生成表示以用于检索相关文章：`  |
 
 
 ## Usage 
@@ -221,7 +226,7 @@ print("Sentence embeddings:", sentence_embeddings)
 **Training data**:
 
 -对于英语，我们从 [wikipedia](https://huggingface.co/datasets/wikipedia) ， [cc-net](https://github.com/facebookresearch/cc_net) 等收集了2.3亿个文本对。
--对于中文，我们从 [悟道](https://github.com/BAAI-WuDao/Data) 、知乎、新闻网站等收集了1.2亿对文本。
+-对于中文，我们从 [悟道](https://github.com/BAAI-WuDao/Data) 、[simclue](https://github.com/CLUEbenchmark/SimCLUE)等收集了1.2亿对文本。
 
 我们计划在将来发布训练数据集。
 
