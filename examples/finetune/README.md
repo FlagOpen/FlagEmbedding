@@ -2,6 +2,12 @@
 In this example, we show how to finetune the baai-general-embedding with a your data.
 
 ## Installation
+* **with pip**
+```
+pip install FlagEmbedding
+```
+
+* **from source**
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
@@ -25,18 +31,27 @@ See [toy_finetune_data.jsonl]() for a toy data file.
 ## Train
 ```
 torchrun --nproc_per_node {number of gpus} \
--m baai_general_embedding.finetune.run \
+-m FlagEmbedding.baai_general_embedding.finetune.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-large-zh-noinstruct \
+--model_name_or_path BAAI/bge-large-en \
 --train_data toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --num_train_epochs 5 \
+--per_device_train_batch_size 1 \
+--dataloader_drop_last True \
 --normlized True \
 --temperature 0.01 \
 --query_max_len 32 \
 --passage_max_len 128 \
 --negatives_cross_device
 ```
+
+**some important arguments**:
+- `train_group_size`: the number of positive and negatives for a query in training.
+There are always one postive, so this argument will control the number of negatives (#negatives=train_group_size-1).
+Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
+Besides the negatives in group, the in-batch negatives also will be used in fine-tuning.
+- `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 

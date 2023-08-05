@@ -1,7 +1,7 @@
 # Q&A Example
 
 Vector Database can help LLMs to access external knowledge. 
-You can load baai-general-emedding as the encoder to generate the vetors.
+You can load baai-general-embedding as the encoder to generate the vectors.
 Here a example to build a bot which can answer your question using the knowledge in chinese wikipedia.
 
 Here's a description of the Q&A dialogue scenario using flag embedding and a large language model:

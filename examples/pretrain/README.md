@@ -1,8 +1,14 @@
 # Pre-train
-In this example, we show how to do pre-training useing retromae, 
+In this example, we show how to do pre-training using retromae, 
 which can improve the retrieval performance. 
 
 ## Installation
+* **with pip**
+```
+pip install FlagEmbedding
+```
+
+* **from source**
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
@@ -25,23 +31,17 @@ See [toy_pretrain_data.jsonl]() for a toy data file.
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \
--m baai_general_embedding.retromae_pretrain.run \
+-m FlagEmbedding.baai_general_embedding.retromae_pretrain.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-large-zh-noinstruct \
+--model_name_or_path BAAI/bge-large-en \
 --train_data toy_pretrain_data.jsonl \
 --learning_rate 2e-5 \
 --num_train_epochs 5 \
+--per_device_train_batch_size 1 \
+--dataloader_drop_last True \
 --max_seq_length 512 \
 --logging_steps 1
 ```
-
-some important arguments:
-- `train_group_size`: the number of positive and negatives for a query in training.
-There are always one postive, so this argument will control the number of negatives (#negatives=train_group_size-1).
-Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
-Besides the negatives in group, the in-batch negatives also will be used in fine-tuning.
-- `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
-
 
 Other training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 
 

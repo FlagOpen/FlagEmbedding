@@ -30,7 +30,7 @@ pip install C_MTEB
 Or clone this repo and install as editable
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding/benchmark
+cd FlagEmbedding/C_MTEB
 pip install -e .
 ```
 
@@ -41,8 +41,12 @@ pip install -e .
 You can **reproduce the results of `baai-general-embedding (bge)`** using the provided python script (see [eval_C-MTEB.py](./eval_C-MTEB.py) )
 ```bash
 python eval_C-MTEB.py --model_name_or_path BAAI/bge-large-zh
+
+# for MTEB leaderboard
+python eval_MTEB.py --model_name_or_path BAAI/bge-large-en
 ```
 We wrap the DERSModel in mteb to [FlagDERSModel](flag_dres_model.py) which can support instruction and inference with multiple GPUs.
+
 
 * **With sentence-transformers** 
  
