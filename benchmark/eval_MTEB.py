@@ -12,7 +12,7 @@ query_instruction_for_retrieval_dict = {
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name_or_path', default="BAAI/bge-large-en", type=str)
-    parser.add_argument('--task_type', default=None, type=str)
+    parser.add_argument('--task_type', default=None, type=str, help="task type. Default is None, which means using all task types")
     return parser.parse_args()
 
 
