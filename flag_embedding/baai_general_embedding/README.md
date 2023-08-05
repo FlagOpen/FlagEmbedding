@@ -1,6 +1,13 @@
 # Finetune
 
 ## Installation
+
+* **with pip**
+```
+pip install flag_embedding
+```
+
+* **from source**
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding

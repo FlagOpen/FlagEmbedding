@@ -32,16 +32,25 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector database for LLMs.
 
 ************* 🌟**Updates**🌟 *************
-- 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **best performance on MTEB and C-MTEB benchmark!** :tada: :tada: 
+- 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**
+- 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada: 
 - 08/01/2023: We release the Chinese Massive Text Embedding Benchmark (**C-MTEB**), consisting of 31 test dataset.   
 
 
 ## Model List
+
+`bge` is short for `BAAI general embedding`.
+
 |              Model              | Language | Description | query instruction for retrieval |
 |:-------------------------------|:--------:| :--------:| :--------:|
 |  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English |  rank **2nd** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | a small-scale model but with competitive performance  | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark |   |
+|  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | This model is trained without instruction, and rank **2nd** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/benchmark) benchmark |   |
+|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  a base-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | a small-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
+
 
 
 ## Usage 
@@ -129,7 +138,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 
 ## Evaluation  
-`baai-general-embedding` models achieve state-of-the-art performance on both MTEB and C-MTEB leaderboard!
+`baai-general-embedding` models achieve **state-of-the-art performance on both MTEB and C-MTEB leaderboard!**
 More details and evaluation scripts see [benchemark](benchmark/README.md). 
 
 - **MTEB**:   
@@ -137,9 +146,11 @@ More details and evaluation scripts see [benchemark](benchmark/README.md).
 | Model Name | Model Size (GB) | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | [**bge-large-en**](https://huggingface.co/BAAI/bge-large-en) | 0.67 | 1024 | 512 | **63.98** |  **53.9** | **46.98** | 85.8 | **59.48** | 81.56 | 32.06 | **76.21** | 
+| [**bge-base-en**](https://huggingface.co/BAAI/bge-base-en) | 0.22 | 768 | 512 |  63.36 | 53.0 | 46.32 | 85.86 | 58.7 | 81.84 | 29.27 | 75.27 | 
 | [gte-large](https://huggingface.co/thenlper/gte-large) | 0.67 | 1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	| 0.22 | 768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
 | [e5-large-v2](https://huggingface.co/intfloat/e5-large-v2) | 1.34 | 1024| 512 | 62.25 | 50.56 | 44.49 | 86.03 | 56.61 | 82.05 | 30.19 | 75.24 |
+| [**bge-small-en**](https://huggingface.co/BAAI/bge-small-en) | 0.07 | 384 | 512 | 62.11 |  51.82 | 44.31 | 83.78 | 57.97 | 80.72 | 30.53 | 74.37 |  
 | [instructor-xl](https://huggingface.co/hkunlp/instructor-xl) | 4.96 | 768 | 512 | 61.79 | 49.26 | 44.74 | 86.62 | 57.29 | 83.06 | 32.32 | 61.79 |
 | [e5-base-v2](https://huggingface.co/intfloat/e5-base-v2) | 0.44 | 768 | 512 | 61.5 | 50.29 | 43.80 | 85.73 | 55.91 | 81.05 | 30.28 | 73.84 |
 | [gte-small](https://huggingface.co/thenlper/gte-small) | 0.07 | 384 | 512 | 61.36 | 49.46 | 44.89 | 83.54 | 57.7 | 82.07 | 30.42 | 72.31 |
@@ -162,7 +173,9 @@ Please refer to [benchemark](benchmark/README.md) for a detailed introduction.
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
-| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**bge-large-zh-noinstruct**](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**BAAI/bge-base-zh**](https://huggingface.co/BAAI/bge-base-zh) |  768 | 62.96 | 69.53 | 52.05 | 77.5 | 70.98 | 64.91 | 47.63 |  
+| [**BAAI/bge-small-zh**](https://huggingface.co/BAAI/bge-small-zh) | 512 | 58.27 |  63.07 | 46.87 | 70.35 | 67.78 | 61.48 | 45.09 |  
 | [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
 | [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
 | [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  
@@ -175,7 +188,7 @@ Please refer to [benchemark](benchmark/README.md) for a detailed introduction.
 
 ## Train
 This section will introduce the way we used to train the general embedding. 
-The training scripts are in [flag_embedding](./flag_embedding/README.md), 
+The training scripts are in [flag_embedding](./flag_embedding/baai_general_embedding/README.md), 
 and we provide some examples to do [pre-train](examples/pretrain/README.md) and [fine-tune](examples/finetune/README.md).
 
 
@@ -213,7 +226,7 @@ For chinese, the instruction is `为这个句子生成表示以用于检索相�
 In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
 
 
-The finetune script is accessible in this repository: [flag_embedding](./flag_embedding/README.md). 
+The finetune script is accessible in this repository: [flag_embedding](./flag_embedding/baai_general_embedding/README.md). 
 You can easily finetune your model with it.
 
 **Training data**:
@@ -237,13 +250,12 @@ hoping to promote the development of the embedding model community.
 
 
 ## Contact
-If you have any question related to this project, 
-feel free to open a issue or email Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
+If you have any question or suggestion related to this project, feel free to open a issue or pull a request.
+You also can email Shitao Xiao(stxiao@baai.ac.cn) and Zheng Liu(liuzheng@baai.ac.cn). 
 
 
 ## License
-FlagEmbedding is licensed under [MIT License](LICENSE), which can be used for commercial purposes free of charge.
-
+FlagEmbedding is licensed under [MIT License](LICENSE). The released models can be used for commercial purposes free of charge.
 
 
 

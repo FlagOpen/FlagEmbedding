@@ -20,7 +20,7 @@ if __name__ == '__main__':
     args = get_args()
 
     model = FlagDRESModel(model_name_or_path=args.model_name_or_path,
-                          normlized=False,
+                          normalize_embeddings=False,  # normlize embedding will harm the performance of classification task
                           query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ")
 
     task_names = [t.description["name"] for t in MTEB(task_types=None if args.task_type is None else args.task_type,

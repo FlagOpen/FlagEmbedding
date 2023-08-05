@@ -235,15 +235,14 @@ print("Sentence embeddings:", sentence_embeddings)
 
 我们将不断更新向量模型和代码，希望能促进社区的发展。
 
-## Bugs or questions?
-如果您有任务疑问, 
-请提交issue或者发送邮件给 Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
+## Concat
+如果您有任务疑问或者建议，欢迎提交issue和PR, 
+也可以发送邮件给 Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
 
 
 
 ## License
-FlagEmbedding基于[MIT License](LICENSE)开源协议，可商用。
-
+FlagEmbedding基于[MIT License](LICENSE)开源协议。发布的模型权重可商用。
 
 
 

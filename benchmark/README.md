@@ -1,15 +1,55 @@
-# Chinese Massive Text Embedding Benchmark 
+<h1 align="center">Chinese Massive Text Embedding Benchmark </h1>
+<p align="center">
+    <a href="https://www.python.org/">
+            <img alt="Build" src="https://img.shields.io/badge/Contribution-Welcome-blue">
+    </a>
+    <a href="https://huggingface.co/C-MTEB">
+        <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
+    </a>
+    <a href="https://www.python.org/">
+        <img alt="Build" src="https://img.shields.io/badge/Made with-Python-red">
+    </a>
+</p>
+
+<h4 align="center">
+    <p>
+        <a href=#installation>Installation</a> | 
+        <a href=#usage>Usage</a>  |
+        <a href="#leaderboard">Leaderboard</a> |
+        <a href="#tasks">Tasks</a> |
+        <a href="#acknowledgement">Acknowledgement</a> |
+    <p>
+</h4>
 
 
 ## Installation
 C-MTEB is devloped based on [MTEB](https://github.com/embeddings-benchmark/mteb). 
 ```
-pip install mteb[beir]
+pip install C_MTEB
+```
+Or clone this repo and install as editable
+```
+git clone https://github.com/FlagOpen/FlagEmbedding.git
+cd FlagEmbedding/benchmark
+pip install -e .
 ```
 
 ## Usage
-* python script  
+
+* **With [FlagDERSModel](flag_dres_model.py)**
+  
+You can **reproduce the results of `baai-general-embedding (bge)`** using the provided python script (see [eval_C-MTEB.py](./eval_C-MTEB.py) )
+```bash
+python eval_C-MTEB.py --model_name_or_path BAAI/bge-large-zh
+```
+We wrap the DERSModel in mteb to [FlagDERSModel](flag_dres_model.py) which can support instruction and inference with multiple GPUs.
+
+* **With sentence-transformers** 
+ 
 You can use C-MTEB easily in the same way as [MTEB](https://github.com/embeddings-benchmark/mteb).
+
+Noted that the original sentence-transformers model doesn't support instruction. 
+So this method cannot test the performance of `bge-*` models.
 
 ```python
 from mteb import MTEB
@@ -21,16 +61,11 @@ model_name = "bert-base-uncased"
 
 model = SentenceTransformer(model_name)
 evaluation = MTEB(task_langs=['zh'])
-results = evaluation.run(model, output_folder=f"results/{model_name}")
+results = evaluation.run(model, output_folder=f"zh_results/{model_name}")
 ```
 
-* Reproduce the results of flag_embedding  
-Using the provided python script (see [eval_C-MTEB.py]() )
-```bash
-python eval_C-MTEB.py --model_name_or_path BAAI/bge-large-zh
-```
 
-* Using a custom model  
+* **Using a custom model**  
 To evaluate a new model, you can load it by sentence_transformers if it is supported by sentence_transformers.
 Otherwise,  models should be implemented like this (implementing an `encode` function taking as inputs a list of sentences, and returning a list of embeddings (embeddings can be `np.array`, `torch.tensor`, etc.). 
 ): 
@@ -59,8 +94,10 @@ evaluation.run(model)
 ### overall
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**baai-general-embedding-large-zh-instruction**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
-| [baai-general-embedding-large-zh](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **53.23** | **78.94** | 72.26 | **65.11** | 48.39 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 50.98 | 76.77 | **72.49** | 64.91 | **50.01** |   
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |  768 | 62.96 | 69.53 | 52.05 | 77.5 | 70.98 | 64.91 | 47.63 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 512 | 58.27 |  63.07 | 46.87 | 70.35 | 67.78 | 61.48 | 45.09 |  
 | [m3e-base](https://huggingface.co/moka-ai/m3e-base) | 768 | 57.10 |56.91 | 48.15 | 63.99 | 70.28 | 59.34 | 47.68 |  
 | [m3e-large](https://huggingface.co/moka-ai/m3e-large) | 1024 |  57.05 |54.75 | 48.64 | 64.3 | 71.22 | 59.66 | 48.88 |  
 | [text-embedding-ada-002(OpenAI)](https://platform.openai.com/docs/guides/embeddings/what-are-embeddings) | 1536 |  53.02 | 52.0 | 40.61 | 69.56 | 67.38 | 54.28 | 45.68 |  
@@ -79,8 +116,10 @@ evaluation.run(model)
 | m3e-base | 73.14 | 65.45 | 75.76 | 66.42 | 30.33 | 50.27 | 42.8 | 51.11 | 56.91 |  
 | m3e-large | 72.36 | 61.06 | 74.69 | 61.33 | 30.73 | 45.18 | 48.66 | 44.02 | 54.75 |  
 | OpenAI(text-embedding-ada-002) | 69.14 | 69.86 | 71.17 | 57.21 | 22.36 | 44.49 | 37.92 | 43.85 | 52.0 |  
-| universal-embedding | 84.39 | 81.38 | 84.68 | 75.07 | 41.03 | 65.6 | 58.28 | 73.94 | 70.55 |  
-| universal-embedding-instruction | 84.82 | 81.28 | 86.94 | 74.06 | 42.4 | 66.12 | 59.39 | 77.19 | 71.53 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 77.59 | 67.56 | 77.89 | 68.95 | 35.18 | 58.17 | 49.9 | 69.33 | 63.07 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 83.35 | 79.11 | 86.02 | 72.07 | 41.77 | 63.53 | 56.64 | 73.76 | 69.53 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 84.39 | 81.38 | 84.68 | 75.07 | 41.03 | 65.6 | 58.28 | 73.94 | 70.55 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 84.82 | 81.28 | 86.94 | 74.06 | 42.4 | 66.12 | 59.39 | 77.19 | 71.53 |  
 
 
 ### 2.  STS  
@@ -92,8 +131,10 @@ evaluation.run(model)
 | m3e-base | 41.27 | 63.81 | 74.88 | 12.19 | 76.97 | 35.87 | 32.07 | 48.15 |   
 | m3e-large | 41.8 | 65.2 | 74.2 | 15.95 | 74.16 | 36.53 | 32.65 | 48.64 |  
 | OpenAI(text-embedding-ada-002) | 29.25 | 45.33 | 68.41 | 16.55 | 70.61 | 23.88 | 30.27 | 40.61 |  
-| universal-embedding | 48.29 | 60.53 | 74.71 | 16.64 | 78.41 | 43.06 | 35.2 | 50.98 |  
-| universal-embedding-instruction | 49.75 | 62.93 | 75.45 | 22.45 | 78.51 | 44.57 | 38.92 | 53.23 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 43.17 | 55.47 | 72.61 | 9.97 | 76.48 | 33.93 | 36.45 | 46.87 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 48.28 | 61.21 | 74.98 | 20.65 | 78.66 | 42.53 | 38.01 | 52.05 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 48.29 | 60.53 | 74.71 | 16.64 | 78.41 | 43.06 | 35.2 | 50.98 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 49.75 | 62.93 | 75.45 | 22.45 | 78.51 | 44.57 | 38.92 | 53.23 |  
 
 
 ### 3. PairClassification  
@@ -105,8 +146,10 @@ evaluation.run(model)
 | m3e-base | 58.0 | 69.98 | 63.99 |  
 | m3e-large | 59.33 | 69.27 | 64.3 |  
 | OpenAI(text-embedding-ada-002) | 63.08 | 76.03 | 69.56 |  
-| universal-embedding | 71.37 | 82.17 | 76.77 |  
-| universal-embedding-instruction | 75.75 | 82.12 | 78.94 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 65.25 | 75.46 | 70.35 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 73.32 | 81.69 | 77.5 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 71.37 | 82.17 | 76.77 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 75.75 | 82.12 | 78.94 |  
 
 
 ### 4. Classification  
@@ -118,8 +161,10 @@ evaluation.run(model)
 | m3e-base | 48.28 | 44.42 | 71.9 | 85.33 | 87.77 | 83.99 | 70.28 |  
 | m3e-large | 48.26 | 43.96 | 72.47 | 86.92 | 89.59 | 86.1 | 71.22 |  
 | OpenAI(text-embedding-ada-002) | 45.77 | 44.62 | 67.99 | 74.6 | 88.94 | 82.37 | 67.38 |  
-| universal-embedding | 52.05 | 45.32 | 73.7 | 85.38 | 91.66 | 86.83 | 72.49 |  
-| universal-embedding-instruction | 50.84 | 45.09 | 74.41 | 85.08 | 91.6 | 86.54 | 72.26 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 47.67 | 42.07 | 65.07 | 80.64 | 87.4 | 83.8 | 67.78 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 49.97 | 44.54 | 70.63 | 83.92 | 91.38 | 85.46 | 70.98 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 52.05 | 45.32 | 73.7 | 85.38 | 91.66 | 86.83 | 72.49 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 50.84 | 45.09 | 74.41 | 85.08 | 91.6 | 86.54 | 72.26 |  
 
 
 ### 5. Reranking  
@@ -131,8 +176,10 @@ evaluation.run(model)
 | m3e-base | 66.03 | 17.51 | 77.05 | 76.76 | 59.34 |   
 | m3e-large | 66.13 | 16.46 | 77.76 | 78.27 | 59.66 |  
 | OpenAI(text-embedding-ada-002) | 66.65 | 23.39 | 63.08 | 64.02 | 54.28 |  
-| baai-general-embedding-large-zh | 66.16 | 27.1 | 81.72 | 84.64 | 64.91 |  
-| baai-general-embedding-large-zh-instruction | 66.19 | 26.23 | 83.01 | 85.01 | 65.11 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 66.2 | 22.82 | 77.08 | 79.82 | 61.48 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 66.49 | 28.24 | 80.12 | 84.78 | 64.91 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 66.16 | 27.1 | 81.72 | 84.64 | 64.91 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 66.19 | 26.23 | 83.01 | 85.01 | 65.11 |  
 
 ### 6. Clustering  
 | Model | CLSClusteringS2S | CLSClusteringP2P | ThuNewsClusteringS2S | ThuNewsClusteringP2P | Avg |  
@@ -143,8 +190,10 @@ evaluation.run(model)
 | m3e-base | 37.34 | 39.81 | 53.78 | 59.77 | 47.68 |    
 | m3e-large | 38.02 | 38.6 | 58.51 | 60.39 | 48.88 |  
 | OpenAI(text-embedding-ada-002) | 35.91 | 38.26 | 49.86 | 58.71 | 45.68 |  
-| universal-embedding | 40.04 | 41.23 | 56.75 | 62.03 | 50.01 |  
-| universal-embedding-instruction | 38.05 | 40.92 | 58.79 | 55.79 | 48.39 |  
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 34.34 | 38.23 | 51.84 | 55.95 | 45.09 |  
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 36.59 | 38.79 | 56.16 | 59.0 | 47.63 |  
+| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 40.04 | 41.23 | 56.75 | 62.03 | 50.01 |  
+| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 38.05 | 40.92 | 58.79 | 55.79 | 48.39 |  
 
 
 
@@ -189,7 +238,7 @@ An overview of tasks and datasets available in MTEB-chinese is provided in follo
 In retrieval task, we sample 100,000 candidates (including the ground truths) from entire corpus to reduce the inference cost.  
 
 ## Acknowledgement
-This work is inspired by [Massive Text Embedding Benchmark](https://github.com/embeddings-benchmark/mteb), 
-which lacks of the evaluation for chinese text.
 
+Thank the great tool from [Massive Text Embedding Benchmark](https://github.com/embeddings-benchmark/mteb) 
+and the open-source datasets from Chinese NLP community.
 
