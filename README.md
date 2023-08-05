@@ -99,7 +99,7 @@ For retrieval task,
 each query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 ```python
 from sentence_transformers import SentenceTransformer
-queries = ["手机开不了机怎么办？"]
+queries = ['query_1', 'query_2']
 passages = ["样例段落-1", "样例段落-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
 
@@ -206,8 +206,7 @@ We used the AdamW optimizer and the learning rate is 2e-5.
     - [wikipedia](https://huggingface.co/datasets/wikipedia)
     - [msmarco](https://huggingface.co/datasets/Tevatron/msmarco-passage-corpus)
 - Chinese: 
-    - Subset of [wudao](https://github.com/BAAI-WuDao/Data)
-    - [baidu-baike](https://baike.baidu.com/)
+    - [wudao](https://github.com/BAAI-WuDao/Data)
 
 
 **2. Finetune**  

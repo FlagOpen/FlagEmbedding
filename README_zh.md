@@ -204,8 +204,7 @@ print("Sentence embeddings:", sentence_embeddings)
     - [wikipedia](https://huggingface.co/datasets/wikipedia)
     - [msmarco](https://huggingface.co/datasets/Tevatron/msmarco-passage-corpus)
 - Chinese: 
-    - Subset of [wudao](https://github.com/BAAI-WuDao/Data)
-    - [baidu-baike](https://baike.baidu.com/)
+    - [wudao](https://github.com/BAAI-WuDao/Data)
 
 
 **2. Finetune**  
