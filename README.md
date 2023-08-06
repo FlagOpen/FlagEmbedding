@@ -220,9 +220,9 @@ We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so 
 We used the AdamW optimizer and the learning rate is 1e-5.
 The temperature for contrastive loss is 0.01.
 
-For the version with `*-instrcution`, we add instruction to the query for retrieval task in the training. 
-For english, the instruction is `Represent this sentence for searching relevant passages: `;
-For chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
+Besides, we add instruction to the query for retrieval task in the training. 
+For English, the instruction is `Represent this sentence for searching relevant passages: `;
+For Chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
 In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
 
 

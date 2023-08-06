@@ -33,13 +33,13 @@
 ************* 🌟**Updates**🌟 *************
 - 08/05/2023: 发布更小的模型(base, small), **在同尺寸模型中取得最好的性能！ 🤗**
 - 08/02/2023: :tada: :tada: 发布中英文向量模型BGE(BAAI General Embedding的缩写), **在MTEB和C-MTEB榜单上取得最好的性能** 
-- 08/01/2023: 发布大规模中文文本向量评测榜单(**C-MTEB**), 其包括31个测试任务.   
+- 08/01/2023: 发布大规模中文文本向量[评测榜单](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), 其包括31个测试任务.   
 
 
 
 
 ## Model List
-|              Model              | Language | Description | query instruction for retrieval |
+|              Model              | Language | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|
 |  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名**第一** | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English |  在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名**第二** | `Represent this sentence for searching relevant passages: `  |
@@ -48,6 +48,9 @@
 |  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单上排名**第二** | --  |
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  base-scale模型，与bge-large性能类似，但推理更快，向量维度更小 | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | small-scale模型，推理比base模型更快  | `为这个句子生成表示以用于检索相关文章：`  |
+
+\*: 如果您需要为一个简短的查询搜索相关文档，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。
+
 
 
 ## Usage 
@@ -221,9 +224,9 @@ print("Sentence embeddings:", sentence_embeddings)
 对比损失的温度系数为0.01。
 
 
-对于带有`*- instruction `的版本，我们在训练中为检索任务的查询添加了instruction。
-对于英语，说明是`Represent this sentence for searching relevant passages: `;
-对于中文,指令是`为这个句子生成表示以用于检索相关文章：`.
+同时，我们在训练中为检索任务的查询添加了instruction。
+对于英语，指令是`Represent this sentence for searching relevant passages: `;
+对于中文，指令是`为这个句子生成表示以用于检索相关文章：`.
 在评测中，针对段落检索任务的任务需要在查询中添加指令。
 
 
