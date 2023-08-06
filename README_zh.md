@@ -54,8 +54,12 @@
 
 * **Using FlagEmbedding**
 ```
-pip install FlagEmbedding
+pip install -U FlagEmbedding
 ```
+如果您使用了镜像，可能无法找到最新版的FlagEmbedding。
+可以参考[FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) 下载改项目进行安装。
+
+
 ```python
 from FlagEmbedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
