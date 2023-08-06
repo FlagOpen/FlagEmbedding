@@ -46,18 +46,15 @@ class FlagModel:
         return self.encode(input_texts, batch_size=batch_size, max_length=max_length)
 
 
-    def encode_corpus(self, corpus: List[Union[Dict[str, str], str]],
+    def encode_corpus(self,
+                      corpus: Union[List[str], str],
                       batch_size: int=256,
                       max_length: int=512) -> np.ndarray:
         '''
         This function will be used for retrieval task
         encode corpus for retrieval task
         '''
-        if isinstance(corpus[0], dict):
-            input_texts = ['{} {}'.format(doc.get('title', ''), doc['text']).strip() for doc in corpus]
-        else:
-            input_texts = corpus
-        return self.encode(input_texts, batch_size=batch_size, max_length=max_length)
+        return self.encode(corpus, batch_size=batch_size, max_length=max_length)
 
 
     @torch.no_grad()
