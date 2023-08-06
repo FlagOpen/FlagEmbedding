@@ -25,6 +25,10 @@ Train data should be a json file, where each line is a dict like this:
 ```
 {"query": str, "pos": List[str], "neg":List[str]}
 ```
+
+`query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts.
+If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
+
 See [toy_finetune_data.jsonl]() for a toy data file.
 
 

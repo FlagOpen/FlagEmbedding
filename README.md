@@ -41,7 +41,7 @@ And it also can be used in vector database for LLMs.
 
 `bge` is short for `BAAI general embedding`.
 
-|              Model              | Language | Description | query instruction for retrieval |
+|              Model              | Language | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|
 |  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English |  rank **2nd** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard | `Represent this sentence for searching relevant passages: `  |
@@ -51,7 +51,7 @@ And it also can be used in vector database for LLMs.
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  a base-scale model but has similar ability with `bge-large-zh` | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | a small-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
 
-
+\*: If you need to search the answer to a short query, you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly.
 
 ## Usage 
 
