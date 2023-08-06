@@ -25,7 +25,7 @@
 ## Installation
 C-MTEB is devloped based on [MTEB](https://github.com/embeddings-benchmark/mteb). 
 ```
-pip install C_MTEB
+pip install -U C_MTEB
 ```
 Or clone this repo and install as editable
 ```

@@ -4,7 +4,7 @@
 
 * **with pip**
 ```
-pip install FlagEmbedding
+pip install -U FlagEmbedding
 ```
 
 * **from source**

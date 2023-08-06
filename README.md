@@ -57,7 +57,7 @@ And it also can be used in vector database for LLMs.
 
 * **Using FlagEmbedding**
 ```
-pip install FlagEmbedding
+pip install -U FlagEmbedding
 ```
 See [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more methods to install FlagEmbedding.
 

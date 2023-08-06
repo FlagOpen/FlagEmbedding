@@ -5,7 +5,7 @@ which can improve the retrieval performance.
 ## Installation
 * **with pip**
 ```
-pip install FlagEmbedding
+pip install -U FlagEmbedding
 ```
 
 * **from source**

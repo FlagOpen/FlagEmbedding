@@ -4,7 +4,7 @@ In this example, we show how to finetune the baai-general-embedding with a your 
 ## Installation
 * **with pip**
 ```
-pip install FlagEmbedding
+pip install -U FlagEmbedding
 ```
 
 * **from source**
