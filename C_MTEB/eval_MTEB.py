@@ -6,6 +6,8 @@ from flag_dres_model import FlagDRESModel
 
 query_instruction_for_retrieval_dict = {
     "BAAI/bge-large-en": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-base-en": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-small-en": "Represent this sentence for searching relevant passages: ",
 }
 
 

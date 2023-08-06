@@ -29,7 +29,7 @@ class FlagModel:
             self.model = torch.nn.DataParallel(self.model)
 
 
-    def encode_queries(self, queries: List[str],
+    def encode_queries(self, queries: Union[List[str], str],
                        batch_size: int=256,
                        max_length: int=512) -> np.ndarray:
         '''
@@ -37,7 +37,10 @@ class FlagModel:
         if there is a instruction for queries, we will add it to the query text
         '''
         if self.query_instruction_for_retrieval is not None:
-            input_texts = ['{}{}'.format(self.query_instruction_for_retrieval, q) for q in queries]
+            if isinstance(queries, str):
+                input_texts = self.query_instruction_for_retrieval + queries
+            else:
+                input_texts = ['{}{}'.format(self.query_instruction_for_retrieval, q) for q in queries]
         else:
             input_texts = queries
         return self.encode(input_texts, batch_size=batch_size, max_length=max_length)
@@ -58,10 +61,15 @@ class FlagModel:
 
 
     @torch.no_grad()
-    def encode(self, sentences: List[str], batch_size: int=256, max_length: int=512) -> np.ndarray:
+    def encode(self, sentences: Union[List[str], str], batch_size: int=256, max_length: int=512) -> np.ndarray:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
+
+        input_was_string = False
+        if isinstance(sentences, str):
+            sentences = [sentences]
+            input_was_string = True
 
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Batches", disable=len(sentences)<256):
@@ -80,7 +88,10 @@ class FlagModel:
             embeddings = cast(torch.Tensor, embeddings)
             all_embeddings.append(embeddings.cpu().numpy())
 
-        return np.concatenate(all_embeddings, axis=0)
+        all_embeddings = np.concatenate(all_embeddings, axis=0)
+        if input_was_string:
+            return all_embeddings[0]
+        return all_embeddings
 
 
     def pooling(self,

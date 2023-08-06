@@ -9,6 +9,8 @@ from flag_dres_model import FlagDRESModel
 query_instruction_for_retrieval_dict = {
     "BAAI/bge-large-zh": "为这个句子生成表示以用于检索相关文章：",
     "BAAI/bge-large-zh-noinstruct": None,
+    "BAAI/bge-base-zh": "为这个句子生成表示以用于检索相关文章：",
+    "BAAI/bge-small-zh": "为这个句子生成表示以用于检索相关文章：",
 }
 
 

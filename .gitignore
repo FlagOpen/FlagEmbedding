@@ -127,9 +127,6 @@ venv.bak/
 dmypy.json
 Untitled.ipynb
 try.py
-Data/
-modes/
-nltk_data/
 
 # Pyre type checker
 .pyre/
