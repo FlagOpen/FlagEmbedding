@@ -10,7 +10,7 @@
         <img alt="License" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding">
-        <img alt="License" src="https://img.shields.io/badge/universal embedding-1.0.1-red">
+        <img alt="License" src="https://img.shields.io/badge/universal embedding-1.0-red">
     </a>
 </p>
 

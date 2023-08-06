@@ -10,7 +10,7 @@
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding">
-        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.0.1-red">
+        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.0-red">
     </a>
 </p>
 
@@ -59,7 +59,7 @@ And it also can be used in vector database for LLMs.
 ```
 pip install -U FlagEmbedding
 ```
-See [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more methods to install FlagEmbedding.
+If it doesn't work for you, you can see [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more methods to install FlagEmbedding.
 
 ```python
 from FlagEmbedding import FlagModel
