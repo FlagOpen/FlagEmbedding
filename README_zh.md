@@ -83,7 +83,7 @@ Instruction参数 `query_instruction_for_retrieval` 请参照： [Model List](ht
 为提高效率，FlagModel默认会使用所有的GPU进行推理。如果想要使用具体的GPU，请设置`os.environ["CUDA_VISIBLE_DEVICES"]`。
 
 
-* Sentence-Transformers
+* **Sentence-Transformers**  
 
 安装 [sentence-transformers](https://www.SBERT.net):
 
@@ -111,8 +111,20 @@ q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddin
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
+* **With Langchain** 
 
-* HuggingFace Transformers
+在Langchian中使用bge模型：
+```python
+from langchain.embeddings import HuggingFaceInstructEmbeddings
+encode_kwargs = {'normalize_embeddings': True}
+model = HuggingFaceInstructEmbeddings(model_name='BAAI/bge-large-en',
+                                      embed_instruction="",
+                                      # retrieval passages for short query, using query_instruction, else set it ""
+                                      query_instruction="Represent this sentence for searching relevant passages: ",
+                                      encode_kwargs=encode_kwargs)
+```
+
+* **HuggingFace Transformers** 
 
 使用transformers库时，您可以这样使用模型:首先，将输入传递给transformer模型，然后选择第一个标记的最后一个隐藏状态(即[CLS])作为句子嵌入。
 ```python

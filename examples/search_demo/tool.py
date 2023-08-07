@@ -64,13 +64,13 @@ class BMVectorIndex:
         self.bm_searcher = LuceneSearcher(bm_index_path)
         self.loader = data_loader
 
-        if 'instruction' in model_path:
-            if '-en' in model_path:
-                raise NotImplementedError("only support chinese currently")
-            else:
-                self.instruction = "为这个句子生成表示以用于检索相关文章："
-        else:
+        if '-en' in model_path:
+            raise NotImplementedError("only support chinese currently")
+
+        if 'noinstruct' in model_path:
             self.instruction = None
+        else:
+            self.instruction = "为这个句子生成表示以用于检索相关文章："
 
     def search_for_doc(self, query: str, RANKING: int = 1000, TOP_N: int = 5):
         hits = self.bm_searcher.search(query, RANKING)

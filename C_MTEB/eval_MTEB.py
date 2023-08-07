@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
         model.query_instruction_for_retrieval = instruction
 
-        evaluation = MTEB(tasks=[task], task_langs=['en'])
+        evaluation = MTEB(tasks=[task], task_langs=['en'], eval_splits = ["test" if task not in ['MSMARCO'] else 'dev'])
         evaluation.run(model, output_folder=f"en_results/{args.model_name_or_path.split('/')[-1]}")
 
 

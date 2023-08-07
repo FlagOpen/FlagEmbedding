@@ -109,6 +109,20 @@ p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
 
+* **With Langchain** 
+
+You can use `bge` in langchain like this:
+```python
+from langchain.embeddings import HuggingFaceInstructEmbeddings
+encode_kwargs = {'normalize_embeddings': True}
+model = HuggingFaceInstructEmbeddings(model_name='BAAI/bge-large-en',
+                                      embed_instruction="",
+                                      # retrieval passages for short query, using query_instruction, else set it ""
+                                      query_instruction="Represent this sentence for searching relevant passages: ",
+                                      encode_kwargs=encode_kwargs)
+```
+
+
 * **Using HuggingFace Transformers**
 
 With transformers package, you can use the model like this: First, you pass your input through the transformer model, then you select the last hidden state of first token (i.e., [CLS]) as the sentence embedding.
