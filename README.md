@@ -51,7 +51,7 @@ And it also can be used in vector database for LLMs.
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  a base-scale model but has similar ability with `bge-large-zh` | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | a small-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
 
-\*: If you need to search the answer to a short query, you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly.
+\*: If you need to search the relevant passages to a short query, you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. **In all cases, no instruction need to be added to passages**.
 
 ## Usage 
 
@@ -97,6 +97,7 @@ print(embeddings)
 ```
 For retrieval task, 
 each query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
+But the instruction is not needed for passages.
 ```python
 from sentence_transformers import SentenceTransformer
 queries = ['query_1', 'query_2']
@@ -139,7 +140,7 @@ model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
-# for retrieval task, add an instruction to query
+# for retrieval task, add an instruction to query (not add instruction for passages)
 # encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
 
 # Compute token embeddings
@@ -237,8 +238,8 @@ The temperature for contrastive loss is 0.01.
 Besides, we add instruction to the query for retrieval task in the training. 
 For English, the instruction is `Represent this sentence for searching relevant passages: `;
 For Chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
-In the evaluation, the instruction should be added for sentence to passages retrieval task, not be added for other tasks.
-
+In the evaluation, the instruction should be added for queries in retrieval task, not be added for other tasks.
+Noted that the instruction is not needed for passages.
 
 The finetune script is accessible in this repository: [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md). 
 You can easily finetune your model with it.

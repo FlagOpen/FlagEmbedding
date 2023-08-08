@@ -49,7 +49,7 @@
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  base-scale模型，与bge-large性能类似，但推理更快，向量维度更小 | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | small-scale模型，推理比base模型更快  | `为这个句子生成表示以用于检索相关文章：`  |
 
-\*: 如果您需要为一个简短的查询搜索相关文档，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。
+\*: 如果您需要为一个简短的查询搜索相关文档，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。**在任何情况下，您都不需要为候选文档增加指令**。
 
 
 
@@ -100,9 +100,10 @@ model = SentenceTransformer('BAAI/bge-large-zh')
 embeddings = model.encode(sentences, normalize_embeddings=True)
 print(embeddings)
 ```
-对于检索任务，当您使用名称以`-instruction`结尾的模型时，
+对于检索任务，
 每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
-```python
+但对于文档，不需要添加任何指令。
+``python
 queries = ["手机开不了机怎么办？"]
 passages = ["样例段落-1", "样例段落-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
@@ -139,7 +140,7 @@ model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
-# for retrieval task, add a instruction to query
+# for retrieval task, add an instruction to query (not add instruction for passages)
 # encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
 
 # Compute token embeddings
@@ -238,7 +239,7 @@ print("Sentence embeddings:", sentence_embeddings)
 同时，我们在训练中为检索任务的查询添加了instruction。
 对于英语，指令是`Represent this sentence for searching relevant passages: `;
 对于中文，指令是`为这个句子生成表示以用于检索相关文章：`.
-在评测中，针对段落检索任务的任务需要在查询中添加指令。
+在评测中，针对段落检索任务的任务需要在查询中添加指令，但不需要为段落文档添加指令。
 
 
 微调脚本可以在这个存储库中访问:[FlagEmbedding](./FlagEmbedding/baai_general_embedding), 你可以用它轻松地微调你的模型。
