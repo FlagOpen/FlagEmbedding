@@ -99,8 +99,10 @@ pip install -U sentence-transformers
 from sentence_transformers import SentenceTransformer
 sentences = ["样例数据-1", "样例数据-2"]
 model = SentenceTransformer('BAAI/bge-large-zh')
-embeddings = model.encode(sentences, normalize_embeddings=True)
-print(embeddings)
+embeddings_1 = model.encode(sentences, normalize_embeddings=True)
+embeddings_2 = model.encode(sentences, normalize_embeddings=True)
+smilarity = embeddings_1 @ embeddings_2.T
+print(smilarity)
 ```
 对于检索任务，
 每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
