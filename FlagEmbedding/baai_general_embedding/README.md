@@ -27,7 +27,7 @@ Train data should be a json file, where each line is a dict like this:
 ```
 {"text": str}
 ```
-See [examples/pretrain](../examples/pretrain) for a toy data and training example.
+See [examples/pretrain](../../examples/pretrain) for a toy data and training example.
 
 #### 2. Train
 
@@ -55,7 +55,7 @@ Train data should be a json file, where each line is a dict like this:
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts.
 If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
 
-See [examples/finetune](../examples/finetune) for a toy data and training example.
+See [examples/finetune](../../examples/finetune) for a toy data and training example.
 
 #### 2. Train
 ```
