@@ -33,7 +33,7 @@ See [examples/pretrain](../examples/pretrain) for a toy data and training exampl
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \
--m retromae_pretrain.run \
+-m FlagEmbedding.baai_general_embedding.retromae_pretrain.run \
 --output_dir {path to save model} \
 --model_name_or_path {base model} \
 --train_data {path to train data} \
@@ -60,7 +60,7 @@ See [examples/finetune](../examples/finetune) for a toy data and training exampl
 #### 2. Train
 ```
 torchrun --nproc_per_node {number of gpus} \
--m finetune.run \
+-m FlagEmbedding.baai_general_embedding.finetune.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/bge-large-zh-noinstruct \
 --train_data {data file} \

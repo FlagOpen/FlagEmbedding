@@ -155,7 +155,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 ## Evaluation  
 `baai-general-embedding` 模型在MTEB和C-MTEB排行榜上都实现了**最先进的性能**!
-更多细节和评估脚本请参见 [C_MTEB](C_MTEB/README.md). 
+更多细节和评估脚本请参见 [C_MTEB](./C_MTEB). 
 
 - **MTEB**:   
 
@@ -206,8 +206,8 @@ print("Sentence embeddings:", sentence_embeddings)
 ## Train
 
 本节将介绍我们用于训练通用嵌入向量的方法。
-训练脚本在[FlagEmbedding](./FlagEmbedding/README.md)中。
-同时，我们提供了一些示例来进行[预训练](examples/pretrain/README.md)和[微调](examples/finetune/README.md)。
+训练脚本在[FlagEmbedding](./FlagEmbedding/baai_general_embedding)中。
+同时，我们提供了一些示例来进行[预训练](examples/pretrain/)和[微调](examples/finetune/)。
 
 **1. RetroMAE Pre-train**  
 
@@ -241,7 +241,7 @@ print("Sentence embeddings:", sentence_embeddings)
 在评测中，针对段落检索任务的任务需要在查询中添加指令。
 
 
-微调脚本可以在这个存储库中访问:[FlagEmbedding](./FlagEmbedding/README.md), 你可以用它轻松地微调你的模型。
+微调脚本可以在这个存储库中访问:[FlagEmbedding](./FlagEmbedding/baai_general_embedding), 你可以用它轻松地微调你的模型。
 
  
 
