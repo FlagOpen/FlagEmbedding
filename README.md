@@ -65,8 +65,10 @@ If it doesn't work for you, you can see [FlagEmbedding](https://github.com/FlagO
 from FlagEmbedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
-embeddings = model.encode(sentences)
-print(embeddings)
+embeddings_1 = model.encode(sentences)
+embeddings_2 = model.encode(sentences)
+smilarity = embeddings_1 @ embeddings_2.T
+print(smilarity)
 
 # for retrieval task, please use encode_queries() which will automatically add the instruction to each query
 # corpus in retrieval task can still use encode() or encode_corpus(), since they don't need instruction

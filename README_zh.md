@@ -67,8 +67,10 @@ pip install -U FlagEmbedding
 from FlagEmbedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
-embeddings = model.encode(sentences)
-print(embeddings)
+embeddings_1 = model.encode(sentences)
+embeddings_2 = model.encode(sentences)
+smilarity = embeddings_1 @ embeddings_2.T
+print(smilarity)
 
 # 对于检索任务中的查询问题，请使用 encode_queries() 函数，其会自动为每个查询加上指令
 # 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
