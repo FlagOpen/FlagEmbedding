@@ -71,7 +71,7 @@ embeddings = model.encode(sentences)
 print(embeddings)
 
 # 对于检索任务中的查询问题，请使用 encode_queries() 函数，其会自动为每个查询加上指令
-# 检索中的候选集依然使用 encode() 或 encode_corpus() 函数
+# 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
 queries = ['query_1', 'query_2']
 passages = ["样例段落-1", "样例段落-2"]
 q_embeddings = model.encode_queries(queries)
@@ -120,7 +120,6 @@ from langchain.embeddings import HuggingFaceInstructEmbeddings
 encode_kwargs = {'normalize_embeddings': True}
 model = HuggingFaceInstructEmbeddings(model_name='BAAI/bge-large-en',
                                       embed_instruction="",
-                                      # retrieval passages for short query, using query_instruction, else set it ""
                                       query_instruction="Represent this sentence for searching relevant passages: ",
                                       encode_kwargs=encode_kwargs)
 ```
@@ -143,7 +142,7 @@ encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tenso
 # for retrieval task, add an instruction to query (not add instruction for passages)
 # encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
 
-# Compute token embeddings
+# Compute embeddings
 with torch.no_grad():
     model_output = model(**encoded_input)
     # Perform pooling. In this case, cls pooling.

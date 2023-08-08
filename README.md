@@ -69,7 +69,7 @@ embeddings = model.encode(sentences)
 print(embeddings)
 
 # for retrieval task, please use encode_queries() which will automatically add the instruction to each query
-# corpus in retrieval task can still use encode() or encode_corpus()
+# corpus in retrieval task can still use encode() or encode_corpus(), since they don't need instruction
 queries = ['query_1', 'query_2']
 passages = ["样例段落-1", "样例段落-2"]
 q_embeddings = model.encode_queries(queries)
@@ -117,8 +117,7 @@ You can use `bge` in langchain like this:
 from langchain.embeddings import HuggingFaceInstructEmbeddings
 encode_kwargs = {'normalize_embeddings': True}
 model = HuggingFaceInstructEmbeddings(model_name='BAAI/bge-large-en',
-                                      embed_instruction="",
-                                      # retrieval passages for short query, using query_instruction, else set it ""
+                                      embed_instruction="", # no instruction is needed for candidate passages
                                       query_instruction="Represent this sentence for searching relevant passages: ",
                                       encode_kwargs=encode_kwargs)
 ```
@@ -235,7 +234,7 @@ We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so 
 We used the AdamW optimizer and the learning rate is 1e-5.
 The temperature for contrastive loss is 0.01.
 
-Besides, we add instruction to the query for retrieval task in the training. 
+Besides, we add instruction to the query for retrieval task in the training (add nothing to passages). 
 For English, the instruction is `Represent this sentence for searching relevant passages: `;
 For Chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
 In the evaluation, the instruction should be added for queries in retrieval task, not be added for other tasks.
