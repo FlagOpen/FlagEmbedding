@@ -51,7 +51,7 @@ And it also can be used in vector database for LLMs.
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  a base-scale model but has similar ability with `bge-large-zh` | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | a small-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
 
-\*: If you need to search the relevant passages to a short query, you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. **In all cases, no instruction need to be added to passages**.
+\*: If you need to search the **long** relevant passages to a **short** query, you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. **In all cases, no instruction need to be added to passages**.
 
 ## Usage 
 
@@ -70,7 +70,7 @@ embeddings_2 = model.encode(sentences)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
-# for retrieval task, please use encode_queries() which will automatically add the instruction to each query
+# for s2p(sentence to passage) retrieval task, please use encode_queries() which will automatically add the instruction to each query
 # corpus in retrieval task can still use encode() or encode_corpus(), since they don't need instruction
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
@@ -100,7 +100,7 @@ similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
 For retrieval task, 
-each query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
+each short query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 But the instruction is not needed for passages.
 ```python
 from sentence_transformers import SentenceTransformer

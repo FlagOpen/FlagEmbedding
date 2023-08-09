@@ -49,7 +49,7 @@
 |  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  base-scale模型，与bge-large性能类似，但推理更快，向量维度更小 | `为这个句子生成表示以用于检索相关文章：`  |
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | small-scale模型，推理比base模型更快  | `为这个句子生成表示以用于检索相关文章：`  |
 
-\*: 如果您需要为一个简短的查询搜索相关文档，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。**在任何情况下，您都不需要为候选文档增加指令**。
+\*: 如果您需要为一个简短的查询搜索相关的长文档，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。**在任何情况下，您都不需要为候选文档增加指令**。
 
 
 
