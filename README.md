@@ -55,6 +55,9 @@ And it also can be used in vector database for LLMs.
 
 ## Usage 
 
+Here are some examples to use `bge` models with 
+FlagEmbedding, Sentence-Transformers, Langchain, or Huggingface Transformers.
+
 * **Using FlagEmbedding**
 ```
 pip install -U FlagEmbedding
@@ -118,12 +121,15 @@ scores = q_embeddings @ p_embeddings.T
 
 You can use `bge` in langchain like this:
 ```python
-from langchain.embeddings import HuggingFaceInstructEmbeddings
-encode_kwargs = {'normalize_embeddings': True}
-model = HuggingFaceInstructEmbeddings(model_name='BAAI/bge-large-en',
-                                      embed_instruction="", # no instruction is needed for candidate passages
-                                      query_instruction="Represent this sentence for searching relevant passages: ",
-                                      encode_kwargs=encode_kwargs)
+from langchain.embeddings import HuggingFaceBgeEmbeddings
+model_name = "BAAI/bge-small-en"
+model_kwargs = {'device': 'cuda'}
+encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
+model_norm = HuggingFaceBgeEmbeddings(
+    model_name=model_name,
+    model_kwargs=model_kwargs,
+    encode_kwargs=encode_kwargs
+)
 ```
 
 
