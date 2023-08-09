@@ -31,7 +31,7 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
-- 08/09/2023: BGE模型整合入Langchain, 可以在langchain中非常简单的[使用它](#using-langchain); C-MTEB整合入了MTEB任务集合中，中文榜单已[在线更新](https://huggingface.co/spaces/mteb/leaderboard).  
+- 08/09/2023: BGE模型整合入Langchain, 可以在langchain中非常简单的[使用它](#using-langchain); C-MTEB中文榜单已[在线更新](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: 发布更小的模型(base, small), **在同尺寸模型中取得最好的性能！ 🤗**
 - 08/02/2023: :tada: :tada: 发布中英文向量模型BGE(BAAI General Embedding的缩写), **在MTEB和C-MTEB榜单上取得最好的性能** 
 - 08/01/2023: 发布大规模中文文本向量[评测榜单](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), 其包括31个测试任务.   
@@ -90,7 +90,7 @@ Instruction参数 `query_instruction_for_retrieval` 请参照： [Model List](ht
 为提高效率，FlagModel默认会使用所有的GPU进行推理。如果想要使用具体的GPU，请设置`os.environ["CUDA_VISIBLE_DEVICES"]`。
 
 
-#### Sentence-Transformers
+#### Using Sentence-Transformers
 
 安装 [sentence-transformers](https://www.SBERT.net):
 
@@ -122,7 +122,7 @@ p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
 
-#### With Langchain
+#### Using Langchain
 
 在Langchian中使用bge模型：
 ```python
@@ -137,7 +137,7 @@ model_norm = HuggingFaceBgeEmbeddings(
 )
 ```
 
-#### HuggingFace Transformers
+#### Using HuggingFace Transformers
 
 使用transformers库时，您可以这样使用模型:首先，将输入传递给transformer模型，然后选择第一个标记的最后一个隐藏状态(即[CLS])作为句子嵌入。
 ```python
