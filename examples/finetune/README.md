@@ -47,7 +47,8 @@ torchrun --nproc_per_node {number of gpus} \
 --temperature 0.01 \
 --query_max_len 32 \
 --passage_max_len 128 \
---negatives_cross_device
+--negatives_cross_device \
+--save_steps 1 
 ```
 
 **some important arguments**:
@@ -56,6 +57,8 @@ There are always one postive, so this argument will control the number of negati
 Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
 Besides the negatives in group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
+- `per_device_train_batch_size`: batch size in training. In most of cases, larger batch size will bring stronger performance.
+- `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
