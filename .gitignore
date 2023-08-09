@@ -127,6 +127,7 @@ venv.bak/
 dmypy.json
 Untitled.ipynb
 try.py
+update_model_card.py
 
 # Pyre type checker
 .pyre/

@@ -32,6 +32,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector database for LLMs.
 
 ************* 🌟**Updates**🌟 *************
+- 08/09/2023: BGE Models are integrated into Langchain, you can use it like [this](#using-langchain); C-MTEB is merged into MTEB and the leaderboard is [avaliable](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**
 - 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada: 
 - 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.   
@@ -56,9 +57,9 @@ And it also can be used in vector database for LLMs.
 ## Usage 
 
 Here are some examples to use `bge` models with 
-FlagEmbedding, Sentence-Transformers, Langchain, or Huggingface Transformers.
+[FlagEmbedding](#using-flagembedding), [Sentence-Transformers](#using-sentence-transformers), [Langchain](#using-langchain), or [Huggingface Transformers](#using-huggingface-transformers).
 
-* **Using FlagEmbedding**
+#### Using FlagEmbedding
 ```
 pip install -U FlagEmbedding
 ```
@@ -86,7 +87,7 @@ The value of argument `query_instruction_for_retrieval` see [Model List](https:/
 FlagModel will use all available GPUs when encoding, please set `os.environ["CUDA_VISIBLE_DEVICES"]` to choose GPU.
 
 
-* **Using Sentence-Transformers**
+#### Using Sentence-Transformers
 
 Using this model also is easy when you have [sentence-transformers](https://www.SBERT.net) installed:
 
@@ -117,7 +118,7 @@ p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
 
-* **With Langchain** 
+#### Using Langchain 
 
 You can use `bge` in langchain like this:
 ```python
@@ -133,7 +134,7 @@ model_norm = HuggingFaceBgeEmbeddings(
 ```
 
 
-* **Using HuggingFace Transformers**
+#### Using HuggingFace Transformers
 
 With transformers package, you can use the model like this: First, you pass your input through the transformer model, then you select the last hidden state of first token (i.e., [CLS]) as the sentence embedding.
 
@@ -266,8 +267,8 @@ You can easily finetune your model with it.
 - [x] Chinese Massive Text Embedding Benchmark
 - [x] release baai-general-embedding models
 - [x] release codes for training
-- [ ] Training Datasets 
 - [ ] Multilingual model
+- [ ] Training Datasets 
 - [ ] ...
 
 We will continually update the embedding models and training codes, 
