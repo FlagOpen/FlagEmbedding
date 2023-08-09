@@ -28,12 +28,12 @@ if __name__ == '__main__':
     model = FlagDRESModel(model_name_or_path=args.model_name_or_path,
                           query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
 
-    task_names = [t.description["name"] for t in MTEB(task_types=None if args.task_type is None else args.task_type,
-                                                      task_langs=['zh']).tasks]
+    task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
+                                                      task_langs=['zh', 'zh-CN']).tasks]
 
     for task in task_names:
-        if task not in ChineseTaskList:
-            continue
+        # if task not in ChineseTaskList:
+        #     continue
         if task in ['T2Retrieval', 'MMarcoRetrieval', 'DuRetrieval',
                     'CovidRetrieval', 'CmedqaRetrieval',
                     'EcomRetrieval', 'MedicalRetrieval', 'VideoRetrieval',

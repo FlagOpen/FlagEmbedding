@@ -67,13 +67,13 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
 embeddings_1 = model.encode(sentences)
 embeddings_2 = model.encode(sentences)
-smilarity = embeddings_1 @ embeddings_2.T
-print(smilarity)
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
 
 # for retrieval task, please use encode_queries() which will automatically add the instruction to each query
 # corpus in retrieval task can still use encode() or encode_corpus(), since they don't need instruction
 queries = ['query_1', 'query_2']
-passages = ["样例段落-1", "样例段落-2"]
+passages = ["样例文档-1", "样例文档-2"]
 q_embeddings = model.encode_queries(queries)
 p_embeddings = model.encode(passages)
 scores = q_embeddings @ p_embeddings.T
@@ -96,8 +96,8 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = SentenceTransformer('BAAI/bge-large-zh')
 embeddings_1 = model.encode(sentences, normalize_embeddings=True)
 embeddings_2 = model.encode(sentences, normalize_embeddings=True)
-smilarity = embeddings_1 @ embeddings_2.T
-print(smilarity)
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
 ```
 For retrieval task, 
 each query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
@@ -105,7 +105,7 @@ But the instruction is not needed for passages.
 ```python
 from sentence_transformers import SentenceTransformer
 queries = ['query_1', 'query_2']
-passages = ["样例段落-1", "样例段落-2"]
+passages = ["样例文档-1", "样例文档-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
 
 model = SentenceTransformer('BAAI/bge-large-zh')

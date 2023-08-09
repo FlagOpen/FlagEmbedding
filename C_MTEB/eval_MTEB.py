@@ -25,7 +25,7 @@ if __name__ == '__main__':
                           normalize_embeddings=False,  # normlize embedding will harm the performance of classification task
                           query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ")
 
-    task_names = [t.description["name"] for t in MTEB(task_types=None if args.task_type is None else args.task_type,
+    task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
                                                       task_langs=['en']).tasks]
 
     for task in task_names:

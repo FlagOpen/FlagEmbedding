@@ -72,7 +72,7 @@ embeddings_2 = model.encode(sentences)
 smilarity = embeddings_1 @ embeddings_2.T
 print(smilarity)
 
-# 对于检索任务中的查询问题，请使用 encode_queries() 函数，其会自动为每个查询加上指令
+# 对于检索任务中的查询，请使用 encode_queries() 函数，其会自动为每个查询加上指令
 # 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
 queries = ['query_1', 'query_2']
 passages = ["样例段落-1", "样例段落-2"]

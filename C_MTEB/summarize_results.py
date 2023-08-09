@@ -12,7 +12,7 @@ def read_results(task_types, except_tasks, args):
     model_dirs = {}
     for t_type in task_types:
         tasks_results[t_type] = {}
-        for t in MTEB(task_types=[t_type], task_langs=[args.lang]).tasks:
+        for t in MTEB(task_types=[t_type], task_langs=args.lang).tasks:
             task_name = t.description["name"]
             if task_name in except_tasks: continue
 
@@ -25,7 +25,7 @@ def read_results(task_types, except_tasks, args):
                 model_dirs[model_name] = model_dir
                 if os.path.exists(os.path.join(model_dir, task_name + '.json')):
                     data = json.load(open(os.path.join(model_dir, task_name + '.json')))
-                    for s in ['dev', 'test', 'validation']:
+                    for s in ['test', 'dev', 'validation']:
                         if s in data:
                             split = s
                             break
@@ -139,15 +139,17 @@ if __name__ == '__main__':
 
     if args.lang == 'zh':
         task_types = ["Retrieval", "STS", "PairClassification", "Classification", "Reranking", "Clustering"]
-        except_tasks = ['AmazonReviewsClassification', 'STS22']
+        except_tasks = []
+        args.lang = ['zh', 'zh-CN']
     elif args.lang == 'en':
         task_types = ["Retrieval", "Clustering", "PairClassification", "Reranking", "STS", "Summarization", "Classification" ]
         except_tasks = ['MSMARCOv2']
+        args.lang = ['en']
     else:
         raise NotImplementedError(f"args.lang must be zh or en, but{args.lang}")
 
     task_results, model_dirs = read_results(task_types, except_tasks, args=args)
 
-    output_markdown(task_results, model_dirs.keys(), save_file=os.path.join(args.results_dir, f'{args.lang}_results.md'))
+    output_markdown(task_results, model_dirs.keys(), save_file=os.path.join(args.results_dir, f'{args.lang[0]}_results.md'))
 
 
