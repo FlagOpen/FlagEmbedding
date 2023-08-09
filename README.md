@@ -70,7 +70,7 @@ embeddings_2 = model.encode(sentences)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
-# for s2p(sentence to passage) retrieval task, please use encode_queries() which will automatically add the instruction to each query
+# for s2p(short query to long passage) retrieval task, please use encode_queries() which will automatically add the instruction to each query
 # corpus in retrieval task can still use encode() or encode_corpus(), since they don't need instruction
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
@@ -99,7 +99,7 @@ embeddings_2 = model.encode(sentences, normalize_embeddings=True)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
-For retrieval task, 
+For s2p(short query to long passage) retrieval task, 
 each short query should start with an instruction (instructions see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 But the instruction is not needed for passages.
 ```python
@@ -143,7 +143,7 @@ model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
-# for retrieval task, add an instruction to query (not add instruction for passages)
+# for s2p(short query to long passage) retrieval task, add an instruction to query (not add instruction for passages)
 # encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
 
 # Compute token embeddings
@@ -238,7 +238,7 @@ We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so 
 We used the AdamW optimizer and the learning rate is 1e-5.
 The temperature for contrastive loss is 0.01.
 
-Besides, we add instruction to the query for retrieval task in the training (add nothing to passages). 
+Besides, we add instruction to the query for s2p(short query to long passage) retrieval task in the training (add nothing to passages). 
 For English, the instruction is `Represent this sentence for searching relevant passages: `;
 For Chinese, the instruction is `为这个句子生成表示以用于检索相关文章：`.
 In the evaluation, the instruction should be added for queries in retrieval task, not be added for other tasks.

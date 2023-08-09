@@ -72,7 +72,7 @@ embeddings_2 = model.encode(sentences)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
-# 对于检索任务中的查询，请使用 encode_queries() 函数，其会自动为每个查询加上指令
+# 对于短查询到长文档的检索任务，请对查询使用 encode_queries() 函数，其会自动为每个查询加上指令
 # 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
@@ -104,7 +104,7 @@ embeddings_2 = model.encode(sentences, normalize_embeddings=True)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
-对于检索任务，
+对于短查询到长文档的检索任务，
 每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 但对于文档，不需要添加任何指令。
 ```python
@@ -143,7 +143,7 @@ model = AutoModel.from_pretrained('BAAI/bge-large-zh')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
-# for retrieval task, add an instruction to query (not add instruction for passages)
+# 对于短查询到长文档的检索任务, 为查询加上指令
 # encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
 
 # Compute embeddings
@@ -239,10 +239,10 @@ print("Sentence embeddings:", sentence_embeddings)
 对比损失的温度系数为0.01。
 
 
-同时，我们在训练中为检索任务的查询添加了instruction。
+同时，我们在训练中为短查询到长文档的检索任务中的查询添加了instruction。
 对于英语，指令是`Represent this sentence for searching relevant passages: `;
 对于中文，指令是`为这个句子生成表示以用于检索相关文章：`.
-在评测中，针对段落检索任务的任务需要在查询中添加指令，但不需要为段落文档添加指令。
+在评测中，针对段落检索任务，需要在查询中添加指令，但不需要为段落文档添加指令。
 
 
 微调脚本可以在这个存储库中访问:[FlagEmbedding](./FlagEmbedding/baai_general_embedding), 你可以用它轻松地微调你的模型。
