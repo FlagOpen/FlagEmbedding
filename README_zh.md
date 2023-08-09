@@ -69,13 +69,13 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
 embeddings_1 = model.encode(sentences)
 embeddings_2 = model.encode(sentences)
-smilarity = embeddings_1 @ embeddings_2.T
-print(smilarity)
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
 
 # 对于检索任务中的查询，请使用 encode_queries() 函数，其会自动为每个查询加上指令
 # 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
 queries = ['query_1', 'query_2']
-passages = ["样例段落-1", "样例段落-2"]
+passages = ["样例文档-1", "样例文档-2"]
 q_embeddings = model.encode_queries(queries)
 p_embeddings = model.encode(passages)
 scores = q_embeddings @ p_embeddings.T
@@ -101,15 +101,15 @@ sentences = ["样例数据-1", "样例数据-2"]
 model = SentenceTransformer('BAAI/bge-large-zh')
 embeddings_1 = model.encode(sentences, normalize_embeddings=True)
 embeddings_2 = model.encode(sentences, normalize_embeddings=True)
-smilarity = embeddings_1 @ embeddings_2.T
-print(smilarity)
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
 ```
 对于检索任务，
 每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 但对于文档，不需要添加任何指令。
 ``python
-queries = ["手机开不了机怎么办？"]
-passages = ["样例段落-1", "样例段落-2"]
+queries = ['query_1', 'query_2']
+passages = ["样例文档-1", "样例文档-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
 model = SentenceTransformer('BAAI/bge-large-zh')
 q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
