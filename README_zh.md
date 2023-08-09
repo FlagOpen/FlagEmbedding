@@ -107,7 +107,7 @@ print(similarity)
 对于检索任务，
 每个查询都应该以一条指令开始(指令参考 [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list)). 
 但对于文档，不需要添加任何指令。
-``python
+```python
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
