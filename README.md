@@ -17,6 +17,7 @@
 <h4 align="center">
     <p>
         <a href=#model-list>Model List</a> | 
+        <a href=#frequently-asked-questions>FAQ</a> |
         <a href=#usage>Usage</a>  |
         <a href="#evaluation">Evaluation</a> |
         <a href="#train">Train</a> |
@@ -54,6 +55,29 @@ And it also can be used in vector database for LLMs.
 
 \*: If you need to search the **long** relevant passages to a **short** query (s2p retrieval task), you need to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. In all cases, **no instruction** need to be added to passages.
 
+## Frequently asked questions
+
+1. The similarity score between two dissimilar sentence is higher than 0.5
+
+The similarity distribution of the current BGE model is not a uniform distribution over the interval \[0-1\].
+So a similarity score greater than 0.5 does not necessarily indicate that the two sentence are similar.
+Especially for the similarity between short sentences, the similarity value of the current model will be high.
+**If you need to filter similar sentences based on a similarity threshold, 
+please select an appropriate similarity threshold based on the similarity distribution on your data (such as 0.8, 0.85, or even 0.9)**.
+
+2. When do the query instruction need to be used
+
+For a retrieval task that uses short queries to find long related documents, 
+it is recommended to add instructions for these short queries.
+For other tasks, it is recommended not to add instructions. 
+For example, in Quora task, which needs to use a short question to search another related short questions, 
+the instruction is not recommended to add. 
+The best method to decide whether to add instructions for queries is choosing the setting which can achieve better performance in your task.
+In all cases, the documents/passages do not need to add the instruction, only need to consider whether to add the instruction for queries.
+
+ 
+
+
 ## Usage 
 
 Here are some examples to use `bge` models with 
@@ -85,6 +109,7 @@ scores = q_embeddings @ p_embeddings.T
 The value of argument `query_instruction_for_retrieval` see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
 
 FlagModel will use all available GPUs when encoding, please set `os.environ["CUDA_VISIBLE_DEVICES"]` to choose GPU.
+If you want to use CPU, please set `os.environ["CUDA_VISIBLE_DEVICES"]=""`.
 
 
 #### Using Sentence-Transformers
