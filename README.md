@@ -109,7 +109,7 @@ scores = q_embeddings @ p_embeddings.T
 The value of argument `query_instruction_for_retrieval` see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
 
 FlagModel will use all available GPUs when encoding, please set `os.environ["CUDA_VISIBLE_DEVICES"]` to choose GPU.
-If you want to use CPU, please set `os.environ["CUDA_VISIBLE_DEVICES"]=""`.
+You also can set `os.environ["CUDA_VISIBLE_DEVICES"]=""` to make GPUs unavailable.
 
 
 #### Using Sentence-Transformers

@@ -104,6 +104,7 @@ scores = q_embeddings @ p_embeddings.T
 ```
 Instruction参数 `query_instruction_for_retrieval` 请参照： [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
 
+FlagModel支持GPU也支持CPU推理。如果GPU可用，其默认优先使用GPU。如果想禁止其使用GPU，设置`os.environ["CUDA_VISIBLE_DEVICES"]=""`
 为提高效率，FlagModel默认会使用所有的GPU进行推理。如果想要使用具体的GPU，请设置`os.environ["CUDA_VISIBLE_DEVICES"]`。
 
 
@@ -292,7 +293,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 我们将不断更新向量模型和代码，希望能促进社区的发展。
 
-## Concat
+## Contact
 如果您有任务疑问或者建议，欢迎提交issue和PR, 
 也可以发送邮件给 Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
 
