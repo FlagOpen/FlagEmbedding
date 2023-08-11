@@ -44,6 +44,9 @@ class BiEncoderModel(nn.Module):
         if self.negatives_cross_device:
             if not dist.is_initialized():
                 raise ValueError('Distributed training has not been initialized for representation all gather.')
+            #     logger.info("Run in a single GPU, set negatives_cross_device=False")
+            #     self.negatives_cross_device = False
+            # else:
             self.process_rank = dist.get_rank()
             self.world_size = dist.get_world_size()
 
