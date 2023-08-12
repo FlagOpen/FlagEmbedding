@@ -59,7 +59,7 @@ And it also can be used in vector database for LLMs.
 
 1. The similarity score between two dissimilar sentence is higher than 0.5
 
-The similarity distribution of the current BGE model is about in the interval \[0.6-1\].
+The similarity distribution of the current BGE model is about in the interval \[0.6, 1\].
 So a similarity score greater than 0.5 does not indicate that the two sentence are similar.
 
 For downstream tasks, such as passage retrieval or semantic similarity, 
@@ -154,7 +154,7 @@ from langchain.embeddings import HuggingFaceBgeEmbeddings
 model_name = "BAAI/bge-small-en"
 model_kwargs = {'device': 'cuda'}
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
-model_norm = HuggingFaceBgeEmbeddings(
+model = HuggingFaceBgeEmbeddings(
     model_name=model_name,
     model_kwargs=model_kwargs,
     encode_kwargs=encode_kwargs
@@ -269,7 +269,7 @@ Besides the negative in the triple, we also adopt in-batch negatives strategy.
 We employ the cross-device negatives sharing method to share negatives among different GPUs, 
 which can dramatically **increase the number of negatives**.
 
-We trained our model on 48 A100(40G) GPUs with a large batch size of 32,768 (so there are **65,535** negatives for each query in a batch). 
+We trained our model on 48 A100(40G) GPUs with a large batch size of 32,784 (so there are **65,567** negatives for each query in a batch). 
 We used the AdamW optimizer and the learning rate is 1e-5.
 The temperature for contrastive loss is 0.01.
 
@@ -286,7 +286,7 @@ You can easily finetune your model with it.
 
 - For English, we collect 230M text pairs from [wikipedia](https://huggingface.co/datasets/wikipedia), [cc-net](https://github.com/facebookresearch/cc_net), and so on.
 
-- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), [simclue](https://github.com/CLUEbenchmark/SimCLUE) and so on.
+- For chinese, we collect 120M text pairs from [wudao](https://github.com/BAAI-WuDao/Data), [simclue](https://github.com/CLUEbenchmark/SimCLUE), and so on.
 
 **The data collection is to be released in the future.**
 

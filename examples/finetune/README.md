@@ -47,6 +47,23 @@ torchrun --nproc_per_node {number of gpus} \
 --temperature 0.01 \
 --query_max_len 32 \
 --passage_max_len 128 \
+--negatives_cross_device 
+
+
+python -m torch.distributed.launch --nnodes 1 --nproc_per_node 2 \
+--use-env \
+-m FlagEmbedding.baai_general_embedding.finetune.run \
+--output_dir ./temp \
+--model_name_or_path BAAI/bge-small-en \
+--train_data toy_finetune_data.jsonl \
+--learning_rate 1e-5 \
+--num_train_epochs 5 \
+--per_device_train_batch_size 1 \
+--dataloader_drop_last True \
+--normlized True \
+--temperature 0.01 \
+--query_max_len 32 \
+--passage_max_len 128 \
 --negatives_cross_device \
 --save_steps 1 
 ```
