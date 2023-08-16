@@ -12,6 +12,7 @@ class FlagModel:
             pooling_method: str = 'cls',
             normalize_embeddings: bool = True,
             query_instruction_for_retrieval: str = None,
+            use_half: bool = True,
     ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
@@ -19,6 +20,8 @@ class FlagModel:
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.normalize_embeddings = normalize_embeddings
         self.pooling_method = pooling_method
+
+        if use_half: self.model.half()
 
         self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         self.model = self.model.to(self.device)

@@ -94,10 +94,11 @@ If it doesn't work for you, you can see [FlagEmbedding](https://github.com/FlagO
 
 ```python
 from FlagEmbedding import FlagModel
-sentences = ["样例数据-1", "样例数据-2"]
+sentences_1 = ["样例数据-1", "样例数据-2"]
+sentences_2 = ["样例数据-3", "样例数据-4"]
 model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
-embeddings_1 = model.encode(sentences)
-embeddings_2 = model.encode(sentences)
+embeddings_1 = model.encode(sentences_1)
+embeddings_2 = model.encode(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
@@ -124,10 +125,11 @@ pip install -U sentence-transformers
 ```
 ```python
 from sentence_transformers import SentenceTransformer
-sentences = ["样例数据-1", "样例数据-2"]
+sentences_1 = ["样例数据-1", "样例数据-2"]
+sentences_2 = ["样例数据-3", "样例数据-4"]
 model = SentenceTransformer('BAAI/bge-large-zh')
-embeddings_1 = model.encode(sentences, normalize_embeddings=True)
-embeddings_2 = model.encode(sentences, normalize_embeddings=True)
+embeddings_1 = model.encode(sentences_1, normalize_embeddings=True)
+embeddings_2 = model.encode(sentences_2, normalize_embeddings=True)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
@@ -157,7 +159,8 @@ encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine simi
 model = HuggingFaceBgeEmbeddings(
     model_name=model_name,
     model_kwargs=model_kwargs,
-    encode_kwargs=encode_kwargs
+    encode_kwargs=encode_kwargs,
+query_instruction="为这个句子生成表示以用于检索相关文章："
 )
 ```
 
