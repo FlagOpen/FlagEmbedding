@@ -1,6 +1,6 @@
 <h1 align="center">FlagEmbedding</h1>
 <p align="center">
-    <a href="https://www.python.org/">
+    <a href="https://github.com/FlagOpen/FlagEmbedding">
             <img alt="Build" src="https://img.shields.io/badge/Contribution-Welcome-blue">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE">
@@ -9,7 +9,7 @@
     <a href="https://huggingface.co/C-MTEB">
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
-    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding">
+    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding">
         <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.0-red">
     </a>
 </p>
