@@ -41,7 +41,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_data toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --num_train_epochs 5 \
---per_device_train_batch_size 1 \
+--per_device_train_batch_size {large batch size} \
 --dataloader_drop_last True \
 --normlized True \
 --temperature 0.01 \
@@ -51,17 +51,28 @@ torchrun --nproc_per_node {number of gpus} \
 ```
 
 **some important arguments**:
+- `per_device_train_batch_size`: batch size in training. In most of cases, larger batch size will bring stronger performance.
 - `train_group_size`: the number of positive and negatives for a query in training.
 There are always one postive, so this argument will control the number of negatives (#negatives=train_group_size-1).
 Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
 Besides the negatives in group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
-- `per_device_train_batch_size`: batch size in training. In most of cases, larger batch size will bring stronger performance.
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
+### 3. Load your model
+After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
 
+But if you want to load your fine-tuned models with `sentence_transformers`, you should **set the pooling_mode to be `cls`** (the default pooling method in sentence_transformers is mean pooling).
+You can load your model like this:
+```python
+from sentence_transformers import SentenceTransformer, models
+
+word_embedding_model = models.Transformer(finetuned_model_path, max_seq_length=512, do_lower_case=True)
+pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode='cls')
+model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
+```
 
 

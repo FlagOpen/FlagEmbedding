@@ -36,11 +36,11 @@ torchrun --nproc_per_node {number of gpus} \
 --model_name_or_path BAAI/bge-large-en \
 --train_data toy_pretrain_data.jsonl \
 --learning_rate 2e-5 \
---num_train_epochs 5 \
---per_device_train_batch_size 1 \
+--num_train_epochs 2 \
+--per_device_train_batch_size {batch size} \
 --dataloader_drop_last True \
 --max_seq_length 512 \
---logging_steps 1
+--logging_steps 10
 ```
 
 Other training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 
