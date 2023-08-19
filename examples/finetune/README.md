@@ -66,7 +66,22 @@ More training arguments please refer to [transformers.TrainingArguments](https:/
 ### 3. Load your model
 After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
 
-But if you want to load your fine-tuned models with `sentence_transformers`, you should **set the pooling_mode to be `cls`** (the default pooling method in sentence_transformers is mean pooling).
+Please replace the `query_instruction_for_retrieval` with your instruction if you add a instruction for query in your data json.
+
+If you don't add instruction for query in your data, please set `query_instruction_for_retrieval` to be a `""`.
+
+```python
+from FlagEmbedding import FlagModel
+model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="")
+
+queries = ['query_1', 'query_2']
+passages = ["样例文档-1", "样例文档-2"]
+q_embeddings = model.encode_queries(queries)
+p_embeddings = model.encode(passages)
+scores = q_embeddings @ p_embeddings.T
+```
+
+If you want to load your fine-tuned models with `sentence_transformers`, you should **set the pooling_mode to be `cls`** (the default pooling method in sentence_transformers is mean pooling).
 You can load your model like this:
 ```python
 from sentence_transformers import SentenceTransformer, models
@@ -75,5 +90,4 @@ word_embedding_model = models.Transformer(finetuned_model_path, max_seq_length=5
 pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode='cls')
 model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
 ```
-
 
