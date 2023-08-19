@@ -111,6 +111,7 @@ p_embeddings = model.encode(passages)
 scores = q_embeddings @ p_embeddings.T
 ```
 The value of argument `query_instruction_for_retrieval` see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
+To load a your fine-tuned model, use your instruction if you add it during fine-tuning. Set it a empty string "" if you don't add instruction to query in your json file.
 
 FlagModel will use all available GPUs when encoding, please set `os.environ["CUDA_VISIBLE_DEVICES"]` to choose GPU.
 You also can set `os.environ["CUDA_VISIBLE_DEVICES"]=""` to make GPUs unavailable.
@@ -147,6 +148,8 @@ q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddin
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
+If you want to load a your fine-tuned models, see [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#3-load-your-model). 
+And use your instruction if you add it during fine-tuning. Set it a empty string "" if you don't add instruction to query in your json file.
 
 #### Using Langchain 
 

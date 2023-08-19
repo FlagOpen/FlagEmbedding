@@ -105,6 +105,7 @@ p_embeddings = model.encode(passages)
 scores = q_embeddings @ p_embeddings.T
 ```
 Instruction参数 `query_instruction_for_retrieval` 请参照： [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
+当加载你微调后的模型时，如果你没有在训练的json文件中为query添加指令，则将其设置为空字符串`""`; 如果你在训练数据中为query添加了指令，更改为你新设置的指令。
 
 FlagModel支持GPU也支持CPU推理。如果GPU可用，其默认优先使用GPU。如果想禁止其使用GPU，设置`os.environ["CUDA_VISIBLE_DEVICES"]=""`
 为提高效率，FlagModel默认会使用所有的GPU进行推理。如果想要使用具体的GPU，请设置`os.environ["CUDA_VISIBLE_DEVICES"]`。
@@ -141,6 +142,9 @@ q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddin
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
+如果想使用sentence_transformers加载你微调后的模型，可以参考[这里](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#3-load-your-model) 。
+同时，对于`instruction`, 如果你没有在训练的json文件中为query添加指令，则将其设置为空字符串`""`; 如果你在训练数据中为query添加了指令，更改为你新设置的指令。
+
 
 #### Using Langchain
 
