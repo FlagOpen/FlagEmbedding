@@ -71,11 +71,12 @@ torchrun --nproc_per_node {number of gpus} \
 --query_max_len 32 \
 --passage_max_len 128 \
 --negatives_cross_device \
+--train_group_size 2 \
 --per_device_train_batch_size 1 
 ```
 some important arguments:
 - `train_group_size`: the number of positive and negatives for a query in training.
-There are always one postive, so this argument will control the number of negatives (#negatives=train_group_size-1).
+There are always one positive, so this argument will control the number of negatives (#negatives=train_group_size-1).
 Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
 Besides the negatives in group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
