@@ -59,6 +59,8 @@ Noted that the number of negatives should not be larger than the numbers of nega
 Besides the negatives in this group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
+- `temperature`: the similarity will be `simi = simi/temperature` before using them to compute loss. 
+A higher temperature can reduce the value of similarity between texts in downstream tasks.
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 

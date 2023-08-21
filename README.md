@@ -59,14 +59,15 @@ And it also can be used in vector database for LLMs.
 
 1. The similarity score between two dissimilar sentence is higher than 0.5
 
-The similarity distribution of the current BGE model is about in the interval \[0.6, 1\].
+Since we finetune the models by contrastive learning with a temperature of 0.01, 
+the similarity distribution of the current BGE model is about in the interval \[0.6, 1\].
 So a similarity score greater than 0.5 does not indicate that the two sentence are similar.
 
 For downstream tasks, such as passage retrieval or semantic similarity, 
 **what matters is the relative order of the scores, not the absolute value.**
 If you need to filter similar sentences based on a similarity threshold, 
 please select an appropriate similarity threshold based on the similarity distribution on your data (such as 0.8, 0.85, or even 0.9).
-
+If you want to adjust the similarity distribution, you can fine-tune the models on your data with a higher temperature.
 
 2. When do the query instruction need to be used
 
