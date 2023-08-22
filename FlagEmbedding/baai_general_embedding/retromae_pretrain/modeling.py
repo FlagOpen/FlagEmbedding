@@ -23,8 +23,6 @@ class RetroMAEForPretraining(nn.Module):
 
         if hasattr(self.lm, 'bert'):
             self.decoder_embeddings = self.lm.bert.embeddings
-        elif hasattr(self.lm, 'distilbert'):
-            self.decoder_embeddings = self.lm.distilbert.embeddings
         elif hasattr(self.lm, 'roberta'):
             self.decoder_embeddings = self.lm.roberta.embeddings
         else:
@@ -78,11 +76,6 @@ class RetroMAEForPretraining(nn.Module):
             pred_scores = self.lm.cls(hiddens)
         elif hasattr(self.lm, 'lm_head'):
             pred_scores = self.lm.lm_head(hiddens)
-        elif hasattr(self.lm, 'distilbert'):
-            prediction_logits = self.vocab_transform(hiddens)  # (bs, seq_length, dim)
-            prediction_logits = self.activation(prediction_logits)  # (bs, seq_length, dim)
-            prediction_logits = self.vocab_layer_norm(prediction_logits)  # (bs, seq_length, dim)
-            pred_scores = self.vocab_projector(prediction_logits)
         else:
             raise NotImplementedError
 
