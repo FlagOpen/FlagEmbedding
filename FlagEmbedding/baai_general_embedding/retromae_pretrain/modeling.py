@@ -3,7 +3,7 @@ import os
 
 import torch
 from torch import nn
-from transformers import BertForMaskedLM, AutoModelForMaskedLM
+from transformers import BertForMaskedLM, AutoModelForMaskedLM, DistilBertForMaskedLM
 from transformers.modeling_outputs import MaskedLMOutput
 
 from .arguments import ModelArguments
@@ -20,8 +20,14 @@ class RetroMAEForPretraining(nn.Module):
     ):
         super(RetroMAEForPretraining, self).__init__()
         self.lm = bert
+        
+        if hasattr(self.lm, 'bert'):
+            self.decoder_embeddings = self.lm.bert.embeddings
+        elif hasattr(self.lm, 'distilbert'):
+            self.decoder_embeddings = self.lm.distilbert.embeddings
+        else:
+            self.decoder_embeddings = self.lm.bert.embeddings
 
-        self.decoder_embeddings = self.lm.bert.embeddings
         self.c_head = BertLayerForDecoder(bert.config)
         self.c_head.apply(self.lm._init_weights)
 
@@ -32,7 +38,7 @@ class RetroMAEForPretraining(nn.Module):
     def forward(self,
                 encoder_input_ids, encoder_attention_mask, encoder_labels,
                 decoder_input_ids, decoder_attention_mask, decoder_labels):
-        # return (torch.sum(self.lm.bert.embeddings.position_ids[:, :decoder_input_ids.size(1)]), )
+
         lm_out: MaskedLMOutput = self.lm(
             encoder_input_ids, encoder_attention_mask,
             labels=encoder_labels,
