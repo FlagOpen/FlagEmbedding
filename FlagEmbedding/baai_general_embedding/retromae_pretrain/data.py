@@ -11,7 +11,8 @@ from .utils import tensorize_batch
 
 
 class DatasetForPretraining(torch.utils.data.Dataset):
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, cache_dir:str =None):
+        self.cache_dir = cache_dir
         if os.path.isdir(data_dir):
             datasets = []
             for file in os.listdir(data_dir):
@@ -25,7 +26,7 @@ class DatasetForPretraining(torch.utils.data.Dataset):
 
     def load_dataset(self, file):
         if file.endswith('.jsonl') or file.endswith('.json'):
-            return load_dataset('json', data_files=file, cache_dir='/share/huggingface_cache/')['train']
+            return load_dataset('json', data_files=file)['train']
         elif os.path.isdir(file):
             return Dataset.load_from_disk(file)
         else:

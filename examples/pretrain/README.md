@@ -43,6 +43,7 @@ torchrun --nproc_per_node {number of gpus} \
 --logging_steps 10
 ```
 
-Other training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 
+More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 
+After training, the encoder model will saved to `{output_dir}/encoder_model`
 
 
