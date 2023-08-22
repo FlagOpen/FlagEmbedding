@@ -11,8 +11,7 @@ from .utils import tensorize_batch
 
 
 class DatasetForPretraining(torch.utils.data.Dataset):
-    def __init__(self, data_dir, cache_dir:str =None):
-        self.cache_dir = cache_dir
+    def __init__(self, data_dir):
         if os.path.isdir(data_dir):
             datasets = []
             for file in os.listdir(data_dir):
