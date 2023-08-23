@@ -37,6 +37,7 @@ torchrun --nproc_per_node {number of gpus} \
 --output_dir {path to save model} \
 --model_name_or_path {base model} \
 --train_data {path to train data} \
+--per_device_train_batch_size {batch size} \
 --learning_rate 2e-5 \
 --num_train_epochs 5 \
 --max_seq_length 512
@@ -66,7 +67,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_data toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --num_train_epochs 5 \
---per_device_train_batch_size {large batch size} \
+--per_device_train_batch_size {batch size} \
 --dataloader_drop_last True \
 --normlized True \
 --temperature 0.01 \

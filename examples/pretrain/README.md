@@ -37,7 +37,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_data toy_pretrain_data.jsonl \
 --learning_rate 2e-5 \
 --num_train_epochs 2 \
---per_device_train_batch_size {batch size} \
+--per_device_train_batch_size {batch size; set 1 for toy data} \
 --dataloader_drop_last True \
 --max_seq_length 512 \
 --logging_steps 10

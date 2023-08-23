@@ -41,7 +41,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_data toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --num_train_epochs 5 \
---per_device_train_batch_size {large batch size} \
+--per_device_train_batch_size {large batch size; set 1 for toy data} \
 --dataloader_drop_last True \
 --normlized True \
 --temperature 0.01 \
