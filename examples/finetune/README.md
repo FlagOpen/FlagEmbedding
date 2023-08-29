@@ -28,8 +28,12 @@ Train data should be a json file, where each line is a dict like this:
 
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts.
 If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
-Besides, if you want to add instruction, you should add it to text in this file, 
-and note that use your instruction as the value of argument `query_instruction_for_retrieval`, otherwise set `query_instruction_for_retrieval=""`.
+
+Besides, if you want to add instruction, you should add it to text in this file:
+```
+{"query": your_instruction + str, "pos": List[str], "neg":List[str]}
+```
+Noted that use your instruction as the value of argument `query_instruction_for_retrieval` if add a query instruction, otherwise set `query_instruction_for_retrieval=""`.
 
 See [toy_finetune_data.jsonl]() for a toy data file.
 
