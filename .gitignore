@@ -132,3 +132,4 @@ model_card.md
 
 # Pyre type checker
 .pyre/
+/FlagEmbedding/baai_general_embedding/hn_mine.py

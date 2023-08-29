@@ -55,8 +55,13 @@ Train data should be a json file, where each line is a dict like this:
 ```
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts.
 If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
+Besides, if you want to add instruction, you should add it to text in this file, 
+and note that use your instruction as the value of argument `query_instruction_for_retrieval`, otherwise set `query_instruction_for_retrieval=""`.
 
 See [examples/finetune](../../examples/finetune) for a toy data and training example.
+
+
+
 
 #### 2. Train
 ```
@@ -100,7 +105,7 @@ If you don't add instruction for query in your data, please set `query_instructi
 
 ```python
 from FlagEmbedding import FlagModel
-model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="")
+model = FlagModel(your_model, query_instruction_for_retrieval="")
 
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]

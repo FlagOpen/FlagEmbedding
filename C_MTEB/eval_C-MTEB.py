@@ -49,7 +49,7 @@ if __name__ == '__main__':
 
         model.query_instruction_for_retrieval = instruction
 
-        evaluation = MTEB(tasks=[task], task_langs=['zh'])
+        evaluation = MTEB(tasks=[task], task_langs=['zh', 'zh-CN'])
         evaluation.run(model, output_folder=f"zh_results/{args.model_name_or_path.split('/')[-1]}")
 
 
