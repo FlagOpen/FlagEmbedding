@@ -111,29 +111,3 @@ if __name__ == '__main__':
                  sample_range=sample_range,
                  negative_number=args.negative_number,
                  use_gpu=args.use_gpu_for_searching)
-
-"""
-**Hard Negatives**  
-
-```bash
-python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
---model_name_or_path BAAI/bge-base-en \
---input_file toy_finetune_data.jsonl \
---output_file toy_finetune_data_minedHN.jsonl \
---range_for_sampling 0-10
-
-python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
---model_name_or_path BAAI/bge-base-zh \
---input_file /share/dataset/for_embeddings/finetune/zh/post-finetune-prompt/dureader_retrieval-data.jsonl \
---output_file /share/dataset/for_embeddings/finetune/zh/post-finetune-prompt/dureader_retrieval-data-hn.jsonl \
---range_for_sampling 2-200 \
---use_gpu_for_searching
-
-python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
---model_name_or_path BAAI/bge-base-zh \
---input_file /share/dataset/for_embeddings/finetune/zh/post-finetune-prompt/cMedQAv2.jsonl \
---output_file /share/dataset/for_embeddings/finetune/zh/post-finetune-prompt/cMedQAv2.jsonl \
---range_for_sampling 2-200 \
---use_gpu_for_searching
-```
-"""
