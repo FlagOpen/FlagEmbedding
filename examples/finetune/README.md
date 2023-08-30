@@ -37,6 +37,26 @@ Noted that use your instruction as the value of argument `query_instruction_for_
 
 See [toy_finetune_data.jsonl]() for a toy data file.
 
+**Hard Negatives**  
+
+Hard negatives is a widely used method to improve the quality of sentence embedding. 
+You can mine hard negatives following this command:
+```bash
+python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
+--model_name_or_path BAAI/bge-base-en \
+--input_file toy_finetune_data.jsonl \
+--output_file toy_finetune_data_minedHN.jsonl \
+--range_for_sampling 2-200
+```
+
+- `input_file`: json data for finetuning. This script will retrieval top-k documents for each query, 
+and random sample negatives from the top-k documents (not including the positive documents).
+- `output_file`: path to save json data with mined hard negatives for finetuning
+- `range_for_sampling`: where to sample negative. For example, `2-100` means sampling negative from top2-top200 documents. 
+- `candidate_pool`: The pool to retrieval. Default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. 
+The format of this file is the same as pretrain data. If input a candidate_pool, this script will retrieve negative from this file.
+- `use_gpu_for_searching`: whether use faiss-gpu to retrieve negatives.
+
 
 ## Train
 ```
