@@ -94,6 +94,7 @@ torchrun --nproc_per_node {number of gpus} \
 --model_name_or_path BAAI/bge-large-en \
 --train_data toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
+--fp16 \
 --num_train_epochs 5 \
 --per_device_train_batch_size {batch size} \
 --dataloader_drop_last True \
@@ -115,6 +116,8 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
 - `temperature`: the similarity will be `simi = simi/temperature` before using them to compute loss. 
 A higher temperature can reduce the value of similarity between texts in downstream tasks.
+- `query_max_len`: max length for query
+- `passage_max_len`: max length for passage
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
