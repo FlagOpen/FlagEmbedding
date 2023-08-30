@@ -50,7 +50,7 @@ torchrun --nproc_per_node {number of gpus} \
 --per_device_train_batch_size {large batch size; set 1 for toy data} \
 --dataloader_drop_last True \
 --normlized True \
---temperature 0.01 \
+--temperature 0.02 \
 --query_max_len 32 \
 --passage_max_len 128 \
 --train_group_size 2 \
