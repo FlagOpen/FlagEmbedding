@@ -26,14 +26,14 @@ class BiTrainer(Trainer):
             raise ValueError("Trainer: training requires a train_dataset.")
         train_sampler = self._get_train_sampler()
 
-        return DataLoader(
+        return self.accelerator.prepare(DataLoader(
             self.train_dataset,
             batch_size=self.args.train_batch_size,
             sampler=train_sampler,
             collate_fn=self.data_collator,
             drop_last=True,
             num_workers=self.args.dataloader_num_workers,
-        )
+        ))
 
     def compute_loss(self, model, inputs, return_outputs=False):
         """
