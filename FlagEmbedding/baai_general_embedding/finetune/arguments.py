@@ -1,3 +1,4 @@
+import os
 from dataclasses import dataclass, field
 from typing import Optional
 
@@ -53,6 +54,10 @@ class DataArguments:
     max_example_num_per_dataset: int = field(
         default=100000000, metadata={"help": "the max number of examples for each dataset"}
     )
+
+    def __post_init__(self):
+        if not os.path.exists(self.train_data):
+            raise FileNotFoundError(f"cannot find file: {self.train_data}, please set a true path")
 
 @dataclass
 class RetrieverTrainingArguments(TrainingArguments):

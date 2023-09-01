@@ -64,7 +64,7 @@ torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.baai_general_embedding.finetune.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/bge-large-en \
---train_data toy_finetune_data.jsonl \
+--train_data ./toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --fp16 \
 --num_train_epochs 5 \
