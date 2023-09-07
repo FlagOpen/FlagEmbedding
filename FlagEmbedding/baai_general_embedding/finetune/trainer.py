@@ -1,4 +1,12 @@
 from transformers.trainer import *
+from sentence_transformers import SentenceTransformer, models
+
+
+def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls'):
+    word_embedding_model = models.Transformer(ckpt_dir)
+    pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode=pooling_mode)
+    model = SentenceTransformer(modules=[word_embedding_model, pooling_model], device='cpu')
+    model.save(ckpt_dir)
 
 
 class BiTrainer(Trainer):
@@ -17,8 +25,11 @@ class BiTrainer(Trainer):
         if self.tokenizer is not None and self.is_world_process_zero():
             self.tokenizer.save_pretrained(output_dir)
 
-        # Good practice: save your training arguments together with the trained model
         torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
+
+        # save the checkpoint for sentence-transformers library
+        if self.is_world_process_zero():
+            save_ckpt_for_sentence_transformers(output_dir, pooling_mode=self.args.sentence_pooling_method)
 
     def compute_loss(self, model, inputs, return_outputs=False):
         """

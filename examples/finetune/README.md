@@ -29,12 +29,6 @@ Train data should be a json file, where each line is a dict like this:
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts.
 If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
 
-Besides, if you want to add instruction, you should add it to text in this file:
-```
-{"query": your_instruction + str, "pos": List[str], "neg":List[str]}
-```
-Noted that use your instruction as the value of argument `query_instruction_for_retrieval` if add a query instruction, otherwise set `query_instruction_for_retrieval=""`.
-
 See [toy_finetune_data.jsonl]() for a toy data file.
 
 **Hard Negatives**  
@@ -46,7 +40,8 @@ python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
 --model_name_or_path BAAI/bge-base-en \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
---range_for_sampling 2-200
+--range_for_sampling 2-200 \
+--query_instruction_for_retrieval "Represent this sentence for searching relevant passages: "
 ```
 
 - `input_file`: json data for finetuning. This script will retrieval top-k documents for each query, 
@@ -72,10 +67,11 @@ torchrun --nproc_per_node {number of gpus} \
 --dataloader_drop_last True \
 --normlized True \
 --temperature 0.02 \
---query_max_len 32 \
---passage_max_len 128 \
+--query_max_len 64 \
+--passage_max_len 256 \
 --train_group_size 2 \
---negatives_cross_device 
+--negatives_cross_device \
+--query_instruction_for_retrieval "为这个句子生成表示以用于检索相关文章：" 
 ```
 
 **some important arguments**:
@@ -88,8 +84,9 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
 - `temperature`: the similarity will be `simi = simi/temperature` before using them to compute loss. 
 A higher temperature can reduce the value of similarity between texts in downstream tasks.
-- `query_max_len`: max length for query
-- `passage_max_len`: max length for passage
+- `query_max_len`: max length for query. Please set it according the average length of queries in your data.
+- `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
+- `query_instruction_for_retrieval`: instruction for query, which will be added to each query.
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
@@ -97,28 +94,4 @@ More training arguments please refer to [transformers.TrainingArguments](https:/
 ### 3. Load your model
 After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
 
-Please replace the `query_instruction_for_retrieval` with your instruction if you add a instruction for query in your data json.
-
-If you don't add instruction for query in your data, please set `query_instruction_for_retrieval` to be a `""`.
-
-```python
-from FlagEmbedding import FlagModel
-model = FlagModel(your_model, query_instruction_for_retrieval="")
-
-queries = ['query_1', 'query_2']
-passages = ["样例文档-1", "样例文档-2"]
-q_embeddings = model.encode_queries(queries)
-p_embeddings = model.encode(passages)
-scores = q_embeddings @ p_embeddings.T
-```
-
-If you want to load your fine-tuned models with `sentence_transformers`, you should **set the pooling_mode to be `cls`** (the default pooling method in sentence_transformers is mean pooling).
-You can load your model like this:
-```python
-from sentence_transformers import SentenceTransformer, models
-
-word_embedding_model = models.Transformer(finetuned_model_path, max_seq_length=512, do_lower_case=True)
-pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode='cls')
-model = SentenceTransformer(modules=[word_embedding_model, pooling_model])
-```
-
+Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.

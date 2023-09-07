@@ -110,7 +110,7 @@ p_embeddings = model.encode(passages)
 scores = q_embeddings @ p_embeddings.T
 ```
 For the value of the argument `query_instruction_for_retrieval`, see [Model List](https://github.com/FlagOpen/FlagEmbedding/tree/master#model-list). 
-To load your fine-tuned model, use your instruction if you add it during fine-tuning. Set it to an empty string `""` if you don't add an instruction to the query in your json file.
+To load your fine-tuned model, use your instruction if you add it during fine-tuning. 
 
 By default, FlagModel will use all available GPUs when encoding. Please set `os.environ["CUDA_VISIBLE_DEVICES"]` to select specific GPUs.
 You also can set `os.environ["CUDA_VISIBLE_DEVICES"]=""` to make all GPUs unavailable.
@@ -147,8 +147,6 @@ q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddin
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
 ```
-If you want to load your fine-tuned models, see [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#3-load-your-model). 
-And use your instruction if you add it during fine-tuning. Set it to an empty string `""` if you don't add an instruction to the query in your json file.
 
 #### Using Langchain 
 
@@ -162,8 +160,9 @@ model = HuggingFaceBgeEmbeddings(
     model_name=model_name,
     model_kwargs=model_kwargs,
     encode_kwargs=encode_kwargs,
-query_instruction="为这个句子生成表示以用于检索相关文章："
+    query_instruction="为这个句子生成表示以用于检索相关文章："
 )
+model.query_instruction = "为这个句子生成表示以用于检索相关文章："
 ```
 
 

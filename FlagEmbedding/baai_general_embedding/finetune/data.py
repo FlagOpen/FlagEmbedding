@@ -40,6 +40,9 @@ class TrainDatasetForEmbedding(Dataset):
 
     def __getitem__(self, item) -> Tuple[BatchEncoding, List[BatchEncoding]]:
         query = self.dataset[item]['query']
+        if self.args.query_instruction_for_retrieval is not None:
+            query = self.args.query_instruction_for_retrieval + query
+
         passages = []
         pos = random.choice(self.dataset[item]['pos'])
         passages.append(pos)
@@ -51,6 +54,8 @@ class TrainDatasetForEmbedding(Dataset):
             negs = random.sample(self.dataset[item]['neg'], self.args.train_group_size - 1)
         passages.extend(negs)
 
+        if self.args.passage_instruction_for_retrieval is not None:
+            passages = [self.args.passage_instruction_for_retrieval+p for p in passages]
         return query, passages
 
 

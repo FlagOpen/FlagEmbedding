@@ -17,6 +17,7 @@ def get_args():
     parser.add_argument('--range_for_sampling', default=None, type=str, help="range to sample negatives")
     parser.add_argument('--use_gpu_for_searching', action='store_true', help='use faiss-gpu')
     parser.add_argument('--negative_number', default=15, help='use faiss-gpu')
+    parser.add_argument('--query_instruction_for_retrieval', default="")
 
     return parser.parse_args()
 
@@ -70,7 +71,7 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
     print(f'inferencing embedding for corpus (number={len(corpus)})--------------')
     p_vecs = model.encode(corpus, batch_size=256)
     print(f'inferencing embedding for queries (number={len(queries)})--------------')
-    q_vecs = model.encode(queries, batch_size=256)
+    q_vecs = model.encode_queries(queries, batch_size=256)
 
     print('creat index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
@@ -102,7 +103,7 @@ if __name__ == '__main__':
     sample_range = args.range_for_sampling.split('-')
     sample_range = [int(x) for x in sample_range]
 
-    model = FlagModel(args.model_name_or_path)
+    model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
 
     find_knn_neg(model,
                  input_file=args.input_file,
