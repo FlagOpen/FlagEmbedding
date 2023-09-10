@@ -33,6 +33,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
+- 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning.
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**
 - 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada: 
