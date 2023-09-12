@@ -2,7 +2,7 @@
 In this example, we show how to do pre-training using retromae, 
 which can improve the retrieval performance. 
 
-## Installation
+## 1. Installation
 * **with pip**
 ```
 pip install -U FlagEmbedding
@@ -20,14 +20,14 @@ pip install -e .
 ```
 
 
-## Data format
+## 2. Data format
 Train data should be a json file, where each line is a dict like this:
 ```
 {"text": str}
 ```
 See [toy_pretrain_data.jsonl]() for a toy data file.
 
-## Train
+## 3. Train
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \

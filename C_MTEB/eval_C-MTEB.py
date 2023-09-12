@@ -1,16 +1,17 @@
 import argparse
-from mteb import MTEB
 
 from C_MTEB.tasks import *
-from C_MTEB import ChineseTaskList
 from flag_dres_model import FlagDRESModel
-
+from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
     "BAAI/bge-large-zh": "为这个句子生成表示以用于检索相关文章：",
     "BAAI/bge-large-zh-noinstruct": None,
     "BAAI/bge-base-zh": "为这个句子生成表示以用于检索相关文章：",
     "BAAI/bge-small-zh": "为这个句子生成表示以用于检索相关文章：",
+    "BAAI/bge-large-zh-v1.5": "为这个句子生成表示以用于检索相关文章：",
+    "BAAI/bge-base-zh-v1.5": "为这个句子生成表示以用于检索相关文章：",
+    "BAAI/bge-small-zh-v.15": "为这个句子生成表示以用于检索相关文章：",
 }
 
 
@@ -39,9 +40,9 @@ if __name__ == '__main__':
                     'EcomRetrieval', 'MedicalRetrieval', 'VideoRetrieval',
                     'T2Reranking', 'MmarcoReranking', 'CMedQAv1', 'CMedQAv2']:
             if args.model_name_or_path not in query_instruction_for_retrieval_dict:
-                # instruction = "为这个句子生成表示以用于检索相关文章："
-                instruction = None
-                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=None")
+                instruction = "为这个句子生成表示以用于检索相关文章："
+                # instruction = None
+                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=为这个句子生成表示以用于检索相关文章：")
             else:
                 instruction = query_instruction_for_retrieval_dict[args.model_name_or_path]
         else:

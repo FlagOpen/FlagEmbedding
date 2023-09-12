@@ -1,13 +1,15 @@
 import argparse
 
-from mteb import MTEB
 from flag_dres_model import FlagDRESModel
-
+from mteb import MTEB
 
 query_instruction_for_retrieval_dict = {
     "BAAI/bge-large-en": "Represent this sentence for searching relevant passages: ",
     "BAAI/bge-base-en": "Represent this sentence for searching relevant passages: ",
     "BAAI/bge-small-en": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-large-en-v1.5": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-base-en-v1.5": "Represent this sentence for searching relevant passages: ",
+    "BAAI/bge-small-en-v1.5": "Represent this sentence for searching relevant passages: ",
 }
 
 
@@ -37,9 +39,9 @@ if __name__ == '__main__':
                                              'NFCorpus', 'MSMARCO', 'HotpotQA', 'FiQA2018',
                                              'FEVER', 'DBPedia', 'ClimateFEVER', 'SCIDOCS', ]:
             if args.model_name_or_path not in query_instruction_for_retrieval_dict:
-                # instruction = "Represent this sentence for searching relevant passages: "
-                instruction = None
-                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=None")
+                instruction = "Represent this sentence for searching relevant passages: "
+                # instruction = None
+                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=Represent this sentence for searching relevant passages: ")
             else:
                 instruction = query_instruction_for_retrieval_dict[args.model_name_or_path]
         else:

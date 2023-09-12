@@ -1,1 +1,1 @@
-from .baai_general_embedding import FlagModel
+from .flag_models import FlagModel, FlagReranker

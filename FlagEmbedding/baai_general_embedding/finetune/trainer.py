@@ -1,5 +1,5 @@
-from transformers.trainer import *
 from sentence_transformers import SentenceTransformer, models
+from transformers.trainer import *
 
 
 def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls'):

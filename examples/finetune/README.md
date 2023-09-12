@@ -1,7 +1,7 @@
 # Finetune
 In this example, we show how to finetune the baai-general-embedding with your data.
 
-## Installation
+## 1. Installation
 * **with pip**
 ```
 pip install -U FlagEmbedding
@@ -19,7 +19,7 @@ pip install -e .
 ```
  
 
-## Data format
+## 2. Data format
 Train data should be a json file, where each line is a dict like this:
 
 ```
@@ -31,7 +31,7 @@ If you have no negative texts for a query, you can random sample some from the e
 
 See [toy_finetune_data.jsonl]() for a toy data file.
 
-**Hard Negatives**  
+### Hard Negatives 
 
 Hard negatives is a widely used method to improve the quality of sentence embedding. 
 You can mine hard negatives following this command:
@@ -53,7 +53,7 @@ The format of this file is the same as pretrain data. If input a candidate_pool,
 - `use_gpu_for_searching`: whether use faiss-gpu to retrieve negatives.
 
 
-## Train
+## 3. Train
 ```
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.baai_general_embedding.finetune.run \
@@ -82,8 +82,7 @@ Noted that the number of negatives should not be larger than the numbers of nega
 Besides the negatives in this group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
-- `temperature`: the similarity will be `simi = simi/temperature` before using them to compute loss. 
-A higher temperature can reduce the value of similarity between texts in downstream tasks.
+- `temperature`: It will influence the distribution of similarity scores.
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query.
@@ -91,7 +90,7 @@ A higher temperature can reduce the value of similarity between texts in downstr
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
-### 3. Load your model
+### 4. Load your model
 After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.

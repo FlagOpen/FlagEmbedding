@@ -32,6 +32,9 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
+- 09/12/2023: 更新：
+    - **新增重排模型**：开源交叉编码器模型bge-reranker，具有比向量模型更强大的排序能力。非常建议使用或者微调它来重新排序向量模型返回的top-k文档，提高最终结果的相关性。
+    - **更新向量模型**：发布bge-*-v1.5向量模型，缓解相似度分布问题，提升无指令情况下的检索能力（但检索任务仍建议使用指令）
 - 09/07/2023: 更新[微调代码](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): 增加难负样本挖掘脚本，增加指令参数方便在微调中添加指令.
 - 08/09/2023: BGE模型整合入Langchain, 可以在langchain中非常简单的[使用它](#using-langchain); C-MTEB中文榜单已[在线更新](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: 发布更小的模型(base, small), **在同尺寸模型中取得最好的性能！ 🤗**
@@ -42,38 +45,83 @@
 
 
 ## Model List
-|              Model              | Language | Description | query instruction for retrieval\* |
-|:-------------------------------|:--------:| :--------:| :--------:|
-|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English |  :trophy: 在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名**第一** | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English |  在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单上排名**第二** | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | small-scale模型，性能高于很多开源large-scale模型，推理更高效  | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | :trophy: 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单上排名**第一** | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) |   Chinese | 在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单上排名**第二** | --  |
-|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  base-scale模型，与bge-large性能类似，但推理更快，向量维度更小 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | small-scale模型，推理比base模型更快  | `为这个句子生成表示以用于检索相关文章：`  |
+|              Model              | Language | | Description | query instruction for retrieval\* |
+|:-------------------------------|:--------:| :--------:| :--------:|:--------:|
+|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
+|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
+|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |  :trophy:  SOTA性能在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale 模型  | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: SOTA性能在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale模型 | `为这个句子生成表示以用于检索相关文章：`  |
 
-\*: 如果您需要为一个**简短的查询搜索相关的长文档**，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。在任何情况下，您都**不需要为候选文档增加指令**。
+
+\*: 如果您需要为一个**简短的查询搜索相关的文档**，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。在任何情况下，您都**不需要为候选文档增加指令**。
+
+\**: reranker为交叉编码器，模型与向量模型不同，使用方式也与向量模型不同。为了平衡准确率和时间成本，交叉编码器一般用于对其他简单模型检索到的top-k文档进行重排序。例如，使用bge向量模型检索前100个相关文档，然后使用bge reranker对前100个文档重新排序，得到最终的top-3结果。
 
 ## 常见问题
-1. 不相似句子之间的相似度分数很高
 
-由于采取了对比学习进行训练且温度系数设置为0.01, 当前BGE模型的相似度分布并不是\[0, 1\]区间的均匀分布，其大概处于\[0.6, 1\]这个区间，因此并不是大于0.6就代表相似。
-尤其是对于长度较短句子之间的相似度，当前模型的相似度数值会偏高。
+<details>
+  <summary>1. 如何微调bge模型 </summary>
 
-**对于检索任务或者相似度任务，影响结果的是不同句子间相似度的相对大小关系，而不是绝对数值。**
-如若需要根据相似度阈值筛选相似句子，请根据实际数据上的相似度分布情况，使用一个合适的相似度阈值（如0.8, 0.85，甚至是0.9）。
-如果你想调整相似度分布，你可以在你的数据上使用更大的温度系数微调模型或者尝试使用其他损失函数。
+  <!-- ### 如何微调bge模型 -->
+遵循这个[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 来准备数据并微调模型。
+一些建议：
+- 按照这个[命令](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#data-format) 挖掘难负样本，这可以明显提高检索性能。
+- `train_group_size` 参数在我们实验中（使用了难负样本）默认设为8。可以根据数据中的平均负样本数据进行设置：train_group_size=负样本数量+1。
+- `query_max_len` 和`passage_max_len`参数应该按照实际数据长度进行设置，数据都很长的话应该增大，但不能超过512。
+- 如果微调向量模型的准确率仍然不高，建议使用或者微调交叉编码器模型(bge-reranker)对top-k结果进行重新排序。
+交叉编码器模型的数据格式与向量模型一致，同时也建议使用难负样本。在正确微调的情况下，交叉编码器模型的准确度会高于向量模型。
+- 如果进行了预训练，预训练后的模型无法直接用于计算相似度，必须经过微调才能进行相似度。
 
-2. 什么时候需要添加查询指令
+</details>
 
-对于一个使用短查询寻找相关长文档的检索任务，查询与文档之间长度非常不一致，推荐为短查询添加指令。
-其他任务，推荐不添加指令，例如，像quora这类用一个较短的问题去搜索其他相关的短问题，推荐不添加指令。
-具体是否添加指令，可以根据实际情况选择其中表现最好的方式。
+
+<details>
+  <summary>2. 不相似句子之间的相似度分数很高 </summary>
+
+  <!-- ### 不相似句子之间的相似度分数很高 -->
+**建议使用bge v1.5，它缓解了相似度分布的问题。** 
+
+由于我们通过温度为0.01的对比学习来微调模型，
+当前BGE模型的相似度分布大约在\[0.6, 1\]区间内。
+因此，相似度大于0.6并不表示这两个句子相似。
+
+对于下游任务，如段落检索或语义相似性，
+**重要的是分数的相对顺序，而不是绝对值。**
+如果你需要根据相似度阈值过滤相似句子，
+请根据数据的相似度分布(如0.8,0.85，甚至0.9)选择合适的相似度阈值。
+
+</details>
+
+
+<details>
+  <summary>3. 什么时候需要添加查询指令 </summary>
+
+  <!-- ### 什么时候需要添加查询指令 -->
+**建议使用bge v1.5，它缓解了相似度分布的问题。** 
+
+对于一个使用短查询寻找相关长文档的检索任务，查询与文档之间长度非常不一致，推荐为短查询添加指令。其他任务，推荐不添加指令。
+**最好的选择方式，是根据实际情况选择其中表现最好的方式。**
 在所有情况下，文档端都不用添加指令，只是查询端可以选择是否添加指令。
+
+</details>
+
+
 
 
 
 ## Usage 
+
+### Usage for Embedding Model
 
 这里展示了一些通过
 [FlagEmbedding](#using-flagembedding), [Sentence-Transformers](#using-sentence-transformers), [Langchain](#using-langchain), or [Huggingface Transformers](#using-huggingface-transformers).
@@ -190,6 +238,47 @@ print("Sentence embeddings:", sentence_embeddings)
 ```
 
 
+### Usage for Reranker
+
+你可以通过在reranker中输入query和passage来获得相关度分数，分数越高代表越相关。
+该重排序器基于交叉熵损失进行优化，因此相关性分数没有一个特定的数值范围。
+
+#### Using FlagEmbedding
+```
+pip install -U FlagEmbedding
+```
+
+计算相关分数:
+```python
+from FlagEmbedding import FlagReranker
+reranker = FlagReranker('BAAI/bge-reranker-base', use_fp16=True) #设置 fp16 为True可以加快推理速度，效果会有可以忽略的下降
+
+score = reranker.compute_score(['query', 'passage'])
+print(score)
+
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
+print(scores)
+```
+
+
+#### Using Huggingface transformers
+
+```python
+import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer, BatchEncoding, PreTrainedTokenizerFast
+
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-base')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-base')
+model.eval()
+
+pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
+with torch.no_grad():
+    inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512)
+    scores = model(**inputs, return_dict=True).logits.view(-1, ).float()
+    print(scores)
+```
+
+
 ## Evaluation  
 `baai-general-embedding` 模型在MTEB和C-MTEB排行榜上都实现了**最先进的性能**!
 更多细节和评估脚本请参见 [C_MTEB](./C_MTEB). 
@@ -198,7 +287,10 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model Name | Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
 |:----:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| [**bge-large-en**](https://huggingface.co/BAAI/bge-large-en) |  1024 | 512 | **63.98** |  **53.9** | **46.98** | 85.8 | **59.48** | 81.56 | 32.06 | **76.21** | 
+| [**BAAI/bge-large-en-v1.5**](https://huggingface.co/BAAI/bge-large-en-v1.5) | 1024 | 512 |  **64.23** | **54.29** |  46.08 | 87.12 | 60.03 | 83.11 | 31.61 | 75.97 |  
+| [**BAAI/bge-base-en-v1.5**](https://huggingface.co/BAAI/bge-base-en-v1.5) |  768 | 512 | 63.55 | 53.25 |   45.77 | 86.55 | 58.86 | 82.4 | 31.07 | 75.53 |  
+| [**BAAI/bge-small-en-v1.5**](https://huggingface.co/BAAI/bge-small-en-v1.5) |  384 | 512 | 62.17 |51.68 | 43.82 |  84.92 | 58.36 | 81.59 | 30.12 | 74.14 |  
+| [**bge-large-en**](https://huggingface.co/BAAI/bge-large-en) |  1024 | 512 | 63.98 |  53.9 | 46.98 | 85.8 | 59.48 | 81.56 | 32.06 | 76.21 | 
 | [**bge-base-en**](https://huggingface.co/BAAI/bge-base-en) |  768 | 512 |  63.36 | 53.0 | 46.32 | 85.86 | 58.7 | 81.84 | 29.27 | 75.27 | 
 | [gte-large](https://huggingface.co/thenlper/gte-large) |  1024 | 512 | 63.13 | 52.22 | 46.84 | 85.00 | 59.13 | 83.35 | 31.66 | 73.33 |
 | [gte-base](https://huggingface.co/thenlper/gte-base) 	|  768 | 512 | 62.39 | 51.14 | 46.2 | 84.57 | 58.61 | 82.3 | 31.17 | 73.01 |
@@ -226,7 +318,10 @@ print("Sentence embeddings:", sentence_embeddings)
 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **54.98** | **78.94** | 68.32 | **65.11** | 48.39 |
+| [**BAAI/bge-large-zh-v1.5**](https://huggingface.co/BAAI/bge-large-zh-v1.5) | 1024 |  **64.53** | 70.46 | 56.25 | 81.6 | 69.13 | 65.84 | 48.99 |  
+| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) | 768 |  63.13 | 69.49 | 53.72 | 79.75 | 68.07 | 65.39 | 47.53 |  
+| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) | 512 | 57.82 | 61.77 | 49.11 | 70.41 | 63.96 | 60.92 | 44.18 |   
+| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) | 1024 | 64.20 | 71.53 | 54.98 | 78.94 | 68.32 | 65.11 | 48.39 |
 | [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 53 | 76.77 | **68.58** | 64.91 | **50.01** |
 | [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 768 | 62.96 | 69.53 | 54.12 | 77.5 | 67.07 | 64.91 | 47.63 |
 | [multilingual-e5-large](https://huggingface.co/intfloat/multilingual-e5-large) | 1024 | 58.79 | 63.66 | 48.44 | 69.89 | 67.34 | 56.00 | 48.23 |
@@ -241,65 +336,45 @@ print("Sentence embeddings:", sentence_embeddings)
 | [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 44.97 | 70.86 | 60.66 | 49.16 | 30.02 |
 
 
+- **Reranking**:
+评估脚本参考 [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/).
+
+| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MmarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
+|:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
+| text2vec-base-multilingual | 64.66 | 62.94 | 62.51 | 14.37 | 48.46 | 48.6 | 50.26 |  
+| multilingual-e5-small | 65.62 | 60.94 | 56.41 | 29.91 | 67.26 | 66.54 | 57.78 |  
+| multilingual-e5-large | 64.55 | 61.61 | 54.28 | 28.6 | 67.42 | 67.92 | 57.4 |  
+| multilingual-e5-base | 64.21 | 62.13 | 54.68 | 29.5 | 66.23 | 66.98 | 57.29 |  
+| m3e-base | 66.03 | 62.74 | 56.07 | 17.51 | 77.05 | 76.76 | 59.36 |  
+| m3e-large | 66.13 | 62.72 | 56.1 | 16.46 | 77.76 | 78.27 | 59.57 |  
+| bge-base-zh-v1.5 | 66.49 | 63.25 | 57.02 | 29.74 | 80.47 | 84.88 | 63.64 |  
+| bge-large-zh-v1.5 | 65.74 | 63.39 | 57.03 | 28.74 | 83.45 | 85.44 | 63.97 |  
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | 67.28 | 63.95 | 60.45 | 35.46 | 81.26 | 84.1 | 65.42 |  
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | 67.6 | 64.03 | 61.44 | 37.16 | 82.15 | 84.18 | 66.09 |  
+
+\* : T2RerankingZh2En 是跨语言检索数据集，使用中文检索英文， T2RerankingEn2Zh是使用英文检索中文。
+
 
 ## Train
 
-本节将介绍我们用于训练通用嵌入向量的方法。
-训练脚本在[FlagEmbedding](./FlagEmbedding/baai_general_embedding)中。
-同时，我们提供了一些示例来进行[预训练](examples/pretrain/)和[微调](examples/finetune/)。
-
-**1. RetroMAE Pre-train**  
-
-我们按照 [retromae](https://github.com/staoxiao/RetroMAE) 方法对模型进行预训练，
-其在检索任务中表现出了良好的性能( [参考论文](https://aclanthology.org/2022.emnlp-main.35.pdf) )。
-预训练是在24块A100(40G) gpu上进行的，batch大小为720。在retromae中，编码器和解码器的掩码率分别为0.3和0.5。
-使用AdamW优化器，学习率为2e-5。
-
-**Pre-training data**:
-- English: 
-    - [Pile](https://pile.eleuther.ai/)
-    - [wikipedia](https://huggingface.co/datasets/wikipedia)
-    - [msmarco](https://huggingface.co/datasets/Tevatron/msmarco-passage-corpus)
-- Chinese: 
-    - [wudao](https://github.com/BAAI-WuDao/Data)
+### BAAI Embedding 
 
 
-**2. Finetune**  
-
-我们使用对比学习训练模型，输入数据的格式是一个三元组' (query, positive, negative) '。
-除了三元组中的负样本，我们还使用了in-batch的负样本。我们采用 [跨设备负样本共享方法](https://github.com/microsoft/MoPQ) 
-在不同的gpu之间共享负样本，这会显著地**增加负样本的数量**。
-我们在48块A100(40G) gpu上训练模型，batch大小为32,768。
-我们使用AdamW优化器，学习率为1e-5。
-对比损失的温度系数为0.01。
+我们使用retromae对模型进行预训练，再用对比学习在大规模成对数据上训练模型。
+**你可以按照我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 在本地数据上微调嵌入模型。
+我们还提供了一个[预训练示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).** 
+请注意，预训练的目标是重构文本，预训练后的模型无法直接用于相似度计算，需要进行微调之后才可以用于相似度计算。
+更多关于bge的训练情况请参阅[baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) ，
 
 
-同时，我们在训练中为短查询到长文档的检索任务中的查询添加了instruction。
-对于英语，指令是`Represent this sentence for searching relevant passages: `;
-对于中文，指令是`为这个句子生成表示以用于检索相关文章：`.
-在评测中，针对段落检索任务，需要在查询中添加指令，但不需要为段落文档添加指令。
+### BGE Reranker
 
-
-微调脚本可以在这个存储库中访问:[FlagEmbedding](./FlagEmbedding/baai_general_embedding), 你可以用它轻松地微调你的模型。
+交叉编码器将对查询和答案实时计算相关性分数，这比向量模型(即双编码器)更准确，但比向量模型更耗时。
+因此，它可以用来对嵌入模型返回的前k个文档重新排序。
+我们在多语言数据上训练了交叉编码器，数据格式与向量模型相同，因此您可以根据我们的[示例]() 轻松地对其进行微调。
+更多细节请参考[./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/reranker/README.md)
 
  
-
-**Training data**:
-
--对于英语，我们从 [wikipedia](https://huggingface.co/datasets/wikipedia) ， [cc-net](https://github.com/facebookresearch/cc_net) 等收集了2.3亿个文本对。
--对于中文，我们从 [悟道](https://github.com/BAAI-WuDao/Data) 、[simclue](https://github.com/CLUEbenchmark/SimCLUE)等收集了1.2亿对文本。
-
-我们计划在将来发布训练数据集。
-
-## Schedule
-- [x] Chinese Massive Text Embedding Benchmark
-- [x] release baai-general-embedding models
-- [x] release codes for training
-- [ ] Multilingual model
-- [ ] Training Datasets 
-- [ ] ...
-
-我们将不断更新向量模型和代码，希望能促进社区的发展。
 
 ## Contact
 如果您有任务疑问或者建议，欢迎提交issue和PR, 

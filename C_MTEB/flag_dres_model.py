@@ -1,8 +1,9 @@
-import numpy as np
 from typing import cast, List, Dict, Union
+
+import numpy as np
 import torch
-from tqdm import tqdm
 from mteb import DRESModel
+from tqdm import tqdm
 from transformers import AutoModel, AutoTokenizer
 
 

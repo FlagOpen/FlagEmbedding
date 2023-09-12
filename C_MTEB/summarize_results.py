@@ -1,10 +1,10 @@
 import argparse
-from collections import defaultdict
-import os
 import json
+import os
+from collections import defaultdict
 
-from mteb import MTEB
 from C_MTEB import *
+from mteb import MTEB
 
 
 def read_results(task_types, except_tasks, args):

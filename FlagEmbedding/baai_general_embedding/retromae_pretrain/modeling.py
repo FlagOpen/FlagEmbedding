@@ -3,7 +3,7 @@ import os
 
 import torch
 from torch import nn
-from transformers import BertForMaskedLM, AutoModelForMaskedLM, DistilBertForMaskedLM
+from transformers import BertForMaskedLM, AutoModelForMaskedLM
 from transformers.modeling_outputs import MaskedLMOutput
 
 from .arguments import ModelArguments

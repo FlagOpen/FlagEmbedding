@@ -14,7 +14,7 @@
 <h4 align="center">
     <p>
         <a href=#installation>Installation</a> | 
-        <a href=#usage>Usage</a>  |
+        <a href=#evaluation>Evaluation</a>  |
         <a href="#leaderboard">Leaderboard</a> |
         <a href="#tasks">Tasks</a> |
         <a href="#acknowledgement">Acknowledgement</a> |
@@ -34,19 +34,24 @@ cd FlagEmbedding/C_MTEB
 pip install -e .
 ```
 
-## Usage
+## Evaluation
 
-* **With [FlagDRESModel](flag_dres_model.py)**
-  
+### Evaluate reranker
+```bash
+python eval_cross_encoder.py --model_name_or_path BAAI/bge-reranker-base
+```
+ 
+### Evaluate embedding model
+* **With our scripts**
+
 You can **reproduce the results of `baai-general-embedding (bge)`** using the provided python script (see [eval_C-MTEB.py](./eval_C-MTEB.py) )
 ```bash
 python eval_C-MTEB.py --model_name_or_path BAAI/bge-large-zh
 
 # for MTEB leaderboard
 python eval_MTEB.py --model_name_or_path BAAI/bge-large-en
-```
-We wrap the DRESModel in mteb to [FlagDRESModel](flag_dres_model.py) which can support instruction and inference with multiple GPUs.
 
+```
 
 * **With sentence-transformers** 
  
@@ -94,11 +99,32 @@ evaluation.run(model)
 
 ## Leaderboard
 
-### Overall
+### 1. Reranker
+
+| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MmarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
+|:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
+| text2vec-base-multilingual | 64.66 | 62.94 | 62.51 | 14.37 | 48.46 | 48.6 | 50.26 |  
+| multilingual-e5-small | 65.62 | 60.94 | 56.41 | 29.91 | 67.26 | 66.54 | 57.78 |  
+| multilingual-e5-large | 64.55 | 61.61 | 54.28 | 28.6 | 67.42 | 67.92 | 57.4 |  
+| multilingual-e5-base | 64.21 | 62.13 | 54.68 | 29.5 | 66.23 | 66.98 | 57.29 |  
+| m3e-base | 66.03 | 62.74 | 56.07 | 17.51 | 77.05 | 76.76 | 59.36 |  
+| m3e-large | 66.13 | 62.72 | 56.1 | 16.46 | 77.76 | 78.27 | 59.57 |  
+| bge-base-zh-v1.5 | 66.49 | 63.25 | 57.02 | 29.74 | 80.47 | 84.88 | 63.64 |  
+| bge-large-zh-v1.5 | 65.74 | 63.39 | 57.03 | 28.74 | 83.45 | 85.44 | 63.97 |  
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | 67.28 | 63.95 | 60.45 | 35.46 | 81.26 | 84.1 | 65.42 |  
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | 67.6 | 64.03 | 61.44 | 37.16 | 82.15 | 84.18 | 66.09 |  
+
+\* : T2RerankingZh2En and T2RerankingEn2Zh are cross-language retrieval task
+
+
+### 2. Embedding 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
-| [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 1024 | **64.20** | **71.53** | **54.98** | **78.94** | 68.32 | **65.11** | 48.39 |
-| [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 53 | 76.77 | **68.58** | 64.91 | **50.01** |
+| [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) | 1024 |  **64.53** | 70.46 | 56.25 | 81.6 | 69.13 | 65.84 | 48.99 |  
+| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) | 768 |  63.13 | 69.49 | 53.72 | 79.75 | 68.07 | 65.39 | 47.53 |  
+| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) | 512 | 57.82 | 61.77 | 49.11 | 70.41 | 63.96 | 60.92 | 44.18 |   
+| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) | 1024 | 64.20 | 71.53 | 54.98 | 78.94 | 68.32 | 65.11 | 48.39 |
+| [BAAI/bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 1024 | 63.53 | 70.55 | 53 | 76.77 | 68.58 | 64.91 | 50.01 |
 | [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) | 768 | 62.96 | 69.53 | 54.12 | 77.5 | 67.07 | 64.91 | 47.63 |
 | [multilingual-e5-large](https://huggingface.co/intfloat/multilingual-e5-large) | 1024 | 58.79 | 63.66 | 48.44 | 69.89 | 67.34 | 56.00 | 48.23 |
 | [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) | 512 | 58.27 |  63.07 | 49.45 | 70.35 | 63.64 | 61.48 | 45.09 |
@@ -112,8 +138,7 @@ evaluation.run(model)
 | [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 44.97 | 70.86 | 60.66 | 49.16 | 30.02 |
 
 
-
-### 1. Retrieval
+### 2.1. Retrieval
 | Model | T2Retrieval | MMarcoRetrieval | DuRetrieval | CovidRetrieval | CmedqaRetrieval | EcomRetrieval | MedicalRetrieval | VideoRetrieval | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
 | luotuo-bert-medium | 58.67 | 55.31 | 59.36 | 55.48 | 18.04 | 40.48 | 29.8 | 38.04 | 44.4 |  
@@ -131,7 +156,7 @@ evaluation.run(model)
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 84.82 | 81.28 | 86.94 | 74.06 | 42.4 | 66.12 | 59.39 | 77.19 | 71.53 |  
 
 
-### 2.  STS  
+### 2.2.  STS  
 | Model | ATEC | BQ | LCQMC | PAWSX | STSB | AFQMC | QBQTC | STS22 (zh) | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|
 | luotuo-bert-medium | 30.84 | 43.33 | 66.74 | 12.31 | 73.22 | 22.24 | 27.2 | 66.4 | 42.78 |
@@ -149,7 +174,7 @@ evaluation.run(model)
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 49.75 | 62.93 | 75.45 | 22.45 | 78.51 | 44.57 | 38.92 | 67.24 | 54.98 |
 
 
-### 3. PairClassification  
+### 2.3. PairClassification  
 | Model | Ocnli | Cmnli | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|  
 | luotuo-bert-medium | 60.7 | 72.55 | 66.62 |  
@@ -167,7 +192,7 @@ evaluation.run(model)
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 75.75 | 82.12 | 78.94 |  
 
 
-### 4. Classification  
+### 2.4. Classification  
 | Model | TNews | IFlyTek | MultilingualSentiment | JDReview | OnlineShopping | Waimai | AmazonReviewsClassification (zh) | MassiveIntentClassification (zh-CN) | MassiveScenarioClassification (zh-CN) | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
 | luotuo-bert-medium | 45.22 | 41.75 | 61.21 | 79.68 | 84.3 | 79.57 | 34.46 | 57.47 | 65.32 | 61 |
@@ -185,7 +210,7 @@ evaluation.run(model)
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 50.84 | 45.09 | 74.41 | 85.08 | 91.6 | 86.54 | 42.39 | 67.18 | 71.76 | 68.32 | 
 
 
-### 5. Reranking  
+### 2.5. Reranking  
 | Model | T2Reranking | MmarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|  
 | luotuo-bert-medium | 65.76 | 14.55 | 57.82 | 58.88 | 49.25 |  
@@ -202,7 +227,7 @@ evaluation.run(model)
 | [bge-large-zh-noinstruct](https://huggingface.co/BAAI/bge-large-zh-noinstruct) | 66.16 | 27.1 | 81.72 | 84.64 | 64.91 |  
 | [**bge-large-zh**](https://huggingface.co/BAAI/bge-large-zh) | 66.19 | 26.23 | 83.01 | 85.01 | 65.11 |  
 
-### 6. Clustering  
+### 2.6. Clustering  
 | Model | CLSClusteringS2S | CLSClusteringP2P | ThuNewsClusteringS2S | ThuNewsClusteringP2P | Avg |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|
 | luotuo-bert-medium | 33.46 | 37.01 | 48.26 | 58.83 | 44.39 |

@@ -1,4 +1,5 @@
 from collections import defaultdict
+
 from datasets import load_dataset, DatasetDict
 from mteb import AbsTaskRetrieval
 

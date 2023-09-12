@@ -1,8 +1,8 @@
-from mteb import RerankingEvaluator, AbsTaskReranking
 import logging
 
 import numpy as np
-
+from mteb import RerankingEvaluator, AbsTaskReranking
+from tqdm import tqdm
 
 logger = logging.getLogger(__name__)
 
@@ -24,9 +24,46 @@ class ChineseRerankingEvaluator(RerankingEvaluator):
         Computes the metrices in a batched way, by batching all queries and
         all documents together
         """
+
+        if hasattr(model, 'compute_score'):
+            return self.compute_metrics_batched_from_crossencoder(model)
+        else:
+            return self.compute_metrics_batched_from_biencoder(model)
+
+    def compute_metrics_batched_from_crossencoder(self, model):
         all_mrr_scores = []
         all_ap_scores = []
 
+        pairs = []
+        for sample in tqdm(self.samples, desc="Evaluating"):
+            for p in sample['positive']:
+                pairs.append([sample['query'], p])
+            for n in sample['negative']:
+                pairs.append([sample['query'], n])
+        all_scores = model.compute_score(pairs)
+        all_scores = np.array(all_scores)
+
+        start_inx = 0
+        for sample in tqdm(self.samples, desc="Evaluating"):
+            is_relevant = [True] * len(sample['positive']) + [False] * len(sample['negative'])
+            pred_scores = all_scores[start_inx:start_inx + len(is_relevant)]
+            start_inx += len(is_relevant)
+
+            pred_scores_argsort = np.argsort(-pred_scores)  # Sort in decreasing order
+            mrr = self.mrr_at_k_score(is_relevant, pred_scores_argsort, self.mrr_at_k)
+            ap = self.ap_score(is_relevant, pred_scores)
+
+            all_mrr_scores.append(mrr)
+            all_ap_scores.append(ap)
+
+        mean_ap = np.mean(all_ap_scores)
+        mean_mrr = np.mean(all_mrr_scores)
+
+        return {"map": mean_ap, "mrr": mean_mrr}
+
+    def compute_metrics_batched_from_biencoder(self, model):
+        all_mrr_scores = []
+        all_ap_scores = []
         logger.info("Encoding queries...")
         if isinstance(self.samples[0]["query"], str):
             if hasattr(model, 'encode_queries'):
@@ -45,7 +82,8 @@ class ChineseRerankingEvaluator(RerankingEvaluator):
             # In case the query is a list of strings, we get the most similar embedding to any of the queries
             all_query_flattened = [q for sample in self.samples for q in sample["query"]]
             if hasattr(model, 'encode_queries'):
-                all_query_embs = model.encode_queries(all_query_flattened, convert_to_tensor=True, batch_size=self.batch_size)
+                all_query_embs = model.encode_queries(all_query_flattened, convert_to_tensor=True,
+                                                      batch_size=self.batch_size)
             else:
                 all_query_embs = model.encode(all_query_flattened, convert_to_tensor=True, batch_size=self.batch_size)
         else:
@@ -64,12 +102,12 @@ class ChineseRerankingEvaluator(RerankingEvaluator):
         query_idx, docs_idx = 0, 0
         for instance in self.samples:
             num_subqueries = len(instance["query"]) if isinstance(instance["query"], list) else 1
-            query_emb = all_query_embs[query_idx : query_idx + num_subqueries]
+            query_emb = all_query_embs[query_idx: query_idx + num_subqueries]
             query_idx += num_subqueries
 
             num_pos = len(instance["positive"])
             num_neg = len(instance["negative"])
-            docs_emb = all_docs_embs[docs_idx : docs_idx + num_pos + num_neg]
+            docs_emb = all_docs_embs[docs_idx: docs_idx + num_pos + num_neg]
             docs_idx += num_pos + num_neg
 
             if num_pos == 0 or num_neg == 0:
@@ -98,6 +136,7 @@ def evaluate(self, model, split="test", **kwargs):
 
     return dict(scores)
 
+
 AbsTaskReranking.evaluate = evaluate
 
 
@@ -113,6 +152,38 @@ class T2Reranking(AbsTaskReranking):
             'category': 's2p',
             'eval_splits': ['dev'],
             'eval_langs': ['zh'],
+            'main_score': 'map',
+        }
+
+
+class T2RerankingZh2En(AbsTaskReranking):
+    @property
+    def description(self):
+        return {
+            'name': 'T2RerankingZh2En',
+            'hf_hub_name': "C-MTEB/T2Reranking_zh2en",
+            'description': 'T2Ranking: A large-scale Chinese Benchmark for Passage Ranking',
+            "reference": "https://arxiv.org/abs/2304.03679",
+            'type': 'Reranking',
+            'category': 's2p',
+            'eval_splits': ['dev'],
+            'eval_langs': ['zh2en'],
+            'main_score': 'map',
+        }
+
+
+class T2RerankingEn2Zh(AbsTaskReranking):
+    @property
+    def description(self):
+        return {
+            'name': 'T2RerankingEn2Zh',
+            'hf_hub_name': "C-MTEB/T2Reranking_en2zh",
+            'description': 'T2Ranking: A large-scale Chinese Benchmark for Passage Ranking',
+            "reference": "https://arxiv.org/abs/2304.03679",
+            'type': 'Reranking',
+            'category': 's2p',
+            'eval_splits': ['dev'],
+            'eval_langs': ['en2zh'],
             'main_score': 'map',
         }
 
