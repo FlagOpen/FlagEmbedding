@@ -47,20 +47,20 @@
 ## Model List
 |              Model              | Language | | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|:--------:|
-|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
-|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
-|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |  :trophy:  SOTA性能在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale 模型  | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: SOTA性能在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale模型 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
+|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
+|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |  :trophy:  SOTA性能在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale 模型  | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: SOTA性能在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale模型 | `为这个句子生成表示以用于检索相关文章：`  |
 
 
 \*: 如果您需要为一个**简短的查询搜索相关的文档**，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。在任何情况下，您都**不需要为候选文档增加指令**。
@@ -75,7 +75,7 @@
   <!-- ### 如何微调bge模型 -->
 遵循这个[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 来准备数据并微调模型。
 一些建议：
-- 按照这个[命令](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#data-format) 挖掘难负样本，这可以明显提高检索性能。
+- 按照这个[命令](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#hard-negatives) 挖掘难负样本，这可以明显提高检索性能。
 - `train_group_size` 参数在我们实验中（使用了难负样本）默认设为8。可以根据数据中的平均负样本数据进行设置：train_group_size=负样本数量+1。
 - `query_max_len` 和`passage_max_len`参数应该按照实际数据长度进行设置，数据都很长的话应该增大，但不能超过512。
 - 如果微调向量模型的准确率仍然不高，建议使用或者微调交叉编码器模型(bge-reranker)对top-k结果进行重新排序。

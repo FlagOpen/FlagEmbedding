@@ -81,8 +81,6 @@ we trained our model on 48 A100(40G) GPUs with a large batch size of 32,784.
 [wiki_atomic_edits](https://huggingface.co/datasets/wiki_atomic_edits),  [mlqa](https://huggingface.co/datasets/mlqa),
 [xlsum](https://huggingface.co/datasets/csebuetnlp/xlsum), and other data collected by BAAI teams.
 
-To, We release a dataset in [BAAI data hub]()
-
 
 #### 2.2 high-quality supervised pairs
 

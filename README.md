@@ -34,8 +34,8 @@ And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
 - 09/12/2023: New Release: 
-    - **New reranker model**: release a cross-encoder model bge-reranker-base, which is more powerful than embedding model. We recommend to use/fine-tune it to re-rank top-k documents returned by embedding models. 
-    - **update embedding model**: release bge-*-v1.5 embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
+    - **New reranker model**: release cross-encoder models `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`, which are more powerful than embedding model. We recommend to use/fine-tune them to re-rank top-k documents returned by embedding models. 
+    - **update embedding model**: release `bge-*-v1.5` embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
 - 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning.
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**
@@ -67,7 +67,7 @@ And it also can be used in vector databases for LLMs.
 
 \*: If you need to search the relevant passages to a query, we suggest to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. In all cases, **no instruction** needs to be added to passages.
 
-\**: To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
+\**: Different embedding model, reranker is a cross-encoder, which cannot be used to generate embedding. To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
 For examples, use bge embedding model to retrieve top 100 relevant documents, and then use bge reranker to re-rank the top 100 document to get the final top-3 results.
 
 
@@ -79,7 +79,7 @@ For examples, use bge embedding model to retrieve top 100 relevant documents, an
   <!-- ### How to fine-tune bge embedding model? -->
 Following this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) to prepare data and fine-tune your model. 
 Some suggestions:
-- Mine hard negatives following this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#data-format), which can improve the retrieval performance.
+- Mine hard negatives following this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#hard-negatives), which can improve the retrieval performance.
 - If you pre-train bge on your data, the pre-trained model cannot be directly used to calculate similarity, and it must be fine-tuned with contrastive learning before computing similarity.
 - If the accuracy of the fine-tuned model is still not high, it is recommended to use/fine-tune the cross-encoder model (bge-reranker) to re-rank top-k results. Hard negatives also are needed to fine-tune reranker.
 
@@ -363,8 +363,8 @@ Cross-encoder will perform full-attention over the input pair,
 which is more accurate than embedding model (i.e., bi-encoder) but more time-consuming than embedding model.
 Therefore, it can be used to re-rank the top-k documents returned by embedding model.
 We train the cross-encoder on a multilingual pair data, 
-The data format is the same as embedding model, so you can fine-tune it easily following our example. 
-More details pelease refer to [./FlagEmbedding/reranker/README.md](./FlagEmbedding/reranker/README.md)
+The data format is the same as embedding model, so you can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker). 
+More details pelease refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
 
 ## Contact

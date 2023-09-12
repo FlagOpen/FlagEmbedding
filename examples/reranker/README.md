@@ -22,7 +22,7 @@ pip install -e .
 ## 2. Data format
 
 The data format for reranker is the same as [embedding fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#data-format).
-Besides, we strongly suggest to [mine hard negatives](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#data-format) to fine-tune reranker.
+Besides, we strongly suggest to [mine hard negatives](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#hard-negatives) to fine-tune reranker.
 
 
 ## Train
