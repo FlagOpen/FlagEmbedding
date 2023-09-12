@@ -1,5 +1,5 @@
-# Finetune
-In this example, we show how to finetune the baai-general-embedding with your data.
+# Finetune cross-encoder
+In this example, we show how to finetune the cross-encoder reranker with your data.
 
 ## 1. Installation
 * **with pip**
@@ -61,7 +61,7 @@ More training arguments please refer to [transformers.TrainingArguments](https:/
 
 ```python
 from FlagEmbedding import FlagReranker
-reranker = FlagReranker(your_model_path)
+reranker = FlagReranker('BAAI/bge-reranker-base', use_fp16=True) #use fp16 can speed up computing
 
 score = reranker.compute_score(['query', 'passage'])
 print(score)
@@ -70,14 +70,15 @@ scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'T
 print(scores)
 ```
 
+
 #### Using Huggingface transformers
 
 ```python
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer, BatchEncoding, PreTrainedTokenizerFast
 
-tokenizer = AutoTokenizer.from_pretrained(your_model_path)
-model = AutoModelForSequenceClassification.from_pretrained(your_model_path)
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-base')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-base')
 model.eval()
 
 pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
