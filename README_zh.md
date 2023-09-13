@@ -47,7 +47,7 @@
 ## Model List
 |              Model              | Language | | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|:--------:|
-|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
+|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
 |  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
 |  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
 |  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
@@ -65,7 +65,7 @@
 
 \*: 如果您需要为一个**简短的查询搜索相关的文档**，您需要在查询中添加指令；在其他情况下，不需要指令，直接使用原始查询即可。在任何情况下，您都**不需要为候选文档增加指令**。
 
-\**: reranker为交叉编码器，模型与向量模型不同，使用方式也与向量模型不同。为了平衡准确率和时间成本，交叉编码器一般用于对其他简单模型检索到的top-k文档进行重排序。例如，使用bge向量模型检索前100个相关文档，然后使用bge reranker对前100个文档重新排序，得到最终的top-3结果。
+\**: 不同于向量模型输出向量，reranker交叉编码器使用问题和文档作为输入，直接输出相似度。为了平衡准确率和时间成本，交叉编码器一般用于对其他简单模型检索到的top-k文档进行重排序。例如，使用bge向量模型检索前100个相关文档，然后使用bge reranker对前100个文档重新排序，得到最终的top-3结果。
 
 ## 常见问题
 
@@ -107,7 +107,6 @@
   <summary>3. 什么时候需要添加查询指令 </summary>
 
   <!-- ### 什么时候需要添加查询指令 -->
-**建议使用bge v1.5，它缓解了相似度分布的问题。** 
 
 对于一个使用短查询寻找相关长文档的检索任务，查询与文档之间长度非常不一致，推荐为短查询添加指令。其他任务，推荐不添加指令。
 **最好的选择方式，是根据实际情况选择其中表现最好的方式。**
@@ -240,6 +239,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 ### Usage for Reranker
 
+不同于向量模型，reranker无法对单个文本输出向量，其需要输入一个文本对直接计算分数。
 你可以通过在reranker中输入query和passage来获得相关度分数，分数越高代表越相关。
 该重排序器基于交叉熵损失进行优化，因此相关性分数没有一个特定的数值范围。
 
@@ -253,10 +253,10 @@ pip install -U FlagEmbedding
 from FlagEmbedding import FlagReranker
 reranker = FlagReranker('BAAI/bge-reranker-base', use_fp16=True) #设置 fp16 为True可以加快推理速度，效果会有可以忽略的下降
 
-score = reranker.compute_score(['query', 'passage'])
+score = reranker.compute_score(['query', 'passage']) # 计算 query 和 passage的相似度
 print(score)
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
+scores = reranker.compute_score([['query 1', 'passage 1'], ['query 2', 'passage 2']])
 print(scores)
 ```
 
@@ -371,7 +371,7 @@ with torch.no_grad():
 
 交叉编码器将对查询和答案实时计算相关性分数，这比向量模型(即双编码器)更准确，但比向量模型更耗时。
 因此，它可以用来对嵌入模型返回的前k个文档重新排序。
-我们在多语言数据上训练了交叉编码器，数据格式与向量模型相同，因此您可以根据我们的[示例]() 轻松地对其进行微调。
+我们在多语言数据上训练了交叉编码器，数据格式与向量模型相同，因此您可以根据我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) 轻松地对其进行微调。
 更多细节请参考[./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/reranker/README.md)
 
  

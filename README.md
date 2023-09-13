@@ -67,9 +67,8 @@ And it also can be used in vector databases for LLMs.
 
 \*: If you need to search the relevant passages to a query, we suggest to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. In all cases, **no instruction** needs to be added to passages.
 
-\**: Different embedding model, reranker is a cross-encoder, which cannot be used to generate embedding. To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
+\**: Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
 For examples, use bge embedding model to retrieve top 100 relevant documents, and then use bge reranker to re-rank the top 100 document to get the final top-3 results.
-
 
 ## Frequently asked questions
 
@@ -235,6 +234,7 @@ print("Sentence embeddings:", sentence_embeddings)
 
 ### Usage for Reranker
 
+Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. 
 You can get a relevance score by inputting query and passage to the reranker. 
 The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
 
