@@ -32,7 +32,6 @@ We pre-train the model following the method [RetroMAE](https://github.com/staoxi
 which shows promising improvements in retrieval tasks. 
 The pre-training was conducted on 24 A100(40G) GPUs with a batch size of 720. 
 In RetroMAE, the mask ratio of the encoder and decoder are 0.3 and 0.5, respectively.
-We used the AdamW optimizer and the learning rate is 2e-5.
 
 **You can pretrain your model following our [example](https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/pretrain/README.md).**
 
@@ -66,8 +65,9 @@ we use a third party model: [text2vec](https://huggingface.co/shibing624/text2ve
 to score the strength of relation for each text pair.
 We empirically choose a threshold 0.43, and drop
 the samples whose scores are below the threshold.
-Using automatic mixed precision training and gradient checkpointing method,
-we trained our model on 48 A100(40G) GPUs with a large batch size of 32,784. 
+Using automatic mixed precision training and gradient checkpointing method,.
+For english, we trained our model on 48 A100(40G) GPUs with a large batch size of 32,784. 
+For chinese, we trained our model on 24 A100(40G) GPUs with a large batch size of 19,200.  
 
 
 **Training data**:
