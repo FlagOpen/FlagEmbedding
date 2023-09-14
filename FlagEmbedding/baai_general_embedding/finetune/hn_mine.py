@@ -1,7 +1,7 @@
 import argparse
 import json
 import random
-
+import numpy as np
 import faiss
 from tqdm import tqdm
 
@@ -24,6 +24,7 @@ def get_args():
 
 def create_index(embeddings, use_gpu):
     index = faiss.IndexFlatIP(len(embeddings[0]))
+    embeddings = np.asarray([np.asarray(x, dtype=np.float32) for x in embeddings])
     if use_gpu:
         co = faiss.GpuMultipleClonerOptions()
         co.shard = True
@@ -40,7 +41,7 @@ def batch_search(index,
     all_scores, all_inxs = [], []
     for start_index in tqdm(range(0, len(query), batch_size), desc="Batches", disable=len(query) < 256):
         batch_query = query[start_index:start_index + batch_size]
-        batch_scores, batch_inxs = index.search(batch_query, k=topk)
+        batch_scores, batch_inxs = index.search(np.asarray(batch_query, dtype=np.float32), k=topk)
         all_scores.extend(batch_scores.tolist())
         all_inxs.extend(batch_inxs.tolist())
     return all_scores, all_inxs
@@ -73,7 +74,7 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
     print(f'inferencing embedding for queries (number={len(queries)})--------------')
     q_vecs = model.encode_queries(queries, batch_size=256)
 
-    print('creat index and search------------------')
+    print('create index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
     _, all_inxs = batch_search(index, q_vecs, topk=sample_range[-1])
     assert len(all_inxs) == len(train_data)
