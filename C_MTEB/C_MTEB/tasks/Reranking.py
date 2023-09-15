@@ -188,11 +188,11 @@ class T2RerankingEn2Zh(AbsTaskReranking):
         }
 
 
-class MmarcoReranking(AbsTaskReranking):
+class MMarcoReranking(AbsTaskReranking):
     @property
     def description(self):
         return {
-            'name': 'MmarcoReranking',
+            'name': 'MMarcoReranking',
             'hf_hub_name': "C-MTEB/Mmarco-reranking",
             'description': 'mMARCO is a multilingual version of the MS MARCO passage ranking dataset',
             "reference": "https://github.com/unicamp-dl/mMARCO",

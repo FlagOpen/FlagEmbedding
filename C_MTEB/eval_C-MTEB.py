@@ -38,7 +38,7 @@ if __name__ == '__main__':
         if task in ['T2Retrieval', 'MMarcoRetrieval', 'DuRetrieval',
                     'CovidRetrieval', 'CmedqaRetrieval',
                     'EcomRetrieval', 'MedicalRetrieval', 'VideoRetrieval',
-                    'T2Reranking', 'MmarcoReranking', 'CMedQAv1', 'CMedQAv2']:
+                    'T2Reranking', 'MMarcoReranking', 'CMedQAv1', 'CMedQAv2']:
             if args.model_name_or_path not in query_instruction_for_retrieval_dict:
                 instruction = "为这个句子生成表示以用于检索相关文章："
                 # instruction = None

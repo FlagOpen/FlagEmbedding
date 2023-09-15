@@ -101,7 +101,7 @@ evaluation.run(model)
 
 ### 1. Reranker
 
-| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MmarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
+| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MMarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
 | text2vec-base-multilingual | 64.66 | 62.94 | 62.51 | 14.37 | 48.46 | 48.6 | 50.26 |  
 | multilingual-e5-small | 65.62 | 60.94 | 56.41 | 29.91 | 67.26 | 66.54 | 57.78 |  
@@ -261,7 +261,7 @@ An overview of tasks and datasets available in MTEB-chinese is provided in the f
 | [MedicalRetrieval](https://arxiv.org/abs/2203.03367) | [C-MTEB/MedicalRetrieval](https://huggingface.co/datasets/C-MTEB/MedicalRetrieval) | Passage retrieval dataset collected from Alibaba search engine systems in medical domain | Retrieval | s2p | 1,000  |
 | [VideoRetrieval](https://arxiv.org/abs/2203.03367) | [C-MTEB/VideoRetrieval](https://huggingface.co/datasets/C-MTEB/VideoRetrieval) | Passage retrieval dataset collected from Alibaba search engine systems in video domain | Retrieval | s2p | 1,000  |
 | [T2Reranking](https://arxiv.org/abs/2304.03679) | [C-MTEB/T2Reranking](https://huggingface.co/datasets/C-MTEB/T2Reranking) | T2Ranking: A large-scale Chinese Benchmark for Passage Ranking | Reranking | s2p | 24,382 | 
-| [MMarcoRetrieval](https://github.com/unicamp-dl/mMARCO) | [C-MTEB/Mmarco-reranking](https://huggingface.co/datasets/C-MTEB/Mmarco-reranking) | mMARCO is a multilingual version of the MS MARCO passage ranking dataset | Reranking | s2p | 7,437 | 
+| [MMarcoRetrieval](https://github.com/unicamp-dl/mMARCO) | [C-MTEB/MMarco-reranking](https://huggingface.co/datasets/C-MTEB/Mmarco-reranking) | mMARCO is a multilingual version of the MS MARCO passage ranking dataset | Reranking | s2p | 7,437 | 
 | [CMedQAv1](https://github.com/zhangsheng93/cMedQA) | [C-MTEB/CMedQAv1-reranking](https://huggingface.co/datasets/C-MTEB/CMedQAv1-reranking) | Chinese community medical question answering | Reranking | s2p |  2,000  |
 | [CMedQAv2](https://github.com/zhangsheng93/cMedQA2) | [C-MTEB/CMedQAv2-reranking](https://huggingface.co/datasets/C-MTEB/C-MTEB/CMedQAv2-reranking) | Chinese community medical question answering | Reranking | s2p |  4,000  |
 | [Ocnli](https://arxiv.org/abs/2010.05444) | [C-MTEB/OCNLI](https://huggingface.co/datasets/C-MTEB/OCNLI) | Original Chinese Natural Language Inference dataset | PairClassification | s2s |  3,000  |

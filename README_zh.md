@@ -339,7 +339,7 @@ with torch.no_grad():
 - **Reranking**:
 评估脚本参考 [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/).
 
-| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MmarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
+| Model | T2Reranking | T2RerankingZh2En\* | T2RerankingEn2Zh\* | MMarcoReranking | CMedQAv1 | CMedQAv2 | Avg |  
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|  
 | text2vec-base-multilingual | 64.66 | 62.94 | 62.51 | 14.37 | 48.46 | 48.6 | 50.26 |  
 | multilingual-e5-small | 65.62 | 60.94 | 56.41 | 29.91 | 67.26 | 66.54 | 57.78 |  
