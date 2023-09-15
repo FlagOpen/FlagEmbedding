@@ -22,6 +22,7 @@
         <a href="#evaluation">模型评估</a> |
         <a href="#train">模型训练</a> |
         <a href="#contact">Contact</a> |
+        <a href="#citation">Citation</a> |
         <a href="#license">License</a> 
     <p>
 </h4>
@@ -32,6 +33,7 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
+- 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
     - **新增重排模型**：开源交叉编码器模型bge-reranker，具有比向量模型更强大的排序能力。非常建议使用或者微调它来重新排序向量模型返回的top-k文档，提高最终结果的相关性。
     - **更新向量模型**：发布bge-*-v1.5向量模型，缓解相似度分布问题，提升无指令情况下的检索能力（但检索任务仍建议使用指令）
@@ -362,7 +364,7 @@ with torch.no_grad():
 ### BAAI Embedding 
 
 
-我们使用retromae对模型进行预训练，再用对比学习在大规模成对数据上训练模型。
+我们使用[retromae](https://github.com/staoxiao/RetroMAE) 对模型进行预训练，再用对比学习在大规模成对数据上训练模型。
 **你可以按照我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 在本地数据上微调嵌入模型。**
 我们还提供了一个[预训练示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain) 。
 请注意，预训练的目标是重构文本，预训练后的模型无法直接用于相似度计算，需要进行微调之后才可以用于相似度计算。
@@ -382,6 +384,20 @@ with torch.no_grad():
 如果您有任务疑问或者建议，欢迎提交issue和PR, 
 也可以发送邮件给 Shitao Xiao(stxiao@baai.ac.cn) and  Zheng Liu(liuzheng@baai.ac.cn). 
 
+
+## Citation
+
+如果您觉得我们的工作有所帮助，请考虑引用以下论文:
+```
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
 
 ## License
 FlagEmbedding基于[MIT License](LICENSE)开源协议。发布的模型权重可商用。

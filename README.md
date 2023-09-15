@@ -22,6 +22,7 @@
         <a href="#evaluation">Evaluation</a> |
         <a href="#train">Train</a> |
         <a href="#contact">Contact</a> |
+        <a href="#citation">Citation</a> |
         <a href="#license">License</a> 
     <p>
 </h4>
@@ -33,6 +34,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
+- 09/15/2023: Release [paper](https://arxiv.org/pdf/2309.07597.pdf) and [dataset](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: New Release: 
     - **New reranker model**: release cross-encoder models `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`, which are more powerful than embedding model. We recommend to use/fine-tune them to re-rank top-k documents returned by embedding models. 
     - **update embedding model**: release `bge-*-v1.5` embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
@@ -165,7 +167,7 @@ pip install -U sentence-transformers
 from sentence_transformers import SentenceTransformer
 sentences_1 = ["样例数据-1", "样例数据-2"]
 sentences_2 = ["样例数据-3", "样例数据-4"]
-model = SentenceTransformer('BAAI/bge-large-zh')
+model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
 embeddings_1 = model.encode(sentences_1, normalize_embeddings=True)
 embeddings_2 = model.encode(sentences_2, normalize_embeddings=True)
 similarity = embeddings_1 @ embeddings_2.T
@@ -351,7 +353,7 @@ See [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/) for 
 
 ### BAAI Embedding 
 
-We pre-train the models using retromae and train them on large-scale pairs data using contrastive learning. 
+We pre-train the models using [retromae](https://github.com/staoxiao/RetroMAE) and train them on large-scale pairs data using contrastive learning. 
 **You can fine-tune the embedding model on your data following our [examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune).**
 We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
@@ -373,6 +375,20 @@ More details pelease refer to [./FlagEmbedding/reranker/README.md](https://githu
 If you have any question or suggestion related to this project, feel free to open an issue or pull request.
 You also can email Shitao Xiao(stxiao@baai.ac.cn) and Zheng Liu(liuzheng@baai.ac.cn). 
 
+
+## Citation
+
+If you find our work helpful, please cite us:
+```
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
 
 ## License
 FlagEmbedding is licensed under the [MIT License](https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE). The released models can be used for commercial purposes free of charge.
