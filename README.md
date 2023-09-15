@@ -132,7 +132,9 @@ If it doesn't work for you, you can see [FlagEmbedding](https://github.com/FlagO
 from FlagEmbedding import FlagModel
 sentences_1 = ["样例数据-1", "样例数据-2"]
 sentences_2 = ["样例数据-3", "样例数据-4"]
-model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
+model = FlagModel('BAAI/bge-large-zh-v1.5', 
+                  query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
+                  use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 embeddings_1 = model.encode(sentences_1)
 embeddings_2 = model.encode(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
@@ -178,7 +180,7 @@ queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
 
-model = SentenceTransformer('BAAI/bge-large-zh')
+model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
 q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
@@ -189,7 +191,7 @@ scores = q_embeddings @ p_embeddings.T
 You can use `bge` in langchain like this:
 ```python
 from langchain.embeddings import HuggingFaceBgeEmbeddings
-model_name = "BAAI/bge-small-en"
+model_name = "BAAI/bge-large-en-v1.5"
 model_kwargs = {'device': 'cuda'}
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 model = HuggingFaceBgeEmbeddings(
@@ -213,8 +215,8 @@ import torch
 sentences = ["样例数据-1", "样例数据-2"]
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh')
-model = AutoModel.from_pretrained('BAAI/bge-large-zh')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh-v1.5')
+model = AutoModel.from_pretrained('BAAI/bge-large-zh-v1.5')
 model.eval()
 
 # Tokenize sentences
@@ -244,10 +246,10 @@ The reranker is optimized based cross-entropy loss, so the relevance score is no
 pip install -U FlagEmbedding
 ```
 
-Get relevance score:
+Get relevance scores (higher scores indicate more relevance):
 ```python
 from FlagEmbedding import FlagReranker
-reranker = FlagReranker('BAAI/bge-reranker-base', use_fp16=True) #use fp16 can speed up computing
+reranker = FlagReranker('BAAI/bge-reranker-large', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
 print(score)
@@ -261,10 +263,10 @@ print(scores)
 
 ```python
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, BatchEncoding, PreTrainedTokenizerFast
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-base')
-model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-base')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-large')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-large')
 model.eval()
 
 pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
@@ -343,7 +345,7 @@ See [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/) for 
 | [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | 67.28 | 63.95 | 60.45 | 35.46 | 81.26 | 84.1 | 65.42 |  
 | [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | 67.6 | 64.03 | 61.44 | 37.16 | 82.15 | 84.18 | 66.09 |  
 
-\* : T2RerankingZh2En and T2RerankingEn2Zh are cross-language retrieval task
+\* : T2RerankingZh2En and T2RerankingEn2Zh are cross-language retrieval tasks
 
 ## Train
 

@@ -137,7 +137,9 @@ pip install -U FlagEmbedding
 ```python
 from FlagEmbedding import FlagModel
 sentences = ["样例数据-1", "样例数据-2"]
-model = FlagModel('BAAI/bge-large-zh', query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：")
+model = FlagModel('BAAI/bge-large-zh-v1.5', 
+                  query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
+                  use_fp16=True) # 设置use_fp16为True可以加快计算，效果会稍有下降
 embeddings_1 = model.encode(sentences)
 embeddings_2 = model.encode(sentences)
 similarity = embeddings_1 @ embeddings_2.T
@@ -171,7 +173,7 @@ pip install -U sentence-transformers
 ```python
 from sentence_transformers import SentenceTransformer
 sentences = ["样例数据-1", "样例数据-2"]
-model = SentenceTransformer('BAAI/bge-large-zh')
+model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
 embeddings_1 = model.encode(sentences, normalize_embeddings=True)
 embeddings_2 = model.encode(sentences, normalize_embeddings=True)
 similarity = embeddings_1 @ embeddings_2.T
@@ -184,7 +186,7 @@ print(similarity)
 queries = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
 instruction = "为这个句子生成表示以用于检索相关文章："
-model = SentenceTransformer('BAAI/bge-large-zh')
+model = SentenceTransformer('BAAI/bge-large-zh-v1.5')
 q_embeddings = model.encode([instruction+q for q in queries], normalize_embeddings=True)
 p_embeddings = model.encode(passages, normalize_embeddings=True)
 scores = q_embeddings @ p_embeddings.T
@@ -198,7 +200,7 @@ scores = q_embeddings @ p_embeddings.T
 在Langchian中使用bge模型：
 ```python
 from langchain.embeddings import HuggingFaceBgeEmbeddings
-model_name = "BAAI/bge-small-en"
+model_name = "BAAI/bge-large-en-v1.5"
 model_kwargs = {'device': 'cpu'}
 encode_kwargs = {'normalize_embeddings': True} # set True to compute cosine similarity
 model = HuggingFaceBgeEmbeddings(
@@ -218,8 +220,8 @@ import torch
 sentences = ["样例数据-1", "样例数据-2"]
 
 # Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh')
-model = AutoModel.from_pretrained('BAAI/bge-large-zh')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh-v1.5')
+model = AutoModel.from_pretrained('BAAI/bge-large-zh-v1.5')
 
 # Tokenize sentences
 encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
@@ -248,10 +250,10 @@ print("Sentence embeddings:", sentence_embeddings)
 pip install -U FlagEmbedding
 ```
 
-计算相关分数:
+计算相关分数，越高表示越相关:
 ```python
 from FlagEmbedding import FlagReranker
-reranker = FlagReranker('BAAI/bge-reranker-base', use_fp16=True) #设置 fp16 为True可以加快推理速度，效果会有可以忽略的下降
+reranker = FlagReranker('BAAI/bge-reranker-large', use_fp16=True) #设置 fp16 为True可以加快推理速度，效果会有可以忽略的下降
 
 score = reranker.compute_score(['query', 'passage']) # 计算 query 和 passage的相似度
 print(score)
@@ -265,10 +267,10 @@ print(scores)
 
 ```python
 import torch
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, BatchEncoding, PreTrainedTokenizerFast
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-base')
-model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-base')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-large')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-large')
 model.eval()
 
 pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]

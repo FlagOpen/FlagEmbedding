@@ -79,8 +79,9 @@ For chinese, we trained our model on 24 A100(40G) GPUs with a large batch size o
 - Chinese: [wudao](https://data.baai.ac.cn/details/WuDaoCorporaText), [cmrc2018](https://huggingface.co/datasets/cmrc2018), [dureader](https://github.com/baidu/DuReader),
 [simclue](https://github.com/CLUEbenchmark/SimCLUE), [csl](https://arxiv.org/abs/2209.05034), [amazon_reviews_multi](amazon_reviews_multi),
 [wiki_atomic_edits](https://huggingface.co/datasets/wiki_atomic_edits),  [mlqa](https://huggingface.co/datasets/mlqa),
-[xlsum](https://huggingface.co/datasets/csebuetnlp/xlsum), and other data collected by BAAI teams.
+[xlsum](https://huggingface.co/datasets/csebuetnlp/xlsum), and other data collected by BAAI teams from internet (including QA, news and paper).
 
+We release the dataset at https://data.baai.ac.cn/details/BAAI-MTP .
 
 #### 2.2 high-quality supervised pairs
 
