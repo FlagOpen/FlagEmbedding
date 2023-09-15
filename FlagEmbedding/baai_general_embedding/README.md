@@ -26,7 +26,6 @@ pip install -e .
 This section will introduce the way we used to train the general embedding. 
 
 
-
 ### 1. Pre-train
 We pre-train the model following the method [RetroMAE](https://github.com/staoxiao/RetroMAE), 
 which shows promising improvements in retrieval tasks. 

@@ -24,7 +24,7 @@ def get_args():
 
 def create_index(embeddings, use_gpu):
     index = faiss.IndexFlatIP(len(embeddings[0]))
-    embeddings = np.asarray([np.asarray(x, dtype=np.float32) for x in embeddings])
+    embeddings = np.asarray(embeddings, dtype=np.float32)
     if use_gpu:
         co = faiss.GpuMultipleClonerOptions()
         co.shard = True

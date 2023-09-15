@@ -108,7 +108,11 @@ please select an appropriate similarity threshold based on the similarity distri
   <summary>3. When does the query instruction need to be used</summary>
 
   <!-- ### When does the query instruction need to be used -->
-  
+
+For the `bge-*-v1.5`, we improve its retrieval ability when not using instruction. 
+No instruction only has a slight degradation in retrieval performance compared with using instruction. 
+So you generate embedding without instruction in all cases for convenience.
+ 
 For a retrieval task that uses short queries to find long related documents, 
 it is recommended to add instructions for these short queries.
 **The best method to decide whether to add instructions for queries is choosing the setting that achieves better performance on your task.**

@@ -37,11 +37,11 @@ Hard negatives is a widely used method to improve the quality of sentence embedd
 You can mine hard negatives following this command:
 ```bash
 python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
---model_name_or_path BAAI/bge-base-en \
+--model_name_or_path BAAI/bge-base-en-v1.5 \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
 --range_for_sampling 2-200 \
---query_instruction_for_retrieval "Represent this sentence for searching relevant passages: "
+--use_gpu_for_searching
 ```
 
 - `input_file`: json data for finetuning. This script will retrieval top-k documents for each query, 
@@ -58,7 +58,7 @@ The format of this file is the same as pretrain data. If input a candidate_pool,
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.baai_general_embedding.finetune.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-large-en \
+--model_name_or_path BAAI/bge-large-en-v1.5 \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --fp16 \
