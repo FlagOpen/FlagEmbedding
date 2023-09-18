@@ -372,7 +372,7 @@ which is more accurate than embedding model (i.e., bi-encoder) but more time-con
 Therefore, it can be used to re-rank the top-k documents returned by embedding model.
 We train the cross-encoder on a multilingual pair data, 
 The data format is the same as embedding model, so you can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker). 
-More details pelease refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
+More details please refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
 
 ## Contact
