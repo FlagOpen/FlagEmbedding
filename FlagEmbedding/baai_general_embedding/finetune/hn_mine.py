@@ -62,7 +62,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
     for line in open(input_file):
         line = json.loads(line.strip())
         train_data.append(line)
-        corpus.extend(line['neg'])
+        corpus.extend(line['pos'])
+        if 'neg' in line:
+            corpus.extend(line['neg'])
         queries.append(line['query'])
 
     if candidate_pool is not None:
