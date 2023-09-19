@@ -114,7 +114,7 @@ please select an appropriate similarity threshold based on the similarity distri
 
 For the `bge-*-v1.5`, we improve its retrieval ability when not using instruction. 
 No instruction only has a slight degradation in retrieval performance compared with using instruction. 
-So you generate embedding without instruction in all cases for convenience.
+So you can generate embedding without instruction in all cases for convenience.
  
 For a retrieval task that uses short queries to find long related documents, 
 it is recommended to add instructions for these short queries.

@@ -85,7 +85,7 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `temperature`: It will influence the distribution of similarity scores.
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
-- `query_instruction_for_retrieval`: instruction for query, which will be added to each query.
+- `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
