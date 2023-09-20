@@ -41,7 +41,8 @@ torchrun --nproc_per_node {number of gpus} \
 --dataloader_drop_last True \
 --train_group_size 16 \
 --max_len 512 \
---weight_decay 0.01 
+--weight_decay 0.01 \
+--logging_steps 10 
 ```
 
 **some important arguments**:

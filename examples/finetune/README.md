@@ -58,7 +58,7 @@ The format of this file is the same as pretrain data. If input a candidate_pool,
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.baai_general_embedding.finetune.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-large-en-v1.5 \
+--model_name_or_path BAAI/bge-large-zh-v1.5 \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 1e-5 \
 --fp16 \
@@ -71,6 +71,7 @@ torchrun --nproc_per_node {number of gpus} \
 --passage_max_len 256 \
 --train_group_size 2 \
 --negatives_cross_device \
+--logging_steps 10 \
 --query_instruction_for_retrieval "为这个句子生成表示以用于检索相关文章：" 
 ```
 
