@@ -17,6 +17,8 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name_or_path', default="BAAI/bge-large-en", type=str)
     parser.add_argument('--task_type', default=None, type=str, help="task type. Default is None, which means using all task types")
+    parser.add_argument('--add_instruction', action='store_true', help="whether to add instruction for query")
+
     return parser.parse_args()
 
 
@@ -39,9 +41,11 @@ if __name__ == '__main__':
                                              'NFCorpus', 'MSMARCO', 'HotpotQA', 'FiQA2018',
                                              'FEVER', 'DBPedia', 'ClimateFEVER', 'SCIDOCS', ]:
             if args.model_name_or_path not in query_instruction_for_retrieval_dict:
-                instruction = "Represent this sentence for searching relevant passages: "
-                # instruction = None
-                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction=Represent this sentence for searching relevant passages: ")
+                if args.add_instruction:
+                    instruction = "Represent this sentence for searching relevant passages: "
+                else:
+                    instruction = None
+                print(f"{args.model_name_or_path} not in query_instruction_for_retrieval_dict, set instruction={instruction}")
             else:
                 instruction = query_instruction_for_retrieval_dict[args.model_name_or_path]
         else:
