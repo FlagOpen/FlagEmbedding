@@ -67,8 +67,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
             corpus.extend(line['neg'])
         queries.append(line['query'])
 
-    if candidate_pool is not None and not isinstance(candidate_pool, list):
-        candidate_pool = get_corpus(candidate_pool)
+    if candidate_pool is not None:
+        if not isinstance(candidate_pool, list):
+            candidate_pool = get_corpus(candidate_pool)
         corpus = list(set(candidate_pool))
     else:
         corpus = list(set(corpus))
