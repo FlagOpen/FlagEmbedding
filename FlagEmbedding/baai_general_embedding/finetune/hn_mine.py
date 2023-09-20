@@ -69,7 +69,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
 
     if candidate_pool is not None and not isinstance(candidate_pool, list):
         candidate_pool = get_corpus(candidate_pool)
-    corpus = list(set(candidate_pool))
+        corpus = list(set(candidate_pool))
+    else:
+        corpus = list(set(corpus))
 
     print(f'inferencing embedding for corpus (number={len(corpus)})--------------')
     p_vecs = model.encode(corpus, batch_size=256)
