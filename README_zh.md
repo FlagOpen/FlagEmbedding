@@ -319,7 +319,7 @@ with torch.no_grad():
 
 - **C-MTEB**:  
 
-我们建立了一个中文文本嵌入的基准测试集合C-MTEB，其包括6个任务的31个数据集。
+我们建立了一个中文文本嵌入的基准测试集合C-MTEB，其包括6个任务的31个数据集。 
 请参阅[C_MTEB](C_MTEB/README.md)获取详细介绍。
 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
@@ -340,6 +340,9 @@ with torch.no_grad():
 | [luotuo](https://huggingface.co/silk-road/luotuo-bert-medium) | 1024 | 49.37 |  44.4 | 42.78 | 66.62 | 61 | 49.25 | 44.39 |
 | [text2vec-base](https://huggingface.co/shibing624/text2vec-base-chinese) | 768 |  47.63 | 38.79 | 43.41 | 67.41 | 62.19 | 49.45 | 37.66 |
 | [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 44.97 | 70.86 | 60.66 | 49.16 | 30.02 |
+
+所有的模型文件都已上传到huggingface上： https://huggingface.co/BAAI. 
+如果你无法连接到huggingface,可以通过智源网站进行下载： https://model.baai.ac.cn/models .
 
 
 - **Reranking**:
@@ -389,7 +392,7 @@ with torch.no_grad():
 
 ## Citation
 
-如果您觉得我们的工作有所帮助，请考虑引用以下论文:
+如果您觉得我们的工作有所帮助，请考虑点个星 :star: 和引用以下论文:
 ```
 @misc{bge_embedding,
       title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
