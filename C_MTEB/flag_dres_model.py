@@ -73,7 +73,7 @@ class FlagDRESModel(DRESModel):
                 max_length=512,
             ).to(self.device)
             last_hidden_state = self.model(**inputs, return_dict=True).last_hidden_state
-            embeddings = last_hidden_state[:, 0]
+            embeddings = self.pooling(last_hidden_state, inputs['attention_mask'])
             if self.normalize_embeddings:
                 embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
             embeddings = cast(torch.Tensor, embeddings)
@@ -81,9 +81,14 @@ class FlagDRESModel(DRESModel):
 
         return np.concatenate(all_embeddings, axis=0)
 
-
-
-
-
+    def pooling(self,
+                last_hidden_state: torch.Tensor,
+                attention_mask: torch.Tensor=None):
+        if self.pooling_method == 'cls':
+            return last_hidden_state[:, 0]
+        elif self.pooling_method == 'mean':
+            s = torch.sum(last_hidden_state * attention_mask.unsqueeze(-1).float(), dim=1)
+            d = attention_mask.sum(dim=1, keepdim=True).float()
+            return s / d
 
 
