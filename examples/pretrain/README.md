@@ -40,7 +40,8 @@ torchrun --nproc_per_node {number of gpus} \
 --per_device_train_batch_size {batch size; set 1 for toy data} \
 --dataloader_drop_last True \
 --max_seq_length 512 \
---logging_steps 10
+--logging_steps 10 \
+--dataloader_num_workers 12
 ```
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 

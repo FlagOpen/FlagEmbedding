@@ -16,6 +16,7 @@ setup(
         'torch>=1.6.0',
         'transformers>=4.18.0',
         'datasets',
-        'accelerate>=0.20.1'
+        'accelerate>=0.20.1',
+        'sentence_transformers',
     ],
 )
