@@ -18,7 +18,7 @@ For development, install as editable:
 pip install -e .
 ```
 
-** We provide a [example]() to fine-tune the reranker.**
+** We provide a [example](https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/reranker/README.md) to fine-tune the reranker.**
 
 ## Train
 
