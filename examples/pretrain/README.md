@@ -25,7 +25,7 @@ Train data should be a json file, where each line is a dict like this:
 ```
 {"text": str}
 ```
-See [toy_pretrain_data.jsonl]() for a toy data file.
+See [toy_pretrain_data.jsonl](https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/pretrain/toy_pretrain_data.jsonl) for a toy data file.
 
 ## 3. Train
 
