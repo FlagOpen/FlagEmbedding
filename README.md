@@ -34,7 +34,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
-- 10/14/2023: Release [BAAI/llm-embedder](./FlagEmbedding/llm_embedder/README.md):fire:, a unified embedding model to support diverse retrieval augmentation needs for LLMs
+- 10/14/2023: Release [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), a unified embedding model to support diverse retrieval augmentation needs for LLMs :fire:
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released :fire:
 - 09/15/2023: The [masive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released :fire:
 - 09/15/2023: Media coverage by [机器之心](https://www.jiqizhixin.com/articles/2023-09-15-3)

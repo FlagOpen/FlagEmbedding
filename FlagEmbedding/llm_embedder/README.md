@@ -1,7 +1,7 @@
 <div align="center">
 <h1>LLM-Embedder [<a href="">paper</a>]</h1>
 
-<img src="./imgs/llm-embedder.png" width="60%" class="center">
+<img src="imgs/llm-embedder.png" width="60%" class="center">
 </div>
 
 This is the codebase for LLM-Embedder, a unified embedding model to bridge large language models with externel world, including knowledge, memory, examplers, and tools. It is fine-tuned over 6 tasks: 

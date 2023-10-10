@@ -16,14 +16,16 @@ LLM-Embedder supports 6 retrieval-augmentation tasks tailored for modern LLMs, i
   - evaluate with `eval_convsearch`
 
 ## Data
-The data for evaluation can be downloaded [here](). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/llm-embedder-data/resolve/main/llm-embedder-eval.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
 ```bash
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
+**Curretly, the QReCC dataset for conversational search has not been included in the tar.gz file because it's too large. You can refer to [this repository](https://github.com/apple/ml-qrecc) to download it.**
+
 ## Benchmark
 ### Commands
-Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu, eval_icl, eval_lrlm, eval_chat, eval_convsearch, eval_tool`.
+Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_chat`, `eval_tool`, and *`eval_convsearch`*.
 
 *All our evaluation are based on `meta-llama/Llama-2-7b-chat-hf`. To use different language models, e.g. `Qwen/Qwen-7B-Chat`, simply add `--model_name_or_path Qwen/Qwen-7B-Chat` after every command.*
 
@@ -97,7 +99,7 @@ torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder data/output
 
 
 ### Leaderboard
-All the following results are based on `torch==2.0.1`, `transformers==4.30.0` on a `8xA100` machine with `CUDA==11.4`.
+All the following results are based on `meta-llama/Llama-27b-chat-hf` with `torch==2.0.1`, `transformers==4.30.0` on a `8xA100` machine with `CUDA==11.4`.
 
 |Model|MMLU (avg, $\uparrow$)|PopQA (acc, $\uparrow$)|In-Context Learning (avg, $\uparrow$)|Long Conversation (ppl, $\downarrow$)|Long-Range Language Modeling (ppl, $\downarrow$)|Tool Learning (ndcg, $\uparrow$)|Conversational Search (ndcg, $\uparrow$)|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
