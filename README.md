@@ -34,6 +34,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
+- 10/14/2023: Release [BAAI/llm-embedder](./FlagEmbedding/llm_embedder/README.md):fire:, a unified embedding model to support diverse retrieval augmentation needs for LLMs
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released :fire:
 - 09/15/2023: The [masive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released :fire:
 - 09/15/2023: Media coverage by [机器之心](https://www.jiqizhixin.com/articles/2023-09-15-3)
@@ -54,6 +55,7 @@ And it also can be used in vector databases for LLMs.
 
 |              Model              | Language | | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|:--------:|
+|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [Inference](./FlagEmbedding/llm_embedder/README.md) [Fine-tune](./FlagEmbedding/llm_embedder/README.md) | a unified embedding model that supports diverse needs of retrieval augmentation for LLMs \** | See [README](./FlagEmbedding/llm_embedder/README.md) |
 |  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large)  |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
 |  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | a cross-encoder model which is more accurate but less efficient \** |   |
 |  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | version 1.5 with more reasonable similarity distribution | `Represent this sentence for searching relevant passages: `  |

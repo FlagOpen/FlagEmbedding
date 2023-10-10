@@ -1,1 +1,1 @@
-from .flag_models import FlagModel, FlagReranker
+from .flag_models import FlagModel, FlagReranker, LLMEmbedder
