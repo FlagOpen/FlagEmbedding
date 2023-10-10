@@ -21,9 +21,11 @@ The data for evaluation can be downloaded [here](). You should untar the file at
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
+**Curretly, the QReCC dataset for conversational search has not been included in the tar.gz file because it's too large. You can refer to [this repository](https://github.com/apple/ml-qrecc) to download it.**
+
 ## Benchmark
 ### Commands
-Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu, eval_icl, eval_lrlm, eval_chat, eval_convsearch, eval_tool`.
+Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_chat`, `eval_tool`, and *`eval_convsearch`*.
 
 *All our evaluation are based on `meta-llama/Llama-2-7b-chat-hf`. To use different language models, e.g. `Qwen/Qwen-7B-Chat`, simply add `--model_name_or_path Qwen/Qwen-7B-Chat` after every command.*
 
