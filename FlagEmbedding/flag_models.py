@@ -22,8 +22,14 @@ class FlagModel:
         self.normalize_embeddings = normalize_embeddings
         self.pooling_method = pooling_method
 
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            self.device = torch.device("mps")
+        else:
+            self.device = torch.device("cpu")
+            use_fp16 = False
         if use_fp16: self.model.half()
-        self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
         self.model = self.model.to(self.device)
 
         self.num_gpus = torch.cuda.device_count()
