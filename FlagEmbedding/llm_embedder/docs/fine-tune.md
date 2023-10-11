@@ -1,7 +1,5 @@
 # Fine-tuning
 
-[TOC]
-
 ## Data
 The following data format is universally used for training & evaluating retrievers and rerankers.
 
@@ -37,7 +35,14 @@ There are several important arguments for training:
 
 The meaning and usage of other arguments can be inspected from [code](../src/retrieval/args.py) or running `python run_dense.py --help` from command line.
 
+### LLM-Embedder (Multi-Task Fine-Tune)
+```bash
+bash scripts/llm-embedder.sh
+```
+
 ### Single Task Fine-Tune
+Below we provide commands to fine-tune a retriever on a single task.
+
 #### QA
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
@@ -117,11 +122,6 @@ torchrun --nproc_per_node=8 run_dense.py \
 --key_template '{text}'
 ```
 
-### Multi-Task Fine-Tune (LLM Embedder)
-```bash
-bash scripts/llm-embedder.sh
-```
-
 ### Mine Negatives
 ```bash
 # BGE
@@ -140,57 +140,6 @@ torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
 --save_name bm25
 ```
 
-
-## Reranker
-### QA
-```bash
-# Collate keys for evaluating reranking performance
-torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
---eval_data llm-embedder:qa/nq/test.json \
---corpus llm-embedder:qa/nq/corpus.json \
---key_max_length 128 \
---query_max_length 32 \
---metrics nq collate_key \
---save_name bge
-
-# Train NQ cross-encoder
-torchrun --nproc_per_node 8 run_ranker.py \
---ranker microsoft/deberta-v3-large \
---key_max_length 128 \
---query_max_length 32 \
---output_dir data/outputs/nq/bge-crossenc \
---train_data llm-embedder:qa/nq/train.neg.bge.json \
---eval_data llm-embedder:qa/nq/test.key.bge.json \
---corpus llm-embedder:qa/nq/corpus.json \
---learning_rate 5e-6 \
---num_train_epochs 5 \
---evaluation_strategy epoch \
---save_strategy epoch \
---save_total_limit 2 \
---per_device_train_batch_size 8 \
---metrics nq \
---metric_for_best_model recall@10
-
-# Score train data with the ranker
-files=( data/outputs/nq/bge-crossenc/*/ranker )
-torchrun --nproc_per_node 8 run_ranker.py \
---ranker ${files[0]} \
---key_max_length 128 \
---query_max_length 32 \
---eval_data llm-embedder:qa/nq/train.neg.bge.json \
---corpus llm-embedder:qa/nq/corpus.json \
---metrics mrr recall collate_score \
---save_name deberta-large
-```
-
-### 3-Iter Pipeline
-We replicate the 3-iter pipeline for enhancing retriever's performance from [SimLM paper](https://arxiv.org/abs/2207.02578).
-
-```bash
-bash scripts/3iter-msmarco.sh
-bash scripts/3iter-nq.sh
-```
-
 ## LM Scoring
 Score positives and negatives in `eval_data` with $p(o|q,k)$ where $o$ is the desired output, $q$ is the query, and $k$ is a key (could be positive or negative). This requires `answers` field in `train_data`.
 
@@ -199,6 +148,13 @@ torchrun --nproc_per_node=8 run_lm_score.py --eval_data llm-embedder:qa/msmarco/
 ```
 Results will be saved at `llm-embedder:qa/msmarco/train.scored.llama2-7b.json`
 
+### 3-Iter Pipeline
+We replicate the 3-iter pipeline for enhancing retriever's performance from [SimLM paper](https://arxiv.org/abs/2207.02578).
+
+```bash
+bash scripts/3iter-msmarco.sh
+bash scripts/3iter-nq.sh
+```
 
 ## Note
 - `transformers==4.30.0` raises error when using deepspeed schedulerconfig

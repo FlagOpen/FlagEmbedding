@@ -1,5 +1,4 @@
 # Evaluation
-[TOC]
 
 LLM-Embedder supports 6 retrieval-augmentation tasks tailored for modern LLMs, including:
 - Question Answering (qa)
@@ -7,13 +6,13 @@ LLM-Embedder supports 6 retrieval-augmentation tasks tailored for modern LLMs, i
 - In-Context Learning (icl)
   - evaluate with `eval_icl`
 - Long Conversation (chat)
-  - evaluate with `eval_chat`
+  - evaluate with `eval_msc`
 - Long-Range Language Modeling (lrlm)
   - evaluate with `eval_lrlm`
 - Tool Learning (tool)
   - evaluate with `eval_tool`
 - Conversational Search (convsearch)
-  - evaluate with `eval_convsearch`
+  - evaluate with `eval_qrecc`
 
 ## Data
 The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/llm-embedder-data/resolve/main/llm-embedder-eval.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
@@ -21,11 +20,11 @@ The data for evaluation can be downloaded [here](https://huggingface.co/datasets
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
-**Curretly, the QReCC dataset for conversational search has not been included in the tar.gz file because it's too large. You can refer to [this repository](https://github.com/apple/ml-qrecc) to download it.**
+**Curretly, the QReCC dataset for conversational search has not been included in this tar.gz file because it's too large. You can refer to [this repository](https://github.com/apple/ml-qrecc) to download it.**
 
 ## Benchmark
 ### Commands
-Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_chat`, `eval_tool`, and *`eval_convsearch`*.
+Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_msc`, `eval_tool`, and *`eval_qrecc`*. The results will be logged at `data/results/`.
 
 *All our evaluation are based on `meta-llama/Llama-2-7b-chat-hf`. To use different language models, e.g. `Qwen/Qwen-7B-Chat`, simply add `--model_name_or_path Qwen/Qwen-7B-Chat` after every command.*
 
@@ -45,9 +44,6 @@ torchrun --nproc_per_node 8 -m evaluation.eval_popqa --retrieval_method bm25 --d
 
 # Contriever
 torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder facebook/Contriever --dense_metric ip --add_instruction False --data_root /data/llm-embedder
-
-# E5
-torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder intfloat/e5-base-v2 --pooling_method mean --version e5 --data_root /data/llm-embedder
 
 # BGE
 torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder BAAI/bge-base-en --version bge --data_root /data/llm-embedder
@@ -111,5 +107,5 @@ All the following results are based on `meta-llama/Llama-27b-chat-hf` with `torc
 |AAR|0.4826|0.4792|0.5938|14.6999|6.1528|0.42|0.2877|
 |LLMRetriever|0.4625|0.2506|0.6262|14.4746|6.1750|0.1321|0.0234|
 |APIRetriever|0.4625|0.2488|0.5945|14.7834|6.1833|0.8017|0.1137|
-|LLM-Embedder (ours)|**0.4904**|**0.5052**|**0.6288**|**13.4832**|**6.0972**|**0.8645**|**0.5053**|
+|LLM-Embedder (ours)|**0.4903**|**0.5052**|**0.6288**|**13.4832**|**6.0972**|**0.8645**|**0.5053**|
 

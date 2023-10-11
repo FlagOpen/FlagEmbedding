@@ -164,13 +164,6 @@ print(similarity)
 # [0.8462, 0.9091]]
 ```
 
-
-### Using `langchain`
-```
-HuggingfaceInstructorEmbedding
-```
-
-
 ## Contact
 If you have any question or suggestion related to this project, feel free to open an issue or pull request. You also can email Peitian Zhang (namespace.pt@gmail.com).
 
