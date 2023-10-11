@@ -4,13 +4,13 @@
 <img src="imgs/llm-embedder.png" width="60%" class="center">
 </div>
 
-This is the codebase for LLM-Embedder, a unified embedding model to bridge large language models with externel world, including knowledge, memory, examplers, and tools. It is fine-tuned over 6 tasks: 
+This is the codebase for LLM-Embedder, a unified embedding model to comprehensively support the retrieval augmentation needs of large language models, including knowledge retrieval, memory retrieval, examplar retrieval, and tool retrieval. It is fine-tuned over 6 tasks: 
 - *Question Answering (qa)*
-- *In-Context Learning (icl)*
+- *Conversational Search (convsearch)*
 - *Long Conversation (chat)*
 - *Long-Range Language Modeling (lrlm)*
+- *In-Context Learning (icl)*
 - *Tool Learning (tool)*
-- *Conversational Search (convsearch)*
 
 ## Roadmap
 - Details about how to fine-tune the LLM-Embedder are [here](docs/fine-tune.md).
@@ -170,4 +170,5 @@ If you have any question or suggestion related to this project, feel free to ope
 ## Citation
 If you find this repository useful, please consider giving a star ⭐ and citation
 ```
+
 ```
