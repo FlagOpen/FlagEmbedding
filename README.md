@@ -45,7 +45,7 @@ And it also can be used in vector databases for LLMs.
 
 <details>
   <summary>More</summary>
-
+<!-- ### More -->
 - 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning.
 - 08/09/2023: Media coverage by [智源社区](https://hub.baai.ac.cn/view/28429) and [新智元](https://mp.weixin.qq.com/s/W04XZOxvr87RDIwdFoy9ig)
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
