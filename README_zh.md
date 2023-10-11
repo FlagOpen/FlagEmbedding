@@ -50,7 +50,7 @@
 ## Model List
 |              Model              | Language | | Description | query instruction for retrieval\* |
 |:-------------------------------|:--------:| :--------:| :--------:|:--------:|
-|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](./FlagEmbedding/llm_embedder/README.md) [微调](./FlagEmbedding/llm_embedder/README.md) | 专为大语言模型各种检索增强任务设计的模型 \** | 详见 [README](./FlagEmbedding/llm_embedder/README.md) |
+|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](./FlagEmbedding/llm_embedder/README.md) [微调](./FlagEmbedding/llm_embedder/README.md) | 专为大语言模型各种检索增强任务设计的模型  | 详见 [README](./FlagEmbedding/llm_embedder/README.md) |
 |  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
 |  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 \** |   |
 |  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
