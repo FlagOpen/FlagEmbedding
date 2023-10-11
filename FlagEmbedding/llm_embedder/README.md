@@ -166,7 +166,9 @@ print(similarity)
 
 
 ### Using `langchain`
-Coming soon...
+```
+HuggingfaceInstructorEmbedding
+```
 
 
 ## Contact
