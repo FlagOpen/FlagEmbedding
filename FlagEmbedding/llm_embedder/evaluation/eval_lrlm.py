@@ -61,6 +61,7 @@ class LRLMArgs(RetrievalArgs, SRLMArgs):
     )
 
     def __post_init__(self):
+        super().__post_init__()
         if self.retrieval_method == "bm25":
             # NOTE: we can only use naive bm25 for self retrieval
             self.retrieval_method = "naive-bm25"

@@ -124,14 +124,14 @@ torchrun --nproc_per_node=8 run_dense.py \
 
 ### Mine Negatives
 ```bash
-# BGE
+# BGE (the result will be saved at llm-embedder:qa/nq/train.bge.json)
 torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
 --eval_data llm-embedder:qa/nq/train.json \
 --corpus llm-embedder:qa/nq/corpus.json \
 --metrics mrr recall collate_neg \
 --save_name bge
 
-# BM25
+# BM25 (the result will be saved at llm-embedder:qa/nq/train.bm25.json)
 torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
 --retrieval_method bm25 \
 --eval_data llm-embedder:qa/nq/train.json \
