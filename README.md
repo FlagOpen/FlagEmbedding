@@ -34,7 +34,7 @@ FlagEmbedding can map any text to a low-dimensional dense vector which can be us
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
-- 10/14/2023: Release [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), a unified embedding model to support diverse retrieval augmentation needs for LLMs :fire:
+- 10/14/2023: Release [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), a unified embedding model to support diverse retrieval augmentation needs for LLMs :fire:  
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released 
 - 09/15/2023: The [masive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released 
 - 09/15/2023: Media coverage by [机器之心](https://www.jiqizhixin.com/articles/2023-09-15-3)
@@ -47,10 +47,16 @@ And it also can be used in vector databases for LLMs.
   <summary>More</summary>
 <!-- ### More -->
 - 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning.  
+    
     - 08/09/2023: Media coverage by [智源社区](https://hub.baai.ac.cn/view/28429) and [新智元](https://mp.weixin.qq.com/s/W04XZOxvr87RDIwdFoy9ig)  
-    - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available]  (https://huggingface.co/spaces/mteb/leaderboard).  
+    
+    - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available]  
+    (https://huggingface.co/spaces/mteb/leaderboard).  
+    
     - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**  
+    
     - 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada:   
+    
     - 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
   
 </details>
