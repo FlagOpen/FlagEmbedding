@@ -33,7 +33,7 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
-- 10/12/2023: 发布 [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), 专为大语言模型**各种检索增强任务设计**的英文向量模型.[论文链接](https://arxiv.org/pdf/2310.07554.pdf) :fire
+- 10/12/2023: 发布 [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) :fire:
 - 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
     - **新增重排模型**：开源交叉编码器模型bge-reranker，具有比向量模型更强大的排序能力。非常建议使用或者微调它来重新排序向量模型返回的top-k文档，提高最终结果的相关性。
