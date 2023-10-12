@@ -144,12 +144,12 @@ class RetrievalTrainingArgs(TrainingArguments):
 
 @dataclass
 class BaseArgs:
-    model_cache_dir: str = field(
-        default='/share/LMs',
+    model_cache_dir: Optional[str] = field(
+        default=None,
         metadata={'help': 'Default path to save language models.'}
     )
-    dataset_cache_dir: str = field(
-        default='/share/peitian/Data/Datasets/huggingface',
+    dataset_cache_dir: Optional[str] = field(
+        default=None,
         metadata={'help': 'Default path to save huggingface datasets.'}
     )
     data_root: str = field(
