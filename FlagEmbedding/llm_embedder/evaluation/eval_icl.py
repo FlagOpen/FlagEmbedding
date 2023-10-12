@@ -121,7 +121,7 @@ class ICLArgs(LMArgs, RetrievalArgs):
     )
 
     corpus: str = field(
-        default="llm-embedder:icl/passages.jsonl",
+        default="llm-embedder:icl/icl/corpus.json",
         metadata={'help': 'Corpus path for retrieval.'}
     )
     key_template: str = field(
@@ -151,8 +151,8 @@ def remove_double_space(string):
 
 
 def load_test_data(knn_inxs,
-                   test_data='llm-embedder:icl/new_test.jsonl', 
-                   corpus_data='llm-embedder:icl/passages.jsonl', 
+                   test_data, 
+                   corpus_data, 
                    filter_diff_task: bool=False,
                    example_num=8,
                    same_task_random=False,
