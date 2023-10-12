@@ -20,15 +20,22 @@ The data for evaluation can be downloaded [here](https://huggingface.co/datasets
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
-**Curretly, the QReCC corpus for conversational search has not been included in this tar.gz file because it's too large. We will upload it soon.**
+The corpus of QReCC for conversational search is too large (54M passages), we separately upload it to huggingface datasets [namespace-Pt/qrecc-corpus](https://huggingface.co/datasets/namespace-Pt/qrecc-corpus). You should load it and save it as json file in the `qrecc` folder:
+```python
+import datasets
+# load dataset
+qrecc_corpus = datasets.load_dataset("namespace-Pt/qrecc-corpus", split="train")
+# save to jsonline format in YOUR data folder
+qrecc_corpus.to_json("/data/llm-embedder/convsearch/qrecc/corpus.json", force_ascii=False, lines=True, orient="records")
+```
 
 ## Benchmark
 ### Commands
-Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_msc`, `eval_tool`, and *`eval_qrecc`*. The results will be logged at `data/results/`.
+Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_msc`, `eval_tool`, and *`eval_qrecc`*. The results will be logged at `data/results/`. 
 
 *All our evaluation are based on `meta-llama/Llama-2-7b-chat-hf`. To use different language models, e.g. `Qwen/Qwen-7B-Chat`, simply add `--model_name_or_path Qwen/Qwen-7B-Chat` after every command.*
 
-Note that you can modify the default value of `data_root` in `src/retrieval/args.py`, so that you don't need to type it for each command.
+*Note that you can modify the default value of `data_root` in `src/retrieval/args.py`, so that you don't need to type it for each command.*
 
 ```bash
 cd FlagEmbedding/llm_embedder
@@ -97,7 +104,7 @@ torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder data/output
 ### Leaderboard
 All the following results are based on `meta-llama/Llama-27b-chat-hf` with `torch==2.0.1`, `transformers==4.30.0` on a `8xA100` machine with `CUDA==11.4`.
 
-|Model|MMLU (avg, $\uparrow$)|PopQA (acc, $\uparrow$)|In-Context Learning (avg, $\uparrow$)|Long Conversation (ppl, $\downarrow$)|Long-Range Language Modeling (ppl, $\downarrow$)|Tool Learning (ndcg, $\uparrow$)|Conversational Search (ndcg, $\uparrow$)|
+|Model|MMLU (avg)|PopQA (acc)|In-Context Learning (avg)|Long Conversation (ppl)|Long-Range Language Modeling (ppl)|Tool Learning (ndcg)|Conversational Search (ndcg)|
 |:-:|:-:|:-:|:-:|:-:|:-:|:-:|:-:|
 |None|0.4599|0.2061|0.4645|19.3501|6.4003|--|--|
 |BM25|0.4721|0.3491|0.484|14.6512|6.1558|0.5115|0.4341|
