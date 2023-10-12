@@ -10,7 +10,7 @@
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding">
-        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.0-red">
+        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.1-red">
     </a>
 </p>
 
