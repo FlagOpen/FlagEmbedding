@@ -1,5 +1,5 @@
 <div align="center">
-<h1>LLM-Embedder [<a href="">paper</a>]</h1>
+<h1>LLM-Embedder [<a href="https://arxiv.org/abs/2310.07554">paper</a>]</h1>
 
 <img src="imgs/llm-embedder.png" width="60%" class="center">
 </div>
@@ -170,5 +170,12 @@ If you have any question or suggestion related to this project, feel free to ope
 ## Citation
 If you find this repository useful, please consider giving a star ⭐ and citation
 ```
-
+@misc{zhang2023retrieve,
+      title={Retrieve Anything To Augment Large Language Models}, 
+      author={Peitian Zhang and Shitao Xiao and Zheng Liu and Zhicheng Dou and Jian-Yun Nie},
+      year={2023},
+      eprint={2310.07554},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR}
+}
 ```

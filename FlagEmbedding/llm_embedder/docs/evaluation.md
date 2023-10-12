@@ -20,7 +20,7 @@ The data for evaluation can be downloaded [here](https://huggingface.co/datasets
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
-**Curretly, the QReCC dataset for conversational search has not been included in this tar.gz file because it's too large. You can refer to [this repository](https://github.com/apple/ml-qrecc) to download it.**
+**Curretly, the QReCC corpus for conversational search has not been included in this tar.gz file because it's too large. We will upload it soon.**
 
 ## Benchmark
 ### Commands
