@@ -33,7 +33,7 @@
 将任意文本映射为低维稠密向量，以用于检索、分类、聚类或语义匹配等任务，并可支持为大模型调用外部知识。
 
 ************* 🌟**Updates**🌟 *************
-- 10/12/2023: 发布 [LLM-Embedder](./FlagEmbedding/llm_embedder/README.md), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) :fire:
+- 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) :fire:
 - 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
     - **新增重排模型**：开源交叉编码器模型bge-reranker，具有比向量模型更强大的排序能力。非常建议使用或者微调它来重新排序向量模型返回的top-k文档，提高最终结果的相关性。
@@ -50,7 +50,7 @@
 ## Model List
 |              Model              | Language | | Description | query instruction for retrieval [1] |
 |:-------------------------------|:--------:| :--------:| :--------:|:--------:|
-|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](./FlagEmbedding/llm_embedder/README.md) [微调](./FlagEmbedding/llm_embedder/README.md) | 专为大语言模型各种检索增强任务设计的向量模型  | 详见 [README](./FlagEmbedding/llm_embedder/README.md) |
+|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) | 专为大语言模型各种检索增强任务设计的向量模型  | 详见 [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
 |  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
 |  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
 |  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
