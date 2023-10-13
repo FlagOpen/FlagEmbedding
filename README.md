@@ -28,7 +28,7 @@
 </h4>
 
 
-[English](README.md) | [中文](./README_zh.md)
+[English](README.md) | [中文](https://github.com/FlagOpen/FlagEmbedding/blob/master/README_zh.md)
 
 FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
 And it also can be used in vector databases for LLMs.

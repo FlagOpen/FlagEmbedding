@@ -30,10 +30,19 @@ The following data format is universally used for training & evaluating retrieve
 ## Retriever
 There are several important arguments for training:
 - `train_data`: required, one or a list of json files with the aforementioned formatting.
-- `eval_data`: optional, one json file with the aforementioned formatting. If an `eval_data` is speficied, the trainer will automatically do evaluation on the `eval_data` every `save_steps`.
-- `corpus`: optional, the global corpus where `positives` and `negatives` come from.
+- `eval_data`: optional, one json file with the aforementioned formatting. If an `eval_data` is speficied, the trainer will automatically do evaluation on the `eval_data`.
+- `corpus`: optional, the global corpus where `positives`.
 
 The meaning and usage of other arguments can be inspected from [code](../src/retrieval/args.py) or running `python run_dense.py --help` from command line.
+
+
+**IMPORTANT NOTE**
+- For any path specified for `train_data`, `eval_data`, and `corpus`: if it is prefixed with `llm-embedder`, it will be solved to the relative path against [`data_root`](../src/retrieval/args.py).
+- During fine-tuning, we save the output model in the `huggingface transformers`🤗 format. To use it from `sentence_transformers`, you should convert it to `sentence_transformers` checkpoint in advance:
+  ```bash
+  python scripts/ours2st.py --encoder data/outputs/your-output-dir/encoder
+  ```
+  Then everything is the same as described in [README](../README.md).
 
 ### LLM-Embedder (Multi-Task Fine-Tune)
 ```bash
@@ -156,7 +165,7 @@ bash scripts/3iter-msmarco.sh
 bash scripts/3iter-nq.sh
 ```
 
-## Note
+## Known Issues
 - `transformers==4.30.0` raises error when using deepspeed schedulerconfig
   - modify line `1750` in `trainer.py`
   ```python
