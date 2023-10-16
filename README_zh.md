@@ -73,20 +73,19 @@
 
 ## 常见问题
 
-<details>
-  <summary>1. 如何微调bge模型 </summary>
+**1. 如何微调bge模型**
 
-  <!-- ### 如何微调bge模型 -->
 遵循这个[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 来准备数据并微调模型。
 一些建议：
 - 按照这个[命令](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#hard-negatives) 挖掘难负样本，这可以明显提高检索性能。
+- 通常，`per_device_train_batch_size`参数越大越好，其可以增大In-batch negatives的数量。可以通过开启`--fp16`, `--deepspeed df_config.json`(df_config.json请参考 [ds_config.json](./ds_config.json)), `--gradient_checkpointing`等方式来拓展batch size。
 - `train_group_size` 参数在我们实验中（使用了难负样本）默认设为8。可以根据数据中的平均负样本数据进行设置：train_group_size=负样本数量+1。
 - `query_max_len` 和`passage_max_len`参数应该按照实际数据长度进行设置，数据都很长的话应该增大，但不能超过512。
 - 如果微调向量模型的准确率仍然不高，建议使用或者微调交叉编码器模型(bge-reranker)对top-k结果进行重新排序。
 交叉编码器模型的数据格式与向量模型一致，同时也建议使用难负样本。在正确微调的情况下，交叉编码器模型的准确度会高于向量模型。
 - 如果进行了预训练，预训练后的模型无法直接用于计算相似度，必须经过微调才能进行相似度。
 
-</details>
+
 
 
 <details>

@@ -76,7 +76,7 @@ torchrun --nproc_per_node {number of gpus} \
 ```
 
 **some important arguments**:
-- `per_device_train_batch_size`: batch size in training. In most of cases, larger batch size will bring stronger performance.
+- `per_device_train_batch_size`: batch size in training. In most of cases, larger batch size will bring stronger performance. You can expand it by enabling `--fp16`, `--deepspeed ./df_config.json` (df_config.json can refer to [ds_config.json](./ds_config.json)), `--gradient_checkpointing`, etc. 
 - `train_group_size`: the number of positive and negatives for a query in training.
 There are always one positive, so this argument will control the number of negatives (#negatives=train_group_size-1).
 Noted that the number of negatives should not be larger than the numbers of negatives in data `"neg":List[str]`.
