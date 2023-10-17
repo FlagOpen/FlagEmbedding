@@ -1,5 +1,14 @@
 # Fine-tuning
 
+## Environment
+It is recommended that you create a new environment:
+```
+cd FlagEmbedding/llm_embedder
+
+conda env create -f environment.yaml --name llm-embedder
+conda activate llm-embedder
+```
+
 ## Data
 The following data format is universally used for training & evaluating retrievers and rerankers.
 
@@ -28,13 +37,10 @@ The following data format is universally used for training & evaluating retrieve
 ```
 
 ## Retriever
-There are several important arguments for training:
+Below are several important arguments for training. The meaning and usage of other arguments can be inspected from [code](../src/retrieval/args.py) or running `python run_dense.py --help` from command line.
 - `train_data`: required, one or a list of json files with the aforementioned formatting.
 - `eval_data`: optional, one json file with the aforementioned formatting. If an `eval_data` is speficied, the trainer will automatically do evaluation on the `eval_data`.
 - `corpus`: optional, the global corpus where `positives`.
-
-The meaning and usage of other arguments can be inspected from [code](../src/retrieval/args.py) or running `python run_dense.py --help` from command line.
-
 
 **IMPORTANT NOTE**
 - For any path specified for `train_data`, `eval_data`, and `corpus`: if it is prefixed with `llm-embedder`, it will be solved to the relative path against [`data_root`](../src/retrieval/args.py).

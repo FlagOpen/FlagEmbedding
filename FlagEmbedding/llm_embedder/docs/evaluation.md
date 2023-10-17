@@ -14,6 +14,15 @@ LLM-Embedder supports 6 retrieval-augmentation tasks tailored for modern LLMs, i
 - Conversational Search (convsearch)
   - evaluate with `eval_qrecc`
 
+## Environment
+It is recommended that you create a new environment:
+```
+cd FlagEmbedding/llm_embedder
+
+conda env create -f environment.yaml --name llm-embedder
+conda activate llm-embedder
+```
+
 ## Data
 The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/llm-embedder-data/resolve/main/llm-embedder-eval.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
 ```bash
