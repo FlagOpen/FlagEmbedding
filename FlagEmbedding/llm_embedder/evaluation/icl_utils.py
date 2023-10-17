@@ -2,12 +2,14 @@ import collections
 import re
 import string
 import copy
+import logging
 import numpy as np
 from sklearn.metrics import f1_score
 from typing import List, Dict
 from rouge import Rouge
-from absl import logging
 from transformers.tokenization_utils import PreTrainedTokenizer
+
+logger = logging.getLogger(__name__)
 
 
 def _normalize_answer(text, punc_chars, punc_repl):
@@ -84,7 +86,7 @@ def qa_metrics(targets, predictions, return_list=False):
     ])
     # em *= 100
     # f1 *= 100
-    logging.info("EM = %.2f, F1 = %.2f", em, f1)
+    logger.info("EM = %.2f, F1 = %.2f", em, f1)
     #return {"em": em, "f1": f1}
     return em, f1
 

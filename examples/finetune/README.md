@@ -95,3 +95,47 @@ More training arguments please refer to [transformers.TrainingArguments](https:/
 After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.
+
+
+### 5. Evaluate model on MSMARCO
+We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance on MSMARCO, a widely used retreival benchmark. 
+
+First, install `faiss`, a popular approximate nearest neighbor search library:
+```bash
+conda install -c conda-forge faiss-gpu
+```
+
+Next, you can check the data formats for the [msmarco corpus](https://huggingface.co/datasets/namespace-Pt/msmarco-corpus) and [evaluation queries](https://huggingface.co/datasets/namespace-Pt/msmarco). 
+
+Finally, run the following command:
+
+```bash
+python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
+--encoder BAAI/bge-base-en-v1.5 \
+--fp16 \
+--add_instruction \
+--k 100
+```
+**some important arguments:**
+- `encoder`: specify the encoder model, which can be either a model on huggingface or a local one.
+- `fp16`: use half precision for inference.
+- `add_instruction`: add retrieval instruction (`Represent this sentence for searching relevant passages: `).
+- `k`: spefify how many nearest neighbors to retrieve for each query.
+
+The results should be similar to
+```python
+{
+    'MRR@1': 0.2330945558739255, 
+    'MRR@10': 0.35786976395142633, 
+    'MRR@100': 0.3692618036917553, 
+    'Recall@1': 0.22606255969436478, 
+    'Recall@10': 0.6412965616045848, 
+    'Recall@100': 0.9012774594078318
+}
+```
+
+A brief summary of how the script works:
+1. Load the model on all available GPUs through [DataParallel](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html). 
+2. Encode the corpus and offload the embeddings in `faiss` Flat index. By default, `faiss` also dumps the index on all available GPUs.
+3. Encode the queries and search `100` nearest neighbors for each query.
+4. Compute Recall and MRR metrics.
