@@ -98,7 +98,7 @@ Please replace the `query_instruction_for_retrieval` with your instruction if yo
 
 
 ### 5. Evaluate model on MSMARCO
-We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance on MSMARCO, a widely used retreival benchmark. 
+We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance on MSMARCO, a widely used retrieval benchmark. 
 
 First, install `faiss`, a popular approximate nearest neighbor search library:
 ```bash
@@ -120,7 +120,7 @@ python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
 - `encoder`: specify the encoder model, which can be either a model on huggingface or a local one.
 - `fp16`: use half precision for inference.
 - `add_instruction`: add retrieval instruction (`Represent this sentence for searching relevant passages: `).
-- `k`: spefify how many nearest neighbors to retrieve for each query.
+- `k`: specify how many nearest neighbors to retrieve for each query.
 
 The results should be similar to
 ```python
