@@ -24,7 +24,7 @@ conda activate llm-embedder
 ```
 
 ## Data
-The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/llm-embedder-data/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
 ```bash
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
