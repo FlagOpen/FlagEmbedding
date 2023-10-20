@@ -5,54 +5,52 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - _libgcc_mutex=0.1=conda_forge
-  - _openmp_mutex=4.5=2_kmp_llvm
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=5.1=1_gnu
   - blas=1.0=mkl
   - bzip2=1.0.8=h7b6447c_0
-  - ca-certificates=2023.08.22=h06a4308_0
+  - ca-certificates=2023.7.22=hbcca054_0
   - cuda-cudart=11.8.89=0
   - cuda-cupti=11.8.87=0
   - cuda-libraries=11.8.0=0
   - cuda-nvrtc=11.8.89=0
   - cuda-nvtx=11.8.86=0
   - cuda-runtime=11.8.0=0
-  - cudatoolkit=11.8.0=h4ba93d1_12
-  - faiss=1.7.4=py310cuda112hae2f2aa_0_cuda
-  - faiss-gpu=1.7.4=h788eb59_0
+  - cudatoolkit=11.8.0=h6a678d5_0
+  - faiss=1.7.2=py310cuda112h76f6547_0_cuda
+  - faiss-gpu=1.7.2=h788eb59_4
   - filelock=3.9.0=py310h06a4308_0
   - gmp=6.2.1=h295c915_3
   - gmpy2=2.1.2=py310heeb90bb_0
-  - intel-openmp=2023.1.0=hdb19cb5_46305
+  - intel-openmp=2021.4.0=h06a4308_3561
   - jinja2=3.1.2=py310h06a4308_0
   - ld_impl_linux-64=2.38=h1181459_1
-  - libblas=3.9.0=1_h86c2bf4_netlib
-  - libcblas=3.9.0=5_h92ddd45_netlib
+  - libblas=3.9.0=12_linux64_mkl
+  - libcblas=3.9.0=12_linux64_mkl
   - libcublas=11.11.3.6=0
   - libcufft=10.9.0.58=0
   - libcufile=1.8.0.34=0
   - libcurand=10.3.4.52=0
   - libcusolver=11.4.1.48=0
   - libcusparse=11.7.5.86=0
-  - libfaiss=1.7.4=cuda112hb18a002_0_cuda
-  - libfaiss-avx2=1.7.4=cuda112h1234567_0_cuda
+  - libfaiss=1.7.2=cuda112hc9ed507_0_cuda
+  - libfaiss-avx2=1.7.2=cuda112h1234567_0_cuda
   - libffi=3.4.4=h6a678d5_0
-  - libgcc-ng=13.2.0=h807b86a_2
-  - libgfortran-ng=13.2.0=h69a702a_2
-  - libgfortran5=13.2.0=ha4646dd_2
-  - liblapack=3.9.0=5_h92ddd45_netlib
+  - libgcc-ng=11.2.0=h1234567_1
+  - libgomp=11.2.0=h1234567_1
+  - liblapack=3.9.0=12_linux64_mkl
   - libnpp=11.8.0.86=0
   - libnvjpeg=11.9.0.86=0
-  - libstdcxx-ng=13.2.0=h7e041cc_2
+  - libstdcxx-ng=11.2.0=h1234567_1
   - libuuid=1.41.5=h5eee18b_0
   - llvm-openmp=14.0.6=h9e868ea_0
   - markupsafe=2.1.1=py310h7f8727e_0
-  - mkl=2023.1.0=h213fc3f_46343
+  - mkl=2021.4.0=h06a4308_640
   - mpc=1.1.0=h10f8cd9_1
   - mpfr=4.0.2=hb69a4c5_1
   - mpmath=1.3.0=py310h06a4308_0
   - ncurses=6.4=h6a678d5_0
   - networkx=3.1=py310h06a4308_0
-  - numpy=1.26.0=py310hb13e2d6_0
   - openssl=3.0.11=h7f8727e_2
   - pip=23.3=py310h06a4308_0
   - python=3.10.13=h955ad1f_0
@@ -65,7 +63,6 @@ dependencies:
   - setuptools=68.0.0=py310h06a4308_0
   - sqlite=3.41.2=h5eee18b_0
   - sympy=1.11.1=py310h06a4308_0
-  - tbb=2021.8.0=hdb19cb5_0
   - tk=8.6.12=h1ccaba5_0
   - torchtriton=2.1.0=py310
   - typing_extensions=4.7.1=py310h06a4308_0
@@ -81,6 +78,7 @@ dependencies:
       - async-timeout==4.0.3
       - attrs==23.1.0
       - backcall==0.2.0
+      - cachetools==5.3.1
       - certifi==2023.7.22
       - charset-normalizer==3.3.0
       - click==8.1.7
@@ -116,6 +114,9 @@ dependencies:
       - nest-asyncio==1.5.8
       - ninja==1.11.1.1
       - nltk==3.8.1
+      - numpy==1.26.1
+      - nvidia-ml-py==12.535.108
+      - nvitop==1.3.1
       - packaging==23.2
       - pandas==2.1.1
       - parso==0.8.3
@@ -146,6 +147,7 @@ dependencies:
       - sentencepiece==0.1.99
       - six==1.16.0
       - stack-data==0.6.3
+      - termcolor==2.3.0
       - threadpoolctl==3.2.0
       - tokenizers==0.14.1
       - torchvision==0.16.0

@@ -15,7 +15,7 @@ torchrun --nproc_per_node=8 run_dense.py --train_data \
     llm-embedder:tool/toolbench/train.json \
     llm-embedder:icl/icl/train.json \
     --output_dir data/outputs/$output \
-    --save_steps 5 \
+    --save_steps 5000 \
     --max_steps 30000 \
     --early_exit_steps 10000 \
     --logging_steps 100 \
