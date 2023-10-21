@@ -40,7 +40,7 @@ qrecc_corpus.to_json("/data/llm-embedder/convsearch/qrecc/corpus.json", force_as
 
 ## Benchmark
 ### Commands
-Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_msc`, `eval_tool`, and *`eval_qrecc`*. The results will be logged at `data/results/`. 
+Below are commands to run evaluation for different retrieval models. You can replace `eval_popqa` with any of `eval_mmlu`, `eval_icl`, `eval_lrlm`, `eval_msc`, `eval_tool`, and `eval_qrecc`. The results will be logged at `data/results/`. 
 
 *All our evaluation are based on `meta-llama/Llama-2-7b-chat-hf`. To use different language models, e.g. `Qwen/Qwen-7B-Chat`, simply add `--model_name_or_path Qwen/Qwen-7B-Chat` after every command.*
 

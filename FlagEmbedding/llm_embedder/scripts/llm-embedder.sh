@@ -32,7 +32,6 @@ for model in "checkpoint-5000" "checkpoint-10000"
 do
     torchrun --nproc_per_node 8 -m evaluation.eval_mmlu --query_encoder data/outputs/$output/$model/encoder --version $version --data_root $DATA_ROOT
     torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder data/outputs/$output/$model/encoder --version $version --data_root $DATA_ROOT
-    torchrun --nproc_per_node 8 -m evaluation.eval_qa --query_encoder data/outputs/$output/$model/encoder --version $version --data_root $DATA_ROOT
     torchrun --nproc_per_node 8 -m evaluation.eval_msc --query_encoder data/outputs/$output/$model/encoder --version $version --data_root $DATA_ROOT
     torchrun --nproc_per_node 8 -m evaluation.eval_tool --query_encoder data/outputs/$output/$model/encoder --version $version --data_root $DATA_ROOT
     torchrun --nproc_per_node 8 -m evaluation.eval_lrlm --query_encoder data/outputs/$output/$model/encoder --eval_data llm-embedder:lrlm/books3/test.json --version $version --data_root $DATA_ROOT
