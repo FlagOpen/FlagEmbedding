@@ -16,7 +16,7 @@ def get_args():
     parser.add_argument('--output_file', default=None, type=str)
     parser.add_argument('--range_for_sampling', default="10-210", type=str, help="range to sample negatives")
     parser.add_argument('--use_gpu_for_searching', action='store_true', help='use faiss-gpu')
-    parser.add_argument('--negative_number', default=15, help='the number of negatives')
+    parser.add_argument('--negative_number', default=15, type=int, help='the number of negatives')
     parser.add_argument('--query_instruction_for_retrieval', default="")
 
     return parser.parse_args()
