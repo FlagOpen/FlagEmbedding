@@ -127,7 +127,8 @@ class RetrievalMetric:
             if labels is None:
                 labels = data_labels
             
-            assert len(preds) == len(labels), f"Make sure there are the same amount of queries in labels and preditions!"
+            if len(preds) != len(labels):
+                logger.warning(f"There are {len(preds)} queries in predictions while {len(labels)} queries in labels!")
             
             mrrs = np.zeros(len(cutoffs))
             for query_id, pred in zip(query_ids, preds):
@@ -165,7 +166,8 @@ class RetrievalMetric:
             if labels is None:
                 labels = data_labels
 
-            assert len(preds) == len(labels), f"Make sure there are the same amount of queries in labels and preditions!"
+            if len(preds) != len(labels):
+                logger.warning(f"There are {len(preds)} queries in predictions while {len(labels)} queries in labels!")
 
             recalls = np.zeros(len(cutoffs))
             for query_id, pred in zip(query_ids, preds):
@@ -195,7 +197,8 @@ class RetrievalMetric:
             if labels is None:
                 labels = data_labels
 
-            assert len(preds) == len(labels), f"Make sure there are the same amount of queries in labels and preditions!"
+            if len(preds) != len(labels):
+                logger.warning(f"There are {len(preds)} queries in predictions while {len(labels)} queries in labels!")
             
             ndcgs = np.zeros(len(cutoffs))
             for query_id, pred in zip(query_ids, preds):

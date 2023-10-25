@@ -10,7 +10,7 @@ conda activate llm-embedder
 ```
 
 ## Data
-The data for evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+The data for fine-tuning & evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
 ```bash
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
@@ -73,7 +73,7 @@ Below we provide commands to fine-tune a retriever on a single task.
 #### QA
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/nq/contrastive \
+--output_dir data/outputs/nq \
 --train_data llm-embedder:qa/nq/train.json \
 --eval_data llm-embedder:qa/nq/test.json \
 --corpus llm-embedder:qa/nq/corpus.json \
@@ -88,7 +88,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 #### In-Context Learning
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/icl/distill \
+--output_dir data/outputs/icl \
 --train_data llm-embedder:icl/icl/train.json \
 --max_steps 6000 \
 --save_steps 6000 \
@@ -102,7 +102,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 #### Long-Range Language Modeling
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/lrlm/distill \
+--output_dir data/outputs/lrlm \
 --train_data llm-embedder:lrlm/books3/train.json llm-embedder:lrlm/arxiv/train.json llm-embedder:lrlm/codeparrot/train.json \
 --select_positive teacher \
 --select_negative random \
@@ -118,7 +118,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 #### Long Chat
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/msc/distill \
+--output_dir data/outputs/msc \
 --train_data llm-embedder:chat/msc/train.json \
 --select_positive teacher \
 --select_negative random \
@@ -133,7 +133,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 #### Tool
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/tool/contrastive \
+--output_dir data/outputs/tool \
 --train_data llm-embedder:tool/toolbench/train.json \
 --eval_data llm-embedder:tool/toolbench/test.json \
 --corpus llm-embedder:tool/toolbench/corpus.json \
@@ -147,7 +147,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 #### Conversation Search
 ```bash
 torchrun --nproc_per_node=8 run_dense.py \
---output_dir data/outputs/qrecc/contrastive \
+--output_dir data/outputs/qrecc \
 --train_data llm-embedder:conversation/qrecc/train.concat.json \
 --metrics mrr ndcg \
 --cutoffs 3 10 100 \

@@ -166,6 +166,7 @@ class RetrievalTrainer(Trainer):
         
         # reset
         self.data_collator.inbatch_same_dataset = inbatch_same_dataset
+        self.model.to(torch.float32)
 
         # Prefix all keys with metric_key_prefix + '_'
         for key in list(metrics.keys()):

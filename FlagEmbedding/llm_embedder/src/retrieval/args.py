@@ -189,24 +189,29 @@ class BaseArgs:
         metadata={'help': 'Maximum negative number to mine.'}
     )
     
-    def __post_init__(self):        
+    def resolve_path(self, path):
+        """Resolve any path starting with 'llm-embedder:' to relative path against data_root."""
         pattern = "llm-embedder:"
-
         # resolve relative data paths when necessary
+        if isinstance(path, list):
+            for i, x in enumerate(path):
+                if x.startswith(pattern):
+                    path[i] = os.path.join(self.data_root, x.replace(pattern, ""))
+        else:
+            if path.startswith(pattern):
+                path = os.path.join(self.data_root, path.replace(pattern, ""))
+
+        return path
+
+    def __post_init__(self):        
         if self.train_data is not None:
-            if isinstance(self.train_data, list):
-                for i, x in enumerate(self.train_data):
-                    if x.startswith(pattern):
-                        self.train_data[i] = os.path.join(self.data_root, x.replace(pattern, ""))
-            else:
-                if self.train_data.startswith(pattern):
-                    self.train_data = os.path.join(self.data_root, self.train_data.replace(pattern, ""))
+            self.train_data = self.resolve_path(self.train_data)
 
-        if self.eval_data is not None and self.eval_data.startswith(pattern):
-            self.eval_data = os.path.join(self.data_root, self.eval_data.replace(pattern, ""))
+        if self.eval_data is not None:
+            self.eval_data = self.resolve_path(self.eval_data)
 
-        if self.corpus is not None and self.corpus.startswith(pattern):
-            self.corpus = os.path.join(self.data_root, self.corpus.replace(pattern, ""))
+        if self.corpus is not None:
+            self.corpus = self.resolve_path(self.corpus)
 
 
 @dataclass
