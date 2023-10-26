@@ -15,7 +15,7 @@ The data for fine-tuning & evaluation can be downloaded [here](https://huggingfa
 tar -xzvf llm-embedder-eval.tar.gz -C /data
 ```
 
-The corpus of QReCC for conversational search is too large (54M passages), we separately upload it to huggingface datasets [namespace-Pt/qrecc-corpus](https://huggingface.co/datasets/namespace-Pt/qrecc-corpus). You should load it and save it as json file in the `qrecc` folder:
+The corpus of QReCC for conversational search is too large (54M passages), we separately upload it to huggingface datasets [namespace-Pt/qrecc-corpus](https://huggingface.co/datasets/namespace-Pt/qrecc-corpus). To evaluate the performance on conversational search, you should load it and save it as json file in the `qrecc` folder:
 ```python
 import datasets
 # load dataset
@@ -64,6 +64,7 @@ Below are several important arguments for training. The meaning and usage of oth
 
 ### LLM-Embedder (Multi-Task Fine-Tune)
 ```bash
+# Remember to modify the data_root to your data root in the script :)
 bash scripts/llm-embedder.sh
 ```
 
