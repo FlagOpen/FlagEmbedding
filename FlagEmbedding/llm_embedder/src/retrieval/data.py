@@ -549,35 +549,6 @@ TASK_CONFIG = {
             },
         }
     },
-
-    "test": {
-        "instruction": {
-            "qa": {
-                "query": "Represent this query for question answering: ",
-                "key": "Represent this document for question answering: ",
-            },
-            "convsearch": {
-                "query": "Represent this query and context for conversational search: ",
-                "key": "Represent this document for conversational search: ",
-            },
-            "chat": {
-                "query": "Represent this dialogue for long term conversation: ",
-                "key": "Represent this dialogue for long term conversation: ",
-            },
-            "lrlm": {
-                "query": "Represent this chunk for long sequence language modeling: ",
-                "key": "Represent this dialogue for long sequence language modeling: ",
-            },
-            "icl": {
-                "query": "Represent this example for in-context learning: ",
-                "key": "Represent this example for in-context learning: ",
-            },
-            "tool": {
-                "query": "Represent this user request for tool retrieval: ",
-                "key": "Represent this tool description for tool retrieval: ",
-            },
-        }
-    },
     
     "bge": {
         "instruction": defaultdict(lambda: {"query": "Represent this sentence for searching relevant passages: ", "key": ""})

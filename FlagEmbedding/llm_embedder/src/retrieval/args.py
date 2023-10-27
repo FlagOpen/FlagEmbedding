@@ -4,144 +4,6 @@ from transformers.training_args import TrainingArguments
 from typing import Optional, List, Union
 
 
-
-@dataclass
-class RetrievalTrainingArgs(TrainingArguments):
-    output_dir: str = field(
-        default='data/outputs/',
-        metadata={'help': 'The output directory where the model predictions and checkpoints will be written.'},
-    )
-    eval_method: str = field(
-        default="retrieval",
-        metadata={'help': 'How to evaluate?'},
-    )
-
-    use_train_config: bool = field(
-        default=False,
-        metadata={'help': 'Use training config from TASK_CONFIG to override arguments?'}
-    )
-    inbatch_same_dataset: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Whether and how to use samples from the same task in each batch (across devices). {epoch, random}'}
-    )
-    negative_cross_device: bool = field(
-        default=True,
-        metadata={'help': 'Gather negatives from all devices when distributed training?'}
-    )
-    cos_temperature: float = field(
-        default=0.01,
-        metadata={'help': 'Temperature used for cosine dense metric.'}
-    )
-    teacher_temperature:float = field(
-        default=1.,
-        metadata={'help': 'Temperature used for cosine dense metric.'}
-    )
-    student_temperature:float = field(
-        default=1.,
-        metadata={'help': 'Temperature used for cosine dense metric.'}
-    )
-    contrastive_weight: float = field(
-        default=0.2,
-        metadata={'help': 'Weight for contrastive loss.'}
-    )
-    distill_weight: float = field(
-        default=1.0,
-        metadata={'help': 'Weight for distillation loss.'}
-    )
-    stable_distill: bool = field(
-        default=False, 
-        metadata={'help': 'Sort distillation.'}
-    )
-
-    max_sample_num: Optional[int] = field(
-        default=None,
-        metadata={'help': 'How many samples at most for training dataset?'}
-    )
-    train_group_size: int = field(
-        default=8,
-        metadata={'help': 'How many keys in a batch?'}
-    )
-    select_positive: str = field(
-        default="first",
-        metadata={'help': 'How to select the positive key from a set of positives?'}
-    )
-    select_negative: str = field(
-        default="random",
-        metadata={'help': 'How to select the negative keys from a set of negatives?'}
-    )
-    teacher_scores_margin: Optional[float] = field(
-        default=None,
-        metadata={'help': 'Minimum margin in teacher_scores. The samples with smaller margin will be removed from training.'}
-    )
-    teacher_scores_min: Optional[float] = field(
-        default=None,
-        metadata={'help': 'Minimum teacher_scores. The samples whose biggest score is lower than this will be removed from training.'}
-    )
-
-    per_device_train_batch_size: int = field(
-        default=16,
-        metadata={'help': 'Train batch size'},
-    )
-    learning_rate: float = field(
-        default=5e-6,
-        metadata={'help': 'Learning rate.'},
-    )
-    warmup_ratio: float = field(
-        default=0.1,
-        metadata={'help': 'Warmup ratio for linear scheduler.'},
-    )
-    weight_decay: float = field(
-        default=0.01,
-        metadata={'help': 'Weight decay in AdamW.'},
-    )
-
-    fp16: bool = field(
-        default=True,
-        metadata={'help': 'Use fp16 training?'}
-    )
-    ddp_find_unused_parameters: bool = field(
-        default=False,
-        metadata={'help': 'Find unused parameters in torch DDP?'},
-    )
-    remove_unused_columns: bool = field(
-        default=False,
-        metadata={'help': 'Remove columns that are not registered in the forward function of the model?'},
-    )
-    evaluation_strategy: str = field(
-        default='steps',
-        metadata={'help': 'Evaluation strategy'},
-    )
-    save_steps: int = field(
-        default=2000,
-        metadata={'help': 'Saving frequency.'},
-    )
-    logging_steps: int = field(
-        default=100,
-        metadata={'help': 'Logging frequency according to logging strategy.'},
-    )
-    early_exit_steps: Optional[int] = field(
-        default=None,
-        metadata={'help': 'After how many steps to exit training loop.'},
-    )
-
-    report_to: str = field(
-        default="none", metadata={"help": "The list of integrations to report the results and logs to."}
-    )
-    log_path: str = field(
-        default="data/results/performance.log",
-        metadata={'help': 'Pooling method to aggregate token embeddings for a sequence embedding.'}
-    )
-    
-    # NOTE: newer version of transformers forbid modifying the configs after initilization, we bypass this setting
-    def __setattr__(self, name, value):
-        super(TrainingArguments, self).__setattr__(name, value)
-
-    def __post_init__(self):
-        super().__post_init__()
-        # for convenience
-        self.eval_steps = self.save_steps
-
-
 @dataclass
 class BaseArgs:
     model_cache_dir: Optional[str] = field(
@@ -424,3 +286,139 @@ class RetrievalArgs(DenseRetrievalArgs, BM25Args):
         metadata={'help': 'How to retrieve? {dense, bm25, random, no}'}
     )
 
+
+@dataclass
+class RetrievalTrainingArgs(TrainingArguments):
+    output_dir: str = field(
+        default='data/outputs/',
+        metadata={'help': 'The output directory where the model predictions and checkpoints will be written.'},
+    )
+    eval_method: str = field(
+        default="retrieval",
+        metadata={'help': 'How to evaluate?'},
+    )
+
+    use_train_config: bool = field(
+        default=False,
+        metadata={'help': 'Use training config from TASK_CONFIG to override arguments?'}
+    )
+    inbatch_same_dataset: Optional[str] = field(
+        default=None,
+        metadata={'help': 'Whether and how to use samples from the same task in each batch (across devices). {epoch, random}'}
+    )
+    negative_cross_device: bool = field(
+        default=True,
+        metadata={'help': 'Gather negatives from all devices when distributed training?'}
+    )
+    cos_temperature: float = field(
+        default=0.01,
+        metadata={'help': 'Temperature used for cosine dense metric.'}
+    )
+    teacher_temperature:float = field(
+        default=1.,
+        metadata={'help': 'Temperature used for cosine dense metric.'}
+    )
+    student_temperature:float = field(
+        default=1.,
+        metadata={'help': 'Temperature used for cosine dense metric.'}
+    )
+    contrastive_weight: float = field(
+        default=0.2,
+        metadata={'help': 'Weight for contrastive loss.'}
+    )
+    distill_weight: float = field(
+        default=1.0,
+        metadata={'help': 'Weight for distillation loss.'}
+    )
+    stable_distill: bool = field(
+        default=False, 
+        metadata={'help': 'Sort distillation.'}
+    )
+
+    max_sample_num: Optional[int] = field(
+        default=None,
+        metadata={'help': 'How many samples at most for training dataset?'}
+    )
+    train_group_size: int = field(
+        default=8,
+        metadata={'help': 'How many keys in a batch?'}
+    )
+    select_positive: str = field(
+        default="first",
+        metadata={'help': 'How to select the positive key from a set of positives?'}
+    )
+    select_negative: str = field(
+        default="random",
+        metadata={'help': 'How to select the negative keys from a set of negatives?'}
+    )
+    teacher_scores_margin: Optional[float] = field(
+        default=None,
+        metadata={'help': 'Minimum margin in teacher_scores. The samples with smaller margin will be removed from training.'}
+    )
+    teacher_scores_min: Optional[float] = field(
+        default=None,
+        metadata={'help': 'Minimum teacher_scores. The samples whose biggest score is lower than this will be removed from training.'}
+    )
+
+    per_device_train_batch_size: int = field(
+        default=16,
+        metadata={'help': 'Train batch size'},
+    )
+    learning_rate: float = field(
+        default=5e-6,
+        metadata={'help': 'Learning rate.'},
+    )
+    warmup_ratio: float = field(
+        default=0.1,
+        metadata={'help': 'Warmup ratio for linear scheduler.'},
+    )
+    weight_decay: float = field(
+        default=0.01,
+        metadata={'help': 'Weight decay in AdamW.'},
+    )
+
+    fp16: bool = field(
+        default=True,
+        metadata={'help': 'Use fp16 training?'}
+    )
+    ddp_find_unused_parameters: bool = field(
+        default=False,
+        metadata={'help': 'Find unused parameters in torch DDP?'},
+    )
+    remove_unused_columns: bool = field(
+        default=False,
+        metadata={'help': 'Remove columns that are not registered in the forward function of the model?'},
+    )
+    evaluation_strategy: str = field(
+        default='steps',
+        metadata={'help': 'Evaluation strategy'},
+    )
+    save_steps: int = field(
+        default=2000,
+        metadata={'help': 'Saving frequency.'},
+    )
+    logging_steps: int = field(
+        default=100,
+        metadata={'help': 'Logging frequency according to logging strategy.'},
+    )
+    early_exit_steps: Optional[int] = field(
+        default=None,
+        metadata={'help': 'After how many steps to exit training loop.'},
+    )
+
+    report_to: str = field(
+        default="none", metadata={"help": "The list of integrations to report the results and logs to."}
+    )
+    log_path: str = field(
+        default="data/results/performance.log",
+        metadata={'help': 'Pooling method to aggregate token embeddings for a sequence embedding.'}
+    )
+    
+    # NOTE: newer version of transformers forbid modifying the configs after initilization, we bypass this setting
+    def __setattr__(self, name, value):
+        super(TrainingArguments, self).__setattr__(name, value)
+
+    def __post_init__(self):
+        super().__post_init__()
+        # for convenience
+        self.eval_steps = self.save_steps

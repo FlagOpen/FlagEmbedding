@@ -82,6 +82,7 @@ torchrun --nproc_per_node=8 run_dense.py \
 --key_max_length 128 \
 --query_max_length 32 \
 --max_steps 2000 \
+--contrastive_weight 0 \
 --stable_distill \
 --data_root /data/llm-embedder
 ```
@@ -93,7 +94,6 @@ torchrun --nproc_per_node=8 run_dense.py \
 --train_data llm-embedder:icl/icl/train.json \
 --max_steps 6000 \
 --save_steps 6000 \
---add_instruction false \
 --select_positive random \
 --contrastive_weight 0 \
 --stable_distill \
@@ -105,14 +105,12 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/lrlm \
 --train_data llm-embedder:lrlm/books3/train.json llm-embedder:lrlm/arxiv/train.json llm-embedder:lrlm/codeparrot/train.json \
+--max_steps 4000 \
+--save_steps 4000 \
 --select_positive teacher \
---select_negative random \
 --teacher_scores_margin 0.1 \
 --contrastive_weight 0 \
 --teacher_temperature 0.1 \
---save_steps 4000 \
---max_steps 4000 \
---learning_rate 5e-6 \
 --data_root /data/llm-embedder
 ```
 
@@ -121,13 +119,12 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/msc \
 --train_data llm-embedder:chat/msc/train.json \
+--max_steps 4000 \
+--save_steps 4000 \
 --select_positive teacher \
 --select_negative random \
 --contrastive_weight 0 \
 --teacher_temperature 0.1 \
---max_steps 4000 \
---save_steps 4000 \
---learning_rate 5e-6 \
 --data_root /data/llm-embedder
 ```
 
@@ -138,10 +135,9 @@ torchrun --nproc_per_node=8 run_dense.py \
 --train_data llm-embedder:tool/toolbench/train.json \
 --eval_data llm-embedder:tool/toolbench/test.json \
 --corpus llm-embedder:tool/toolbench/corpus.json \
---save_steps 2000 \
---max_steps 2000 \
 --key_template {text} \
 --metrics ndcg \
+--max_steps 2000 \
 --data_root /data/llm-embedder
 ```
 
@@ -150,16 +146,18 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/qrecc \
 --train_data llm-embedder:conversation/qrecc/train.concat.json \
+--eval_data llm-embedder:conversation/qrecc/test.concat.json \
+--corpus llm-embedder:conversation/qrecc/corpus.json \
+--key_template '{text}' \
 --metrics mrr ndcg \
 --cutoffs 3 10 100 \
 --max_steps 2000 \
---key_template '{text}' \
 --data_root /data/llm-embedder
 ```
 
 ### Mine Negatives
 ```bash
-# BGE (the result will be saved at llm-embedder:qa/nq/train.bge.json)
+# BGE (the result will be saved at llm-embedder:qa/nq/train.neg.bge.json)
 torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
 --eval_data llm-embedder:qa/nq/train.json \
 --corpus llm-embedder:qa/nq/corpus.json \
@@ -167,7 +165,7 @@ torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
 --save_name bge \
 --data_root /data/llm-embedder
 
-# BM25 (the result will be saved at llm-embedder:qa/nq/train.bm25.json)
+# BM25 (the result will be saved at llm-embedder:qa/nq/train.neg.bm25.json)
 torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
 --retrieval_method bm25 \
 --eval_data llm-embedder:qa/nq/train.json \
@@ -178,10 +176,14 @@ torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
 ```
 
 ## LM Scoring
-Score positives and negatives in `eval_data` with $p(o|q,k)$ where $o$ is the desired output, $q$ is the query, and $k$ is a key (could be positive or negative). This requires `answers` field in `train_data`.
+Score positives and negatives in `eval_data` with $p(o|q,k)$ where $o$ is the desired output (i.e. `answers` field), $q$ is the query, and $k$ is a key (could be positive or negative).
 
 ```bash
-torchrun --nproc_per_node=8 run_lm_score.py --eval_data llm-embedder:qa/msmarco/train.json --data_root /data/llm-embedder
+torchrun --nproc_per_node=8 run_lm_score.py \
+--eval_data llm-embedder:qa/msmarco/train.json \
+--data_root /data/llm-embedder \
+--model_name_or_path meta-llama/Llama-2-7b-chat-hf \
+--save_name llama2-7b-chat
 ```
 Results will be saved at `/data/llm-embedder/qa/msmarco/train.scored.llama2-7b-chat.json`
 
