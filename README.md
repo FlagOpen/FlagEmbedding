@@ -32,7 +32,7 @@
 
 <span style="#FF69B4;"> **Hiring:** We're seeking experienced NLP researchers and intern students focusing on dense retrieval and retrieval-augmented LLMs. If you're interested, please feel free to reach out to us via email at zhengliu1026@gmail.com.</span>
 
-FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, or semantic search.
+FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering and semantic search.
 And it also can be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
