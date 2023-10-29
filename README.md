@@ -55,10 +55,7 @@ And it also can be used in vector databases for LLMs.
 - 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
   
 </details>
-### Our Contributors:
-<a href="https://github.com/FlagOpen/FlagEmbedding/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=FlagOpen/FlagEmbedding" />
-</a>
+
 
 ## Model List
 
@@ -392,6 +389,12 @@ We train the cross-encoder on a multilingual pair data,
 The data format is the same as embedding model, so you can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker). 
 For more details please refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
+
+### Our Contributors:
+
+<a href="https://github.com/FlagOpen/FlagEmbedding/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=FlagOpen/FlagEmbedding" />
+</a>
 
 ## Contact
 If you have any question or suggestion related to this project, feel free to open an issue or pull request.
