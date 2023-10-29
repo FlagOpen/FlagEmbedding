@@ -152,7 +152,7 @@ print(similarity)
 
 # 对于短查询到长文档的检索任务，请对查询使用 encode_queries() 函数，其会自动为每个查询加上指令
 # 由于候选文本不需要添加指令，检索中的候选集依然使用 encode() 或 encode_corpus() 函数
-queries = ['query_1', 'query_2']
+sentences = ['query_1', 'query_2']
 passages = ["样例文档-1", "样例文档-2"]
 q_embeddings = model.encode_queries(queries)
 p_embeddings = model.encode(passages)
