@@ -55,7 +55,10 @@ And it also can be used in vector databases for LLMs.
 - 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
   
 </details>
-
+### Our Contributors:
+<a href="https://github.com/FlagOpen/FlagEmbedding/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=FlagOpen/FlagEmbedding" />
+</a>
 
 ## Model List
 
