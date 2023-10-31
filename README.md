@@ -32,8 +32,8 @@
 
 <span style="#FF69B4;"> **Hiring:** We're seeking experienced NLP researchers and intern students focusing on dense retrieval and retrieval-augmented LLMs. If you're interested, please feel free to reach out to us via email at zhengliu1026@gmail.com.</span>
 
-FlagEmbedding can map any text to a low-dimensional dense vector which can be used for tasks like retrieval, classification,  clustering, and semantic search.
-And it also can be used in vector databases for LLMs.
+FlagEmbedding can map any text to a low-dimensional dense vector, which can be used for tasks like retrieval, classification,  clustering, and semantic search.
+And it can also be used in vector databases for LLMs.
 
 ************* 🌟**Updates**🌟 *************
 - 10/12/2023: Release [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Paper](https://arxiv.org/pdf/2310.07554.pdf) :fire:  
@@ -80,13 +80,13 @@ And it also can be used in vector databases for LLMs.
 |  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | a small-scale model but with competitive performance | `为这个句子生成表示以用于检索相关文章：`  |
 
 
-[1\]: If you need to search the relevant passages to a query, we suggest to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. In all cases, **no instruction** needs to be added to passages.
+[1\]: If you need to search the relevant passages in a query, we suggest to add the instruction to the query; in other cases, no instruction is needed, just use the original query directly. In all cases, **no instruction** needs to be added to passages.
 
-[2\]: Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
-For examples, use bge embedding model to retrieve top 100 relevant documents, and then use bge reranker to re-rank the top 100 document to get the final top-3 results.
+[2\]: Different from the embedding model, reranker uses question and document as input and directly output similarity instead of embedding. To balance the accuracy and time cost, cross-encoder is widely used to re-rank top-k documents retrieved by other simple models. 
+For example, use bge embedding model to retrieve top 100 relevant documents, and then use bge reranker to re-rank the top 100 documents to get the final top-3 results.
 
 All models have been uploaded to Huggingface Hub, and you can see them at https://huggingface.co/BAAI. 
-If you cannot open the Huggingface Hub, you also can download the models at https://model.baai.ac.cn/models .
+If you cannot open the Huggingface Hub, you can also download the models at https://model.baai.ac.cn/models .
 
 
 ## Frequently asked questions
@@ -140,7 +140,7 @@ In all cases, the documents/passages do not need to add the instruction.
 
 ### Usage for Embedding Model
 
-Here are some examples for using `bge` models with 
+Here are some examples of using `bge` models with 
 [FlagEmbedding](#using-flagembedding), [Sentence-Transformers](#using-sentence-transformers), [Langchain](#using-langchain), or [Huggingface Transformers](#using-huggingface-transformers).
 
 #### Using FlagEmbedding
@@ -372,11 +372,11 @@ See [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/) for 
 
 ### BAAI Embedding 
 
-We pre-train the models using [retromae](https://github.com/staoxiao/RetroMAE) and train them on large-scale pairs data using contrastive learning. 
+We pre-train the models using [retromae](https://github.com/staoxiao/RetroMAE) and train them on large-scale pair data using contrastive learning. 
 **You can fine-tune the embedding model on your data following our [examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune).**
 We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
-Fore more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
+For more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
 
 
 
