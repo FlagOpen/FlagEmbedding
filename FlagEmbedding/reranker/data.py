@@ -37,7 +37,7 @@ class TrainDatasetForCE(Dataset):
         item = self.tokenizer.encode_plus(
             qry_encoding,
             doc_encoding,
-            truncation='only_second',
+            truncation=True,
             max_length=self.args.max_len,
             padding=False,
         )
