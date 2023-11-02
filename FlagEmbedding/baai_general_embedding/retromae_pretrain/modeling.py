@@ -53,12 +53,12 @@ class RetroMAEForPretraining(nn.Module):
         decoder_embedding_output = self.decoder_embeddings(input_ids=decoder_input_ids)
         hiddens = torch.cat([cls_hiddens, decoder_embedding_output[:, 1:]], dim=1)
 
-        # decoder_position_ids = self.lm.bert.embeddings.position_ids[:, :decoder_input_ids.size(1)]
-        # decoder_position_embeddings = self.lm.bert.embeddings.position_embeddings(decoder_position_ids)  # B L D
-        # query = decoder_position_embeddings + cls_hiddens
+        decoder_position_ids = self.lm.bert.embeddings.position_ids[:, :decoder_input_ids.size(1)]
+        decoder_position_embeddings = self.lm.bert.embeddings.position_embeddings(decoder_position_ids)  # B L D
+        query = decoder_position_embeddings + cls_hiddens
 
-        cls_hiddens = cls_hiddens.expand(hiddens.size(0), hiddens.size(1), hiddens.size(2))
-        query = self.decoder_embeddings(inputs_embeds=cls_hiddens)
+        # cls_hiddens = cls_hiddens.expand(hiddens.size(0), hiddens.size(1), hiddens.size(2))
+        # query = self.decoder_embeddings(inputs_embeds=cls_hiddens)
 
         matrix_attention_mask = self.lm.get_extended_attention_mask(
             decoder_attention_mask,
