@@ -414,6 +414,15 @@ If you find this repository useful, please consider giving a star :star: and cit
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
+
+@misc{llm_embedder,
+      title={Retrieve Anything To Augment Large Language Models}, 
+      author={Peitian Zhang and Shitao Xiao and Zheng Liu and Zhicheng Dou and Jian-Yun Nie},
+      year={2023},
+      eprint={2310.07554},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR}
+}
 ```
 
 ## License
