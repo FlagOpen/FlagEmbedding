@@ -35,8 +35,8 @@ class RetroMAEForPretraining(nn.Module):
 
         self.model_args = model_args
 
-    def gradient_checkpointing_enable(self):
-        self.lm.gradient_checkpointing_enable()
+    def gradient_checkpointing_enable(self, **kwargs):
+        self.lm.gradient_checkpointing_enable(**kwargs)
 
     def forward(self,
                 encoder_input_ids, encoder_attention_mask, encoder_labels,

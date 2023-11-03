@@ -26,8 +26,8 @@ class CrossEncoder(nn.Module):
             torch.zeros(self.train_args.per_device_train_batch_size, dtype=torch.long)
         )
 
-    def gradient_checkpointing_enable(self):
-        self.hf_model.gradient_checkpointing_enable()
+    def gradient_checkpointing_enable(self, **kwargs):
+        self.hf_model.gradient_checkpointing_enable(**kwargs)
 
     def forward(self, batch):
         ranker_out: SequenceClassifierOutput = self.hf_model(**batch, return_dict=True)
