@@ -14,7 +14,7 @@ def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls', nor
 
 
 class BiTrainer(Trainer):
-    def _save(self, output_dir: Optional[str] = None):
+    def _save(self, output_dir: Optional[str] = None, state_dict=None):
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)
         logger.info("Saving model checkpoint to %s", output_dir)
