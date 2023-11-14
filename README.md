@@ -30,7 +30,7 @@
 
 <span style="#FF69B4;"> **Hiring:** We're seeking experienced NLP researchers and intern students focusing on dense retrieval and retrieval-augmented LLMs. If you're interested, please feel free to reach out to us via email at zhengliu1026@gmail.com.</span>
 
-FlagEmbedding focus on retrieval-augmented LLMs, which currently consist of following projects:
+FlagEmbedding focus on retrieval-augmented LLMs, consisting of following projects currently:
 
 - Dense Retrieval: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
 - Reranker Model: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
