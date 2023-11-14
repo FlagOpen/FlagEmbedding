@@ -1,26 +1,51 @@
 # Reranker
 
-## Installation
+## Usage 
 
-* **with pip**
+Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. 
+You can get a relevance score by inputting query and passage to the reranker. 
+The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
+
+
+### Using FlagEmbedding
 ```
 pip install -U FlagEmbedding
 ```
 
-* **from source**
-```
-git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding
-pip install  .
-```
-For development, install as editable:
-```
-pip install -e .
+Get relevance scores (higher scores indicate more relevance):
+```python
+from FlagEmbedding import FlagReranker
+reranker = FlagReranker('BAAI/bge-reranker-large', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+
+score = reranker.compute_score(['query', 'passage'])
+print(score)
+
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
+print(scores)
 ```
 
-** We provide a [example](https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/reranker/README.md) to fine-tune the reranker.**
 
-## Train
+### Using Huggingface transformers
+
+```python
+import torch
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-large')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-large')
+model.eval()
+
+pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
+with torch.no_grad():
+    inputs = tokenizer(pairs, padding=True, truncation=True, return_tensors='pt', max_length=512)
+    scores = model(**inputs, return_dict=True).logits.view(-1, ).float()
+    print(scores)
+```
+
+
+## Fine-tune
+
+You can follow this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) to fine-tune the reranker.
 
 This reranker is initialized from [xlm-roberta-base](https://huggingface.co/xlm-roberta-base), and we train it on a mixture of multilingual datasets:
 - Chinese: 788,491 text pairs from [T2ranking](https://huggingface.co/datasets/THUIR/T2Ranking), [MMmarco](https://github.com/unicamp-dl/mMARCO), [dulreader](https://github.com/baidu/DuReader), and [nli-zh](https://huggingface.co/datasets/shibing624/nli_zh)
@@ -49,3 +74,19 @@ Currently, this model mainly supports Chinese and English, and may see performan
 | bge-reranker-large | 67.28 | 63.95 | 60.45 | 35.46 | 81.26 | 84.1 | 65.42 |  
 
 \* : T2RerankingZh2En and T2RerankingEn2Zh are cross-language retrieval task
+
+
+## Citation
+
+If you find this repository useful, please consider giving a star :star: and citation
+
+```
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

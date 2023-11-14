@@ -72,7 +72,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_group_size 2 \
 --negatives_cross_device \
 --logging_steps 10 \
---query_instruction_for_retrieval "为这个句子生成表示以用于检索相关文章：" 
+--query_instruction_for_retrieval "" 
 ```
 
 **some important arguments**:
