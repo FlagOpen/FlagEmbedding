@@ -336,7 +336,7 @@ def main():
             result = {'task_name':task_name, 'setting':setting, 'metric_value':metric_value}
             if accelerator.process_index == 0:
                 print(result)
-                with open(makedirs(save_path), 'w') as f:
+                with open(makedirs(save_path), 'w', encoding='utf-8') as f:
                     f.write(json.dumps(result, ensure_ascii=False) + "\n")
                     for i, sample in enumerate(test_data):
                         sample["output"] = predictions[i]

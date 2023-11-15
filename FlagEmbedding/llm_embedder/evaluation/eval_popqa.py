@@ -189,7 +189,7 @@ def evaluate_popqa(eval_data, save_path, **kwds):
                 samples[sample["query_id"]] = sample
 
         accuracy = 0
-        with open(save_path, "w") as f:
+        with open(save_path, "w", encoding='utf-8') as f:
             for query_id, generation in zip(*eval_preds):
                 sample = samples[query_id]
                 answers = sample['possible_answers']

@@ -176,7 +176,7 @@ def evaluate_qa(eval_data, save_path, **kwds):
                 samples[sample["query_id"]] = sample
 
         exact_match = 0
-        with open(save_path, "w") as f:
+        with open(save_path, "w", encoding='utf-8') as f:
             for query_id, generation in zip(*eval_preds):
                 sample = samples[query_id]
                 em = max(normalize_text(generation) == normalize_text(answer) for answer in sample["answers"])

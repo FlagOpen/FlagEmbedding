@@ -215,7 +215,7 @@ def evaluate_mmlu(eval_data, save_path, **kwds):
             # store log likelihood
             results[query_id].append(-nll)
         
-        with open(makedirs(save_path), "w") as f:
+        with open(makedirs(save_path), "w", encoding='utf-8') as f:
             for k, v in results.items():
                 output = max(enumerate(v), key=lambda x: x[1])[0]
                 sample = samples[k]
