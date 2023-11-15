@@ -16,9 +16,9 @@
 
 <h4 align="center">
     <p>
-        <a href=#更新>更新</a> | 
-        <a href="#模型列表">模型列表</a> |
+        <a href=#更新>更新</a> |
         <a href="#项目">项目</a> |
+        <a href="#模型列表">模型列表</a> |
         <a href="#citation">Citation</a> |
         <a href="#license">License</a> 
     <p>
@@ -47,29 +47,6 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 - 08/05/2023: 发布更小的模型(base, small), **在同尺寸模型中取得最好的性能！ 🤗**
 - 08/02/2023: :tada: :tada: 发布中英文向量模型BGE(BAAI General Embedding的缩写), **在MTEB和C-MTEB榜单上取得最好的性能** 
 - 08/01/2023: 发布大规模中文文本向量[评测榜单](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), 其包括31个测试任务.   
-
-
-
-
-## 模型列表
-|              Model              | Language | | Description | query instruction for retrieval [1] |
-|:-------------------------------|:--------:| :--------:| :--------:|:--------:|
-|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) | 专为大语言模型各种检索增强任务设计的向量模型  | 详见 [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
-|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
-|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
-|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |  :trophy:  SOTA性能在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale 模型  | `Represent this sentence for searching relevant passages: `  |
-|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: SOTA性能在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `为这个句子生成表示以用于检索相关文章：`  |
-|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale模型 | `为这个句子生成表示以用于检索相关文章：`  |
-
 
 
 
@@ -103,6 +80,29 @@ LLM-Embedder向量模型是根据LLM的反馈进行微调的。
 因此，它可以用来对嵌入模型返回的前k个文档重新排序。
 我们在多语言数据上训练了交叉编码器，数据格式与向量模型相同，因此您可以根据我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) 轻松地对其进行微调。
 更多细节请参考[./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/reranker/README.md)
+
+
+
+## 模型列表
+|              Model              | Language | | Description | query instruction for retrieval [1] |
+|:-------------------------------|:--------:| :--------:| :--------:|:--------:|
+|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) | 专为大语言模型各种检索增强任务设计的向量模型  | 详见 [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
+|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
+|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [推理](#usage-for-reranker) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) | 交叉编码器模型，精度比向量模型更高但推理效率较低 [2] |   |
+|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | 1.5版本，相似度分布更加合理 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |  :trophy:  SOTA性能在 [MTEB](https://huggingface.co/spaces/mteb/leaderboard) 榜单 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale 模型  | `Represent this sentence for searching relevant passages: `  |
+|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: SOTA性能在 [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 榜单 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | base-scale 模型 | `为这个句子生成表示以用于检索相关文章：`  |
+|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [推理](#usage-for-embedding-model) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | small-scale模型 | `为这个句子生成表示以用于检索相关文章：`  |
+
+
 
 
 ## Contributors:
