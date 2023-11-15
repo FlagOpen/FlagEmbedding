@@ -323,9 +323,8 @@ def main():
                 # predictions = llm.generate(dataloader, eos_token_id=eos_token_id)
                 # predictions = [x.strip() for x in predictions]
 
-                predictions = llm.generate(dataloader)
+                predictions = llm.generate(dataloader, eos_token_id=tokenizer.eos_token_id)
                 predictions = [x.split('\n')[0].strip() for x in predictions]
-
 
             if setting['metric'] in ['em']:
                 labels = [x['answers'] for x in test_data]
