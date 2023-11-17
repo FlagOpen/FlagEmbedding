@@ -184,7 +184,7 @@ torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
 --data_root /data/llm-embedder
 
 # BM25 (the result will be saved at llm-embedder:qa/nq/train.neg.bm25.json)
-torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
+python -m evaluation.eval_retrieval \
 --retrieval_method bm25 \
 --eval_data llm-embedder:qa/nq/train.json \
 --corpus llm-embedder:qa/nq/corpus.json \

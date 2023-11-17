@@ -51,6 +51,23 @@ class BaseArgs:
         metadata={'help': 'Maximum negative number to mine.'}
     )
     
+    load_result: bool = field(
+        default=False,
+        metadata={'help': 'Load retrieval results directly?'}
+    )
+    save_result: bool = field(
+        default=True,
+        metadata={'help': 'Save retrieval results?'}
+    )
+    save_name: Optional[str] = field(
+        default=None,
+        metadata={'help': 'Name suffix of the json file when saving the collated retrieval results.'}
+    )
+    save_to_output: bool = field(
+        default=False,
+        metadata={'help': 'Save the result/key/negative to output_dir? If not true, they will be saved next to the eval_data.'}
+    )
+    
     def resolve_path(self, path):
         """Resolve any path starting with 'llm-embedder:' to relative path against data_root."""
         pattern = "llm-embedder:"
@@ -149,18 +166,6 @@ class DenseRetrievalArgs(BaseArgs):
         default=False,
         metadata={'help': 'Save index?'}
     )
-    load_result: bool = field(
-        default=False,
-        metadata={'help': 'Load retrieval results directly?'}
-    )
-    save_result: bool = field(
-        default=True,
-        metadata={'help': 'Save retrieval results?'}
-    )
-    save_name: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Name suffix of the json file when saving the collated retrieval results.'}
-    )
     embedding_name: str = field(
         default="embeddings",
         metadata={'help': 'The embedding name for saving? (Also used for faiss index name.)'}
@@ -214,10 +219,6 @@ class BM25Args(BaseArgs):
         default=False,
         metadata={'help': 'Load collection?'}
     )
-    save_name: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Name suffix of the json file when saving the collated retrieval results.'}
-    )
 
 
 @dataclass
@@ -259,19 +260,6 @@ class RankerArgs(BaseArgs):
     batch_size: int = field(
         default=4,
         metadata={'help': 'Batch size for indexing and retrieval.'}
-    )
-
-    load_result: bool = field(
-        default=False,
-        metadata={'help': 'Load retrieval results directly?'}
-    )
-    save_result: bool = field(
-        default=True,
-        metadata={'help': 'Save retrieval results?'}
-    )
-    save_name: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Name suffix of the json file when saving the collated retrieval results.'}
     )
     cpu: bool = field(
         default=False,
@@ -422,3 +410,4 @@ class RetrievalTrainingArgs(TrainingArguments):
         super().__post_init__()
         # for convenience
         self.eval_steps = self.save_steps
+
