@@ -71,7 +71,6 @@ We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
 For more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
 
-BGE-v2 is in progress, which will support multilingual and long text.
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
 

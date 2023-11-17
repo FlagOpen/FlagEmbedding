@@ -48,7 +48,7 @@ with torch.no_grad():
 You can follow this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) to fine-tune the reranker.
 
 This reranker is initialized from [xlm-roberta-base](https://huggingface.co/xlm-roberta-base), and we train it on a mixture of multilingual datasets:
-- Chinese: 788,491 text pairs from [T2ranking](https://huggingface.co/datasets/THUIR/T2Ranking), [MMmarco](https://github.com/unicamp-dl/mMARCO), [dulreader](https://github.com/baidu/DuReader), and [nli-zh](https://huggingface.co/datasets/shibing624/nli_zh)
+- Chinese: 788,491 text pairs from [T2ranking](https://huggingface.co/datasets/THUIR/T2Ranking), [MMmarco](https://github.com/unicamp-dl/mMARCO), [dulreader](https://github.com/baidu/DuReader), [Cmedqa-v2](https://github.com/zhangsheng93/cMedQA2), and [nli-zh](https://huggingface.co/datasets/shibing624/nli_zh)
 - English: 933,090 text pairs from [msmarco](https://huggingface.co/datasets/sentence-transformers/embedding-training-data), [nq](https://huggingface.co/datasets/sentence-transformers/embedding-training-data), [hotpotqa](https://huggingface.co/datasets/sentence-transformers/embedding-training-data), and [NLI](https://github.com/princeton-nlp/SimCSE)
 - Others: 97,458 text pairs from [Mr.TyDi](https://github.com/castorini/mr.tydi) (including arabic, bengali, english, finnish, indonesian, japanese, korean, russian, swahili, telugu, thai)
 

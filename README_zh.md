@@ -62,7 +62,6 @@ BGE Embedding上一个通用项目模型。 我们使用[retromae](https://githu
 请注意，预训练的目标是重构文本，预训练后的模型无法直接用于相似度计算，需要进行微调之后才可以用于相似度计算。
 更多关于bge的训练情况请参阅[baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) ，
 
-BGE-v2正在训练中，将支持多语言和长文本。
 
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
