@@ -38,7 +38,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ## 更新
 
-- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), 一种在微调时保持原有模型通用能力的方法. [论文链接](https://arxiv.org/abs/2311.13534) :fire:
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [论文链接](https://arxiv.org/abs/2311.13534) :fire:
 - 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) 
 - 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：

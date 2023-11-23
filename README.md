@@ -39,7 +39,7 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## News 
 
-- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), a method to maintain generality during fine-tuning for downstream tasks. [Paper](https://arxiv.org/abs/2311.13534) :fire:  
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), a method to maintain general ability during fine-tuning by merging multiple models. [Paper](https://arxiv.org/abs/2311.13534) :fire:  
 - 10/12/2023: Release [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Paper](https://arxiv.org/pdf/2310.07554.pdf)
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released 
 - 09/15/2023: The [massive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released 
