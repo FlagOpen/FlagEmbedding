@@ -290,3 +290,18 @@ For retrieval tasks, we sample 100,000 candidates (including the ground truths) 
 
 We thank the great tool from [Massive Text Embedding Benchmark](https://github.com/embeddings-benchmark/mteb)  and the open-source datasets from Chinese NLP community.
 
+
+## Citation
+
+If you find this repository useful, please consider citation
+
+```
+@misc{c-pack,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

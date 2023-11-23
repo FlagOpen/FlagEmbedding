@@ -36,6 +36,8 @@ class BiEncoderModel(nn.Module):
         self.normlized = normlized
         self.sentence_pooling_method = sentence_pooling_method
         self.temperature = temperature
+        self.config = self.model.config
+
         if not normlized:
             self.temperature = 1.0
             logger.info("reset temperature = 1.0 due to using inner product to compute similarity")

@@ -19,6 +19,7 @@ class CrossEncoder(nn.Module):
         self.train_args = train_args
         self.data_args = data_args
 
+        self.config = self.hf_model.config
         self.cross_entropy = nn.CrossEntropyLoss(reduction='mean')
 
         self.register_buffer(

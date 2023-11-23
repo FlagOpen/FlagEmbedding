@@ -32,6 +32,7 @@
 
 FlagEmbedding focus on retrieval-augmented LLMs, consisting of following projects currently:
 
+- **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail)
 - **Dense Retrieval** : [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
 - **Reranker Model** : [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 - **Benchamark** : [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
@@ -39,7 +40,8 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## News 
 
-- 10/12/2023: Release [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Paper](https://arxiv.org/pdf/2310.07554.pdf) :fire:  
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), a method to maintain generality during fine-tuning for downstream tasks. [Paper](https://arxiv.org/abs/2311.13534) :fire:  
+- 10/12/2023: Release [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Paper](https://arxiv.org/pdf/2310.07554.pdf)
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released 
 - 09/15/2023: The [massive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released 
 - 09/12/2023: New models: 
@@ -63,13 +65,18 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## Projects
 
-### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
+### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail)
 
-BGE embedding is a general Embedding Model. We pre-train the models using [retromae](https://github.com/staoxiao/RetroMAE) and train them on large-scale pair data using contrastive learning. 
-**You can fine-tune the embedding model on your data following our [examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune).**
-We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).
-Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
-For more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
+The pre-trained language models are continually fine-tuned to better support downstream
+applications. However, this operation may result in significant performance degeneration on
+general tasks beyond the targeted domain. To overcome this problem, we propose a novel
+method which enables the fine-tuned model
+to stay resilient in general perspectives: LM-Cocktail. 
+LM-Cocktail can achieve
+a strong empirical performance in the whole
+scope of general tasks while preserving a superior capacity in its targeted domain. It also can be used to generate a model for new tasks without fine-tuning.
+More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534) and [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail).
+
 
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
@@ -91,27 +98,38 @@ The data format is the same as embedding model, so you can fine-tune it easily f
 For more details please refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
 
+### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
+
+BGE embedding is a general Embedding Model. We pre-train the models using [retromae](https://github.com/staoxiao/RetroMAE) and train them on large-scale pair data using contrastive learning. 
+**You can fine-tune the embedding model on your data following our [examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune).**
+We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).
+Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
+For more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
+
+
+
 ## Model List
 
 `bge` is short for `BAAI general embedding`.
 
-|              Model              | Language | |                                                Description                                                |                                query instruction for retrieval                                 |
-|:-------------------------------|:--------:| :--------:|:---------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
-|  [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)  |   English | [Inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |            a unified embedding model to support diverse retrieval augmentation needs for LLMs             | See [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
-|  [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large)  |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) |                      a cross-encoder model which is more accurate but less efficient                      |                                                                                                |
-|  [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) |                      a cross-encoder model which is more accurate but less efficient                      |                                                                                                |
-|  [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
-|  [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
-|  [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
-|  [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |        :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard        |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                       a base-scale model but with similar ability to `bge-large-en`                       |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en) |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                           a small-scale model but with competitive performance                            |                  `Represent this sentence for searching relevant passages: `                   |
-|  [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) benchmark |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
-|  [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh) |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                       a base-scale model but with similar ability to `bge-large-zh`                       |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
-|  [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh) |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                           a small-scale model but with competitive performance                            |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| Model                                                                     | Language | |                                                Description                                                |                                query instruction for retrieval                                 |
+|:--------------------------------------------------------------------------|:--------:| :--------:|:---------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| [LM-Cocktail](https://huggingface.co/Shitao)                   |   English |  |        fine-tuned models (Llama and BGE) which can be used to reproduce the results of LM-Cocktail        |  |
+| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English | [Inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |            a unified embedding model to support diverse retrieval augmentation needs for LLMs             | See [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) |                      a cross-encoder model which is more accurate but less efficient                      |                                                                                                |
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base)   |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) |                      a cross-encoder model which is more accurate but less efficient                      |                                                                                                |
+| [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)   |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5)     |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)   |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5)   |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5)     |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5)   |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                         version 1.5 with more reasonable similarity distribution                          |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en)             |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |        :trophy: rank **1st** in [MTEB](https://huggingface.co/spaces/mteb/leaderboard) leaderboard        |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en)               |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                       a base-scale model but with similar ability to `bge-large-en`                       |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en)             |   English | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                           a small-scale model but with competitive performance                            |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh)             |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) | :trophy: rank **1st** in [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) benchmark |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh)               |   Chinese |  [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                       a base-scale model but with similar ability to `bge-large-zh`                       |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh)             |   Chinese | [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) |                           a small-scale model but with competitive performance                            |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
 
 
 
@@ -150,7 +168,6 @@ If you find this repository useful, please consider giving a star :star: and cit
 ```
 
 ## License
-FlagEmbedding is licensed under the [MIT License](https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE). The released models can be used for commercial purposes free of charge.
-
+FlagEmbedding is licensed under the [MIT License](https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE). 
 
 
