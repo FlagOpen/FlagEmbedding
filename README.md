@@ -33,9 +33,8 @@
 FlagEmbedding focus on retrieval-augmented LLMs, consisting of following projects currently:
 
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail)
-- **Dense Retrieval** : [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
-- **Reranker Model** : [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
-- **Benchamark** : [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
+- **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding), [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
+- **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
 
 ## News 
@@ -65,7 +64,7 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## Projects
 
-### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail)
+### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
 The pre-trained language models are continually fine-tuned to better support downstream
 applications. However, this operation may result in significant performance degeneration on
@@ -75,7 +74,7 @@ to stay resilient in general perspectives: LM-Cocktail.
 LM-Cocktail can achieve
 a strong empirical performance in the whole
 scope of general tasks while preserving a superior capacity in its targeted domain. It also can be used to generate a model for new tasks without fine-tuning.
-More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534) and [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail).
+More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534) and [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail).
 
 
 
