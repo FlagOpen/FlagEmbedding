@@ -39,15 +39,21 @@ class BM25Retriever:
         if isinstance(eval_data, str):
             with open(eval_data) as f:
                 for line in tqdm(f, desc="Preparing Anserini Queries"):
-                    item = json.loads(line)
-                    query_ids.append(item["query_id"])
                     # NOTE: repr query because it may contain newline character
-                    queries.append(repr(item["query"])[1:-1])
+                    item = json.loads(line)
+                    query = repr(item["query"])[1:-1]
+                    # filter out empty query
+                    if len(query.strip()):
+                        query_ids.append(item["query_id"])
+                        queries.append(query)
         elif isinstance(eval_data, datasets.Dataset):
             for item in tqdm(eval_data, desc="Preparing Anserini Queries"):
-                query_ids.append(item["query_id"])
                 # NOTE: repr query because it may contain newline character
-                queries.append(repr(item["query"])[1:-1])
+                query = repr(item["query"])[1:-1]
+                # filter out empty query
+                if len(query.strip()):
+                    query_ids.append(item["query_id"])
+                    queries.append(query)
         else:
             raise ValueError(f"Expected eval_data to be instance of str or datasets.Dataset, got {type(eval_data)}!")
 

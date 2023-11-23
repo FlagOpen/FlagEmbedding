@@ -549,7 +549,7 @@ TASK_CONFIG = {
             },
         }
     },
-    
+ 
     "bge": {
         "instruction": defaultdict(lambda: {"query": "Represent this sentence for searching relevant passages: ", "key": ""})
     },
