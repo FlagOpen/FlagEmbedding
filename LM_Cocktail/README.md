@@ -193,3 +193,23 @@ Use [MTEB script](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) 
 python eval_MTEB.py --model_name_or_path mixed_model --task_type Retrieval
 ```
 
+## Acknowledgement
+
+The Llama is fine-tuned using the [FastChat](https://github.com/lm-sys/FastChat) scripts. 
+Fine-tuning datasets are from [sentence-transformers/embedding-training-data](https://huggingface.co/datasets/sentence-transformers/embedding-training-data) and [intfloat/llm-retriever-tasks](https://huggingface.co/datasets/intfloat/llm-retriever-tasks).
+
+
+## Citation
+
+If you find this repository useful, please consider giving a star :star: and citation
+
+```
+@misc{cocktail,
+      title={LM-Cocktail: Resilient Tuning of Language Models via Model Merging}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Xingrun Xing},
+      year={2023},
+      eprint={2311.13534},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```

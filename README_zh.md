@@ -38,7 +38,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ## 更新
 
-- 11/20/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), 一种在微调时保持原有模型通用能力的方法. [论文链接](https://arxiv.org/abs/2311.13534) :fire:
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail), 一种在微调时保持原有模型通用能力的方法. [论文链接](https://arxiv.org/abs/2311.13534) :fire:
 - 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) 
 - 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
@@ -58,10 +58,10 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-微调预训练语言模型会不断微调可以更好地支持下游任务。但是，该操作可能会导致目标领域之外的一般性任务上性能下降。
-为了克服这个问题，我们提出了:LM-Cocktail。 LM-Cocktail在提高下游目标任务的准确度的同时，保持在其他任务上的性能。
+微调预训练语言模型可以更好地支持下游任务。但是，该操作可能会导致目标领域之外的一般性任务上性能下降。
+为了克服这个问题，我们提出了LM-Cocktail。 LM-Cocktail在提高下游目标任务的准确度的同时，保持在其他任务上的性能。
 它还可以用于为新任务生成模型，避免微调对资源和数据的要求。
-更多细节请参考我们的[论文](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
+更多细节请参考[论文](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
 
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
@@ -129,11 +129,11 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
 
 如果您觉得我们的工作有所帮助，请考虑点个星 :star: 和引用以下论文:
 ```
-@misc{bge_embedding,
-      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
-      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+@misc{cocktail,
+      title={LM-Cocktail: Resilient Tuning of Language Models via Model Merging}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Xingrun Xing},
       year={2023},
-      eprint={2309.07597},
+      eprint={2311.13534},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
@@ -145,6 +145,15 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
       eprint={2310.07554},
       archivePrefix={arXiv},
       primaryClass={cs.IR}
+}
+
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
 }
 ```
 

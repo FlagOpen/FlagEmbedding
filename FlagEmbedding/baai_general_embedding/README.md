@@ -214,6 +214,11 @@ Please refer to [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C
 
 
 
+## Acknowledgement
+
+Part of the code is developed based on [Dense](https://github.com/luyug/Dense).
+
+
 ## Citation
 
 If you find this repository useful, please consider giving a star :star: and citation
@@ -228,10 +233,6 @@ If you find this repository useful, please consider giving a star :star: and cit
       primaryClass={cs.CL}
 }
 ```
-
-## Acknowledgement
-
-Part of the code is developed based on [Dense](https://github.com/luyug/Dense).
 
 
 

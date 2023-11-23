@@ -32,7 +32,7 @@
 
 FlagEmbedding focus on retrieval-augmented LLMs, consisting of following projects currently:
 
-- **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/LM_Cocktail)
+- **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 - **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding), [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 - **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
@@ -147,11 +147,11 @@ For more training details for bge see [baai_general_embedding](https://github.co
 If you find this repository useful, please consider giving a star :star: and citation
 
 ```
-@misc{bge_embedding,
-      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
-      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+@misc{cocktail,
+      title={LM-Cocktail: Resilient Tuning of Language Models via Model Merging}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Xingrun Xing},
       year={2023},
-      eprint={2309.07597},
+      eprint={2311.13534},
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
@@ -163,6 +163,15 @@ If you find this repository useful, please consider giving a star :star: and cit
       eprint={2310.07554},
       archivePrefix={arXiv},
       primaryClass={cs.IR}
+}
+
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
 }
 ```
 

@@ -76,6 +76,12 @@ Currently, this model mainly supports Chinese and English, and may see performan
 \* : T2RerankingZh2En and T2RerankingEn2Zh are cross-language retrieval task
 
 
+
+## Acknowledgement
+
+Part of the code is developed based on [Reranker](https://github.com/luyug/Reranker).
+
+
 ## Citation
 
 If you find this repository useful, please consider giving a star :star: and citation
@@ -90,7 +96,3 @@ If you find this repository useful, please consider giving a star :star: and cit
       primaryClass={cs.CL}
 }
 ```
-
-## Acknowledgement
-
-Part of the code is developed based on [Reranker](https://github.com/luyug/Reranker).
