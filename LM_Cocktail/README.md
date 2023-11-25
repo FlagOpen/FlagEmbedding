@@ -61,6 +61,12 @@ model = mix_models(
     weights=[0.5, 0.5],
     output_path=None)
 
+# Mix reranker Models
+model = mix_models(
+    model_names_or_paths=["BAAI/bge-reranker-base", "BAAI/bge-reranker-base"], 
+    model_type='reranker', 
+    weights=[0.5, 0.5],
+    output_path="./mixed_reranker")
 ```
 
 #### 1.1. Mix muliple models

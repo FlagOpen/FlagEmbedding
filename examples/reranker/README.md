@@ -55,8 +55,42 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
+### 3. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-### 3. Load your model
+Fine-tuning the base bge model can improve its performance on target task, but maybe lead to severe degeneration of model’s general capabilities beyond the targeted domain (e.g., lower performance on c-mteb tasks). 
+By mering the fine-tuned model and the base model, LM-Cocktail can significantly enhance performance in downstream task
+while maintaining performance in other unrelated tasks.
+
+```python
+from LM_Cocktail import mix_models
+
+# Mix fine-tuned model and base model; then save it to output_path: ./mixed_reranker
+model = mix_models(
+    model_names_or_paths=["BAAI/bge-reranker-base", "your_fine-tuned_model"], 
+    model_type='reranker', 
+    weights=[0.5, 0.5],  # you can change the weights to get a better trade-off.
+    output_path='./mixed_reranker')
+```
+
+If you have multiple downstream tasks, you can fine-tune the model separately on each task and then merge these models to gain multi-task capability. 
+This approach eliminates the need for multiple repetitive training experiments with varying proportions of task data. 
+Instead, you can adjust the weights of different task models to impacts the model's performance. 
+Additionally, this model fusion method is more accommodating for new tasks since it doesn't necessitate retraining with data from all tasks.
+
+```python
+from LM_Cocktail import mix_models
+
+# Mix multi fine-tuned Models to support multi tasks
+model = mix_models(
+    model_names_or_paths=["BAAI/bge-reranker-base", "your_fine-tuned_model_1", "your_fine-tuned_model_2"], 
+    model_type='reranker', 
+    weights=[0.2, 0.4, 0.4],
+    output_path='./mixed_model_2')
+```
+
+
+
+### 4. Load your model
 
 ### Using FlagEmbedding
 

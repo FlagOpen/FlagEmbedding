@@ -3,17 +3,21 @@ import random
 import numpy as np
 from typing import List, Dict, Any
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
+from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification
 
 
-
-def load_llm(model_name: str, trust_remote_code:bool):
+def load_llm(model_name:str, trust_remote_code:bool):
     model = AutoModelForCausalLM.from_pretrained(model_name, trust_remote_code=trust_remote_code, device_map = {"": "cpu"})
     return model
 
 
-def load_embedder(model_name: str, trust_remote_code:bool):
+def load_embedder(model_name:str, trust_remote_code:bool):
     model = AutoModel.from_pretrained(model_name, trust_remote_code=trust_remote_code, device_map = {"": "cpu"})
+    return model
+
+
+def load_reranker(model_name:str, trust_remote_code:bool):
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, trust_remote_code=trust_remote_code, device_map = {"": "cpu"})
     return model
 
 
@@ -22,6 +26,8 @@ def load_model(model_name:str, model_type:str, trust_remote_code:bool=True):
         model = load_llm(model_name, trust_remote_code=trust_remote_code)
     elif model_type == 'encoder':
         model = load_embedder(model_name, trust_remote_code=trust_remote_code)
+    elif model_type == 'reranker':
+        model = load_reranker(model_name, trust_remote_code=trust_remote_code)
     else:
         raise NotImplementedError(f"not support this model_type: {model_type}")
     return model

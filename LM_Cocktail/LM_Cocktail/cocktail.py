@@ -17,7 +17,7 @@ def mix_models(model_names_or_paths: List[str],
     mix models based on given weights
     Args:
         model_names_or_paths (List[str]): a list of names or paths to models
-        model_type (str): type of model to mix, should be in ["decoder", "encoder"]
+        model_type (str): type of model to mix, should be in ["decoder", "encoder", "reranker"]
         weights (List[float]): a list of mixing weights. The sum of weights should be equal to 1.
         output_path (str, optional): path to save the mixed model. Defaults to None.
 
@@ -26,7 +26,7 @@ def mix_models(model_names_or_paths: List[str],
     """
     
     assert len(model_names_or_paths) == len(weights)
-    assert model_type in ['decoder', 'encoder']
+    assert model_type in ['decoder', 'encoder', 'reranker']
     assert sum(weights) - 1 <= 1e-3
     
     param_list = get_model_param_list(model_names_or_paths, model_type=model_type)
