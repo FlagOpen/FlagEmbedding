@@ -74,6 +74,7 @@ to stay resilient in general perspectives: LM-Cocktail.
 LM-Cocktail can achieve
 a strong empirical performance in the whole
 scope of general tasks while preserving a superior capacity in its targeted domain. It also can be used to generate a model for new tasks without fine-tuning.
+You can use it to merge the LLMs (e.g., Llama) or embedding models.
 More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534) and [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail).
 
 

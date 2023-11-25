@@ -61,6 +61,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 微调预训练语言模型可以更好地支持下游任务。但是，该操作可能会导致目标领域之外的一般性任务上性能下降。
 为了克服这个问题，我们提出了LM-Cocktail。 LM-Cocktail在提高下游目标任务的准确度的同时，保持在其他任务上的性能。
 它还可以用于为新任务生成模型，避免微调对资源和数据的要求。
+你可以使用它去融合多个大语言模型（如，Llama）或者向量模型。
 更多细节请参考[论文](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
 
 
