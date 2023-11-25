@@ -91,8 +91,42 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
+### Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
+
+Fine-tuning the base bge model can improve its performance on target task, but maybe lead to severe degeneration of model’s general capabilities beyond the targeted domain (e.g., lower performance on c-mteb tasks). 
+By mering the fine-tuned model and the base model, LM-Cocktail can significantly enhance performance in downstream task
+while maintaining performance in other unrelated tasks.
+
+```python
+from LM_Cocktail import mix_models, mix_models_with_data
+
+# Mix fine-tuned model and base model; then save it to output_path: ./mixed_model_1
+model = mix_models(
+    model_names_or_paths=["BAAI/bge-large-en-v1.5", "your_fine-tuned_model"], 
+    model_type='encoder', 
+    weights=[0.5, 0.5],  # you can change the weights to get a better trade-off.
+    output_path='./mixed_model_1')
+```
+
+If you have multiple downstream tasks, you can fine-tune the model separately on each task and then merge these models to gain multi-task capability. 
+This approach eliminates the need for multiple repetitive training experiments with varying proportions of task data. 
+Instead, you can adjust the weights of different task models to impacts the model's performance. 
+Additionally, this model fusion method is more accommodating for new tasks since it doesn't necessitate retraining with data from all tasks.
+
+```python
+from LM_Cocktail import mix_models, mix_models_with_data
+
+# Mix multi fine-tuned Models to support multi tasks
+model = mix_models(
+    model_names_or_paths=["BAAI/bge-base-en-v1.5", "your_fine-tuned_model_1", "your_fine-tuned_model_2"], 
+    model_type='encoder', 
+    weights=[0.2, 0.4, 0.4],
+    output_path='./mixed_model_2')
+```
+
+
 ### 4. Load your model
-After fine-tuning BGE model, you can load it easily in the same way as [here(with FlagModel)](https://github.com/FlagOpen/FlagEmbedding#using-flagembedding) / [(with transformers)](https://github.com/FlagOpen/FlagEmbedding#using-huggingface-transformers).
+After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#usage) 
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.
 
