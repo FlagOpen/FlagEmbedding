@@ -91,7 +91,7 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
-### Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
+### 4. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
 Fine-tuning the base bge model can improve its performance on target task, but maybe lead to severe degeneration of model’s general capabilities beyond the targeted domain (e.g., lower performance on c-mteb tasks). 
 By mering the fine-tuned model and the base model, LM-Cocktail can significantly enhance performance in downstream task
@@ -125,13 +125,13 @@ model = mix_models(
 ```
 
 
-### 4. Load your model
+### 5. Load your model
 After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#usage) 
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.
 
 
-### 5. Evaluate model on MSMARCO
+### 6. Evaluate model
 We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance on MSMARCO, a widely used retrieval benchmark. 
 
 First, install `faiss`, a popular approximate nearest neighbor search library:
