@@ -152,6 +152,18 @@ Detailed results please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/
 | Merge Fine-tuned and base model | 93.4 | 50.8 |
 | Merge mulitple models | 93.2 | 55.2 |
 
+| Model | Target Task | Other Tasks | 
+|:-------------------------------|:--------:|:--------:|
+| Llama | 40.8 | 46.8 |
+| Fine-tuned | 94.4 | 38.6 |
+| LM-Cocktail | 94.5 | 47.7 |
+
+| Model | Target Task | Other Tasks | 
+|:-------------------------------|:--------:|:--------:|
+| Llama | 40.8 | 46.8 |
+| Fine-tuned | 94.4 | 38.6 |
+| LM-Cocktail | 94.4 | 48.3 |
+
 - LM-Cocktail for new tasks
 
 | Model | MMLU |
