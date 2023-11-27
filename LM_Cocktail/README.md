@@ -145,21 +145,39 @@ Detailed results please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/
 
 - LM-Cocktail for Catastrophic Forgetting
 
-| Model | Target Task | Other Tasks | 
-|:-------------------------------|:--------:|:--------:|
-| Llama | 40.8 | 46.8 |
-| Fine-tuned Model | 94.4 | 38.6 |
-| Merge Fine-tuned and base model | 93.4 | 50.8 |
-| Merge mulitple models | 93.2 | 55.2 |
+| Model                      | Target Task | Others(29 tasks) | 
+|:---------------------------|:--------:|:----------------:|
+| Llama                      | 40.8 |       46.8       |
+| Fine-tuned                 | 94.4 |       38.6       |
+| LM-Cocktail(2 models) [1]  | 94.5 |       47.7       |
+| LM-Cocktail(10 models) [2] | 94.4 |       48.3       |
+
+[1]: merge 2 models: fine-tuned model and the base model
+
+[2]: merge 10 models: fine-tuned model, the base model, and 8 models fine-tuned on other tasks
+
+| Model | Target Task | Other Tasks(14 tasks) | 
+|:-------------------------------|:--------:|:---------------------:|
+| BGE | 71.8 |         49.8          |
+| Fine-tuned | 76.0 |         48.5          |
+| LM-Cocktail(2 models) | 74.8 |         50.0          |
+| LM-Cocktail(10 models) | 74.7 |         50.6          |
 
 
 - LM-Cocktail for new tasks
 
-| Model | MMLU |
-|:-------------------------------|:--------:|
-| Llama | 45.9 | 
-| Llama-5shot | 46.7 | 
-| LM-Cocktail | 48.0 |
+| Model | MMLU(57 tasks) |
+|:-------------------------------|:--------------:|
+| Llama |      45.9      | 
+| Llama-5shot |      46.7      | 
+| LM-Cocktail(10 models) |      48.0      |
+
+
+| Model | Retrieval(12 tasks) |
+|:-------------------------------|:-------------------:|
+| BGE |        47.3         | 
+| LM-Cocktail(10 models) |        48.8         |
+
 
 
 
