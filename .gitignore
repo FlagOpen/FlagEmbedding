@@ -131,6 +131,8 @@ Untitled.ipynb
 try.py
 update_model_card.py
 model_card.md
+pic.py
+pic2.py
 
 # Pyre type checker
 .pyre/
