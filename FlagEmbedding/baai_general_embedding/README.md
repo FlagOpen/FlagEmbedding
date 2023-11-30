@@ -50,10 +50,18 @@ In all cases, the documents/passages do not need to add the instruction.
 ## Usage
 
 ### Using FlagEmbedding
+
+Install: 
+```
+git clone https://github.com/FlagOpen/FlagEmbedding.git
+cd FlagEmbedding
+pip install -e .
+```
+or: 
 ```
 pip install -U FlagEmbedding
 ```
-If it doesn't work for you, you can see [FlagEmbedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more methods to install FlagEmbedding.
+ 
 
 ```python
 from FlagEmbedding import FlagModel

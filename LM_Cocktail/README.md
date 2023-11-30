@@ -1,4 +1,9 @@
-# LM-Cocktail
+
+<div align="center">
+<h1> <a href="https://arxiv.org/abs/2311.13534">LM-Cocktail: Resilient Tuning of Language Models via Model Merging</a> </h1>
+
+<img src="images/LM-Cocktail.png" width="30%" class="center">
+</div>
 
 Make fine-tuning of language models akin to crafting a nuanced cocktail.
 More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534).
@@ -29,11 +34,15 @@ You also can boost the performance for the downstream task utilizing multiple ex
 
 ## Usage
 
-Install: 
+Recommend to install the latest version from source: 
 ```bash
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding/LM_Cocktail
 pip install -e .
+```
+Install by pip:
+```bash
+pip install -U LM_Cocktail
 ```
 
 ### 1. Mix models
