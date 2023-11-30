@@ -109,6 +109,10 @@ def mix_models_with_data(model_names_or_paths: List[str],
         print(f"Saving the new model to {output_path}")
         model.save_pretrained(output_path)
         tokenizer.save_pretrained(output_path)
+
+        if model_type == "encoder":
+            print(f"Transform the model to the format of 'sentence_transformers' (pooling_method='cls', normalized=True)")
+            save_ckpt_for_sentence_transformers(ckpt_dir=output_path)
         
     return model
 
