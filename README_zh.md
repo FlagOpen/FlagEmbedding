@@ -38,9 +38,9 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ## 更新
 
-- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [论文链接](https://arxiv.org/abs/2311.13534) :fire:
-- 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[论文链接](https://arxiv.org/pdf/2310.07554.pdf) 
-- 09/15/2023: 发布 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [技术报告](https://arxiv.org/abs/2311.13534) :fire:
+- 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[技术报告](https://arxiv.org/pdf/2310.07554.pdf) 
+- 09/15/2023: 发布 [技术报告](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
     - **新增重排模型**：开源交叉编码器模型bge-reranker，具有比向量模型更强大的排序能力。非常建议使用或者微调它来重新排序向量模型返回的top-k文档，提高最终结果的相关性。
     - **更新向量模型**：发布bge-*-v1.5向量模型，缓解相似度分布问题，提升无指令情况下的检索能力（但检索任务仍建议使用指令）
@@ -58,11 +58,11 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-微调预训练语言模型可以更好地支持下游任务。但是，该操作可能会导致目标领域之外的一般性任务上性能下降。
-为了克服这个问题，我们提出了LM-Cocktail。 LM-Cocktail在提高下游目标任务的准确度的同时，保持在其他任务上的性能。
-它还可以用于为新任务生成模型，避免微调对资源和数据的要求。
-你可以使用它去融合多个大语言模型（如，Llama）或者向量模型。
-更多细节请参考[论文](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
+模型合并被广泛用于提高单模型的性能。 我们发现这种方法对大型语言模型也很有用， 并使用了一个简单的函数基于少量例子自动计算融合权值。
+利用LM-Cocktail可以缓解灾难性遗忘问题，即在不降低通用性能的情况下提高目标任务性能。
+通过构造少量数据样例，它还可以用于为新任务生成模型，而无需进行微调。
+它可以被使用来合并生成模型或向量模型。
+更多细节请参考[报告](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
 
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 

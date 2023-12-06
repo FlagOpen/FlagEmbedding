@@ -2,18 +2,21 @@
 <div align="center">
 <h1> <a href="https://arxiv.org/abs/2311.13534">LM-Cocktail: Resilient Tuning of Language Models via Model Merging</a> </h1>
 
-<img src="images/LM-Cocktail.png" width="30%" class="center">
+<img src="images/1.png" width="30%" class="center">
 </div>
 
-Make fine-tuning of language models akin to crafting a nuanced cocktail.
-More details please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534).
+**Make fine-tuning of language models akin to crafting a nuanced cocktail.**
 
-## Introduction
+Model merging is widely used to improve the performance of single model. 
+We find this method is also useful for large language models, 
+and use a simple function to compute the merging weights based on few examples automatically.
+More details please refer to our report: [LM-Cocktail](https://arxiv.org/abs/2311.13534).
 
-The core of LM-Cocktail Tuning is to merge multiple models, which can inherit the strength of each model. 
+## Application
+
 The following are some application scenarios:
 
-### 1. Address the Problem of Catastrophic Forgetting
+### 1. Mitigate the problem of Catastrophic Forgetting
 Fine-tuning the base language model could lead to severe degeneration of model’s general capabilities beyond the targeted domain. 
 By mixing the fine-tuned model and the base model (use function `mix_models`), LM-Cocktail can significantly enhance performance in downstream task
 while maintaining performance in other unrelated
@@ -228,9 +231,11 @@ python eval_MTEB.py --model_name_or_path mixed_model --task_type Retrieval
 ```
 
 ## Acknowledgement
+This project is inspired by previous researches on model merging, including [LoraHub](https://github.com/sail-sg/lorahub), [model soups](https://github.com/mlfoundations/model-soups), and [PAINT](https://github.com/mlfoundations/patching) .
 
 The Llama is fine-tuned using the [FastChat](https://github.com/lm-sys/FastChat) scripts. 
 Fine-tuning datasets are from [sentence-transformers/embedding-training-data](https://huggingface.co/datasets/sentence-transformers/embedding-training-data) and [intfloat/llm-retriever-tasks](https://huggingface.co/datasets/intfloat/llm-retriever-tasks).
+
 
 
 ## Citation

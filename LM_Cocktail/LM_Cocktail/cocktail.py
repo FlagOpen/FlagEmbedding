@@ -5,6 +5,7 @@ from typing import List, Dict, Any
 
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer, models
+from transformers import pipeline
 
 from .utils import load_model, get_model_param_list, merge_param, compute_weights
 
