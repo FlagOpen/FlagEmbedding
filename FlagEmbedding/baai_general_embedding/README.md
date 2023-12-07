@@ -13,6 +13,17 @@ Some suggestions:
 - If you pre-train bge on your data, the pre-trained model cannot be directly used to calculate similarity, and it must be fine-tuned with contrastive learning before computing similarity.
 - If the accuracy of the fine-tuned model is still not high, it is recommended to use/fine-tune the cross-encoder model (bge-reranker) to re-rank top-k results. Hard negatives also are needed to fine-tune reranker.
 
+Here are the way we used to fine-tune `bge-large-zh-v1.5`: 
+The fine-tuning datasets consist of t2ranking, dulreader, mmarco, cmedqav2, mulit-cpr, nli-zh, ocmnli, and cmnli.
+For t2ranking, dulreader, and mmarco, we mine hard negatives; 
+For nli-zh, ocmnli, and cmnli, we use the pairs whose label equal to 0 as negatives;
+For cmedqav2 and mulit-cpr, we randomly sample negatives.
+The settings of fine-tuning are: train_group_size=2, learning_rate=1e-5, max_epoch=5.
+We train two modes: one fine-tune with `--query_instruction_for_retrieval "为这个句子生成表示以用于检索相关文章："`, 
+and the other model is fine-tuned with `--query_instruction_for_retrieval ""`, 
+and then we merge two variants into one model to make the final model can be used both with and without instruction.
+
+
 <details>
   <summary>2. The similarity score between two dissimilar sentences is higher than 0.5</summary>
 
