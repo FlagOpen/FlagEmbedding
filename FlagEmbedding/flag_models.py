@@ -39,7 +39,8 @@ class FlagModel:
 
     def encode_queries(self, queries: Union[List[str], str],
                        batch_size: int = 256,
-                       max_length: int = 512) -> np.ndarray:
+                       max_length: int = 512,
+                       convert_to_numpy: bool = True) -> np.ndarray:
         '''
         This function will be used for retrieval task
         if there is a instruction for queries, we will add it to the query text
@@ -51,20 +52,25 @@ class FlagModel:
                 input_texts = ['{}{}'.format(self.query_instruction_for_retrieval, q) for q in queries]
         else:
             input_texts = queries
-        return self.encode(input_texts, batch_size=batch_size, max_length=max_length)
+        return self.encode(input_texts, batch_size=batch_size, max_length=max_length, convert_to_numpy=convert_to_numpy)
 
     def encode_corpus(self,
                       corpus: Union[List[str], str],
                       batch_size: int = 256,
-                      max_length: int = 512) -> np.ndarray:
+                      max_length: int = 512,
+                      convert_to_numpy: bool = True) -> np.ndarray:
         '''
         This function will be used for retrieval task
         encode corpus for retrieval task
         '''
-        return self.encode(corpus, batch_size=batch_size, max_length=max_length)
+        return self.encode(corpus, batch_size=batch_size, max_length=max_length, convert_to_numpy=convert_to_numpy)
 
     @torch.no_grad()
-    def encode(self, sentences: Union[List[str], str], batch_size: int = 256, max_length: int = 512) -> np.ndarray:
+    def encode(self,
+               sentences: Union[List[str], str],
+               batch_size: int = 256,
+               max_length: int = 512,
+               convert_to_numpy: bool = True) -> np.ndarray:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
@@ -90,9 +96,16 @@ class FlagModel:
             if self.normalize_embeddings:
                 embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
             embeddings = cast(torch.Tensor, embeddings)
-            all_embeddings.append(embeddings.cpu().numpy())
 
-        all_embeddings = np.concatenate(all_embeddings, axis=0)
+            if convert_to_numpy:
+                embeddings = embeddings.cpu().numpy()
+            all_embeddings.append(embeddings)
+
+        if convert_to_numpy:
+            all_embeddings = np.concatenate(all_embeddings, axis=0)
+        else:
+            all_embeddings = torch.stack(all_embeddings)
+
         if input_was_string:
             return all_embeddings[0]
         return all_embeddings
