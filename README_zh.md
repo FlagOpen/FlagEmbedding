@@ -58,11 +58,11 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-模型合并被广泛用于提高单模型的性能。 我们发现这种方法对大型语言模型也很有用， 并使用了一个简单的函数基于少量例子自动计算融合权值。
+模型合并被广泛用于提高单模型的性能。 我们发现这种方法对大型语言模型和文本向量模型也很有用， 并使用了一个简单的函数基于少量例子自动计算融合权值。
 利用LM-Cocktail可以缓解灾难性遗忘问题，即在不降低通用性能的情况下提高目标任务性能。
 通过构造少量数据样例，它还可以用于为新任务生成模型，而无需进行微调。
 它可以被使用来合并生成模型或向量模型。
-更多细节请参考[报告](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
+更多细节请参考[技术报告](https://arxiv.org/abs/2311.13534)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)。
 
 
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 

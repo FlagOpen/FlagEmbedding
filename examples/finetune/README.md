@@ -88,13 +88,18 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
 
-More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
+For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
 ### 4. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-Fine-tuning the base bge model can improve its performance on target task, but maybe lead to severe degeneration of model’s general capabilities beyond the targeted domain (e.g., lower performance on c-mteb tasks). 
-By mering the fine-tuned model and the base model, LM-Cocktail can significantly enhance performance in downstream task
+For more details please refer to [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail).
+
+Fine-tuning the base bge model can improve its performance on target task, 
+but maybe lead to severe degeneration of model’s general capabilities 
+beyond the targeted domain (e.g., lower performance on c-mteb tasks). 
+By merging the fine-tuned model and the base model, 
+LM-Cocktail can significantly enhance performance in downstream task
 while maintaining performance in other unrelated tasks.
 
 ```python
@@ -108,20 +113,25 @@ model = mix_models(
     output_path='./mixed_model_1')
 ```
 
-If you have multiple downstream tasks, you can fine-tune the model separately on each task and then merge these models to gain multi-task capability. 
-This approach eliminates the need for multiple repetitive training experiments with varying proportions of task data. 
-Instead, you can adjust the weights of different task models to impacts the model's performance. 
-Additionally, this model fusion method is more accommodating for new tasks since it doesn't necessitate retraining with data from all tasks.
-
+If you have a new task, and there is no data or resource can be used for fine-tuning, 
+you can try to use LM-Cocktail to merge existing models (from open-source community or your models fine-tuned on other tasks) to produce a task-specific model. 
+In this way, you just need to construct a few example data and don't need fine-tuning the base model.
+For example, you can merge the models from [huggingface](https://huggingface.co/Shitao) using the example data for your task:
 ```python
 from LM_Cocktail import mix_models, mix_models_with_data
 
-# Mix multi fine-tuned Models to support multi tasks
-model = mix_models(
-    model_names_or_paths=["BAAI/bge-base-en-v1.5", "your_fine-tuned_model_1", "your_fine-tuned_model_2"], 
+example_data = [
+    {"query": "How does one become an actor in the Telugu Film Industry?", "pos": [" How do I become an actor in Telugu film industry?"], "neg": [" What is the story of Moses and Ramesses?", " Does caste system affect economic growth of India?"]}, 
+    {"query": "Why do some computer programmers develop amazing software or new concepts, while some are stuck with basic programming work?", "pos": [" Why do some computer programmers develops amazing softwares or new concepts, while some are stuck with basics programming works?"], "neg": [" When visiting a friend, do you ever think about what would happen if you did something wildly inappropriate like punch them or destroy their furniture?", " What is the difference between a compliment and flirting?"]}
+]
+
+model = mix_models_with_data(
+    model_names_or_paths=["BAAI/bge-base-en-v1.5", "Shitao/bge-hotpotqa", "Shitao/bge-quora"], 
     model_type='encoder', 
-    weights=[0.2, 0.4, 0.4],
-    output_path='./mixed_model_2')
+    example_ata=example_data,
+    temperature=5.0,
+    max_input_length=512,
+    neg_number=2)
 ```
 
 

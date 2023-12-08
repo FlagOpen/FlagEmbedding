@@ -7,37 +7,46 @@
 
 **Make fine-tuning of language models akin to crafting a nuanced cocktail.**
 
-Model merging is widely used to improve the performance of single model. 
-We find this method is also useful for large language models, 
-and use a simple function to compute the merging weights based on few examples automatically.
-More details please refer to our report: [LM-Cocktail](https://arxiv.org/abs/2311.13534).
+Model merging can be used to improve the performance of single model. 
+We find it is also useful for large language models and embedding models, 
+and use a simple function to compute the merging weights based on few examples automatically. 
+LM-Cocktail can be used to improve the performance on target domain without decrease 
+the general capabilities beyond target domain.
+It also can be used to generate a model for new tasks without fine-tuning.
+For more details please refer to our report: [LM-Cocktail](https://arxiv.org/abs/2311.13534).
 
 ## Application
 
+**The model used to merge need to have the same architecture and the same initialization parameter.**
 The following are some application scenarios:
 
 ### 1. Mitigate the problem of Catastrophic Forgetting
 Fine-tuning the base language model could lead to severe degeneration of model’s general capabilities beyond the targeted domain. 
 By mixing the fine-tuned model and the base model (use function `mix_models`), LM-Cocktail can significantly enhance performance in downstream task
-while maintaining performance in other unrelated
-tasks.
+while maintaining performance in other unrelated tasks. 
+
+If there are some available models fine-tuned on other tasks, you can further use them to enhance your fine-tuned model.
+Firstly, you need to collect five example data from your task, then employ function `mix_models_with_data` to compute weights and merge available models.
+In this way, it can assign lower weights to low-quality models, avoiding degrading the performance on your task.
+Finally, use `mix_models` to merge produced model and your fine-tuned model.
 
 
 ### 2. Improve the performance of new task without fine-tuning
-Cocktail can improve the accuracy of the new task without a requisition to fine-tune a model.
-Give a few examples data (e.g., five examples),  function `mix_models_wit_data` can automatically generate a task-specific new model via merging existing language models (from open-source community or pre-existing for other tasks). 
+LM-Cocktail can improve the accuracy of the new task without a requisition to fine-tune a model.
+Give a few examples data (e.g., five examples),  
+function `mix_models_wit_data` can automatically generate a task-specific new model 
+via merging existing language models (from open-source community or pre-existing for other tasks). 
 
 
-### 3. Approximate multitask learning or model ensemble
+### 3. Approximate multitask learning
 
-By amalgamating multiple expert models, `mix_models` also can approximate multitask learning.
-You also can boost the performance for the downstream task utilizing multiple expert models: using five examples to merge the other models for the target task (`mix_models_wit_data`), and then merge it with the model fine-tuned on target task(`mix_models`).
-
+If you have some model who are fine-tune on different tasks, you can merge them into one model to approximate multitask learning.
+The merged model can be used to perform multiple tasks.
 
 
 ## Usage
 
-Recommend to install the latest version from source: 
+Install the latest version from source (Recommended): 
 ```bash
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding/LM_Cocktail
@@ -48,12 +57,13 @@ Install by pip:
 pip install -U LM_Cocktail
 ```
 
+There are two key functions in LM-Cocktail:
+
 ### 1. Mix models
 
-#### 1.1. Mix fine-tuned model and base model
-
-Mix the fine-tuned model and the base model to avoid Catastrophic Forgetting after fine-tuning:
-
+`mix_models` can merge models based on the given merging weights.
+An example is merging the fine-tuned model and 
+the base model to mitigate Catastrophic Forgetting after fine-tuning:
 
 ```python
 from LM_Cocktail import mix_models, mix_models_with_data
@@ -63,7 +73,7 @@ model = mix_models(
     model_names_or_paths=["meta-llama/Llama-2-7b-chat-hf", "Shitao/llama2-ag-news"], 
     model_type='decoder', 
     weights=[0.7, 0.3], 
-    output_path='./mixed_model_1')
+    output_path='./mixed_llm')
 # you can select a weight for your models to get a trade-off between generality and expertise.
 
 # Mix Embedding Models
@@ -71,7 +81,7 @@ model = mix_models(
     model_names_or_paths=["BAAI/bge-base-en-v1.5", "Shitao/bge-hotpotqa"], 
     model_type='encoder', 
     weights=[0.5, 0.5],
-    output_path=None)
+    output_path='./mixed_embedder')
 
 # Mix reranker Models
 model = mix_models(
@@ -80,21 +90,26 @@ model = mix_models(
     weights=[0.5, 0.5],
     output_path="./mixed_reranker")
 ```
+Noted that the sum of weights should be equal to 1.
 
-#### 1.1. Mix muliple models
+You also can merge multiple models:
 ```python
 from LM_Cocktail import mix_models, mix_models_with_data
 
 model = mix_models(
-    model_names_or_paths=["meta-llama/Llama-2-7b-chat-hf", "Shitao/llama2-ag-news", "Shitao/llama2-nq", "Shitao/llama2-mnli"], 
-    model_type='decoder', 
-    weights=[0.4, 0.2, 0.3, 0.1])
+    model_names_or_paths=["BAAI/bge-base-en-v1.5", "Shitao/bge-hotpotqa", "Shitao/bge-quora", "Shitao/bge-msmarco"], 
+    model_type='encoder', 
+    weights=[0.3, 0.2, 0.2, 0.3],
+    output_path='./mixed_embedder_2')
 # The sum of weights should be equal to 1.
 ```
 
 
 ### 2. Mix models with weights computed based on a few examples
-LM-cocktail can merge multiple models based on a few examples data. It can be used to produce a model for a new task without training, or boost the performance for the downstream task with multiple models.
+
+`mix_models_with_data` can compute merging weights based on given data and merge models.
+It can be used to produce a model for a new task without training, 
+or boost the performance for the downstream task by leveraging the knowledge in others models.
 
 - For LLMs
 
@@ -104,7 +119,7 @@ The format of `example_data` for LLMs is a list, where each item is a dict like:
 ```
 LM-cocktial will compute the loss of the output. 
 
-You can use the example data to merge models:
+You can use the example data to merge models as following:
 
 ```python
 from LM_Cocktail import mix_models, mix_models_with_data
@@ -131,7 +146,7 @@ The format of `example_data` for LLMs is a list, where each item is a dict like:
 ```
 where pos is a list of positive text and neg is a list of negative text. LM-Cocktail will compute the contrastive loss. 
 
-You can use the example data to merge models:
+You can use the example data to merge models as following:
 ```python
 from LM_Cocktail import mix_models, mix_models_with_data
 
@@ -153,7 +168,7 @@ model = mix_models_with_data(
 
 
 ## Performance
-Detailed results please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/2311.13534)
+Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs/2311.13534)
 
 - LM-Cocktail for Catastrophic Forgetting
 
@@ -176,7 +191,7 @@ Detailed results please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/
 | LM-Cocktail(10 models) | 74.7 |         50.6          |
 
 
-- LM-Cocktail for new tasks
+- LM-Cocktail for new tasks without fine-tuning
 
 | Model | MMLU(57 tasks) |
 |:-------------------------------|:--------------:|
@@ -202,7 +217,7 @@ Detailed results please refer to our paper: [LM-Cocktail](https://arxiv.org/abs/
 - Examples Data for dataset from FLAN: [./llm_examples.json]()
 - MMLU dataset: https://huggingface.co/datasets/cais/mmlu (use the example in dev set to do in-context learning) 
 
-You can use these models and our code to produce a new model and evlaute its performance using Use the [llm-embedder script](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_embedder/docs/evaluation.md) as following: 
+You can use these models and our code to produce a new model and evaluate its performance using the [llm-embedder script](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_embedder/docs/evaluation.md) as following: 
 ```
 # for 30 tasks from FLAN
 torchrun --nproc_per_node 8 -m evaluation.eval_icl \
