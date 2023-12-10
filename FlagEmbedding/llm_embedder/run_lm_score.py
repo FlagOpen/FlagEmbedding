@@ -57,6 +57,8 @@ def process_lm_scoring(tokenizer, key_max_length=512):
         """Yield each key (pos&neg)"""
         if task in ["qa", "convsearch"]:
             template = "Knowledge: {key.strip()}\n\nQuestion: {query.strip()}\n\nAnswer: {answer.strip()}"
+        elif task == "icl":
+            template = "{key}\n{query}\n{answer}"
         elif task == "lrlm":
             # template = "{key}{continuation[i]}{context}{query}{answer}"
             pass
