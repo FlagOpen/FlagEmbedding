@@ -66,9 +66,9 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
-Model merging can be used to improve the performance of single model. 
+Model merging has been used to improve the performance of single model. 
 We find this method is also useful for large language models and dense embedding model, 
-and use a simple function to compute the merging weights based on few examples automatically.
+and design the LM-Cocktail strategy which automatically merges fine-tuned models and base model using a simple function to compute merging weights.
 LM-Cocktail can be used to improve the performance on target domain without decrease 
 the general capabilities beyond target domain.
 It also can be used to generate a model for new tasks without fine-tuning.

@@ -133,6 +133,8 @@ model = mix_models_with_data(
     max_input_length=512,
     neg_number=2)
 ```
+**Since there are only 9 `bge-*` models in this [repo](https://huggingface.co/Shitao), the performance may not be satisfactory when your task is different with all 9 fine-tuning tasks. 
+You can fine-tune the base model on more tasks and merge them to achieve better performance on your task.**
 
 
 ### 5. Load your model
