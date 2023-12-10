@@ -136,7 +136,7 @@ def collate_scores(eval_data, save_name):
         try:
             logger.info(f"saving data to {data_save_path}...")
             with open(eval_data) as f, open(data_save_path, "w") as g:
-                for query_id, score in tqdm(query_ids, scores):
+                for query_id, score in tqdm(zip(query_ids, scores)):
                     if (query_id != prev_query_id) and (prev_query_id is not None):
                         sample = json.loads(f.readline().strip())
                         assert prev_query_id == sample["query_id"], f"Found incompatible query_id from data ({sample['query_id']}) and from eval_preds ({prev_query_id})"
