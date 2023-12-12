@@ -56,7 +56,7 @@ def mix_models(model_names_or_paths: List[str],
     if output_path is not None:
         print(f"Saving the new model to {output_path}")
         model.save_pretrained(output_path)
-        tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0])
+        tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
         tokenizer.save_pretrained(output_path)
         
         if model_type == "encoder":
@@ -92,7 +92,7 @@ def mix_models_with_data(model_names_or_paths: List[str],
     assert model_type in ['decoder', 'encoder']
     
     model = load_model(model_names_or_paths[0], model_type=model_type)
-    tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0])
+    tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
     param_list = get_model_param_list(model_names_or_paths, model_type=model_type)
     
     weights = compute_weights(model, tokenizer=tokenizer, param_list=param_list, model_type=model_type, 

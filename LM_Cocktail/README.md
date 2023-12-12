@@ -181,7 +181,7 @@ Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 [1]: merge 2 models: fine-tuned model and the base model
 
-[2]: merge 10 models: fine-tuned model, the base model, and 8 models fine-tuned on other tasks
+[2]: merge 10 models based on five examples: fine-tuned model, the base model, and 8 models fine-tuned on other tasks
 
 | Model | Target Task | Other Tasks(14 tasks) | 
 |:-------------------------------|:--------:|:---------------------:|
@@ -192,6 +192,8 @@ Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 
 - LM-Cocktail for new tasks without fine-tuning
+
+Merge 10 models fine-tuned on other tasks based on five examples for new tasks: 
 
 | Model | MMLU(57 tasks) |
 |:-------------------------------|:--------------:|
