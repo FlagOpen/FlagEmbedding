@@ -8,8 +8,8 @@
 **Make fine-tuning of language models akin to crafting a nuanced cocktail.**
 
 Model merging can be used to improve the performance of single model. 
-We find it is also useful for large language models and embedding models, 
-and use a simple function to compute the merging weights based on few examples automatically. 
+We find this method is also useful for large language models and dense embedding model, 
+and design the LM-Cocktail strategy which automatically merges fine-tuned models and base model using a simple function to compute merging weights.
 LM-Cocktail can be used to improve the performance on target domain without decrease 
 the general capabilities beyond target domain.
 It also can be used to generate a model for new tasks without fine-tuning.
@@ -17,8 +17,7 @@ For more details please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 ## Application
 
-**The model used to merge need to have the same architecture and the same initialization parameter.**
-The following are some application scenarios:
+The following are some application scenarios (Note that the models used to merge need to have the same architecture and the same initialization parameter):
 
 ### 1. Mitigate the problem of Catastrophic Forgetting
 Fine-tuning the base language model could lead to severe degeneration of model’s general capabilities beyond the targeted domain. 
@@ -33,14 +32,15 @@ Finally, use `mix_models` to merge produced model and your fine-tuned model.
 
 ### 2. Improve the performance of new task without fine-tuning
 LM-Cocktail can improve the accuracy of the new task without a requisition to fine-tune a model.
-Give a few examples data (e.g., five examples),  
-function `mix_models_wit_data` can automatically generate a task-specific new model 
-via merging existing language models (from open-source community or pre-existing for other tasks). 
+Give a few examples data (e.g., five examples),
+and some available models (from open-source community or pre-existing for other tasks), 
+function `mix_models_wit_data` can automatically assign different merging weights for different model
+based their loss in example data, and then merge these available models to generate a task-specific new model.
 
 
 ### 3. Approximate multitask learning
 
-If you have some model who are fine-tune on different tasks, you can merge them into one model to approximate multitask learning.
+If you have some models who are fine-tune on different tasks, you can merge them into one model to approximate multitask learning.
 The merged model can be used to perform multiple tasks.
 
 
@@ -90,7 +90,7 @@ model = mix_models(
     weights=[0.5, 0.5],
     output_path="./mixed_reranker")
 ```
-Noted that the sum of weights should be equal to 1.
+Note that the sum of weights should be equal to 1.
 
 You also can merge multiple models:
 ```python
@@ -181,7 +181,7 @@ Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 [1]: merge 2 models: fine-tuned model and the base model
 
-[2]: merge 10 models: fine-tuned model, the base model, and 8 models fine-tuned on other tasks
+[2]: merge 10 models based on five examples: fine-tuned model, the base model, and 8 models fine-tuned on other tasks
 
 | Model | Target Task | Other Tasks(14 tasks) | 
 |:-------------------------------|:--------:|:---------------------:|
@@ -192,6 +192,8 @@ Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 
 - LM-Cocktail for new tasks without fine-tuning
+
+Merge 10 models fine-tuned on other tasks based on five examples for new tasks: 
 
 | Model | MMLU(57 tasks) |
 |:-------------------------------|:--------------:|
@@ -213,7 +215,7 @@ Detailed results please refer to our report: [LM-Cocktail](https://arxiv.org/abs
 
 ### 1. Reproduce the results of LLM
 
-- Models: we fine-tune the [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) on 9 tasks, and you can find the fine-tuned models at this [link](https://huggingface.co/Shitao). Noted that the most of fine-tuned models has a poor performance on other unrelated tasks. 
+- Models: we fine-tune the [meta-llama/Llama-2-7b-chat-hf](https://huggingface.co/meta-llama/Llama-2-7b-chat-hf) on 9 tasks, and you can find the fine-tuned models at this [link](https://huggingface.co/Shitao). Note that the most of fine-tuned models has a poor performance on other unrelated tasks. 
 - Examples Data for dataset from FLAN: [./llm_examples.json]()
 - MMLU dataset: https://huggingface.co/datasets/cais/mmlu (use the example in dev set to do in-context learning) 
 
