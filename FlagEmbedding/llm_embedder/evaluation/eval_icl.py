@@ -264,11 +264,11 @@ def main():
 
             if args.load_prev_result and os.path.exists(save_path):
                 # the first line is the metric
-                logger.info(f"loading existing results from {save_path}...")
                 result = load_json(save_path, lines=True)[0]
                 task_results.append(result['metric_value'][setting['metric']])
                 all_results.append(result['metric_value'][setting['metric']])
                 if accelerator.process_index == 0:
+                    logger.info(f"loading existing results from {save_path}...")
                     print(result)
                 continue
 
@@ -315,16 +315,13 @@ def main():
                 predictions = llm.compute_nlls(dataloader)
                 predictions = perplexity_to_choice(test_data, predictions)
             else:
-                # if args.add_llama_inst:
-                #     eos_token_id = tokenizer.eos_token_id
-                # else:
-                #     eos_token_id = tokenizer.encode("\n", add_special_tokens=False)[-1]
-                #
-                # predictions = llm.generate(dataloader, eos_token_id=eos_token_id)
-                # predictions = [x.strip() for x in predictions]
+                if args.add_llama_inst:
+                    eos_token_id = tokenizer.eos_token_id
+                else:
+                    eos_token_id = tokenizer.encode("\n", add_special_tokens=False)[-1]
 
-                predictions = llm.generate(dataloader, eos_token_id=tokenizer.eos_token_id)
-                predictions = [x.split('\n')[0].strip() for x in predictions]
+                predictions = llm.generate(dataloader, eos_token_id=eos_token_id)
+                predictions = [x.strip() for x in predictions]
 
             if setting['metric'] in ['em']:
                 labels = [x['answers'] for x in test_data]
@@ -336,7 +333,7 @@ def main():
             result = {'task_name':task_name, 'setting':setting, 'metric_value':metric_value}
             if accelerator.process_index == 0:
                 print(result)
-                with open(makedirs(save_path), 'w', encoding='utf-8') as f:
+                with open(makedirs(save_path), 'w') as f:
                     f.write(json.dumps(result, ensure_ascii=False) + "\n")
                     for i, sample in enumerate(test_data):
                         sample["output"] = predictions[i]

@@ -141,11 +141,11 @@ def main(args, accelerator=None, log=True):
             eval_data=args.eval_data,
             corpus=no_instruction_corpus,
             save_name=args.save_name,
+            output_dir=args.output_dir,
+            save_to_output=args.save_to_output,
             max_neg_num=args.max_neg_num,
             cache_dir=args.dataset_cache_dir,
             filter_answers=args.filter_answers,
-            # by default, the collated keys will be saved next to eval_data, however sometimes we want to override this path when evaluating popqa or mmlu
-            key_save_path=args.key_save_path if hasattr(args, "key_save_path") else None,
         )(query_ids, preds)
 
         if log:

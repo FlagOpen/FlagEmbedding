@@ -56,13 +56,13 @@ class RetrievalTrainer(Trainer):
 
         args = self.args
         self.model.eval()
-        # make it to fp16
-        dtype = self.model_args.dtype
-        if dtype == "fp16":
-            dtype = torch.float16
-        else:
-            dtype = torch.float32
-        self.model.to(dtype)
+        # # make it to fp16
+        # dtype = self.model_args.dtype
+        # if dtype == "fp16":
+        #     dtype = torch.float16
+        # else:
+        #     dtype = torch.float32
+        # self.model.to(dtype)
     
         # NOTE: very important to reset inbatch_same_dataset
         inbatch_same_dataset = self.data_collator.inbatch_same_dataset
@@ -166,7 +166,7 @@ class RetrievalTrainer(Trainer):
         
         # reset
         self.data_collator.inbatch_same_dataset = inbatch_same_dataset
-        self.model.to(torch.float32)
+        # self.model.to(torch.float32)
 
         # Prefix all keys with metric_key_prefix + '_'
         for key in list(metrics.keys()):

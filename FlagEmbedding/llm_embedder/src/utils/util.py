@@ -93,6 +93,11 @@ def filelock(path, process_index=0):
         os.remove(path)
 
 def normalize_text(text, ignore_case=True, ignore_punctuation=True, ignore_space=True, ignore_number=False):
+    if isinstance(text, str):
+        text = [text]
+        unpack = True
+    else:
+        unpack = False
     if ignore_case:
         text = np.char.lower(text)
     if ignore_punctuation:
@@ -102,12 +107,13 @@ def normalize_text(text, ignore_case=True, ignore_punctuation=True, ignore_space
         repl_table = string.digits.maketrans("", "", string.digits)
         text = np.char.translate(text, table=repl_table)
     if ignore_space:
-        words = np.char.split(text)
-        text = np.char.join(" ", words)
+        for i, words in enumerate(np.char.split(text)):
+            text[i] = " ".join(words)
     if isinstance(text, np.ndarray):
-        return text.tolist()
-    elif isinstance(text, list):
-        return text
+        text = text.tolist()
+    if unpack:
+        text = text[0]
+    return text
 
 def min_max_normalize(array):
     return (array - array.min(-1)[:,None])/(array.max(-1) - array.min(-1))[:, None]

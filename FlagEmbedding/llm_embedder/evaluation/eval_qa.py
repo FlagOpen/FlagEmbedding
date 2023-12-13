@@ -74,6 +74,10 @@ class QAArgs(LMArgs, RetrievalArgs):
     metrics: List[str] = field(
         default_factory=lambda: ["collate_key"],
     )
+    save_to_output: bool = field(
+        default=True,
+        metadata={'help': 'Save the result/key/negative to output_dir? If not true, they will be saved next to the eval_data.'}
+    )
 
     log_path: str = field(
         default="data/results/qa/qa.log",
@@ -176,7 +180,7 @@ def evaluate_qa(eval_data, save_path, **kwds):
                 samples[sample["query_id"]] = sample
 
         exact_match = 0
-        with open(save_path, "w", encoding='utf-8') as f:
+        with open(save_path, "w") as f:
             for query_id, generation in zip(*eval_preds):
                 sample = samples[query_id]
                 em = max(normalize_text(generation) == normalize_text(answer) for answer in sample["answers"])
@@ -204,10 +208,8 @@ def main():
     args.output_dir = output_dir
 
     if args.retrieval_method != "no":
-        # override key_save_path to save collated keys in output_dir
-        args.key_save_path = RetrievalMetric._get_save_path(args.eval_data, args.output_dir, field="key", save_name=args.save_name)
         retrieval_main(args=args, accelerator=accelerator, log=False)
-        eval_data = args.key_save_path
+        eval_data = RetrievalMetric._get_save_path(args.eval_data, args.output_dir, field="key", save_name=args.save_name)
     else:
         eval_data = args.eval_data
 

@@ -9,10 +9,29 @@ conda env create -f environment.yaml --name llm-embedder
 conda activate llm-embedder
 ```
 
-## Data
-The data for fine-tuning & evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+To use BM25, you must download **java11** and **anserini**, then add java to your `PATH`:
 ```bash
-tar -xzvf llm-embedder-eval.tar.gz -C /data
+# feel free to alternate /data to your prefered location
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/java11.tar.gz?download=true -O /data/java11.tar.gz
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/anserini.tar.gz?download=true -O /data/anserini.tar.gz
+
+cd /data
+tar -xzvf java11.tar.gz
+tar -xzvf anserini.tar.gz
+
+# below just temporarily set JAVA_HOME; it is RECOMMENDED that you store the lines the setting in ~/.bashrc
+export JAVA_HOME=/data/jdk-11.0.2
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+## Data
+You should download the data for fine-tuning & evaluation then untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+```bash
+# feel free to alternate /data to your prefered location
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz?download=true -O /data/llm-embedder.tar.gz
+
+cd /data
+tar -xzvf llm-embedder-eval.tar.gz
 ```
 
 The corpus of QReCC for conversational search is too large (54M passages), we separately upload it to huggingface datasets [namespace-Pt/qrecc-corpus](https://huggingface.co/datasets/namespace-Pt/qrecc-corpus). To evaluate the performance on conversational search, you should load it and save it as json file in the `qrecc` folder:
@@ -41,10 +60,10 @@ The data formats for training and evaluation are as follows:
 # evaluation
 {
   "query": str,
-  "pos_index": Optional[List[int]],         # Indices of the positives w.r.t. corpus (retrieval) / w.r.t. keys (rerank). When there is no positives pre-defined (e.g. NQ), just ignore this field.
+  "pos_index": Optional[List[int]],         # Indices of the positives w.r.t. corpus. When there is no positives pre-defined (e.g. NQ), just ignore this field.
   "answers": Optional[List[str]],           # List of answers for computing NQ metrics.
-  "key": Optional[List[str]],               # Collated retrieval results for the query / candidates to rank when there are no positives and negatives.
-  "key_index": Optional[List[int]],         # Key indices w.r.t. the corpus when reranking and no positives & negatives.
+  "key": Optional[List[str]],               # Retrieval results of the query. Usually used for RAG or reranking.
+  "key_index": Optional[List[int]],         # Key indices w.r.t. the corpus.
 }
 ```
 
@@ -68,24 +87,6 @@ Below are several important arguments for training. The meaning and usage of oth
 bash scripts/llm-embedder.sh
 ```
 
-### LLM-Embedder (Toy Example)
-We provide a toy example for fine-tuning LLM-Embedder based on [8 records sampled from each task](../data/toy).
-
-```bash
-torchrun --nproc_per_node=8 run_dense.py \
---train_data data/toy/* \
---output_dir data/outputs/toy \
---save_steps 5 \
---max_steps 5 \
---logging_steps 1 \
---inbatch_same_dataset epoch \
---use_train_config \
---learning_rate 5e-6 \
---per_device_train_batch_size 1 \
---version llm-embedder
-```
-
-
 ### Single Task Fine-Tune
 Below we provide commands to fine-tune a retriever on a single task.
 
@@ -99,9 +100,11 @@ torchrun --nproc_per_node=8 run_dense.py \
 --metrics nq \
 --key_max_length 128 \
 --query_max_length 32 \
---max_steps 2000 \
 --contrastive_weight 0 \
 --stable_distill \
+--eval_steps 2000 \
+--save_steps 2000 \
+--max_steps 2000 \
 --data_root /data/llm-embedder
 ```
 
@@ -110,11 +113,11 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/icl \
 --train_data llm-embedder:icl/icl/train.json \
---max_steps 6000 \
---save_steps 6000 \
 --select_positive random \
 --contrastive_weight 0 \
 --stable_distill \
+--save_steps 6000 \
+--max_steps 6000 \
 --data_root /data/llm-embedder
 ```
 
@@ -123,12 +126,12 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/lrlm \
 --train_data llm-embedder:lrlm/books3/train.json llm-embedder:lrlm/arxiv/train.json llm-embedder:lrlm/codeparrot/train.json \
---max_steps 4000 \
---save_steps 4000 \
 --select_positive teacher \
 --teacher_scores_margin 0.1 \
 --contrastive_weight 0 \
 --teacher_temperature 0.1 \
+--save_steps 4000 \
+--max_steps 4000 \
 --data_root /data/llm-embedder
 ```
 
@@ -137,12 +140,12 @@ torchrun --nproc_per_node=8 run_dense.py \
 torchrun --nproc_per_node=8 run_dense.py \
 --output_dir data/outputs/msc \
 --train_data llm-embedder:chat/msc/train.json \
---max_steps 4000 \
---save_steps 4000 \
 --select_positive teacher \
 --select_negative random \
 --contrastive_weight 0 \
 --teacher_temperature 0.1 \
+--save_steps 4000 \
+--max_steps 4000 \
 --data_root /data/llm-embedder
 ```
 
@@ -155,6 +158,8 @@ torchrun --nproc_per_node=8 run_dense.py \
 --corpus llm-embedder:tool/toolbench/corpus.json \
 --key_template {text} \
 --metrics ndcg \
+--eval_steps 2000 \
+--save_steps 2000 \
 --max_steps 2000 \
 --data_root /data/llm-embedder
 ```
@@ -169,6 +174,8 @@ torchrun --nproc_per_node=8 run_dense.py \
 --key_template '{text}' \
 --metrics mrr ndcg \
 --cutoffs 3 10 100 \
+--eval_steps 2000 \
+--save_steps 2000 \
 --max_steps 2000 \
 --data_root /data/llm-embedder
 ```
@@ -183,8 +190,9 @@ torchrun --nproc_per_node=8 -m evaluation.eval_retrieval \
 --save_name bge \
 --data_root /data/llm-embedder
 
-# BM25 (the result will be saved at llm-embedder:qa/nq/train.neg.bm25.json)
-python -m evaluation.eval_retrieval \
+# BM25 (the result will be saved at llm-embedder:qa/nq/train.neg.bm25.json; anserini_dir is the folder where you untar anserini.tar.gz)
+torchrun --nproc_per_node 8 -m evaluation.eval_retrieval \
+--anserini_dir /data/anserini \
 --retrieval_method bm25 \
 --eval_data llm-embedder:qa/nq/train.json \
 --corpus llm-embedder:qa/nq/corpus.json \

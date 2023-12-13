@@ -31,7 +31,8 @@ def main():
         model = CrossEncoder(
             ranker=model_args.ranker,
             # NOTE: the fp16 model cannot be trained
-            dtype="fp32" if model_args.train_data is not None else model_args.dtype,
+            # dtype="fp32" if model_args.train_data is not None else model_args.dtype,
+            dtype=model_args.dtype,
             cache_dir=model_args.model_cache_dir, 
         )
         cross = True
@@ -129,6 +130,8 @@ def main():
             cutoffs=model_args.cutoffs,
             # for collecting positives and collating retrieval results
             save_name=model_args.save_name,
+            output_dir=training_args.output_dir,
+            save_to_output=model_args.save_to_output,
             # for restoring text from indices when collating results
             corpus=no_instruction_corpus,
             max_neg_num=model_args.max_neg_num,

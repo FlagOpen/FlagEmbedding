@@ -36,8 +36,8 @@ def main():
         negative_cross_device=training_args.negative_cross_device,
         stable_distill=training_args.stable_distill,
     )
-    if model_args.train_data is not None:
-        model.to(torch.float32)
+    # if model_args.train_data is not None:
+    #     model.to(torch.float32)
     
     if training_args.use_train_config:
         model.train_config = config["training"]
@@ -130,6 +130,8 @@ def main():
             cutoffs=model_args.cutoffs,
             # for collecting positives and collating retrieval results
             save_name=model_args.save_name,
+            output_dir=training_args.output_dir,
+            save_to_output=model_args.save_to_output,
             # for restoring text from indices when collating results
             corpus=no_instruction_corpus,
             max_neg_num=model_args.max_neg_num,

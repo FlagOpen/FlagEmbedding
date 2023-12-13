@@ -184,9 +184,13 @@ class RetrievalDataset:
         if data_file is None:
             return None
         @DatasetProcessFn()
-        def _process(query:str, query_id, key:Optional[List[str]]=None, key_index: Optional[List[int]]=None, pos: Optional[List[Union[int, str]]]=None, neg: Optional[List[str]]=None, pos_index:Optional[List[int]]=None, neg_index: Optional[List[int]]=None, **kwds):
+        def _process(query:str, query_id:Optional[int]=None, key:Optional[List[str]]=None, key_index: Optional[List[int]]=None, pos: Optional[List[Union[int, str]]]=None, neg: Optional[List[str]]=None, pos_index:Optional[List[int]]=None, neg_index: Optional[List[int]]=None, _index=None, **kwds):
             if instruction is not None:
                 query = instruction["query"] + query
+            
+            if query_id is None:
+                assert _index is not None
+                query_id = _index
 
             output = {
                 "query": query,
@@ -220,9 +224,12 @@ class RetrievalDataset:
             return output
 
         dataset = datasets.load_dataset('json', data_files=data_file, split='train', cache_dir=cache_dir)
-        task = dataset[0]["task"]
-        
-        dataset.set_transform(_process)
+        if "task" in dataset:
+            task = dataset[0]["task"]
+        else:
+            task = "nan"
+
+        dataset = dataset.map(_process, num_proc=32, batched=True, remove_columns=dataset.column_names, with_indices=True)
         return dataset
 
     @staticmethod
@@ -549,7 +556,96 @@ TASK_CONFIG = {
             },
         }
     },
- 
+
+    "lme": {
+        "instruction": {
+            "qa": {
+                "query": "Represent this query for knowledge retrieval: ",
+                "key": "Represent this document for knowledge retrieval: ",
+            },
+            "convsearch": {
+                "query": "Represent this context and query for knowledge retrieval: ",
+                "key": "Represent this document for knowledge retrieval: ",
+            },
+            "chat": {
+                "query": "Represent this utterance for memory retrieval: ",
+                "key": "Represent this dialogue for memory retrieval: ",
+            },
+            "lrlm": {
+                "query": "Represent this text chunk for memory retrieval: ",
+                "key": "Represent this text chunk for memory retrieval: ",
+            },
+            "icl": {
+                "query": "Represent this example for demonstration retrieval: ",
+                "key": "Represent this example for demonstration retrieval: ",
+            },
+            "tool": {
+                "query": "Represent this user scenario for tool retrieval: ",
+                "key": "Represent this tool description for tool retrieval: ",
+            },
+        },
+        "training": {
+            "qa": {
+                "select_positive": "first",
+                "select_negative": "random",
+                "max_sample_num": None,
+                "teacher_scores_margin": None,
+                "teacher_scores_min": None, 
+                "contrastive_weight": 0,
+                "stable_distill": True,
+            },
+            "convsearch": {
+                "select_positive": "first",
+                "select_negative": "random",
+                "max_sample_num": None,
+                "teacher_scores_margin": None,
+                "teacher_scores_min": None,
+                "distill_weight": 0,
+                "stable_distill": False,
+            },
+            "chat": {
+                "select_positive": "teacher",
+                "select_negative": "random",
+                "max_sample_num": None,
+                "teacher_scores_margin": None,
+                "teacher_scores_min": None,
+                "distill_weight": 1.0,
+                "contrastive_weight": 0,
+                "teacher_temperature": 0.1,
+                "stable_distill": False,
+            },
+            "lrlm": {
+                "select_positive": "teacher",
+                "select_negative": "random",
+                "max_sample_num": 20000,
+                "teacher_scores_margin": 0.1,
+                "teacher_scores_min": None,
+                "distill_weight": 1.0,
+                "contrastive_weight": 0,
+                "teacher_temperature": 0.1,            
+                "stable_distill": False,
+            },
+            "icl": {
+                "select_positive": "random",
+                "select_negative": "random",
+                "max_sample_num": None,
+                "teacher_scores_margin": None,
+                "teacher_scores_min": None,
+                "contrastive_weight": 0,
+                "stable_distill": True,
+            },
+            "tool": {
+                "select_positive": "first",
+                "select_negative": "random",
+                "max_sample_num": None,
+                "teacher_scores_margin": None,
+                "teacher_scores_min": None,
+                "distill_weight": 0,
+                "stable_distill": False,
+            },
+        }
+    },
+    
     "bge": {
         "instruction": defaultdict(lambda: {"query": "Represent this sentence for searching relevant passages: ", "key": ""})
     },

@@ -23,10 +23,29 @@ conda env create -f environment.yaml --name llm-embedder
 conda activate llm-embedder
 ```
 
-## Data
-The data for fine-tuning & evaluation can be downloaded [here](https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz). You should untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+To use BM25, you must download **java11** and **anserini**, then add java to your `PATH`:
 ```bash
-tar -xzvf llm-embedder-eval.tar.gz -C /data
+# feel free to alternate /data to your prefered location
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/java11.tar.gz?download=true -O /data/java11.tar.gz
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/anserini.tar.gz?download=true -O /data/anserini.tar.gz
+
+cd /data
+tar -xzvf java11.tar.gz
+tar -xzvf anserini.tar.gz
+
+# below just temporarily set JAVA_HOME; it is RECOMMENDED that you store the lines the setting in ~/.bashrc
+export JAVA_HOME=/data/jdk-11.0.2
+export PATH=$JAVA_HOME/bin:$PATH
+```
+
+## Data
+You should download the data for fine-tuning & evaluation then untar the file at anywhere you prefer, e.g. `/data`, which results in a folder `/data/llm-embedder`:
+```bash
+# feel free to alternate /data to your prefered location
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/llm-embedder.tar.gz?download=true -O /data/llm-embedder.tar.gz
+
+cd /data
+tar -xzvf llm-embedder-eval.tar.gz
 ```
 
 The corpus of QReCC for conversational search is too large (54M passages), we separately upload it to huggingface datasets [namespace-Pt/qrecc-corpus](https://huggingface.co/datasets/namespace-Pt/qrecc-corpus). To evaluate the performance on conversational search, you should load it and save it as json file in the `qrecc` folder:
@@ -55,8 +74,8 @@ torchrun --nproc_per_node 8 -m evaluation.eval_popqa --retrieval_method no --dat
 # Random
 torchrun --nproc_per_node 8 -m evaluation.eval_popqa --retrieval_method random --data_root /data/llm-embedder
 
-# BM25
-torchrun --nproc_per_node 8 -m evaluation.eval_popqa --retrieval_method bm25 --data_root /data/llm-embedder
+# BM25 (anserini_dir is the folder where you untar anserini.tar.gz)
+torchrun --nproc_per_node 8 -m evaluation.eval_popqa --retrieval_method bm25 --data_root /data/llm-embedder --anserini_dir /data/anserini
 
 # Contriever
 torchrun --nproc_per_node 8 -m evaluation.eval_popqa --query_encoder facebook/Contriever --dense_metric ip --add_instruction False --data_root /data/llm-embedder

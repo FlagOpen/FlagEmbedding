@@ -109,9 +109,12 @@ class RetrievalMetric:
     def _prepare_label(eval_data):
         labels = {}
         with open(eval_data) as f:
-            for line in f:
+            for i, line in enumerate(f):
                 item = json.loads(line)
-                query_id = item["query_id"]
+                if "query_id" in item:
+                    query_id = item["query_id"]
+                else:
+                    query_id = i
                 # get the indices of the positives w.r.t. the corpus
                 label = item.get("pos_index", None)
                 labels[query_id] = label

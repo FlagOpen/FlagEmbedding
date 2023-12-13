@@ -409,5 +409,5 @@ class RetrievalTrainingArgs(TrainingArguments):
     def __post_init__(self):
         super().__post_init__()
         # for convenience
-        self.eval_steps = self.save_steps
+        # self.eval_steps = self.save_steps
 
