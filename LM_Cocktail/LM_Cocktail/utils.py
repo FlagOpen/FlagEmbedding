@@ -1,6 +1,11 @@
+import os
+import gc
+import tempfile
+
 import torch
 import random
 import numpy as np
+from tqdm import tqdm
 from typing import List, Dict, Any
 
 from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification
@@ -54,6 +59,62 @@ def merge_param(model_param_list: List[Dict], weights: List[float]):
                 new_param[k] += w * param[k]
     return new_param
 
+
+def get_model_param_dirs(model_names: List[str], model_type:str):
+    param_dirs = []
+    temp_dir = tempfile.mkdtemp()
+    print(f"create a temporary directory: {temp_dir}")
+
+    for idx, name in enumerate(model_names):
+        print(f"loading {name} -----------------")
+        model = load_model(name, model_type=model_type)
+        model_params = model.state_dict()
+
+        model_temp_dir = os.path.join(temp_dir, f"model_{idx+1}")
+        os.makedirs(model_temp_dir, exist_ok=True)
+        param_dirs.append(model_temp_dir)
+
+        for k, v in model_params.items():
+            temp_param_file = os.path.join(model_temp_dir, f"{k}.ckpt")
+            torch.save(v, temp_param_file)
+
+        model = model.to("meta")
+        del model_params
+        gc.collect()
+
+    return param_dirs, temp_dir
+
+
+def merge_param_by_layer(model_param_dirs: List[str], weights: List[float]):
+    new_param = {}
+    model_params = os.listdir(model_param_dirs[0])
+
+    for param_file in tqdm(model_params, desc="Merging models"):
+        param_name = param_file.replace(".ckpt", "")
+
+        for w, model_dir in tqdm(zip(weights, model_param_dirs), total=len(weights), desc=f"Processing {param_name}", leave=False):            
+            file_path = os.path.join(model_dir, param_file)
+            param = torch.load(file_path)
+
+            if param.dtype in [torch.int64, torch.int32]:
+                new_param[param_name] = param
+            elif param_name not in new_param:
+                new_param[param_name] = w * param
+            else:
+                new_param[param_name] += w * param
+
+            del param
+            gc.collect()
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".ckpt") as tmp_file:
+        print(f"create a temporary file to store mixed weights: {tmp_file.name}")
+        torch.save(new_param, tmp_file.name)
+        temp_file_path = tmp_file.name
+
+    del new_param
+    gc.collect()
+
+    return temp_file_path
 
 
 def compute_weights(base_model, tokenizer, param_list: List[Dict], model_type: str, example_data: List[Any], temperature: float=5.0, batch_size:int=2, max_input_length:int=2048, neg_number:int=7):
