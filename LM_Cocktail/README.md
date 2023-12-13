@@ -164,6 +164,24 @@ model = mix_models_with_data(
     neg_number=2)
 ```
 
+### 3. Mix models layer by layer for reducing memory cost
+The function `mix_models_by_layers` creates temporary directories to store weights of individual models and then merges them layer by layer.
+
+This approach helps in reducing the memory consumption.
+
+Once the merging process is completed, the temporary directories and files will be automatically removed.
+
+
+```python
+from LM_Cocktail import mix_models_by_layers
+
+# Mix Large Language Models (LLMs) and save the combined model to the path: ./mixed_llm
+model = mix_models_by_layers(
+    model_names_or_paths=["meta-llama/Llama-2-7b-chat-hf", "Shitao/llama2-ag-news"], 
+    model_type='decoder', 
+    weights=[0.7, 0.3], 
+    output_path='./mixed_llm')
+```
 
 
 

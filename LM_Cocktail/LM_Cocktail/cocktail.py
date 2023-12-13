@@ -1,13 +1,17 @@
+import os
+import shutil
+
 import torch
 import random
 import numpy as np
 from typing import List, Dict, Any
 
-from transformers import AutoModelForCausalLM, AutoTokenizer, AutoModel
+from accelerate import init_empty_weights, load_checkpoint_and_dispatch
+from transformers import AutoModelForCausalLM, AutoModelForSequenceClassification, AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer, models
 from transformers import pipeline
 
-from .utils import load_model, get_model_param_list, merge_param, compute_weights
+from .utils import load_model, get_model_param_list, merge_param, compute_weights, get_model_param_dirs, merge_param_by_layer
 
 
 def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls', normalized: bool = True):
@@ -118,4 +122,59 @@ def mix_models_with_data(model_names_or_paths: List[str],
     return model
 
 
+def mix_models_by_layers(model_names_or_paths: List[str], 
+                         model_type: str, 
+                         weights: List[float], 
+                         output_path: str=None):
+    """_summary_
+    mix models based on given weights, and load them layer by layer
+    Args:
+        model_names_or_paths (List[str]): a list of names or paths to models
+        model_type (str): type of model to mix, should be in ["decoder", "encoder", "reranker"]
+        weights (List[float]): a list of mixing weights. The sum of weights should be equal to 1.
+        output_path (str, optional): path to save the mixed model. Defaults to None.
 
+    Returns:
+        new model
+    """
+    
+    assert len(model_names_or_paths) == len(weights)
+    assert model_type in ['decoder', 'encoder', 'reranker']
+    assert sum(weights) - 1 <= 1e-3
+
+    param_dirs, temp_dir = get_model_param_dirs(model_names_or_paths, model_type=model_type)
+    temp_file_path = merge_param_by_layer(param_dirs, weights=weights)
+    
+    print("***weight for each model***: ")
+    for w, n in zip(weights, model_names_or_paths):
+        print(n, w)
+
+    with init_empty_weights():
+        if model_type == 'decoder':
+            meta_model = AutoModelForCausalLM.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
+        elif model_type == 'encoder':
+            meta_model = AutoModel.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
+        elif model_type == 'reranker':
+            model = AutoModelForSequenceClassification.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
+        else:
+            raise NotImplementedError(f"not support this model_type: {model_type}")
+
+    device_map = {name: "cpu" for name, _ in meta_model.named_modules()}
+    model = load_checkpoint_and_dispatch(meta_model, checkpoint=temp_file_path, device_map=device_map)
+    model.tie_weights()
+
+    os.remove(temp_file_path)
+    shutil.rmtree(temp_dir)
+    print(f"Remove temporary file: {temp_file_path}")
+    print(f"Remove temporary directory: {temp_dir}")
+
+    if output_path is not None:
+        print(f"Saving the new model to {output_path}")
+        model.save_pretrained(output_path)
+        tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0])
+        tokenizer.save_pretrained(output_path)
+        
+        if model_type == "encoder":
+            print(f"Transform the model to the format of 'sentence_transformers' (pooling_method='cls', normalized=True)")
+            save_ckpt_for_sentence_transformers(ckpt_dir=output_path)
+    return model
