@@ -58,4 +58,9 @@ class CrossEncoder(nn.Module):
         return reranker
 
     def save_pretrained(self, output_dir: str):
-        self.hf_model.save_pretrained(output_dir)
+        state_dict = self.hf_model.state_dict()
+        state_dict = type(state_dict)(
+            {k: v.clone().cpu()
+             for k,
+             v in state_dict.items()})
+        self.hf_model.save_pretrained(output_dir, state_dict=state_dict)

@@ -82,7 +82,7 @@ model = mix_models(
 
 ### 5. Load your model
 
-### Using FlagEmbedding
+#### Using FlagEmbedding
 
 ```python
 from FlagEmbedding import FlagReranker
@@ -112,3 +112,10 @@ with torch.no_grad():
     scores = model(**inputs, return_dict=True).logits.view(-1, ).float()
     print(scores)
 ```
+
+### Known Issues
+- 
+
+
+
+
