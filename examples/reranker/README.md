@@ -113,8 +113,6 @@ with torch.no_grad():
     print(scores)
 ```
 
-### Known Issues
-- 
 
 
 
