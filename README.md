@@ -28,8 +28,6 @@
 
 [English](README.md) | [中文](https://github.com/FlagOpen/FlagEmbedding/blob/master/README_zh.md)
 
-<span style="#FF69B4;"> **Hiring:** We're seeking experienced NLP researchers and intern students focusing on dense retrieval and retrieval-augmented LLMs. If you're interested, please feel free to reach out to us via email at zhengliu1026@gmail.com.</span>
-
 FlagEmbedding focus on retrieval-augmented LLMs, consisting of following projects currently:
 
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
