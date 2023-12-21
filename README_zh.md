@@ -27,8 +27,6 @@
 [English](README.md) | [中文](README_zh.md)
 
 
-<span style="#FF69B4;"> **Hiring:** 我们正在招聘NLP研究人员和实习生，专注于检索增强大模型领域。如果您感兴趣，请随时通过电子邮件与我们联系：zhengliu1026@gmail.com.</span>
-
 FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
