@@ -10,9 +10,6 @@ This is the codebase for Activation Beacon, an effective, efficient, compatible,
 *The source code and model checkpoint will be released soon. Please stay tuned.*:smile: 
 
 
-## Contact
-If you have any question or suggestion related to this project, feel free to open an issue or pull request. You also can email Peitian Zhang (namespace.pt@gmail.com).
-
 ## Citation
 If you find this repository useful, please give us a star ⭐.
 
