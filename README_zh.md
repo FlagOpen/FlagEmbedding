@@ -29,6 +29,7 @@
 
 FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
+- **Long-Context LLM**: [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 - **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding), [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 - **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
@@ -36,8 +37,9 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ## 更新
 
-- 12/24/2023: Release **LLaRA**, 一个基于LLaMA-7B的稠密检索模型, MS MARCO与BEIR上取得了迄今最好的实验结果. 模型与代码将会陆续开源. 敬请关注. [Technical Report](https://arxiv.org/abs/2312.15503) :fire:
-- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [技术报告](https://arxiv.org/abs/2311.13534) :fire:
+- 1/9/2024: 发布**Activation-Beacon**, 一个有效、高效、兼容、低成本（训练）的扩展大预言模型上下文长度的方法。模型与代码将会陆续开源. 敬请关注. [技术报告]() :fire:
+- 12/24/2023: 发布**LLaRA**, 一个基于LLaMA-7B的稠密检索模型, MS MARCO与BEIR上取得了迄今最好的实验结果. 模型与代码将会陆续开源. 敬请关注. [技术报告](https://arxiv.org/abs/2312.15503) :fire:
+- 11/23/2023: 发布[LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [技术报告](https://arxiv.org/abs/2311.13534) :fire:
 - 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[技术报告](https://arxiv.org/pdf/2310.07554.pdf) 
 - 09/15/2023: 发布 [技术报告](https://arxiv.org/pdf/2309.07597.pdf) 和 [数据集](https://data.baai.ac.cn/details/BAAI-MTP).
 - 09/12/2023: 更新：
@@ -54,6 +56,14 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 
 ## 项目
+
+### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
+
+由于有限的上下文窗口长度，有效利用长上下文信息是对大型语言模型的一个巨大挑战。
+Activation Beacon 将 LLM 的原始激活压缩为更紧凑的形式，以便它可以在有限的上下文窗口中感知更长的上下文。
+它是一种有效、高效、兼容、低成本（训练）的延长LLM上下文长度的方法。
+更多细节请参考[技术报告]()和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)。
+
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 
