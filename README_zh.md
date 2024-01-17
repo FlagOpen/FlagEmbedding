@@ -33,7 +33,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
 - **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding), [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 - **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
-
+- **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 
 ## 更新
 
@@ -99,7 +99,11 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
 **你可以按照我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 在本地数据上微调嵌入模型。**
 我们还提供了一个[预训练示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain) 。
 请注意，预训练的目标是重构文本，预训练后的模型无法直接用于相似度计算，需要进行微调之后才可以用于相似度计算。
-更多关于bge的训练情况请参阅[baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) ，
+更多关于bge的训练情况请参阅[论文](https://arxiv.org/pdf/2309.07597.pdf)和[代码](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
+
+
+### [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
+中文向量榜单，已整合入MTEB中。更多细节参考 [论文](https://arxiv.org/pdf/2309.07597.pdf) 和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB).
 
 
 
