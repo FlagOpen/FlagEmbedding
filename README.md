@@ -113,6 +113,8 @@ We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
 Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more details.
 
+**BGE uses the last hidden state of `[cls]` as the sentence embedding: `sentence_embeddings = model_output[0][:, 0]`. If you use mean pooling, there will be a significant decrease in performance.**
+
 
 ### [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 A benchmark for chinese text embedding. This benchmark has been merged into MTEB. 
