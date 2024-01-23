@@ -86,6 +86,7 @@ class BiEncoderModel(nn.Module):
                 q_reps = self._dist_gather_tensor(q_reps)
                 p_reps = self._dist_gather_tensor(p_reps)
 
+
             scores = self.compute_similarity(q_reps, p_reps)
             scores = scores / self.temperature
             scores = scores.view(q_reps.size(0), -1)
@@ -93,6 +94,8 @@ class BiEncoderModel(nn.Module):
             target = torch.arange(scores.size(0), device=scores.device, dtype=torch.long)
             target = target * (p_reps.size(0) // q_reps.size(0))
             loss = self.compute_loss(scores, target)
+
+
 
         else:
             scores = self.compute_similarity(q_reps, p_reps)
