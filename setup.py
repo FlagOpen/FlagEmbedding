@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'torch>=1.6.0',
-        'transformers==4.34.0',
+        'transformers==4.33.0',
         'datasets',
         'accelerate>=0.20.1',
         'sentence_transformers',
