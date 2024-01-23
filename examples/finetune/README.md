@@ -87,6 +87,7 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
+- `use_inbatch_neg`: use passages in the same batch as negatives. Default value is True. 
 
 For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
