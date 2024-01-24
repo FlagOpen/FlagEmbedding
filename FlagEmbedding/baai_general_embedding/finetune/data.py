@@ -8,7 +8,7 @@ import datasets
 from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding
 from transformers import PreTrainedTokenizer, BatchEncoding
-
+from typing import *
 from .arguments import DataArguments
 
 
