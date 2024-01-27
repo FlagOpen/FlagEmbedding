@@ -6,9 +6,8 @@ from typing import List, Tuple
 
 import datasets
 from torch.utils.data import Dataset
-from transformers import DataCollatorWithPadding
-from transformers import PreTrainedTokenizer, BatchEncoding
-from typing import *
+from transformers import DataCollatorWithPadding, PreTrainedTokenizer
+
 from .arguments import DataArguments
 
 

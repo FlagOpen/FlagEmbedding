@@ -65,6 +65,10 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## Projects
 
+
+
+
+
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
 The utilization of long contexts poses a big challenge for large language models due to their limited context window length.
@@ -113,7 +117,7 @@ We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
 Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more details.
 
-**BGE uses the last hidden state of `[cls]` as the sentence embedding: `sentence_embeddings = model_output[0][:, 0]`. If you use mean pooling (incorrect method used in Fastchat), there will be a significant decrease in performance.**
+**BGE uses the last hidden state of `[cls]` as the sentence embedding: `sentence_embeddings = model_output[0][:, 0]`. If you use mean pooling, there will be a significant decrease in performance.**
 
 
 ### [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)

@@ -8,7 +8,6 @@
 Different from other embedding models using mean pooling, BGE uses the last hidden state of `[cls]` as the sentence embedding: `sentence_embeddings = model_output[0][:, 0]`.
 If you use mean pooling, there will be a significant decrease in performance. 
 Therefore, make sure to use the correct method to obtain sentence vectors. You can refer to the usage method we provide. 
-**Some other libraries, such as FastChat, use incorrect pooling methods that may result in undesirable effects.**
 
 
 

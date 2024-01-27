@@ -101,7 +101,7 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
 请注意，预训练的目标是重构文本，预训练后的模型无法直接用于相似度计算，需要进行微调之后才可以用于相似度计算。
 更多关于bge的训练情况请参阅[论文](https://arxiv.org/pdf/2309.07597.pdf)和[代码](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
 
-**注意BGE使用CLS的表征作为整个句子的表示，如果使用了错误的方式（如mean pooling)会导致效果很差。一些其他库（如，Fastchat)目前存在这个问题。**
+**注意BGE使用CLS的表征作为整个句子的表示，如果使用了错误的方式（如mean pooling)会导致效果很差。**
 
 
 ### [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
