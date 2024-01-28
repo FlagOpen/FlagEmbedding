@@ -34,7 +34,8 @@ Contributions from the community are welcome.
 
 You can follow the common in this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 
 to fine-tune the dense embedding.
-The code of unified fine-tuning for three retrieval modes will be released.
+
+Our code and data for unified fine-tuning (dense, sparse, and multi-vectors) will be released.
 
 
 
@@ -171,7 +172,7 @@ If you have no enough resource to fine-tuning model with long text, the method i
 
 Refer to our [report]() for more details.
 
-The codes and fine-tuning datasets will be open-sourced in the near future.
+**The fine-tuning codes and datasets will be open-sourced in the near future.**
 
 
 
