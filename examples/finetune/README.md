@@ -41,16 +41,18 @@ python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
 --range_for_sampling 2-200 \
---use_gpu_for_searching
+--negative_number 15 \
+--use_gpu_for_searching 
 ```
 
 - `input_file`: json data for finetuning. This script will retrieve top-k documents for each query, 
 and random sample negatives from the top-k documents (not including the positive documents).
 - `output_file`: path to save JSON data with mined hard negatives for finetuning
-- `range_for_sampling`: where to sample negative. For example, `2-100` means sampling negative from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top50-300 passages)**
+- `negative_number`: the number of sampled negatives 
+- `range_for_sampling`: where to sample negative. For example, `2-100` means sampling `negative_number` negatives from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top60-300 passages)**
 - `candidate_pool`: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. 
 The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
-- `use_gpu_for_searching`: whether use faiss-gpu to retrieve negatives.
+- `use_gpu_for_searching`: whether to use faiss-gpu to retrieve negatives.
 
 
 ## 3. Train
@@ -87,6 +89,7 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
+- `use_inbatch_neg`: use passages in the same batch as negatives. Default value is True. 
 
 For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 

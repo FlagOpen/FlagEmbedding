@@ -156,6 +156,8 @@ def preprocess_data_for_embedder(example_data, tokenizer, device, batch_size:int
             p_tokens =  tokenizer(passages, padding=True, truncation=True, max_length=max_input_length, return_tensors="pt")
             q_tokens, p_tokens = q_tokens.to(device), p_tokens.to(device)
             input_data.append([q_tokens, p_tokens])
+            quries, passages = [], []
+
     if len(quries) > 0:
         q_tokens = tokenizer(quries, padding=True, truncation=True, max_length=max_input_length, return_tensors="pt")
         p_tokens =  tokenizer(passages, padding=True, truncation=True, max_length=max_input_length, return_tensors="pt")

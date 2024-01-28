@@ -72,7 +72,9 @@ def main():
                            normlized=training_args.normlized,
                            sentence_pooling_method=training_args.sentence_pooling_method,
                            negatives_cross_device=training_args.negatives_cross_device,
-                           temperature=training_args.temperature)
+                           temperature=training_args.temperature,
+                           use_inbatch_neg=training_args.use_inbatch_neg,
+                           )
 
     if training_args.fix_position_embedding:
         for k, v in model.named_parameters():

@@ -28,6 +28,7 @@ class BiEncoderModel(nn.Module):
                  sentence_pooling_method: str = 'cls',
                  negatives_cross_device: bool = False,
                  temperature: float = 1.0,
+                 use_inbatch_neg: bool = True
                  ):
         super().__init__()
         self.model = AutoModel.from_pretrained(model_name)
@@ -36,6 +37,7 @@ class BiEncoderModel(nn.Module):
         self.normlized = normlized
         self.sentence_pooling_method = sentence_pooling_method
         self.temperature = temperature
+        self.use_inbatch_neg = use_inbatch_neg
         self.config = self.model.config
 
         if not normlized:
@@ -82,17 +84,23 @@ class BiEncoderModel(nn.Module):
         p_reps = self.encode(passage)
 
         if self.training:
-            if self.negatives_cross_device:
+            if self.negatives_cross_device and self.use_inbatch_neg:
                 q_reps = self._dist_gather_tensor(q_reps)
                 p_reps = self._dist_gather_tensor(p_reps)
 
-            scores = self.compute_similarity(q_reps, p_reps)
-            scores = scores / self.temperature
-            scores = scores.view(q_reps.size(0), -1)
+            group_size = p_reps.size(0) // q_reps.size(0)
+            if self.use_inbatch_neg:
+                scores = self.compute_similarity(q_reps, p_reps) / self.temperature # B B*G
+                scores = scores.view(q_reps.size(0), -1)
 
-            target = torch.arange(scores.size(0), device=scores.device, dtype=torch.long)
-            target = target * (p_reps.size(0) // q_reps.size(0))
-            loss = self.compute_loss(scores, target)
+                target = torch.arange(scores.size(0), device=scores.device, dtype=torch.long)
+                target = target * group_size
+                loss = self.compute_loss(scores, target)
+            else:
+                scores = self.compute_similarity(q_reps, p_reps.view(q_reps.size(0), group_size, -1)) / self.temperature # B G
+                scores = scores.view(q_reps.size(0), -1)
+                target = torch.zeros(scores.size(0), device=scores.device, dtype=torch.long)
+                loss = self.compute_loss(scores, target)
 
         else:
             scores = self.compute_similarity(q_reps, p_reps)

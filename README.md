@@ -32,9 +32,9 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 - **Long-Context LLM**: [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
-- **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding), [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
+- **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
 - **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
-
+- **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 
 ## News 
 
@@ -65,6 +65,10 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## Projects
 
+
+
+
+
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
 The utilization of long contexts poses a big challenge for large language models due to their limited context window length.
@@ -89,15 +93,15 @@ More details please refer to our report: [LM-Cocktail](https://arxiv.org/abs/231
 ### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
 
 LLM Embedder is fine-tuned based on the feedback from LLMs. 
-It can support the retrieval augmentation needs of large language models, including knowledge retrieval, memory retrieval, examplar retrieval, and tool retrieval. 
+It can support the retrieval augmentation needs of large language models, including knowledge retrieval, memory retrieval, example retrieval, and tool retrieval. 
 It is fine-tuned over 6 tasks: Question Answering, Conversational Search, Long Conversation, 
 Long-Range Language Modeling, In-Context Learning, and Tool Learning.
-For more details please refer to [./FlagEmbedding/llm_embedder/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder)
+For more details please refer to [report](https://arxiv.org/abs/2310.07554) and [./FlagEmbedding/llm_embedder/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder)
 
 
 ### [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
-Cross-encoder will perform full-attention over the input pair, 
+Cross-encoder will perform full-attention over the input pair,
 which is more accurate than embedding model (i.e., bi-encoder) but more time-consuming than embedding model.
 Therefore, it can be used to re-rank the top-k documents returned by embedding model.
 We train the cross-encoder on a multilingual pair data, 
@@ -111,8 +115,14 @@ BGE embedding is a general Embedding Model. We pre-train the models using [retro
 **You can fine-tune the embedding model on your data following our [examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune).**
 We also provide a [pre-train example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain).
 Note that the goal of pre-training is to reconstruct the text, and the pre-trained model cannot be used for similarity calculation directly, it needs to be fine-tuned.
-For more training details for bge see [baai_general_embedding](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md).
+Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md) for more details.
 
+**BGE uses the last hidden state of `[cls]` as the sentence embedding: `sentence_embeddings = model_output[0][:, 0]`. If you use mean pooling, there will be a significant decrease in performance.**
+
+
+### [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
+A benchmark for chinese text embedding. This benchmark has been merged into MTEB. 
+Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) for more details.
 
 
 ## Model List
