@@ -37,7 +37,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 
 ## 更新
 
-- 1/9/2024: 发布**Activation-Beacon**, 一个有效、高效、兼容、低成本（训练）的扩展大预言模型上下文长度的方法。模型与代码将会陆续开源. 敬请关注. [技术报告](https://arxiv.org/abs/2401.03462) :fire:
+- 1/9/2024: 发布**Activation-Beacon**, 一个有效、高效、兼容、低成本（训练）的扩展大预言模型上下文长度的方法。[技术报告](https://arxiv.org/abs/2401.03462) :fire:
 - 12/24/2023: 发布**LLaRA**, 一个基于LLaMA-7B的稠密检索模型, MS MARCO与BEIR上取得了迄今最好的实验结果. 模型与代码将会陆续开源. 敬请关注. [技术报告](https://arxiv.org/abs/2312.15503) :fire:
 - 11/23/2023: 发布[LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), 一种通过模型融合在微调时保持原有模型通用能力的方法. [技术报告](https://arxiv.org/abs/2311.13534) :fire:
 - 10/12/2023: 发布 [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), 专为大语言模型**各种检索增强任务设计**的英文向量模型。[技术报告](https://arxiv.org/pdf/2310.07554.pdf) 
