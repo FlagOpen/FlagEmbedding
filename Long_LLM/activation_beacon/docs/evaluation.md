@@ -75,7 +75,7 @@ The results can be found at `data/results/lm/pg19.log`.
 ### LongBench
 
 ```bash
-data_root="/your/data/root"
+data_root="/data"
 
 ############## Llama-2 ##############
 torchrun --nproc_per_node 8 -m main.eval_longbench --data_root $data_root --max_length 3500 --use_flash_attention_2
@@ -102,7 +102,7 @@ The results can be found at `data/results/longbench/metrics.log`.
 ## Synthetic Tasks
 ### Topic Retrieval
 ```bash
-data_root="/your/data/root"
+data_root="/data"
 
 ############## Llama-2 ##############
 torchrun --nproc_per_node 8 -m main.eval_longeval --data_root $data_root --use_flash_attention_2
