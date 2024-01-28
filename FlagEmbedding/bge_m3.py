@@ -211,8 +211,8 @@ class BGEM3FlagModel:
             'colbert': [],
             'sparse': [],
             'dense': [],
-            'sparse_dense': [],
-            'colbert_sparse_dense': []
+            'sparse+dense': [],
+            'colbert+sparse+dense': []
         }
         for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
                                 disable=len(sentence_pairs) < 128):
