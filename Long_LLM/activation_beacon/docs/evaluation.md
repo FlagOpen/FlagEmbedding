@@ -32,7 +32,7 @@ tar -xzvf activation-beacon-eval.tar.gz
 ## Long-Context Generation
 ### Language Modeling Perplexity
 ```bash
-data_root="/your/data/root"
+data_root="/data"
 
 # NOTE: in the first run, the tokenization could be super slow (often consumes half an hour). However the tokenized corpus will be saved and reused. Be patient.
 

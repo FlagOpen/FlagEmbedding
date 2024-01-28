@@ -7,15 +7,15 @@ from typing import Optional, List, Tuple, Union, Dict
 @dataclass
 class ModelArgs:
     model_cache_dir: str = field(
-        default='/home/baaiks/shared_models',
+        default=None,
         metadata={'help': 'Default path to save language models.'}
     )
     dataset_cache_dir: str = field(
-        default='/home/baaiks/peitian/Data/Datasets/huggingface',
+        default=None,
         metadata={'help': 'Default path to save huggingface datasets.'}
     )
     data_root: str = field(
-        default="/home/baaiks/peitian/Data/Datasets/activation-beacon", 
+        default="/data", 
         metadata={'help': 'The base directory storing all data used for training and evaluation. If specified, make sure all train_data, eval_data, and corpus are path relative to data_root!'},
     )
     train_data: Optional[List[str]] = field(
