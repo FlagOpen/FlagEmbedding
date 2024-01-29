@@ -32,12 +32,12 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 - **Long-Context LLM**: [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
-- **Dense Retrieval**: [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
+- **Dense Retrieval**: [BGE-M3](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3), [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder), [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding)
 - **Reranker Model**: [BGE Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 - **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 
 ## News 
-
+- 1/30/2024: Release**BGE-M3**, the first embedding model which supports multiple retrieval modes、multilingual and multi-granularity retrieval. [Technical Report]() and [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3).
 - 1/9/2024: Release **Activation-Beacon**, an effective, efficient, compatible, and low-cost (training) method to extend the context length of LLM. Model and code will be open-sourced. Please stay tuned. [Technical Report](https://arxiv.org/abs/2401.03462) :fire:
 - 12/24/2023: Release **LLaRA**, a LLaMA-7B based dense retriever, leading to state-of-the-art performances on MS MARCO and BEIR. Model and code will be open-sourced. Please stay tuned. [Technical Report](https://arxiv.org/abs/2312.15503) :fire:
 - 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail), a method to maintain general capabilities during fine-tuning by merging multiple language models. [Technical Report](https://arxiv.org/abs/2311.13534) :fire:  
@@ -65,7 +65,16 @@ FlagEmbedding focus on retrieval-augmented LLMs, consisting of following project
 
 ## Projects
 
+### BGE-M3([Paper](), [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3))
+In this project, we introduce BGE-M3, the first embedding model which supports multiple retrieval modes、multilingual and multi-granularity retrieval.
+- Multi-Functionality: It can simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval. 
+- Multi-Linguality: It can support more than 100 working languages. 
+- Multi-Granularity: It is able to process inputs of different granularities, spanning from short sentences to long documents of up to 8192 tokens. 
 
+We propose a novel self-knowledge distillation approach to improve the performance of single retrieval mode. 
+We optimize the batching strategy, enabling a large batch size, which can used simply when fine-tuning with long text or large language model. 
+We also construct a dataset for document retrieval and propose a simple strategy to improve the ability to model long text.
+**The training code and fine-tuning data will be open-sourced in the near future.**
 
 
 
@@ -131,6 +140,7 @@ Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](h
 
 | Model                                                                     | Language | |                                         Description                                         |                                query instruction for retrieval                                 |
 |:--------------------------------------------------------------------------|:--------:| :--------:|:-------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3#usage) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3) | 多功能（向量检索，稀疏检索，多表征检索）、多语言、多粒度（最大长度8192） |  |
 | [LM-Cocktail](https://huggingface.co/Shitao)                   |   English |  | fine-tuned models (Llama and BGE) which can be used to reproduce the results of LM-Cocktail |  |
 | [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English | [Inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |     a unified embedding model to support diverse retrieval augmentation needs for LLMs      | See [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
 | [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English | [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) |               a cross-encoder model which is more accurate but less efficient               |                                                                                                |

@@ -154,12 +154,15 @@ print(model.compute_score(sentence_pairs))
 
 - Multilingual (Miracl dataset) 
 
+![avatar](./imgs/miracl.jpg)
 
 - Cross-lingual (MKQA dataset)
 
+![avatar](./imgs/mkqa.jpg)
 
 - Long Document Retrieval
 
+![avatar](./imgs/long.jpg)
 
 
 ## Training
@@ -174,7 +177,11 @@ Refer to our [report]() for more details.
 
 **The fine-tuning codes and datasets will be open-sourced in the near future.**
 
+## Models
 
+We release two versions:
+- [BAAI/bge-m3-unsupervised](https://huggingface.co/BAAI/bge-m3-unsupervised): the model after contrastive learning in a large-scale dataset
+- [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3): the final model fine-tuned from BAAI/bge-m3-unsupervised
 
 ## Acknowledgement
 
