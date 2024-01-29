@@ -37,35 +37,35 @@ data_root="/data/activation-beacon"
 # NOTE: in the first run, the tokenization could be super slow (often consumes half an hour). However the tokenized corpus will be saved and reused. Be patient.
 
 ############## Llama-2 ##############
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --use_flash_attention_2
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --use_flash_attention_2
 
 ############## PI ##############
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --use_flash_attention_2 --rope_method linear --rope_factor 8
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --use_flash_attention_2 --rope_method linear --rope_factor 8
 
 ############## NTK ##############
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --use_flash_attention_2 --rope_method dynamic --rope_factor 2
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --use_flash_attention_2 --rope_method dynamic --rope_factor 2
 
 ############## LongLlama ##############
 # OOM given 32K
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --model_name_or_path syzymon/long_llama_code_7b_instruct
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --model_name_or_path syzymon/long_llama_code_7b_instruct
 # evaluate 16K instead
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 16384 --model_name_or_path syzymon/long_llama_code_7b_instruct
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 16384 --model_name_or_path syzymon/long_llama_code_7b_instruct
 
 ############## LongChat ##############
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --model_name_or_path lmsys/longchat-7b-v1.5-32k --use_flash_attention_2
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --model_name_or_path lmsys/longchat-7b-v1.5-32k --use_flash_attention_2
 
 ############## Activation Beacon ##############
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat
 # evaluating with 400K context (increase stride to 100K so sliding window evaluation is faster)
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 400000 --stride 100000 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 400000 --stride 100000 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat
 # evaluating with 1M (increase stride to 100K so sliding window evaluation is faster)
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 1000000 --stride 100000 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --rope_method dynamic --rope_factor 2
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 1000000 --stride 100000 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --rope_method dynamic --rope_factor 2
 ```
 
-By default the perplexity is evaluated on PG19 test set. You can evaluate on Proof-Pile by specifying `eval_data`:
+By default the perplexity is evaluated on PG19 test set. You can evaluate on Proof-Pile and CodeParrot by specifying `eval_data`:
 ```bash
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --eval_data activation-beacon:lm/proof-pile.json
-torchrun --nproc_per_node 8 -m main.eval_lm --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --eval_data activation-beacon:lm/codeparrot.json
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --eval_data activation-beacon:lm/proof-pile.json
+torchrun --nproc_per_node 8 -m main.eval_lm --data_root $data_root --max_length 32768 --model_name_or_path namespace-Pt/activation-beacon-llama2-7b-chat --eval_data activation-beacon:lm/codeparrot.json
 ```
 
 The results can be found at `data/results/lm/pg19.log`.
