@@ -175,7 +175,7 @@ The small-batch strategy is simple but effective, which also can used to fine-tu
 - MCLS: A simple method to improve the performance on long text without fine-tuning. 
 If you have no enough resource to fine-tuning model with long text, the method is useful.
 
-Refer to our [report]() for more details.
+Refer to our [report](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/BGE_M3/BGE_M3.pdf) for more details.
 
 **The fine-tuning codes and datasets will be open-sourced in the near future.**
 
