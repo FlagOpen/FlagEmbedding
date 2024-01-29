@@ -185,7 +185,8 @@ class BGEM3FlagModel:
                       batch_size: int = 256,
                       max_query_length: int = 512,
                       max_passage_length: int = 8192,
-                      sparse_weight: float = 0.3) -> Dict[str, List[float]]:
+                      weights_for_different_modes: List[float] = None) -> Dict[str, List[float]]:
+
         def _tokenize(texts: list, max_length: int):
             return self.tokenizer(
                 texts,
@@ -239,7 +240,13 @@ class BGEM3FlagModel:
             colbert_scores = self.model.colbert_score(q_colbert_vecs, p_colbert_vecs,
                                                       q_mask=queries_inputs['attention_mask'])
 
-            sparse_scores = sparse_weight * sparse_scores
+            weight_sum = 1.0
+            if weights_for_different_modes is not None:
+                assert len(weights_for_different_modes) == 3
+                dense_scores = weights_for_different_modes[0] * dense_scores
+                sparse_scores = weights_for_different_modes[1] * sparse_scores
+                colbert_scores = weights_for_different_modes[2] * colbert_scores
+                weight_sum = sum(weights_for_different_modes)
 
             inx = torch.arange(0, len(sentences_batch))
             dense_scores, sparse_scores, colbert_scores = dense_scores[inx, inx].float(), sparse_scores[
@@ -255,10 +262,10 @@ class BGEM3FlagModel:
                 dense_scores.cpu().numpy().tolist()
             )
             all_scores['sparse+dense'].extend(
-                ((sparse_scores + dense_scores) / (1 + sparse_weight)).cpu().numpy().tolist()
+                ((sparse_scores + dense_scores) / (weight_sum-weights_for_different_modes[2])).cpu().numpy().tolist()
             )
             all_scores['colbert+sparse+dense'].extend(
-                ((colbert_scores + sparse_scores + dense_scores) / (2 + sparse_weight)).cpu().numpy().tolist()
+                ((colbert_scores + sparse_scores + dense_scores) / weight_sum).cpu().numpy().tolist()
             )
 
         if one_input_pair:

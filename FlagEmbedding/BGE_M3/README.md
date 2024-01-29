@@ -137,7 +137,9 @@ sentences_2 = ["BGE M3 is an embedding model supporting dense retrieval, lexical
                "BM25 is a bag-of-words retrieval function that ranks a set of documents based on the query terms appearing in each document"]
 
 sentence_pairs = [[i,j] for i in sentences_1 for j in sentences_2]
-print(model.compute_score(sentence_pairs))
+
+# weights_for_different_modes(w) is used to do weighted sum: w[0]*dense_score + w[1]*sparse_score + w[2]*colbert_score
+print(model.compute_score(sentence_pairs, weights_for_different_modes=[0.4, 0.2, 0.4]))
 # {
 #     'colbert': [0.7796499729156494, 0.4621465802192688, 0.4523794651031494, 0.7898575067520142],
 #     'sparse': [0.05865478515625, 0.0026397705078125, 0.0, 0.0540771484375],
