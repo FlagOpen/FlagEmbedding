@@ -32,7 +32,7 @@ tar -xzvf activation-beacon-eval.tar.gz
 ## Long-Context Generation
 ### Language Modeling Perplexity
 ```bash
-data_root="/data"
+data_root="/data/activation-beacon"
 
 # NOTE: in the first run, the tokenization could be super slow (often consumes half an hour). However the tokenized corpus will be saved and reused. Be patient.
 
@@ -75,7 +75,7 @@ The results can be found at `data/results/lm/pg19.log`.
 ### LongBench
 
 ```bash
-data_root="/data"
+data_root="/data/activation-beacon"
 
 ############## Llama-2 ##############
 torchrun --nproc_per_node 8 -m main.eval_longbench --data_root $data_root --max_length 3500 --use_flash_attention_2
@@ -102,7 +102,7 @@ The results can be found at `data/results/longbench/metrics.log`.
 ## Synthetic Tasks
 ### Topic Retrieval
 ```bash
-data_root="/data"
+data_root="/data/activation-beacon"
 
 ############## Llama-2 ##############
 torchrun --nproc_per_node 8 -m main.eval_longeval --data_root $data_root --use_flash_attention_2
