@@ -20,7 +20,7 @@ You should download the data for fine-tuning & evaluation then untar the file at
 wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/activation-beacon.tar.gz?download=true -O /data/activation-beacon.tar.gz
 
 cd /data
-tar -xzvf activation-beacon-eval.tar.gz
+tar -xzvf activation-beacon.tar.gz
 ```
 
 **IMPORTANT NOTE**
