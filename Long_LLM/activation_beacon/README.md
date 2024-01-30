@@ -41,6 +41,8 @@ tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, torch_dtype=torch.bfloat16)
 
 model = model.cuda().eval()
+# reset memory before generation
+model.memory.reset()
 
 with torch.no_grad():
   # short context
