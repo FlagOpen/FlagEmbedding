@@ -57,12 +57,13 @@ with torch.no_grad():
   with open("data/toy/narrativeqa.json", encoding="utf-8") as f:
     example = json.load(f)
   inputs = tokenizer(example["context"], return_tensors="pt").to("cuda")
-  outputs = model.generate(**inputs, do_sample=False, max_new_tokens=20)[:, inputs["input_ids"].shape[1]:]
+  outputs = model.generate(**inputs, do_sample=False, top_p=1, temperature=1, max_new_tokens=20)[:, inputs["input_ids"].shape[1]:]
   print("*"*20)
   print(f"Input Length: {inputs['input_ids'].shape[1]}")
   print(f"Answer:       {example['answer']}")
   print(f"Prediction:   {tokenizer.decode(outputs[0], skip_special_tokens=True)}")
 ```
+**NOTE**: It's okay to see warnings like `This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (4096). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.` Just ignore it.
 
 ## Training
 *coming soon*
