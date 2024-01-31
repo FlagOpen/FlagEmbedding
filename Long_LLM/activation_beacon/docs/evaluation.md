@@ -7,7 +7,7 @@ pytorch==2.1.2 transformers==4.36.1 accelerate==0.25.0 datasets==2.14.7 numpy==1
 ```
 You can install our environment with:
 ```bash
-conda create -f environment.yaml --name activation-beacon
+conda env create -f environment.yaml --name activation-beacon
 ```
 
 *All of our experiments are performed on one 8xA800 machine with CUDA 12.1.*
