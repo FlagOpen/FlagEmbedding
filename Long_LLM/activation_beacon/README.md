@@ -41,8 +41,6 @@ tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
 model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, torch_dtype=torch.bfloat16)
 
 model = model.cuda().eval()
-# reset memory before generation
-model.memory.reset()
 
 with torch.no_grad():
   # short context
@@ -51,6 +49,9 @@ with torch.no_grad():
   outputs = model.generate(**inputs, max_new_tokens=20)
   print(f"Input Length: {inputs['input_ids'].shape[1]}")
   print(f"Output:       {tokenizer.decode(outputs[0], skip_special_tokens=True)}")
+
+  # reset memory before new generation task
+  model.memory.reset()
 
   # long context
   with open("data/toy/narrativeqa.json", encoding="utf-8") as f:
