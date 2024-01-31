@@ -88,8 +88,8 @@ class BGEM3FlagModel:
     @torch.no_grad()
     def encode(self,
                sentences: Union[List[str], str],
-               batch_size: int = 256,
-               max_length: int = 512,
+               batch_size: int = 12,
+               max_length: int = 8192,
                return_dense: bool = True,
                return_sparse: bool = False,
                return_colbert_vecs: bool = False) -> Dict:

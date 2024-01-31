@@ -61,7 +61,10 @@ pip install -U FlagEmbedding
 ```python
 from FlagEmbedding import BGEM3FlagModel
 
-model = BGEM3FlagModel('BAAI/bge-m3',  use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+model = BGEM3FlagModel('BAAI/bge-m3',  
+                       batch_size=12, # 
+                       max_length=8192, # If you don't need such a long length, you can set a smaller value to speed up the encoding process.
+                       use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 sentences_1 = ["What is BGE M3?", "Defination of BM25"]
 sentences_2 = ["BGE M3 is an embedding model supporting dense retrieval, lexical matching and multi-vector interaction.", 
@@ -163,9 +166,10 @@ print(model.compute_score(sentence_pairs, weights_for_different_modes=[0.4, 0.2,
 ![avatar](./imgs/mkqa.jpg)
 
 - Long Document Retrieval
-
-![avatar](./imgs/long.jpg)
-
+  - MLDR:   
+  ![avatar](./imgs/long.jpg)
+  - NarritiveQA:  
+  ![avatar](./imgs/nqa.jpg)
 
 ## Training
 - Self-knowledge Distillation: combining multiple outputs from different 
