@@ -99,7 +99,6 @@ torchrun --nproc_per_node 8 -m main.eval_longbench --data_root $data_root --max_
 The results can be found at `data/results/longbench/metrics.log`.
 
 
-## Synthetic Tasks
 ### Topic Retrieval
 ```bash
 data_root="/data/activation-beacon"
