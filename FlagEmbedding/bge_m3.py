@@ -191,7 +191,7 @@ class BGEM3FlagModel:
             return self.tokenizer(
                 texts,
                 max_length=max_length,
-                padding='max_length',
+                padding=True,
                 return_token_type_ids=False,
                 truncation=True,
                 return_tensors='pt'
