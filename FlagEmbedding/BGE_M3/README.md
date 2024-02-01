@@ -13,6 +13,8 @@ This allows you to obtain token weights (similar to the BM25) without any additi
 - As cross-encoder models, re-ranker demonstrates higher accuracy than bi-encoder embedding model. 
 Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
+## News:
+- 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
 
 ## FAQ
 
@@ -24,7 +26,7 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 
 **2. Comparison with BGE-v1.5 and other monolingual models**
 
-BGE-M3 is a multilingual model, and its ability in monolingual embedding retrieval may not necessarily surpass models specifically designed for single languages. 
+BGE-M3 is a multilingual model, and its ability in monolingual embedding retrieval may not surpass models specifically designed for single languages. 
 However, we still recommend trying BGE-M3 because of its versatility (support for multiple languages and long texts). 
 Moreover, it can simultaneously generate multiple representations, and using them together can enhance accuracy and generalization, 
 unlike most existing models that can only perform dense retrieval. 
@@ -40,6 +42,8 @@ The only difference is that the BGE-M3 model no longer requires adding instructi
 For sparse retrieval methods, most open-source libraries currently do not support direct utilization of the BGE-M3 model. 
 Contributions from the community are welcome. 
 
+**Now you can ou can try the BGE-M3 in [Vespa]((https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+)). Thanks @jobergum.**
 
 **4. How to fine-tune bge-M3 model?**
 
