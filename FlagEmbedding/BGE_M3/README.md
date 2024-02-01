@@ -142,20 +142,18 @@ sentences_2 = ["BGE M3 is an embedding model supporting dense retrieval, lexical
 
 sentence_pairs = [[i,j] for i in sentences_1 for j in sentences_2]
 
-# weights_for_different_modes(w) is used to do weighted sum: w[0]*dense_score + w[1]*sparse_score + w[2]*colbert_score
-print(model.compute_score(sentence_pairs, weights_for_different_modes=[0.4, 0.2, 0.4]))
+print(model.compute_score(sentence_pairs, 
+                          max_passage_length=128, # a smaller max length leads to a lower latency
+                          weights_for_different_modes=[0.4, 0.2, 0.4])) # weights_for_different_modes(w) is used to do weighted sum: w[0]*dense_score + w[1]*sparse_score + w[2]*colbert_score
+
 # {
-#     'colbert': [0.7796499729156494, 0.4621465802192688, 0.4523794651031494, 0.7898575067520142],
-#     'sparse': [0.05865478515625, 0.0026397705078125, 0.0, 0.0540771484375],
-#     'dense': [0.6259765625, 0.347412109375, 0.349853515625, 0.67822265625],
-#     'sparse+dense': [0.5266395211219788, 0.2692706882953644, 0.2691181004047394, 0.563307523727417],
-#     'colbert+sparse+dense': [0.6366440653800964, 0.3531297743320465, 0.3487969636917114, 0.6618075370788574]
+#   'colbert': [0.7796499729156494, 0.4621465802192688, 0.4523794651031494, 0.7898575067520142], 
+#  'sparse': [0.195556640625, 0.00879669189453125, 0.0, 0.1802978515625], 
+#   'dense': [0.6259765625, 0.347412109375, 0.349853515625, 0.67822265625], 
+#   'sparse+dense': [0.482503205537796, 0.23454029858112335, 0.2332356721162796, 0.5122477412223816], 
+#   'colbert+sparse+dense': [0.6013619303703308, 0.3255828022956848, 0.32089319825172424, 0.6232916116714478]
 # }
-
-
-{'colbert': [0.31185999512672424, 0.18485863506793976, 0.180951789021492, 0.31594300270080566], 'sparse': [0.03912353515625, 0.0017595291137695312, 0.0, 0.03607177734375], 'dense': [0.25048828125, 0.138916015625, 0.139892578125, 0.271240234375], 'sparse+dense': [0.4826863408088684, 0.23445923626422882, 0.233154296875, 0.5121866464614868], 'colbert+sparse+dense': [0.6014717817306519, 0.3255341649055481, 0.3208443522453308, 0.6232550144195557]}
 ```
-
 
 
 
