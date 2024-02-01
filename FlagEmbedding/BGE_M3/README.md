@@ -16,6 +16,7 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 ## News:
 - 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
 
+
 ## FAQ
 
 **1. Introduction for different retrieval methods**
@@ -183,8 +184,15 @@ print(model.compute_score(sentence_pairs,
 ![avatar](./imgs/mkqa.jpg)
 
 - Long Document Retrieval
-  - MLDR:   
+  - MLDR:
   ![avatar](./imgs/long.jpg)
+  Please note that MLDR is a document retrieval dataset we constructed via LLM, 
+  covering 13 languages, including test sets, validation sets, and training sets. 
+  We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
+  Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
+  Additionally, this long document retrieval dataset will be open-sourced to address the current lack of open-source multilingual long text retrieval datasets.
+  We believe that this data will be helpful for the open-source community in training document retrieval models.
+
   - NarritiveQA:  
   ![avatar](./imgs/nqa.jpg)
 
