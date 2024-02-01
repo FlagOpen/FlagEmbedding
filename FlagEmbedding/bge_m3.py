@@ -240,12 +240,12 @@ class BGEM3FlagModel:
             colbert_scores = self.model.colbert_score(q_colbert_vecs, p_colbert_vecs,
                                                       q_mask=queries_inputs['attention_mask'])
 
-            weight_sum = 1.0
-            if weights_for_different_modes is not None:
+            if weights_for_different_modes is None:
+                weights_for_different_modes = [1, 1., 1.]
+                weight_sum = 3
+                print("default weights for dense, sparse, colbert are [1.0, 1.0, 1.0] ")
+            else:
                 assert len(weights_for_different_modes) == 3
-                dense_scores = weights_for_different_modes[0] * dense_scores
-                sparse_scores = weights_for_different_modes[1] * sparse_scores
-                colbert_scores = weights_for_different_modes[2] * colbert_scores
                 weight_sum = sum(weights_for_different_modes)
 
             inx = torch.arange(0, len(sentences_batch))
@@ -262,10 +262,10 @@ class BGEM3FlagModel:
                 dense_scores.cpu().numpy().tolist()
             )
             all_scores['sparse+dense'].extend(
-                ((sparse_scores + dense_scores) / (weight_sum-weights_for_different_modes[2])).cpu().numpy().tolist()
+                ((sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/(weights_for_different_modes[1]+weights_for_different_modes[0])).cpu().numpy().tolist()
             )
             all_scores['colbert+sparse+dense'].extend(
-                ((colbert_scores + sparse_scores + dense_scores) / weight_sum).cpu().numpy().tolist()
+                ((colbert_scores * weights_for_different_modes[2] + sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/weight_sum).cpu().numpy().tolist()
             )
 
         if one_input_pair:

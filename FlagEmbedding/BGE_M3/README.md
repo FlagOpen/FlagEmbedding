@@ -62,15 +62,16 @@ pip install -U FlagEmbedding
 from FlagEmbedding import BGEM3FlagModel
 
 model = BGEM3FlagModel('BAAI/bge-m3',  
-                       batch_size=12, # 
-                       max_length=8192, # If you don't need such a long length, you can set a smaller value to speed up the encoding process.
                        use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 sentences_1 = ["What is BGE M3?", "Defination of BM25"]
 sentences_2 = ["BGE M3 is an embedding model supporting dense retrieval, lexical matching and multi-vector interaction.", 
                "BM25 is a bag-of-words retrieval function that ranks a set of documents based on the query terms appearing in each document"]
 
-embeddings_1 = model.encode(sentences_1)['dense_vecs']
+embeddings_1 = model.encode(sentences_1, 
+                            batch_size=12, 
+                            max_length=8192, # If you don't need such a long length, you can set a smaller value to speed up the encoding process.
+                            )['dense_vecs']
 embeddings_2 = model.encode(sentences_2)['dense_vecs']
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
@@ -150,6 +151,9 @@ print(model.compute_score(sentence_pairs, weights_for_different_modes=[0.4, 0.2,
 #     'sparse+dense': [0.5266395211219788, 0.2692706882953644, 0.2691181004047394, 0.563307523727417],
 #     'colbert+sparse+dense': [0.6366440653800964, 0.3531297743320465, 0.3487969636917114, 0.6618075370788574]
 # }
+
+
+{'colbert': [0.31185999512672424, 0.18485863506793976, 0.180951789021492, 0.31594300270080566], 'sparse': [0.03912353515625, 0.0017595291137695312, 0.0, 0.03607177734375], 'dense': [0.25048828125, 0.138916015625, 0.139892578125, 0.271240234375], 'sparse+dense': [0.4826863408088684, 0.23445923626422882, 0.233154296875, 0.5121866464614868], 'colbert+sparse+dense': [0.6014717817306519, 0.3255341649055481, 0.3208443522453308, 0.6232550144195557]}
 ```
 
 
