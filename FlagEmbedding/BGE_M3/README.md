@@ -22,7 +22,18 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 - Sparse retrieval (lexical matching): a vector of size equal to the vocabulary, with the majority of positions set to zero, calculating a weight only for tokens present in the text. e.g., BM25, [unicoil](https://arxiv.org/pdf/2106.14807.pdf), and [splade](https://arxiv.org/abs/2107.05720)
 - Multi-vector retrieval: use multiple vectors to represent a text, e.g., [ColBERT](https://arxiv.org/abs/2004.12832).
 
-**2. How to use BGE-M3 in other projects?**
+**2. Comparison with BGE-v1.5 and other monolingual models**
+
+BGE-M3 is a multilingual model, and its ability in monolingual embedding retrieval may not necessarily surpass models specifically designed for single languages. 
+However, we still recommend trying BGE-M3 because of its versatility (support for multiple languages and long texts). 
+Moreover, it can simultaneously generate multiple representations, and using them together can enhance accuracy and generalization, 
+unlike most existing models that can only perform dense retrieval. 
+
+In the open-source community, there are many excellent models (e.g., jina-embedding, colbert, e5, etc), 
+and users can choose a model that suits their specific needs based on practical considerations, 
+such as whether to require multilingual or cross-language support, and whether to process long texts.
+
+**3. How to use BGE-M3 in other projects?**
 
 For embedding retrieval, you can employ the BGE-M3 model using the same approach as BGE. 
 The only difference is that the BGE-M3 model no longer requires adding instructions to the queries. 
@@ -30,7 +41,7 @@ For sparse retrieval methods, most open-source libraries currently do not suppor
 Contributions from the community are welcome. 
 
 
-**3. How to fine-tune bge-M3 model?**
+**4. How to fine-tune bge-M3 model?**
 
 You can follow the common in this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 
 to fine-tune the dense embedding.
@@ -148,7 +159,7 @@ print(model.compute_score(sentence_pairs,
 
 # {
 #   'colbert': [0.7796499729156494, 0.4621465802192688, 0.4523794651031494, 0.7898575067520142], 
-#  'sparse': [0.195556640625, 0.00879669189453125, 0.0, 0.1802978515625], 
+#   'sparse': [0.195556640625, 0.00879669189453125, 0.0, 0.1802978515625], 
 #   'dense': [0.6259765625, 0.347412109375, 0.349853515625, 0.67822265625], 
 #   'sparse+dense': [0.482503205537796, 0.23454029858112335, 0.2332356721162796, 0.5122477412223816], 
 #   'colbert+sparse+dense': [0.6013619303703308, 0.3255828022956848, 0.32089319825172424, 0.6232916116714478]
