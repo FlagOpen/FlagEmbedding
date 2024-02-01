@@ -38,12 +38,19 @@ class BGEM3FlagModel:
             normlized=normalize_embeddings,
             sentence_pooling_method=pooling_method,
         )
-        if use_fp16: self.model.half()
+
         self.tokenizer = self.model.tokenizer
         if device:
             self.device = torch.device(device)
         else:
-            self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+            if torch.cuda.is_available():
+                self.device = torch.device("cuda")
+            elif torch.backends.mps.is_available():
+                self.device = torch.device("mps")
+            else:
+                self.device = torch.device("cpu")
+                use_fp16 = False
+        if use_fp16: self.model.half()
         self.model = self.model.to(self.device)
 
         if device is None:
