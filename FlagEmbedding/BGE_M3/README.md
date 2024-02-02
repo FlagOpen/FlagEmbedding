@@ -43,8 +43,8 @@ The only difference is that the BGE-M3 model no longer requires adding instructi
 For sparse retrieval methods, most open-source libraries currently do not support direct utilization of the BGE-M3 model. 
 Contributions from the community are welcome. 
 
-**Now you can ou can try the BGE-M3 in [Vespa]((https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
-)). Thanks @jobergum.**
+**Now you can ou can try the BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+). Thanks @jobergum.**
 
 **4. How to fine-tune bge-M3 model?**
 
