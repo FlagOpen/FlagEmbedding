@@ -187,7 +187,7 @@ print(model.compute_score(sentence_pairs,
   - MLDR:
   ![avatar](./imgs/long.jpg)
   Please note that MLDR is a document retrieval dataset we constructed via LLM, 
-  covering 13 languages, including test sets, validation sets, and training sets. 
+  covering 13 languages, including test set, validation set, and training set. 
   We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
   Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
   Additionally, this long document retrieval dataset will be open-sourced to address the current lack of open-source multilingual long text retrieval datasets.
