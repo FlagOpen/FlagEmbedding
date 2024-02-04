@@ -17,6 +17,8 @@ For development, install as editable:
 ```
 pip install -e .
 ```
+
+The new version of Transformers may pose issues for fine-tuning. If you encounter problems, you can try to downgrade to versions 4.33-4.36.
  
 
 ## 2. Data format

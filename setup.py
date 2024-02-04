@@ -5,7 +5,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme_file:
 
 setup(
     name='FlagEmbedding',
-    version='1.2.2',
+    version='1.2.3',
     description='FlagEmbedding',
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -14,7 +14,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'torch>=1.6.0',
-        'transformers==4.33.0',
+        'transformers>=4.33.0',
         'datasets',
         'accelerate>=0.20.1',
         'sentence_transformers',

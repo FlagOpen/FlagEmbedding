@@ -43,8 +43,8 @@ The only difference is that the BGE-M3 model no longer requires adding instructi
 For sparse retrieval methods, most open-source libraries currently do not support direct utilization of the BGE-M3 model. 
 Contributions from the community are welcome. 
 
-**Now you can ou can try the BGE-M3 in [Vespa]((https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
-)). Thanks @jobergum.**
+**Now you can ou can try the BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+). Thanks @jobergum.**
 
 **4. How to fine-tune bge-M3 model?**
 
@@ -187,7 +187,7 @@ print(model.compute_score(sentence_pairs,
   - MLDR:
   ![avatar](./imgs/long.jpg)
   Please note that MLDR is a document retrieval dataset we constructed via LLM, 
-  covering 13 languages, including test sets, validation sets, and training sets. 
+  covering 13 languages, including test set, validation set, and training set. 
   We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
   Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
   Additionally, this long document retrieval dataset will be open-sourced to address the current lack of open-source multilingual long text retrieval datasets.
