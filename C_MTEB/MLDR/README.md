@@ -64,7 +64,7 @@ conda install -c conda-forge faiss-cpu
 conda install -c conda-forge faiss-gpu
 ```
 
-2. Download qrels from [Shitao/MLDR](https://huggingface.co/datasets/Shitao/MLDR/tree/main/qrels):
+2. Download qrels from [Shitao/MLDR-qrels](https://huggingface.co/datasets/Shitao/MLDR-qrels):
 
 ```bash
 mkdir -p qrels
@@ -72,7 +72,7 @@ cd qrels
 
 splits=(dev test)
 langs=(ar de en es fr hi it ja ko pt ru th zh)
-for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR/resolve/main/qrels/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
+for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR-qrels/resolve/main/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
 ```
 
 3. Dense retrieval:
@@ -208,7 +208,7 @@ conda install -c conda-forge faiss-cpu
 conda install -c conda-forge faiss-gpu
 ```
 
-2. Download qrels from [Shitao/MLDR](https://huggingface.co/datasets/Shitao/MLDR/tree/main/qrels):
+2. Download qrels from [Shitao/MLDR-qrels](https://huggingface.co/datasets/Shitao/MLDR-qrels):
 
 ```bash
 mkdir -p qrels
@@ -216,7 +216,7 @@ cd qrels
 
 splits=(dev test)
 langs=(ar de en es fr hi it ja ko pt ru th zh)
-for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR/resolve/main/qrels/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
+for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR-qrels/resolve/main/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
 ```
 
 3. Dense retrieval:
