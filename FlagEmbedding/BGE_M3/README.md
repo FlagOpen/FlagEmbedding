@@ -216,7 +216,10 @@ We release two versions:
 
 ## Acknowledgement
 
-Thanks the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc.  
+Thanks the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc. 
+Thanks the open-sourced libraries like [Tevatron](https://github.com/texttron/tevatron), [pyserial](https://github.com/pyserial/pyserial).
+
+
 
 ## Citation
 
