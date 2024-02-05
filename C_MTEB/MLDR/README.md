@@ -311,8 +311,8 @@ python hybrid_all_results.py \
 --reranker BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --dense_search_result_save_dir ./rerank_results/dense \
---sparse_search_result_save_dir ../rerank_results/sparse \
---colbert_search_result_save_dir ../rerank_results/colbert \
+--sparse_search_result_save_dir ./rerank_results/sparse \
+--colbert_search_result_save_dir ./rerank_results/colbert \
 --hybrid_result_save_dir ./hybrid_search_results \
 --top_k 200 \
 --dense_weight 0.2 --sparse_weight 0.4 --colbert_weight 0.4

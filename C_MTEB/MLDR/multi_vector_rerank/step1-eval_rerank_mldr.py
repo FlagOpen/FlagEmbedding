@@ -1,5 +1,5 @@
 """
-1. Rerank Search Results
+# 1. Rerank Search Results
 python step0-rerank_results.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
@@ -15,7 +15,7 @@ python step0-rerank_results.py \
 --dense_weight 0.15 --sparse_weight 0.5 --colbert_weight 0.35 \
 --num_shards 1 --shard_id 0 --cuda_id 0
 
-2. Print and Save Evaluation Results
+# 2. Print and Save Evaluation Results
 python step1-eval_rerank_mldr.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
