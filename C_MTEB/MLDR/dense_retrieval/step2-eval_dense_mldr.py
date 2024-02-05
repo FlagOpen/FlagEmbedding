@@ -1,10 +1,9 @@
 """
 # 1. Generate Corpus Embedding
-python3 step0-generate_embedding.py \
+python step0-generate_embedding.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --index_save_dir ./corpus-index \
---cache_dir /home/datasets/.cache \
 --max_passage_length 8192 \
 --batch_size 4 \
 --fp16 \
@@ -13,10 +12,9 @@ python3 step0-generate_embedding.py \
 --add_instruction False
 
 # 2. Search Results
-python3 step1-search_results.py \
+python step1-search_results.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
---cache_dir /home/baaiks/jianlv/datasets/.cache \
 --index_save_dir ./corpus-index \
 --result_save_dir ./search_results \
 --threads 16 \
@@ -26,7 +24,7 @@ python3 step1-search_results.py \
 --add_instruction False
 
 # 3. Print and Save Evaluation Results
-python3 step2-eval_dense_mldr.py \
+python step2-eval_dense_mldr.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --search_result_save_dir ./search_results \
@@ -130,9 +128,9 @@ def save_results(model_name: str, pooling_method: str, normalize_embeddings: boo
 def map_metric(metric: str):
     metric, k = metric.split('@')
     if metric.lower() == 'ndcg':
-        return f'ndcg_cut.{k}'
+        return k, f'ndcg_cut.{k}'
     elif metric.lower() == 'recall':
-        return f'recall.{k}'
+        return k, f'recall.{k}'
     else:
         raise ValueError(f"Unkown metric: {metric}")
 
@@ -142,7 +140,8 @@ def evaluate(script_path, qrels_path, search_result_path, metrics: list):
     
     results = {}
     for metric in metrics:
-        args = ['-c', '-M', '100', '-m', map_metric(metric), qrels_path, search_result_path]
+        k, metric = map_metric(metric)
+        args = ['-c', '-M', str(k), '-m', metric, qrels_path, search_result_path]
         cmd = cmd_prefix + args
         
         # print(f'Running command: {cmd}')

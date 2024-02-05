@@ -1,9 +1,8 @@
 """
-python3 step0-encode_query-and-corpus.py \
+python step0-encode_query-and-corpus.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --save_dir ./encoded_query-and-corpus \
---cache_dir /home/baaiks/jianlv/datasets/.cache \
 --max_query_length 512 \
 --max_passage_length 8192 \
 --batch_size 1024 \
@@ -17,7 +16,6 @@ import json
 import datasets
 import numpy as np
 from tqdm import tqdm
-from typing import Optional
 from FlagEmbedding import BGEM3FlagModel
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
@@ -53,10 +51,6 @@ class EvalArgs:
     save_dir: str = field(
         default='./encoded_query-and-corpus',
         metadata={'help': 'Dir to save encoded query and corpus. Encoded query and corpus will be saved to `save_dir/{encoder_name}/{lang}/query_embd.tsv` and `save_dir/{encoder_name}/{lang}/corpus/corpus_embd.jsonl`, individually.'}
-    )
-    cache_dir: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Path to cache_dir.'}
     )
     max_query_length: int = field(
         default=512,
@@ -100,16 +94,16 @@ def check_languages(languages):
     return languages
 
 
-def load_corpus(lang: str, cache_dir: str=None):
-    corpus = datasets.load_dataset('BAAI/mldr', f'corpus-{lang}', cache_dir=cache_dir)['corpus']
+def load_corpus(lang: str):
+    corpus = datasets.load_dataset('Shitao/MLDR', f'corpus-{lang}', split='corpus')
     
     corpus_list = [{'id': e['docid'], 'content': e['text']} for e in tqdm(corpus, desc="Generating corpus")]
     corpus = datasets.Dataset.from_list(corpus_list)
     return corpus
 
 
-def get_queries(lang: str, split: str='test', cache_dir: str=None):
-    dataset = datasets.load_dataset('BAAI/mldr', lang, cache_dir=cache_dir)[split]
+def get_queries(lang: str, split: str='test'):
+    dataset = datasets.load_dataset('BAAI/mldr', lang, split=split)
     
     queries_list = []
     for data in dataset:
@@ -221,7 +215,7 @@ def main():
             continue
         
         print(f"Start generating query and corpus embedding of {lang} ...")
-        queries = get_queries(lang, split='test', cache_dir=eval_args.cache_dir)
+        queries = get_queries(lang, split='test')
         encoded_queries_list = encode_queries(
             model=model,
             queries=queries,
@@ -229,7 +223,7 @@ def main():
             batch_size=eval_args.batch_size
         )
         
-        corpus = load_corpus(lang, cache_dir=eval_args.cache_dir)
+        corpus = load_corpus(lang)
         encoded_corpus_list = encode_corpus(
             model=model,
             corpus=corpus,

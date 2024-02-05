@@ -1,8 +1,7 @@
 """
-python3 step1-search_results.py \
+python step1-search_results.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
---cache_dir /home/baaiks/jianlv/datasets/.cache \
 --index_save_dir ./corpus-index \
 --result_save_dir ./search_results \
 --threads 16 \
@@ -15,7 +14,6 @@ import os
 import torch
 import datasets
 from pprint import pprint
-from typing import Optional
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 from pyserini.search.faiss import FaissSearcher, AutoQueryEncoder
@@ -52,10 +50,6 @@ class EvalArgs:
         default="en",
         metadata={'help': 'Languages to evaluate. Avaliable languages: ar de en es fr hi it ja ko pt ru th zh', 
                   "nargs": "+"}
-    )
-    cache_dir: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Path to cache_dir.'}
     )
     index_save_dir: str = field(
         default='./corpus-index',
@@ -99,8 +93,8 @@ def check_languages(languages):
     return languages
 
 
-def get_queries_and_qids(lang: str, split: str='test', add_instruction: bool=False, query_instruction_for_retrieval: str=None, cache_dir: str=None):
-    dataset = datasets.load_dataset('BAAI/mldr', lang, cache_dir=cache_dir)[split]
+def get_queries_and_qids(lang: str, split: str='test', add_instruction: bool=False, query_instruction_for_retrieval: str=None):
+    dataset = datasets.load_dataset('Shitao/MLDR', lang, split=split)
     
     queries = []
     qids = []
@@ -173,8 +167,7 @@ def main():
             lang=lang, 
             split='test', 
             add_instruction=model_args.add_instruction, 
-            query_instruction_for_retrieval=model_args.query_instruction_for_retrieval, 
-            cache_dir=eval_args.cache_dir
+            query_instruction_for_retrieval=model_args.query_instruction_for_retrieval
         )
         
         search_results = searcher.batch_search(

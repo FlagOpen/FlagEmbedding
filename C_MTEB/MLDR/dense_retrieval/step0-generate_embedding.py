@@ -1,9 +1,8 @@
 """
-python3 step0-generate_embedding.py \
+python step0-generate_embedding.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --index_save_dir ./corpus-index \
---cache_dir /home/datasets/.cache \
 --max_passage_length 8192 \
 --batch_size 4 \
 --fp16 \
@@ -16,7 +15,6 @@ import faiss
 import datasets
 import numpy as np
 from tqdm import tqdm
-from typing import Optional
 from FlagEmbedding import FlagModel
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
@@ -29,7 +27,7 @@ class ModelArgs:
         metadata={'help': 'Name or path of encoder'}
     )
     fp16: bool = field(
-        default=False,
+        default=True,
         metadata={'help': 'Use fp16 in inference?'}
     )
     add_instruction: bool = field(
@@ -60,10 +58,6 @@ class EvalArgs:
     index_save_dir: str = field(
         default='./corpus-index',
         metadata={'help': 'Dir to save index. Corpus index will be saved to `index_save_dir/{encoder_name}/{lang}/index`. Corpus ids will be saved to `index_save_dir/{encoder_name}/{lang}/docid` .'}
-    )
-    cache_dir: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Path to cache_dir.'}
     )
     max_passage_length: int = field(
         default=512,
@@ -101,8 +95,8 @@ def check_languages(languages):
     return languages
 
 
-def load_corpus(lang: str, cache_dir: str=None):    
-    corpus = datasets.load_dataset('BAAI/mldr', f'corpus-{lang}', cache_dir=cache_dir)['corpus']
+def load_corpus(lang: str):    
+    corpus = datasets.load_dataset('Shitao/MLDR', f'corpus-{lang}', split='corpus')
     
     corpus_list = [{'id': e['docid'], 'content': e['text']} for e in tqdm(corpus, desc="Generating corpus")]
     corpus = datasets.Dataset.from_list(corpus_list)
@@ -161,7 +155,7 @@ def main():
             continue
         
         print(f"Start generating embedding of {lang} ...")
-        corpus = load_corpus(lang, cache_dir=eval_args.cache_dir)
+        corpus = load_corpus(lang)
         
         index, docid = generate_index(
             model=model, 

@@ -1,11 +1,10 @@
 """
 Ref: https://github.com/texttron/tevatron/tree/main/examples/unicoil
 # 1. Generate Query and Corpus Sparse Vector
-python3 step0-encode_query-and-corpus.py \
+python step0-encode_query-and-corpus.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --save_dir ./encoded_query-and-corpus \
---cache_dir /home/baaiks/jianlv/datasets/.cache \
 --max_query_length 512 \
 --max_passage_length 8192 \
 --batch_size 1024 \
@@ -14,7 +13,7 @@ python3 step0-encode_query-and-corpus.py \
 --normalize_embeddings True
 
 # 2. Output Search Results
-python3 step1-search_results.py \
+python step1-search_results.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --encoded_query_and_corpus_save_dir ./encoded_query-and-corpus \
@@ -23,7 +22,7 @@ python3 step1-search_results.py \
 --hits 1000
 
 # 3. Print and Save Evaluation Results
-python3 step2-eval_sparse_mldr.py \
+python step2-eval_sparse_mldr.py \
 --encoder BAAI/bge-m3 \
 --languages ar de es fr hi it ja ko pt ru th en zh \
 --search_result_save_dir ./search_results \
@@ -127,9 +126,9 @@ def save_results(model_name: str, pooling_method: str, normalize_embeddings: boo
 def map_metric(metric: str):
     metric, k = metric.split('@')
     if metric.lower() == 'ndcg':
-        return f'ndcg_cut.{k}'
+        return k, f'ndcg_cut.{k}'
     elif metric.lower() == 'recall':
-        return f'recall.{k}'
+        return k, f'recall.{k}'
     else:
         raise ValueError(f"Unkown metric: {metric}")
 
@@ -139,7 +138,8 @@ def evaluate(script_path, qrels_path, search_result_path, metrics: list):
     
     results = {}
     for metric in metrics:
-        args = ['-c', '-M', '100', '-m', map_metric(metric), qrels_path, search_result_path]
+        k, metric = map_metric(metric)
+        args = ['-c', '-M', str(k), '-m', metric, qrels_path, search_result_path]
         cmd = cmd_prefix + args
         
         # print(f'Running command: {cmd}')

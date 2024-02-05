@@ -4,7 +4,7 @@
 ../sparse_retrieval
 
 # 2. Hybrid Dense and Sparse Search Results
-python3 step0-hybrid_search_results.py \
+python step0-hybrid_search_results.py \
 --model_name_or_path BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --dense_search_result_save_dir ../dense_retrieval/search_results \
@@ -14,7 +14,7 @@ python3 step0-hybrid_search_results.py \
 --dense_weight 0.2 --sparse_weight 0.8
 
 # 3. Print and Save Evaluation Results
-python3 step1-eval_hybrid_mldr.py \
+python step1-eval_hybrid_mldr.py \
 --model_name_or_path BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --search_result_save_dir ./search_results \
@@ -118,9 +118,9 @@ def save_results(model_name: str, pooling_method: str, normalize_embeddings: boo
 def map_metric(metric: str):
     metric, k = metric.split('@')
     if metric.lower() == 'ndcg':
-        return f'ndcg_cut.{k}'
+        return k, f'ndcg_cut.{k}'
     elif metric.lower() == 'recall':
-        return f'recall.{k}'
+        return k, f'recall.{k}'
     else:
         raise ValueError(f"Unkown metric: {metric}")
 
@@ -130,7 +130,8 @@ def evaluate(script_path, qrels_path, search_result_path, metrics: list):
     
     results = {}
     for metric in metrics:
-        args = ['-c', '-M', '100', '-m', map_metric(metric), qrels_path, search_result_path]
+        k, metric = map_metric(metric)
+        args = ['-c', '-M', str(k), '-m', metric, qrels_path, search_result_path]
         cmd = cmd_prefix + args
         
         # print(f'Running command: {cmd}')

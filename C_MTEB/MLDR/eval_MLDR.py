@@ -1,8 +1,8 @@
 """
 python3 eval_MLDR.py \
+--encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --results_save_path ./results \
---cache_dir /home/datasets/.cache \
 --max_query_length 512 \
 --max_passage_length 8192 \
 --batch_size 256 \
@@ -10,18 +10,15 @@ python3 eval_MLDR.py \
 --pooling_method cls \
 --normalize_embeddings True \
 --add_instruction False \
---encoder BAAI/bge-m3 \
 --overwrite False
 """
 import os
 from mteb import MTEB
 from pprint import pprint
-from typing import Optional
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+from mteb.tasks import MultiLongDocRetrieval
 from flag_dres_model_new import FlagDRESModel
-# from mteb.tasks import MultiLongDocRetrieval
-from MultiLongDocRetrieval import MultiLongDocRetrieval
 
 
 @dataclass
@@ -29,10 +26,6 @@ class EvalArgs:
     results_save_path: str = field(
         default='./results',
         metadata={'help': 'Path to save results.'}
-    )
-    cache_dir: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Path to cache_dir.'}
     )
     languages: str = field(
         default=None,
@@ -136,7 +129,7 @@ def main():
     evaluation = MTEB(tasks=[
         MultiLongDocRetrieval(langs=languages)
     ])
-    results_dict = evaluation.run(model, eval_splits=["test"], output_folder=output_folder, overwrite_results=eval_args.overwrite, cache_dir=eval_args.cache_dir, corpus_chunk_size=200000)
+    results_dict = evaluation.run(model, eval_splits=["test"], output_folder=output_folder, overwrite_results=eval_args.overwrite, corpus_chunk_size=200000)
     
     print(output_folder + ":")
     pprint(results_dict)

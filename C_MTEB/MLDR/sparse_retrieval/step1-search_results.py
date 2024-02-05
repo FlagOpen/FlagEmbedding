@@ -1,5 +1,5 @@
 """
-python3 step1-search_results.py \
+python step1-search_results.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --encoded_query_and_corpus_save_dir ./encoded_query-and-corpus \
@@ -16,7 +16,7 @@ from transformers import HfArgumentParser
 class ModelArgs:
     encoder: str = field(
         default="BAAI/bge-m3",
-        metadata={'help': 'Name ot path of encoder'}
+        metadata={'help': 'Name or path of encoder'}
     )
 
 
@@ -64,7 +64,7 @@ def check_languages(languages):
 
 
 def generate_index(lang: str, corpus_embd_dir: str, index_save_dir: str, threads: int=12):    
-    cmd = f"python3 -m pyserini.index.lucene \
+    cmd = f"python -m pyserini.index.lucene \
             --language {lang} \
             --collection JsonVectorCollection \
             --input {corpus_embd_dir} \
@@ -77,7 +77,7 @@ def generate_index(lang: str, corpus_embd_dir: str, index_save_dir: str, threads
 
 
 def search_and_save_results(index_save_dir: str, query_embd_path: str, result_save_path: str, batch_size: int = 32, threads: int = 12, hits: int = 1000):
-    cmd = f"python3 -m pyserini.search.lucene \
+    cmd = f"python -m pyserini.search.lucene \
             --index {index_save_dir} \
             --topics {query_embd_path} \
             --output {result_save_path} \
