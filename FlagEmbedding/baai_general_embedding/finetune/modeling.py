@@ -97,7 +97,8 @@ class BiEncoderModel(nn.Module):
                 target = target * group_size
                 loss = self.compute_loss(scores, target)
             else:
-                scores = self.compute_similarity(q_reps, p_reps.view(q_reps.size(0), group_size, -1)) / self.temperature # B G
+                scores = self.compute_similarity(q_reps[:, None, :,], p_reps.view(q_reps.size(0), group_size, -1)).squeeze(1) / self.temperature # B G
+
                 scores = scores.view(q_reps.size(0), -1)
                 target = torch.zeros(scores.size(0), device=scores.device, dtype=torch.long)
                 loss = self.compute_loss(scores, target)
