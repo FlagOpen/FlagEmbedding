@@ -122,6 +122,7 @@ python step2-eval_dense_mldr.py \
 
 ```bash
 cd sparse_retrieval
+
 # 1. Generate Query and Corpus Sparse Vector
 python step0-encode_query-and-corpus.py \
 --encoder BAAI/bge-m3 \
@@ -300,7 +301,7 @@ python step1-eval_rerank_mldr.py \
 >
 >- Based on our experience, dividing the sentence pairs to be reranked into several shards and computing scores for each shard on a single GPU tends to be more efficient than using multiple GPUs to compute scores for all sentence pairs directly.Therefore, if your machine have multiple GPUs, you can set `num_shards` to the number of GPUs and launch multiple terminals to execute the command (`shard_id` should be equal to `cuda_id`). Therefore, if you have multiple GPUs on your machine, you can launch multiple terminals and run multiple commands simultaneously. Make sure to set the `shard_id` and `cuda_id` appropriately, and ensure that you have computed scores for all shards before proceeding to the second step.
 
-5. (*Optional*) In the 4th step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}`, `rerank_result_save_dir/sparse/{encoder}` and `rerank_result_save_dir/colbert/{encoder}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./hybrid_all_results.py) to hybrid the three kinds of scores directly.
+5. (*Optional*) In the 4th step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}-{reranker}`, `rerank_result_save_dir/sparse/{encoder}-{reranker}` and `rerank_result_save_dir/colbert/{encoder}-{reranker}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./hybrid_all_results.py) to hybrid the three kinds of scores directly.
 
 ```bash
 cd multi_vector_rerank
