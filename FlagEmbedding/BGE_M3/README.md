@@ -14,7 +14,7 @@ This allows you to obtain token weights (similar to the BM25) without any additi
 Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
 ## News:
-- 2/6/2024: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR), a long document retrieval dataset covering 13 languages. 
+- 2/6/2024: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
 - 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
 
 
@@ -64,7 +64,9 @@ The only difference is that the BGE-M3 model no longer requires adding instructi
 For sparse retrieval methods, most open-source libraries currently do not support direct utilization of the BGE-M3 model. 
 Contributions from the community are welcome. 
 
-**Now you can ou can try the BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+
+In our experiments, we use [Pyserini](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR#hybrid-retrieval-dense--sparse) and Faiss to do hybrid retrieval.
+**Now you can ou can try the hybrid mode of BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
 ). Thanks @jobergum.**
 
 

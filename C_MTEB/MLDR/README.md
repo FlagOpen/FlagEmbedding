@@ -4,7 +4,9 @@ MultiLongDocRetrieval (denoted as MLDR) is a multilingual long-document retrieva
 
 ## Dense Retrieval
 
-If you want to evaluate **embedding models**, you can use [this script](./mteb_dense_eval/eval_MLDR.py). The following is an example:
+This task has been merged into [MTEB](https://github.com/embeddings-benchmark/mteb), you can easily use mteb tool to do evaluation.   
+
+We also provide a [script](./mteb_dense_eval/eval_MLDR.py), you can use it following this command:
 
 ```bash
 cd mteb_dense_eval
