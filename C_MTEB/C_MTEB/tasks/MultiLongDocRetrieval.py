@@ -1,6 +1,8 @@
 import datasets
-from ...abstasks import MultilingualTask, AbsTaskRetrieval
-from ...abstasks.AbsTaskRetrieval import *
+from mteb.abstasks import MultilingualTask, AbsTaskRetrieval
+from mteb.abstasks.AbsTaskRetrieval import *
+# from ...abstasks import MultilingualTask, AbsTaskRetrieval
+# from ...abstasks.AbsTaskRetrieval import *
 
 
 _LANGUAGES = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'th', 'zh']
