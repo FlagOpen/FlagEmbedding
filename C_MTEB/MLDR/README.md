@@ -4,9 +4,12 @@ MultiLongDocRetrieval (denoted as MLDR) is a multilingual long-document retrieva
 
 ## Dense Retrieval
 
-If you want to evaluate **embedding models**, you can use [this script](./eval_MLDR.py). The following is an example:
+If you want to evaluate **embedding models**, you can use [this script](./mteb_dense_eval/eval_MLDR.py). The following is an example:
 
 ```bash
+cd mteb_dense_eval
+
+# Print and Save Evaluation Results with MTEB
 python eval_MLDR.py \
 --encoder BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
@@ -64,7 +67,7 @@ conda install -c conda-forge faiss-cpu
 conda install -c conda-forge faiss-gpu
 ```
 
-2. Download qrels from [Shitao/MLDR-qrels](https://huggingface.co/datasets/Shitao/MLDR-qrels):
+2. Download qrels from [Shitao/MLDR](https://huggingface.co/datasets/Shitao/MLDR/tree/main/qrels):
 
 ```bash
 mkdir -p qrels
@@ -72,7 +75,7 @@ cd qrels
 
 splits=(dev test)
 langs=(ar de en es fr hi it ja ko pt ru th zh)
-for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR-qrels/resolve/main/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
+for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR/resolve/main/qrels/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
 ```
 
 3. Dense retrieval:
@@ -116,7 +119,7 @@ python step2-eval_dense_mldr.py \
 --normalize_embeddings True
 ```
 
-> Note: The evaluation results of this method may have slight differences compared to results of the method mentioned earlier, which is considered normal.
+> Note: The evaluation results of this method may have slight differences compared to results of the method mentioned earlier (*with MTEB*), which is considered normal.
 
 4. Sparse Retrieval
 
@@ -209,7 +212,7 @@ conda install -c conda-forge faiss-cpu
 conda install -c conda-forge faiss-gpu
 ```
 
-2. Download qrels from [Shitao/MLDR-qrels](https://huggingface.co/datasets/Shitao/MLDR-qrels):
+2. Download qrels from [Shitao/MLDR](https://huggingface.co/datasets/Shitao/MLDR/tree/main/qrels):
 
 ```bash
 mkdir -p qrels
@@ -217,7 +220,7 @@ cd qrels
 
 splits=(dev test)
 langs=(ar de en es fr hi it ja ko pt ru th zh)
-for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR-qrels/resolve/main/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
+for split in ${splits[*]}; do for lang in ${langs[*]}; do wget "https://huggingface.co/datasets/Shitao/MLDR/resolve/main/qrels/qrels.mldr-v1.0-${lang}-${split}.tsv"; done; done;
 ```
 
 3. Dense retrieval:
@@ -301,7 +304,7 @@ python step1-eval_rerank_mldr.py \
 >
 >- Based on our experience, dividing the sentence pairs to be reranked into several shards and computing scores for each shard on a single GPU tends to be more efficient than using multiple GPUs to compute scores for all sentence pairs directly.Therefore, if your machine have multiple GPUs, you can set `num_shards` to the number of GPUs and launch multiple terminals to execute the command (`shard_id` should be equal to `cuda_id`). Therefore, if you have multiple GPUs on your machine, you can launch multiple terminals and run multiple commands simultaneously. Make sure to set the `shard_id` and `cuda_id` appropriately, and ensure that you have computed scores for all shards before proceeding to the second step.
 
-5. (*Optional*) In the 4th step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}-{reranker}`, `rerank_result_save_dir/sparse/{encoder}-{reranker}` and `rerank_result_save_dir/colbert/{encoder}-{reranker}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./hybrid_all_results.py) to hybrid the three kinds of scores directly.
+5. (*Optional*) In the 4th step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}-{reranker}`, `rerank_result_save_dir/sparse/{encoder}-{reranker}` and `rerank_result_save_dir/colbert/{encoder}-{reranker}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./multi_vector_rerank/hybrid_all_results.py) to hybrid the three kinds of scores directly.
 
 ```bash
 cd multi_vector_rerank

@@ -51,9 +51,6 @@ class FlagDRESModel(DRESModel):
             corpus_batch_size: int = 0,
             **kwargs
     ) -> None:
-        
-        # transformers.models.xlm_roberta.modeling_xlm_roberta.XLMRobertaSelfAttention.forward = Attention_forward
-
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
         if 'jina' in model_name_or_path:
             self.model = AutoModel.from_pretrained(model_name_or_path, trust_remote_code=True)

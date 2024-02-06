@@ -103,7 +103,7 @@ def load_corpus(lang: str):
 
 
 def get_queries(lang: str, split: str='test'):
-    dataset = datasets.load_dataset('BAAI/mldr', lang, split=split)
+    dataset = datasets.load_dataset('Shitao/MLDR', lang, split=split)
     
     queries_list = []
     for data in dataset:

@@ -97,12 +97,6 @@ def get_search_result_dict(search_result_path: str, top_k: int=1000):
     return search_result_dict
 
 
-def sigmoid_score(score: float):
-    score = 2*(torch.sigmoid(torch.Tensor([score])) - 0.5)
-    score = float(score)
-    return score
-
-
 def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dict: dict, colbert_search_result_dict: dict, hybrid_result_save_path: str, top_k: int=200, dense_weight: float=0.15, sparse_weight: float=0.5, colbert_weight: float=0.35):
     if not os.path.exists(os.path.dirname(hybrid_result_save_path)):
         os.makedirs(os.path.dirname(hybrid_result_save_path))
@@ -113,7 +107,6 @@ def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dic
         results = {}
         if qid in sparse_search_result_dict:
             for docid, score in sparse_search_result_dict[qid]:
-                score = score / 0.3     # use 0.3 to restore
                 results[docid] = score * sparse_weight
         if qid in dense_search_result_dict:
             for docid, score in dense_search_result_dict[qid]:

@@ -127,8 +127,8 @@ def evaluate(script_path: str, qrels_path, search_result_path, metrics: list):
     
     results = {}
     for metric in metrics:
-        k, metric = map_metric(metric)
-        args = ['-c', '-M', str(k), '-m', metric, qrels_path, search_result_path]
+        k, mapped_metric = map_metric(metric)
+        args = ['-c', '-M', str(k), '-m', mapped_metric, qrels_path, search_result_path]
         cmd = cmd_prefix + args
         
         # print(f'Running command: {cmd}')
@@ -154,7 +154,7 @@ def merge_search_result(search_result_save_dir: str, lang: str):
     for file in lang_files:
         file_name = file.split('.')[0]
         shard_info = file_name.split('_')[1]
-        shard_id, num_shards = shard_info.split('-')[0], shard_info.split('-')[2]
+        shard_id, num_shards = int(shard_info.split('-')[0]), int(shard_info.split('-')[2])
         assert shard_id < num_shards
         shard_info_dict[num_shards].add(shard_id)
     flag = False
@@ -187,12 +187,36 @@ def main():
     if 'checkpoint-' in os.path.basename(eval_args.reranker):
         eval_args.reranker = os.path.dirname(eval_args.reranker) + '_' + os.path.basename(eval_args.reranker)
     
-    for sub_dir in ['colbert', 'sparse', 'dense', 'colbert+sparse+dense']:
+    try:
+        for sub_dir in ['colbert', 'sparse', 'dense', 'colbert+sparse+dense']:
+            results = {}
+            for lang in languages:
+                qrels_path = os.path.join(eval_args.qrels_dir, f"qrels.mldr-v1.0-{lang}-test.tsv")
+                
+                search_result_save_dir = os.path.join(eval_args.search_result_save_dir, sub_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}")
+                search_result_path = os.path.join(search_result_save_dir, f"{lang}.txt")
+                if not os.path.exists(search_result_path):
+                    merge_search_result(search_result_save_dir, lang)
+                    assert os.path.exists(search_result_path)
+                
+                result = evaluate(script_path, qrels_path, search_result_path, eval_args.metrics)
+                results[lang] = result
+            
+            print("****************************")
+            print(sub_dir + ":")
+            save_results(
+                model_name=eval_args.encoder,
+                reranker_name=eval_args.reranker,
+                results=results,
+                save_path=os.path.join(eval_args.eval_result_save_dir, sub_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}.json"),
+                eval_languages=languages,
+            )
+    except:
         results = {}
         for lang in languages:
             qrels_path = os.path.join(eval_args.qrels_dir, f"qrels.mldr-v1.0-{lang}-test.tsv")
             
-            search_result_save_dir = os.path.join(eval_args.search_result_save_dir, sub_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}")
+            search_result_save_dir = os.path.join(eval_args.search_result_save_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}")
             search_result_path = os.path.join(search_result_save_dir, f"{lang}.txt")
             if not os.path.exists(search_result_path):
                 merge_search_result(search_result_save_dir, lang)
@@ -200,15 +224,12 @@ def main():
             
             result = evaluate(script_path, qrels_path, search_result_path, eval_args.metrics)
             results[lang] = result
-        
-        print("****************************")
-        print(sub_dir + ":")
         save_results(
             model_name=eval_args.encoder,
             reranker_name=eval_args.reranker,
             results=results,
-            save_path=os.path.join(eval_args.eval_result_save_dir, sub_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}.json"),
-            eval_languages=languages
+            save_path=os.path.join(eval_args.eval_result_save_dir, f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}.json"),
+            eval_languages=languages,
         )
     
     print("==================================================")

@@ -138,8 +138,8 @@ def evaluate(script_path, qrels_path, search_result_path, metrics: list):
     
     results = {}
     for metric in metrics:
-        k, metric = map_metric(metric)
-        args = ['-c', '-M', str(k), '-m', metric, qrels_path, search_result_path]
+        k, mapped_metric = map_metric(metric)
+        args = ['-c', '-M', str(k), '-m', mapped_metric, qrels_path, search_result_path]
         cmd = cmd_prefix + args
         
         # print(f'Running command: {cmd}')

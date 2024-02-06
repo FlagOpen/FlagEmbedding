@@ -17,8 +17,8 @@ from mteb import MTEB
 from pprint import pprint
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+from flag_dres_model import FlagDRESModel
 from mteb.tasks import MultiLongDocRetrieval
-from flag_dres_model_new import FlagDRESModel
 
 
 @dataclass
