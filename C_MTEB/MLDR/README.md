@@ -264,7 +264,7 @@ python step2-eval_dense_mldr.py \
 --normalize_embeddings True
 ```
 
-> **Note**: The evaluation results of this method may have slight differences compared to results of the method mentioned earlier, which is considered normal.
+> **Note**: The evaluation results of this method may have slight differences compared to results of the method mentioned earlier (*with MTEB*), which is considered normal.
 
 4. Rerank search results with multi-vector scores or all scores: 
 
