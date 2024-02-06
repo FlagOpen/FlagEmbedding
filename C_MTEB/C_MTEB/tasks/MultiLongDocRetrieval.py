@@ -54,3 +54,64 @@ class MultiLongDocRetrieval(MultilingualTask, AbsTaskRetrieval):
             cache_dir=kwargs.get('cache_dir', None)
         )
         self.data_loaded = True
+
+    def evaluate(
+        self,
+        model,
+        split="test",
+        batch_size=128,
+        corpus_chunk_size=None,
+        score_function="cos_sim",
+        **kwargs
+    ):
+        try:
+            from beir.retrieval.evaluation import EvaluateRetrieval
+        except ImportError:
+            raise Exception("Retrieval tasks require beir package. Please install it with `pip install mteb[beir]`")
+
+        if not self.data_loaded:
+            self.load_data()
+        
+        model = model if self.is_dres_compatible(model) else DRESModel(model)
+        if os.getenv("RANK", None) is None:
+            # Non-distributed
+            from beir.retrieval.search.dense import DenseRetrievalExactSearch as DRES
+            model = DRES(
+                model,
+                batch_size=batch_size,
+                corpus_chunk_size=corpus_chunk_size if corpus_chunk_size is not None else 50000,
+                **kwargs,
+            )
+        else:
+            # Distributed (multi-GPU)
+            from beir.retrieval.search.dense import (
+                DenseRetrievalParallelExactSearch as DRPES,
+            )
+            model = DRPES(
+                model,
+                batch_size=batch_size,
+                corpus_chunk_size=corpus_chunk_size,
+                **kwargs,
+            )
+        retriever = EvaluateRetrieval(model, score_function=score_function)  # or "cos_sim" or "dot"
+        
+        scores = {}
+        for lang in self.langs:
+            print(f"==============================\nStart evaluating {lang} ...")
+            corpus, queries, relevant_docs = self.corpus[lang][split], self.queries[lang][split], self.relevant_docs[lang][split]
+            
+            start_time = time()
+            results = retriever.retrieve(corpus, queries)
+            end_time = time()
+            logger.info("Time taken to retrieve: {:.2f} seconds".format(end_time - start_time))
+            ndcg, _map, recall, precision = retriever.evaluate(relevant_docs, results, retriever.k_values, ignore_identical_ids=kwargs.get("ignore_identical_ids", True))
+            mrr = retriever.evaluate_custom(relevant_docs, results, retriever.k_values, "mrr")
+            scores[lang] = {
+                **{f"ndcg_at_{k.split('@')[1]}": v for (k, v) in ndcg.items()},
+                **{f"map_at_{k.split('@')[1]}": v for (k, v) in _map.items()},
+                **{f"recall_at_{k.split('@')[1]}": v for (k, v) in recall.items()},
+                **{f"precision_at_{k.split('@')[1]}": v for (k, v) in precision.items()},
+                **{f"mrr_at_{k.split('@')[1]}": v for (k, v) in mrr.items()},
+            }
+        
+        return scores
