@@ -1,6 +1,6 @@
 # MultiLongDocRetrieval
 
-MultiLongDocRetrieval (denoted as MLDR) is a multilingual long-document retrieval dataset.
+MultiLongDocRetrieval (denoted as MLDR) is a multilingual long-document retrieval dataset. For more details, please refer to [Shitao/MLDR](https://huggingface.co/datasets/Shitao/MLDR).
 
 ## Dense Retrieval
 
