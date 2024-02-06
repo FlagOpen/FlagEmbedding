@@ -1,4 +1,4 @@
-# BGE-M3
+# BGE-M3 ([paper](https://arxiv.org/pdf/2402.03216.pdf), [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3))
 In this project, we introduce BGE-M3, which is distinguished for its versatility in Multi-Functionality, Multi-Linguality, and Multi-Granularity. 
 - Multi-Functionality: It can simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval. 
 - Multi-Linguality: It can support more than 100 working languages. 
@@ -14,7 +14,28 @@ This allows you to obtain token weights (similar to the BM25) without any additi
 Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
 ## News:
+- 2/6/2024: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR), a long document retrieval dataset covering 13 languages. 
 - 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
+
+
+## Specs
+
+- Model  
+
+| Model Name |  Dimension | Sequence Length | Introduction |
+|:----:|:---:|:---:|:---:|
+| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) | 1024 | 8192 | multilingual; unified fine-tuning (dense, sparse, and colbert) from bge-m3-unsupervised|
+| [BAAI/bge-m3-unsupervised](https://huggingface.co/BAAI/bge-m3-unsupervised) | 1024 | 8192 | multilingual; contrastive learning from bge-m3-retromae |
+| [BAAI/bge-m3-retromae](https://huggingface.co/BAAI/bge-m3-retromae) | -- | 8192 | multilingual; extend the max_length of [xlm-roberta](https://huggingface.co/FacebookAI/xlm-roberta-large) to 8192 and further pretrained via [retromae](https://github.com/staoxiao/RetroMAE)| 
+| [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5) | 1024 | 512 | English model | 
+| [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) |  768 | 512 | English model | 
+| [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5) |  384 | 512 | English model | 
+
+- Data
+
+| Dataset |  Introduction |
+|:----:|:---:|
+| [MLDR](https://huggingface.co/datasets/Shitao/MLDR) | Docuemtn Retrieval Dataset, covering 13 languages|
 
 
 ## FAQ
@@ -45,6 +66,7 @@ Contributions from the community are welcome.
 
 **Now you can ou can try the BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
 ). Thanks @jobergum.**
+
 
 **4. How to fine-tune bge-M3 model?**
 
@@ -186,7 +208,7 @@ print(model.compute_score(sentence_pairs,
 - Long Document Retrieval
   - MLDR:
   ![avatar](./imgs/long.jpg)
-  Please note that MLDR is a document retrieval dataset we constructed via LLM, 
+  Please note that [MLDR](https://huggingface.co/datasets/Shitao/MLDR) is a document retrieval dataset we constructed via LLM, 
   covering 13 languages, including test set, validation set, and training set. 
   We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
   Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
@@ -204,15 +226,10 @@ The small-batch strategy is simple but effective, which also can used to fine-tu
 - MCLS: A simple method to improve the performance on long text without fine-tuning. 
 If you have no enough resource to fine-tuning model with long text, the method is useful.
 
-Refer to our [report](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/BGE_M3/BGE_M3.pdf) for more details.
+Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details.
 
 **The fine-tuning codes and datasets will be open-sourced in the near future.**
 
-## Models
-
-We release two versions:
-- [BAAI/bge-m3-unsupervised](https://huggingface.co/BAAI/bge-m3-unsupervised): the model after contrastive learning in a large-scale dataset
-- [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3): the final model fine-tuned from BAAI/bge-m3-unsupervised
 
 ## Acknowledgement
 
@@ -226,7 +243,14 @@ Thanks the open-sourced libraries like [Tevatron](https://github.com/texttron/te
 If you find this repository useful, please consider giving a star :star: and citation
 
 ```
-
+@misc{bge-m3,
+      title={BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation}, 
+      author={Jianlv Chen and Shitao Xiao and Peitian Zhang and Kun Luo and Defu Lian and Zheng Liu},
+      year={2024},
+      eprint={2402.03216},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
 
 
