@@ -18,7 +18,8 @@ from pprint import pprint
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 from flag_dres_model import FlagDRESModel
-from mteb.tasks import MultiLongDocRetrieval
+# from mteb.tasks import MultiLongDocRetrieval
+from C_MTEB.tasks import MultiLongDocRetrieval
 
 
 @dataclass
