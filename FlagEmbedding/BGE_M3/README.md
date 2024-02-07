@@ -199,6 +199,11 @@ print(model.compute_score(sentence_pairs,
 
 ## Evaluation  
 
+**Currently, the results of BM25 on non-English data are incorrect.
+We will review our testing process and update the paper as soon as possible. 
+For more powerful BM25, you can refer to this [repo](https://github.com/carlos-lassance/bm25_mldr).
+Thanks to the community for the reminder and to carlos-lassance for providing the results.**
+
 - Multilingual (Miracl dataset) 
 
 ![avatar](./imgs/miracl.jpg)
