@@ -336,7 +336,7 @@ python step1-eval_rerank_mldr.py \
 
 ## BM25 Baseline
 
-We provide two methods of evaluating BM25 baseline (we report the results using the first method in our paper for a pair comparison):
+We provide two methods of evaluating BM25 baseline (we report the results using the first method in our paper for a fair comparison):
 
 1. Use the same tokenizer with [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) (i.e., tokenizer of [XLM-Roberta](https://huggingface.co/FacebookAI/xlm-roberta-large)):
 
