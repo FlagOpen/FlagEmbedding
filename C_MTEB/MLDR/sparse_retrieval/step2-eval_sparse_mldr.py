@@ -112,6 +112,10 @@ def save_results(model_name: str, pooling_method: str, normalize_embeddings: boo
     pprint(results)
     if not os.path.exists(os.path.dirname(save_path)):
         os.makedirs(os.path.dirname(save_path))
+    
+    if 'bm25' in model_name:
+        pooling_method = ''
+        normalize_embeddings = ''
     results_dict = {
         'model': model_name,
         'pooling_method': pooling_method,
