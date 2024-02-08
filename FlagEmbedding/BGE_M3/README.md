@@ -199,10 +199,13 @@ print(model.compute_score(sentence_pairs,
 
 ## Evaluation  
 
-**Currently, the results of BM25 on non-English data are incorrect.
-We will review our testing process and update the paper as soon as possible. 
-For more powerful BM25, you can refer to this [repo](https://github.com/carlos-lassance/bm25_mldr).
-Thanks to the community for the reminder and to carlos-lassance for providing the results.**
+We compare BGE-M3 with some popular methods, including BM25, openAI embedding, etc.
+We utilized Pyserini to implement BM25, and the test results can be reproduced by this [script](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR#bm25-baseline). 
+To make the BM25 and BGE-M3 more comparable, in the experiment, 
+BM25 used the same tokenizer as BGE-M3 (i.e., the tokenizer of XLM-Roberta). 
+Using the same vocabulary can also ensure that both approaches have the same retrieval latency. 
+Results of BM25 using other tokenizer can be found in [here](https://github.com/carlos-lassance/bm25_mldr) 
+(Thanks to carlos-lassance for providing the results).
 
 - Multilingual (Miracl dataset) 
 
