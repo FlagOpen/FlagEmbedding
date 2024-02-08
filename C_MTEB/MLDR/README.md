@@ -334,3 +334,45 @@ python step1-eval_rerank_mldr.py \
 --metrics ndcg@10
 ```
 
+## BM25 Baseline
+
+We provide two methods of evaluating BM25 baseline (we report the results using the first method in our paper for a fair comparison):
+
+1. Use the same tokenizer with [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) (i.e., tokenizer of [XLM-Roberta](https://huggingface.co/FacebookAI/xlm-roberta-large)):
+
+```bash
+cd sparse_retrieval
+
+# 1. Output Search Results with BM25 (same)
+python bm25_baseline_same_tokenizer.py
+
+# 2. Print and Save Evaluation Results
+python step2-eval_sparse_mldr.py \
+--encoder bm25_same_tokenizer \
+--languages ar de es fr hi it ja ko pt ru th en zh \
+--search_result_save_dir ./search_results \
+--qrels_dir ../qrels \
+--eval_result_save_dir ./eval_results \
+--metrics ndcg@10
+```
+
+2. Use the language analyzer provided by [Anserini](https://github.com/castorini/anserini/blob/master/src/main/java/io/anserini/analysis/AnalyzerMap.java) ([Lucene Tokenizer](https://github.com/apache/lucene/tree/main/lucene/analysis/common/src/java/org/apache/lucene/analysis)):
+
+```bash
+cd sparse_retrieval
+
+# 1. Output Search Results with BM25
+python bm25_baseline.py
+
+# 2. Print and Save Evaluation Results
+python step2-eval_sparse_mldr.py \
+--encoder bm25 \
+--languages ar de es fr hi it ja ko pt ru th en zh \
+--search_result_save_dir ./search_results \
+--qrels_dir ../qrels \
+--eval_result_save_dir ./eval_results \
+--metrics ndcg@10
+```
+
+
+
