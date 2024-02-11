@@ -223,9 +223,13 @@ We compare BGE-M3 with some popular methods, including BM25, openAI embedding, e
   - NarritiveQA:  
   ![avatar](./imgs/nqa.jpg)
 
-- BM25  
+- Comparison with BM25  
 
 We utilized Pyserini to implement BM25, and the test results can be reproduced by this [script](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR#bm25-baseline).
+We tested BM25 using two different tokenizers: 
+one using Lucene Analyzer and the other using the same tokenizer as M3 (i.e., the tokenizer of xlm-roberta). 
+The results indicate that BM25 remains a competitive baseline, 
+especially in long document retrieval.
 
 ![avatar](./imgs/bm25.jpg)
 
