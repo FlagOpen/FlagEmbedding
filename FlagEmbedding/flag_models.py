@@ -3,7 +3,7 @@ from typing import cast, List, Union, Tuple
 import numpy as np
 import torch
 from tqdm import tqdm
-from transformers import AutoModel, AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoModel, AutoTokenizer, AutoModelForSequenceClassification, is_torch_npu_available
 
 
 class FlagModel:
@@ -26,6 +26,8 @@ class FlagModel:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
+        elif is_torch_npu_available:
+            self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")
             use_fp16 = False
@@ -132,11 +134,13 @@ class FlagReranker:
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
 
         if torch.cuda.is_available():
-            self.device = torch.device('cuda')
+            self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
-            self.device = torch.device('mps')
+            self.device = torch.device("mps")
+        elif is_torch_npu_available:
+            self.device = torch.device("npu")
         else:
-            self.device = torch.device('cpu')
+            self.device = torch.device("cpu")
             use_fp16 = False
         if use_fp16:
             self.model.half()
@@ -224,6 +228,8 @@ class LLMEmbedder:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
+        elif is_torch_npu_available:
+            self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")
             use_fp16 = False

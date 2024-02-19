@@ -6,7 +6,7 @@ from mteb import DRESModel
 from functools import partial
 from torch.utils.data import DataLoader
 from typing import cast, List, Dict, Union
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 from transformers import PreTrainedTokenizerFast, BatchEncoding, DataCollatorWithPadding
 
 
@@ -66,7 +66,12 @@ class FlagDRESModel(DRESModel):
         self.max_passage_length = max_passage_length
         
         if use_fp16: self.model.half()
-        self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif is_torch_npu_available:
+            self.device = torch.device("npu")
+        else:
+            self.device = torch.device("cpu")
         self.model = self.model.to(self.device)
 
         self.num_gpus = torch.cuda.device_count()

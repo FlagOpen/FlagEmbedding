@@ -15,7 +15,7 @@ import torch
 import datasets
 from pprint import pprint
 from dataclasses import dataclass, field
-from transformers import HfArgumentParser
+from transformers import HfArgumentParser, is_torch_npu_available
 from pyserini.search.faiss import FaissSearcher, AutoQueryEncoder
 from pyserini.output_writer import get_output_writer, OutputFormat
 
@@ -74,9 +74,15 @@ class EvalArgs:
 
 
 def get_query_encoder(model_args: ModelArgs):
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif is_torch_npu_available:
+        device = torch.device("npu")
+    else:
+        device = torch.device("cpu")
     model = AutoQueryEncoder(
         encoder_dir=model_args.encoder,
-        device=torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu"),
+        device=device,
         pooling=model_args.pooling_method,
         l2_norm=model_args.normalize_embeddings
     )
