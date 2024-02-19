@@ -72,7 +72,7 @@ from LM_Cocktail import mix_models, mix_models_with_data
 # Mix fine-tuned model and base model; then save it to output_path: ./mixed_model_1
 model = mix_models(
     model_names_or_paths=["BAAI/bge-reranker-base", "your_fine-tuned_model"], 
-    model_type='encoder', 
+    model_type='reranker', 
     weights=[0.5, 0.5],  # you can change the weights to get a better trade-off.
     output_path='./mixed_model_1')
 ```
