@@ -4,7 +4,7 @@ from collections import defaultdict
 import torch
 from tqdm import tqdm
 import datasets
-from transformers import PreTrainedTokenizerFast, BatchEncoding, DataCollatorWithPadding, XLMRobertaForMaskedLM
+from transformers import PreTrainedTokenizerFast, BatchEncoding, DataCollatorWithPadding, XLMRobertaForMaskedLM, is_torch_npu_available
 from torch.utils.data import DataLoader
 from functools import partial
 from FlagEmbedding.BGE_M3 import BGEM3ForInference
@@ -47,6 +47,8 @@ class BGEM3FlagModel:
                 self.device = torch.device("cuda")
             elif torch.backends.mps.is_available():
                 self.device = torch.device("mps")
+            elif is_torch_npu_available:
+                self.device = torch.device("npu")
             else:
                 self.device = torch.device("cpu")
                 use_fp16 = False

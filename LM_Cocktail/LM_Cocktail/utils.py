@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 from typing import List, Dict, Any
 
-from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification
+from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification, is_torch_npu_available
 
 
 def load_llm(model_name:str, trust_remote_code:bool):
@@ -118,7 +118,12 @@ def merge_param_by_layer(model_param_dirs: List[str], weights: List[float]):
 
 
 def compute_weights(base_model, tokenizer, param_list: List[Dict], model_type: str, example_data: List[Any], temperature: float=5.0, batch_size:int=2, max_input_length:int=2048, neg_number:int=7):
-    device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif is_torch_npu_available:
+        device = torch.device("npu")
+    else:
+        device = torch.device("cpu")
     base_model = base_model.to(device)
     
     if model_type == 'decoder':
