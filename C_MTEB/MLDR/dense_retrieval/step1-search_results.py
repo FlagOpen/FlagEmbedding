@@ -76,7 +76,7 @@ class EvalArgs:
 def get_query_encoder(model_args: ModelArgs):
     if torch.cuda.is_available():
         device = torch.device("cuda")
-    elif is_torch_npu_available:
+    elif is_torch_npu_available():
         device = torch.device("npu")
     else:
         device = torch.device("cpu")

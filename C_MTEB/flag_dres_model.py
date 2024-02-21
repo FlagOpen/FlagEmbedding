@@ -27,7 +27,7 @@ class FlagDRESModel(DRESModel):
 
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
-        elif is_torch_npu_available:
+        elif is_torch_npu_available():
             self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")
