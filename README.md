@@ -177,6 +177,15 @@ Refer to our [report: c-pack](https://arxiv.org/pdf/2309.07597.pdf) and [code](h
 If you find this repository useful, please consider giving a star :star: and citation
 
 ```
+@misc{bge_m3,
+  title={BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation},
+  author={Chen, Jianlv and Xiao, Shitao and Zhang, Peitian and Luo, Kun and Lian, Defu and Liu, Zheng},
+  year={2023},
+  eprint={2309.07597},
+  archivePrefix={arXiv},
+  primaryClass={cs.CL}
+}
+
 @misc{cocktail,
       title={LM-Cocktail: Resilient Tuning of Language Models via Model Merging}, 
       author={Shitao Xiao and Zheng Liu and Peitian Zhang and Xingrun Xing},
