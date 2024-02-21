@@ -26,7 +26,7 @@ class FlagModel:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
-        elif is_torch_npu_available:
+        elif is_torch_npu_available():
             self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")
@@ -137,7 +137,7 @@ class FlagReranker:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
-        elif is_torch_npu_available:
+        elif is_torch_npu_available():
             self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")
@@ -228,7 +228,7 @@ class LLMEmbedder:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
-        elif is_torch_npu_available:
+        elif is_torch_npu_available():
             self.device = torch.device("npu")
         else:
             self.device = torch.device("cpu")

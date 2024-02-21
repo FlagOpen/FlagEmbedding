@@ -120,7 +120,7 @@ def merge_param_by_layer(model_param_dirs: List[str], weights: List[float]):
 def compute_weights(base_model, tokenizer, param_list: List[Dict], model_type: str, example_data: List[Any], temperature: float=5.0, batch_size:int=2, max_input_length:int=2048, neg_number:int=7):
     if torch.cuda.is_available():
         device = torch.device("cuda")
-    elif is_torch_npu_available:
+    elif is_torch_npu_available():
         device = torch.device("npu")
     else:
         device = torch.device("cpu")
