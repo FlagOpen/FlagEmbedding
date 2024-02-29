@@ -66,7 +66,7 @@ with torch.no_grad():
 **NOTE**: It's okay to see warnings like `This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (4096). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.` Just ignore it.
 
 ## Training
-*coming soon*
+See [training section](./docs/training.md).
 
 ## Evaluation
 See [evaluation section](./docs/evaluation.md).
