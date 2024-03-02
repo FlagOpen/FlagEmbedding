@@ -91,7 +91,33 @@ Note that if there's no data in a specific range, the corresponding file will no
 
 > **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](../finetune/README.md).
 
-If you want to perform unified fine-tuning based on `BAAI/bge-m3`, please refer to [this script](./unified_finetune_bge-m3_exmaple.sh). In this script, we use `deepspeed` to perform distributed training. Learn more about `deepspeed` at https://www.deepspeed.ai/getting-started/. Note that there are some important parameters to be modified in this script:
+Here is an simple example of how to perform unified fine-tuning based on `BAAI/bge-m3`:
+
+```bash
+torchrun --nproc_per_node {number of gpus} \
+-m FlagEmbedding.BGE_M3.run \
+--output_dir {path to save model} \
+--model_name_or_path BAAI/bge-m3 \
+--train_data ./toy_train_data \
+--learning_rate 1e-5 \
+--fp16 \
+--num_train_epochs 5 \
+--per_device_train_batch_size {large batch size; set 1 for toy data} \
+--dataloader_drop_last True \
+--normlized True \
+--temperature 0.02 \
+--query_max_len 64 \
+--passage_max_len 256 \
+--train_group_size 2 \
+--negatives_cross_device \
+--logging_steps 10 \
+--same_task_within_batch True \
+--unified_finetuning True \
+--use_self_distill True \
+--fix_encoder False
+```
+
+You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for more details. In this script, we use `deepspeed` to perform distributed training. Learn more about `deepspeed` at https://www.deepspeed.ai/getting-started/. Note that there are some important parameters to be modified in this script:
 
 - `HOST_FILE_CONTENT`: Machines and GPUs for training. If you want to use multiple machines for training, please refer to https://www.deepspeed.ai/getting-started/#resource-configuration-multi-node (note that you should configure `pdsh` and `ssh` properly).
 - `DS_CONFIG_FILE`: Path of deepspeed config file. [Here](../finetune/ds_config.json) is an example of `ds_config.json`.

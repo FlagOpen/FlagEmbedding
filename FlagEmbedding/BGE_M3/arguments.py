@@ -23,7 +23,6 @@ class ModelArguments:
     cache_dir: Optional[str] = field(
         default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
     )
-    normlized: bool = field(default=True)
 
 
 @dataclass
@@ -84,6 +83,7 @@ class RetrieverTrainingArguments(TrainingArguments):
     temperature: Optional[float] = field(default=0.02)
     fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})
     sentence_pooling_method: str = field(default='cls', metadata={"help": "the pooling method, should be cls or mean"})
+    normlized: bool = field(default=True)
     enable_sub_batch: bool = field(default=True, metadata={"help": "Freeze the parameters of position embeddings"})
     
     unified_finetuning: bool = field(default=False, metadata={"help": "use unify fine-tuning"})

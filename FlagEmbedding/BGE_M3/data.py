@@ -2,14 +2,12 @@ import math
 import os.path
 import random
 from dataclasses import dataclass
-from typing import List, Tuple
 import torch
 import numpy as np
 import datasets
 from pprint import pprint
 from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding
-from transformers import PreTrainedTokenizer, BatchEncoding
 import torch.distributed as dist
 
 from .arguments import DataArguments
@@ -113,7 +111,7 @@ class SameDatasetTrainDataset(Dataset):
             k: self.get_file_batch_size(f"len-{k}.jsonl", batch_size, train_group_size) for k in length_list
         }
         batch_size_list = [
-            f'{length}:\t{batch_size_dict[length]}' for length in length_list
+            f'{length}: {batch_size_dict[length]}' for length in length_list
         ]
         print("=========================")
         print("Batch Size Dict:")
