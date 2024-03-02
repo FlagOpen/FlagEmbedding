@@ -34,7 +34,7 @@ class BGEM3Model(nn.Module):
                  unified_finetuning: bool = True,
                  use_self_distill: bool = False,
                  colbert_dim: int = -1,
-                 ensemble_distill_start_step: int = -1,
+                 self_distill_start_step: int = -1,
                  ):
         super().__init__()
         self.load_model(model_name, colbert_dim=colbert_dim)
@@ -51,7 +51,7 @@ class BGEM3Model(nn.Module):
         self.enable_sub_batch = enable_sub_batch
         self.temperature = temperature
         self.use_self_distill = use_self_distill
-        self.ensemble_distill_start_step = ensemble_distill_start_step
+        self.self_distill_start_step = self_distill_start_step
 
         self.step = 0
         if not normlized:
@@ -260,9 +260,9 @@ class BGEM3Model(nn.Module):
                     cross_q_dense_vecs = self._dist_gather_tensor(q_dense_vecs)
                     cross_p_dense_vecs = self._dist_gather_tensor(p_dense_vecs)
 
-                    idxs = torch.arange(cross_q_dense_vecs.size(0), device=cross_q_dense_vecs.device, dtype=torch.long)
+                    cross_idxs = torch.arange(cross_q_dense_vecs.size(0), device=cross_q_dense_vecs.device, dtype=torch.long)
 
-                    cross_targets = idxs * (cross_p_dense_vecs.size(0) // cross_q_dense_vecs.size(0))
+                    cross_targets = cross_idxs * (cross_p_dense_vecs.size(0) // cross_q_dense_vecs.size(0))
                     cross_dense_scores = self.dense_score(cross_q_dense_vecs, cross_p_dense_vecs)
 
                     loss = self.compute_loss(cross_dense_scores, cross_targets)
@@ -281,7 +281,7 @@ class BGEM3Model(nn.Module):
                     ensemble_loss = self.compute_loss(dense_scores + 0.3 * sparse_scores + colbert_scores, targets)
                     loss = (loss + ensemble_loss + 0.1 * sparse_loss + colbert_loss) / 4
 
-            if self.use_self_distill and self.step > self.ensemble_distill_start_step and self.unified_finetuning:
+            if self.use_self_distill and self.step > self.self_distill_start_step and self.unified_finetuning:
                 ensemble_scores = dense_scores + 0.3 * sparse_scores + colbert_scores
                 teacher_targets = torch.softmax(ensemble_scores.detach(), dim=-1)
                 ensemble_distill_dense_loss = - torch.mean(
@@ -290,8 +290,7 @@ class BGEM3Model(nn.Module):
                     torch.sum(torch.log_softmax(sparse_scores, dim=-1) * teacher_targets, dim=-1))
                 ensemble_distill_colbert_loss = - torch.mean(
                     torch.sum(torch.log_softmax(colbert_scores, dim=-1) * teacher_targets, dim=-1))
-                loss += (
-                                    ensemble_distill_dense_loss + 0.1 * ensemble_distill_sparse_loss + ensemble_distill_colbert_loss) / 3
+                loss += (ensemble_distill_dense_loss + 0.1 * ensemble_distill_sparse_loss + ensemble_distill_colbert_loss) / 3
                 loss = loss / 2
             self.step += 1
         else:
@@ -367,6 +366,3 @@ class BGEM3ForInference(BGEM3Model):
                 output['colbert_vecs'] = torch.nn.functional.normalize(output['colbert_vecs'], dim=-1)
 
         return output
-
-
-
