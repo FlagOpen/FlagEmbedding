@@ -43,6 +43,7 @@ class TrainDatasetForEmbedding(Dataset):
             query = self.args.query_instruction_for_retrieval + query
 
         passages = []
+        assert self.dataset[item]['pos']
         pos = random.choice(self.dataset[item]['pos'])
         passages.append(pos)
 

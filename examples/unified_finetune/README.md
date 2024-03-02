@@ -43,55 +43,12 @@ If you want to use knowledge distillation, each line of your jsonl file should b
 
 See [toy_train_data](./toy_train_data) for an example of training data.
 
-### Use efficient batching strategy [Optional]
-
-(*Optional*) If you want to use **efficient batching strategy** (for more details, please refer to [our paper](https://arxiv.org/pdf/2402.03216.pdf)), you should use this [script](../../BGE_M3/split_data_by_length.py) to split your data to different parts by sequence length before training. Here's an example of how to use this script to split your data to different parts by sequence length:
-
-```bash
-python split_data_by_length.py \
---input_path train_data \
---output_dir train_data_split \
---cache_dir .cache \
---log_name .split_log \
---length_list 0 500 1000 2000 3000 4000 5000 6000 7000 \
---model_name_or_path BAAI/bge-m3 \
---num_proc 16 \
---overwrite False
-```
-
-`input_path` is the path of jsonl file or the directory containing some jsonl files. `output_dir` is the directory where the split files (`*_len-0-500.jsonl`, `*_len-500-1000.jsonl`, etc.) are saved. `output_dir/log_name` is the log of split data. `length_list` is the list of sequence length. `model_name_or_path` is used to tokenize the data. `num_proc` is the number of processes to use. `overwrite` is whether to overwrite the existing files.
-
-For example, if there are two jsonl files `train_data1.jsonl` and `train_data2.jsonl` in `train_data` directory, then after running the above script, there will be some split files in `train_data_split` like this:
-
-```
-train_data_split
-├── train_data1_0-500.jsonl
-├── train_data1_500-1000.jsonl
-├── train_data1_1000-2000.jsonl
-├── train_data1_2000-3000.jsonl
-├── train_data1_3000-4000.jsonl
-├── train_data1_4000-5000.jsonl
-├── train_data1_5000-6000.jsonl
-├── train_data1_6000-7000.jsonl
-├── train_data1_7000-inf.jsonl
-├── train_data2_0-500.jsonl
-├── train_data2_500-1000.jsonl
-├── train_data2_1000-2000.jsonl
-├── train_data2_2000-3000.jsonl
-├── train_data2_3000-4000.jsonl
-├── train_data2_4000-5000.jsonl
-├── train_data2_5000-6000.jsonl
-├── train_data2_6000-7000.jsonl
-├── train_data2_7000-inf.jsonl
-```
-
-Note that if there's no data in a specific range, the corresponding file will not be created.
 
 ## 3. Train
 
 > **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](../finetune/README.md).
 
-Here is an simple example of how to perform unified fine-tuning based on `BAAI/bge-m3`:
+Here is an simple example of how to perform unified fine-tuning (dense embedding, sparse embedding and colbert) based on `BAAI/bge-m3`:
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \
@@ -113,8 +70,7 @@ torchrun --nproc_per_node {number of gpus} \
 --logging_steps 10 \
 --same_task_within_batch True \
 --unified_finetuning True \
---use_self_distill True \
---fix_encoder False
+--use_self_distill True
 ```
 
 You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for more details. In this script, we use `deepspeed` to perform distributed training. Learn more about `deepspeed` at https://www.deepspeed.ai/getting-started/. Note that there are some important parameters to be modified in this script:
@@ -130,4 +86,4 @@ You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for mo
  You should set these parameters appropriately.
 
 
-For more detaild arguments setting, please refer to [`BGE_M3/arguments.py`](../../FlagEmbedding/BGE_M3/arguments.py).
+For more detailed arguments setting, please refer to [`BGE_M3/arguments.py`](../../FlagEmbedding/BGE_M3/arguments.py).

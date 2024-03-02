@@ -79,10 +79,8 @@ full_options="
   --shuffle_ratio 0.002 \
   --enable_sub_batch True \
   --deepspeed ${DS_CONFIG_FILE} \
-  --ddp_timeout 1800 \
   --unified_finetuning True \
-  --use_self_distill True \
-  --fix_encoder False \
+  --use_self_distill True
   "
 
 run_cmd="$LAUNCHER --module FlagEmbedding.BGE_M3.run ${full_options}"

@@ -14,8 +14,9 @@ This allows you to obtain token weights (similar to the BM25) without any additi
 Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
 ## News:
-- 2/6/2024: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
-- 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
+- 2024/3/2: Release unified fine-tuning [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune) and [data](https://huggingface.co/datasets/Shitao/bge-m3-data) 
+- 2024/2/6: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
+- 2024/2/1: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
 
 
 ## Specs
@@ -33,9 +34,11 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 
 - Data
 
-| Dataset |  Introduction |
-|:----:|:---:|
-| [MLDR](https://huggingface.co/datasets/Shitao/MLDR) | Docuemtn Retrieval Dataset, covering 13 languages|
+|                          Dataset                           |                   Introduction                    |
+|:----------------------------------------------------------:|:-------------------------------------------------:|
+|    [MLDR](https://huggingface.co/datasets/Shitao/MLDR)     | Docuemtn Retrieval Dataset, covering 13 languages |
+| [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data) |          Fine-tuning data used by bge-m3          |
+
 
 
 ## FAQ
@@ -75,8 +78,7 @@ In our experiments, we use [Pyserini](https://github.com/FlagOpen/FlagEmbedding/
 You can follow the common in this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 
 to fine-tune the dense embedding.
 
-Our code and data for unified fine-tuning (dense, sparse, and multi-vectors) will be released.
-
+If you want to fine-tune all embedding function of m3, you can refer to the [unified_fine-tuning example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune)
 
 
 
@@ -243,7 +245,6 @@ If you have no enough resource to fine-tuning model with long text, the method i
 
 Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details.
 
-**The fine-tuning codes and datasets will be open-sourced in the near future.**
 
 
 ## Acknowledgement

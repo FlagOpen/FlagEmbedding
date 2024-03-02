@@ -54,6 +54,7 @@ This reranker is initialized from [xlm-roberta-base](https://huggingface.co/xlm-
 
 In order to enhance the cross-language retrieval ability, we construct two cross-language retrieval datasets bases on [MMarco](https://github.com/unicamp-dl/mMARCO). 
 Specifically, we sample 100,000 english queries to retrieve the chinese passages, and also sample 100,000 chinese queries to retrieve english passages.
+The dataset has been released at [Shitao/bge-reranker-data](https://huggingface.co/datasets/Shitao/bge-reranker-data). 
 
 Currently, this model mainly supports Chinese and English, and may see performance degradation for other low-resource languages.
 
