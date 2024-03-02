@@ -23,8 +23,8 @@ class SameDatasetTrainDataset(Dataset):
         pqloss_flag = []
         cur_all_num = 0
         
-        SMALL_THRESHOLD = 200
-        DROP_THRESHOLD = 200
+        SMALL_THRESHOLD = args.small_threshold
+        DROP_THRESHOLD = args.drop_threshold
         
         context_feat = datasets.Features({
             'query': datasets.Value('string'),

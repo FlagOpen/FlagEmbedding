@@ -71,6 +71,13 @@ class DataArguments:
     shuffle_ratio: float = field(
             default=0.0, metadata={"help": "The ratio of shuffling the text"}
     )
+    
+    small_threshold: int = field(
+            default=0, metadata={"help": "The threshold of small dataset. All small dataset in the same directory will be merged into one dataset."}
+    )
+    drop_threshold: int = field(
+            default=0, metadata={"help": "The threshold for dropping merged small dataset. If the number of examples in the merged small dataset is less than this threshold, it will be dropped."}
+    )
 
     def __post_init__(self):
         for train_dir in self.train_data:
