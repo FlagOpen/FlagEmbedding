@@ -15,13 +15,9 @@ pip install -U FlagEmbedding
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
-pip install .
-```
-For development, install as editable:
-
-```
 pip install -e .
 ```
+
 
 ## 2. Data format
 

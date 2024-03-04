@@ -82,10 +82,10 @@ class BGEM3Model(nn.Module):
 
         if os.path.exists(os.path.join(model_name, 'colbert_linear.pt')) and os.path.exists(
                 os.path.join(model_name, 'sparse_linear.pt')):
-            print('loading existing colbert_linear and sparse_linear---------')
+            logger.info('loading existing colbert_linear and sparse_linear---------')
             self.load_pooler(model_dir=model_name)
         else:
-            print(
+            logger.info(
                 'The parameters of colbert_linear and sparse linear is new initialize. Make sure the model is loaded for training, not inferencing')
 
     def gradient_checkpointing_enable(self, **kwargs):
