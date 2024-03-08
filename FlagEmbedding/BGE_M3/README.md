@@ -1,19 +1,13 @@
 # BGE-M3 ([paper](https://arxiv.org/pdf/2402.03216.pdf), [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3))
+
 In this project, we introduce BGE-M3, which is distinguished for its versatility in Multi-Functionality, Multi-Linguality, and Multi-Granularity. 
 - Multi-Functionality: It can simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval. 
 - Multi-Linguality: It can support more than 100 working languages. 
 - Multi-Granularity: It is able to process inputs of different granularities, spanning from short sentences to long documents of up to 8192 tokens. 
 
-**Some suggestions for retrieval pipeline in RAG:**
-We recommend to use following pipeline: hybrid retrieval + re-ranking. 
-- Hybrid retrieval leverages the strengths of various methods, offering higher accuracy and stronger generalization capabilities. 
-A classic example: using both embedding retrieval and the BM25 algorithm. 
-Now, you can try to use BGE-M3, which supports both embedding and sparse retrieval. 
-This allows you to obtain token weights (similar to the BM25) without any additional cost when generate dense embeddings.
-- As cross-encoder models, re-ranker demonstrates higher accuracy than bi-encoder embedding model. 
-Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
 ## News:
+- 2024/3/8: **Thanks for the [experimental results](https://towardsdatascience.com/openai-vs-open-source-multilingual-embedding-models-e5ccb7c90f05) from @[Yannael](https://huggingface.co/Yannael). In this benchmark, BGE-M3 achieves top performance in both English and other languages, surpassing models such as OpenAI.**
 - 2024/3/2: Release unified fine-tuning [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune) and [data](https://huggingface.co/datasets/Shitao/bge-m3-data) 
 - 2024/2/6: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
 - 2024/2/1: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
@@ -79,6 +73,17 @@ You can follow the common in this [example](https://github.com/FlagOpen/FlagEmbe
 to fine-tune the dense embedding.
 
 If you want to fine-tune all embedding function of m3, you can refer to the [unified_fine-tuning example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune)
+
+
+
+**5. Some suggestions for retrieval pipeline in RAG**
+We recommend to use following pipeline: hybrid retrieval + re-ranking. 
+- Hybrid retrieval leverages the strengths of various methods, offering higher accuracy and stronger generalization capabilities. 
+A classic example: using both embedding retrieval and the BM25 algorithm. 
+Now, you can try to use BGE-M3, which supports both embedding and sparse retrieval. 
+This allows you to obtain token weights (similar to the BM25) without any additional cost when generate dense embeddings.
+- As cross-encoder models, re-ranker demonstrates higher accuracy than bi-encoder embedding model. 
+Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
 
 
 
@@ -199,11 +204,16 @@ print(model.compute_score(sentence_pairs,
 
 
 
+
 ## Evaluation  
 
-We compare BGE-M3 with some popular methods, including BM25, openAI embedding, etc.
+### Benchmarks from the open-source community
+  ![avatar](./imgs/others.webp)
+ The BGE-M3 model emerged as the top performer on this benchmark (OAI is short for OpenAI). 
+  For more details, please refer to the [article](https://towardsdatascience.com/openai-vs-open-source-multilingual-embedding-models-e5ccb7c90f05) and [Github Repo](https://github.com/Yannael/multilingual-embeddings)
 
 
+### Our results
 - Multilingual (Miracl dataset) 
 
 ![avatar](./imgs/miracl.jpg)
@@ -213,12 +223,12 @@ We compare BGE-M3 with some popular methods, including BM25, openAI embedding, e
 ![avatar](./imgs/mkqa.jpg)
 
 - Long Document Retrieval
-  - MLDR:
+  - MLDR:   
   ![avatar](./imgs/long.jpg)
   Please note that [MLDR](https://huggingface.co/datasets/Shitao/MLDR) is a document retrieval dataset we constructed via LLM, 
   covering 13 languages, including test set, validation set, and training set. 
   We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
-  Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
+  Therefore, comparing baselines with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
   Additionally, this long document retrieval dataset will be open-sourced to address the current lack of open-source multilingual long text retrieval datasets.
   We believe that this data will be helpful for the open-source community in training document retrieval models.
 
@@ -235,6 +245,8 @@ especially in long document retrieval.
 
 ![avatar](./imgs/bm25.jpg)
 
+
+
 ## Training
 - Self-knowledge Distillation: combining multiple outputs from different 
 retrieval modes as reward signal to enhance the performance of single mode(especially for sparse retrieval and multi-vec(colbert) retrival)
@@ -249,8 +261,8 @@ Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details.
 
 ## Acknowledgement
 
-Thanks the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc. 
-Thanks the open-sourced libraries like [Tevatron](https://github.com/texttron/tevatron), [pyserial](https://github.com/pyserial/pyserial).
+Thanks to the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc. 
+Thanks to the open-sourced libraries like [Tevatron](https://github.com/texttron/tevatron), [Pyserini](https://github.com/castorini/pyserini).
 
 
 
