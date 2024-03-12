@@ -2,12 +2,11 @@ from typing import cast, List, Dict, Union
 
 import numpy as np
 import torch
-from mteb import DRESModel
 from tqdm import tqdm
 from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
 
-class FlagDRESModel(DRESModel):
+class FlagDRESModel:
     def __init__(
             self,
             model_name_or_path: str = None,
@@ -15,7 +14,6 @@ class FlagDRESModel(DRESModel):
             normalize_embeddings: bool = True,
             query_instruction_for_retrieval: str = None,
             batch_size: int = 256,
-            **kwargs
     ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
