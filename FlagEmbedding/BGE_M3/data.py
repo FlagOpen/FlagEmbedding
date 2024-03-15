@@ -199,7 +199,7 @@ class SameDatasetTrainDataset(Dataset):
         if self.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.shuffle_ratio:
             split_text = []
             chunk_size = len(text)//3 + 1
-            for i in range(0, len(split_text), chunk_size):
+            for i in range(0, len(text), chunk_size):
                 split_text.append(text[i:i+chunk_size])
             random.shuffle(split_text)
             return " ".join(split_text)
