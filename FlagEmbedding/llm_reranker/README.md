@@ -2,22 +2,30 @@
 
 ## Usage 
 
+**Model List**
+
+| Model                                                                     | Base model                                                           | Language | layerwise |                           feature                            |
+|:--------------------------------------------------------------------------|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | [xlm-roberta-base](https://huggingface.co/xlm-roberta-base) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. |
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | [xlm-roberta-large](https://huggingface.co/FacebookAI/xlm-roberta-large) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. |
+| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | [bge-m3](https://huggingface.co/BAAI/bge-m3) |    Multilingual     |     -     | Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference. |
+| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | [google/gemma-2b](https://huggingface.co/google/gemma-2b) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |
+| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |
+
 Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. 
 You can get a relevance score by inputting query and passage to the reranker. 
 The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
 
-**Model List**
+The use of different programming languages is recommended based on specific requirements: 
 
-| Model                                                                     | Language | layerwise |                           feature                            |                           Applicable Scenarios        |
-|:--------------------------------------------------------------------------|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
-| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with English or Chinese data. |
-| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with English or Chinese data. |
-| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) |    Multilingual     |     -     | Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with multilingual data. |
-| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. | Having abundant GPU resources, a relatively small dataset or tolerance for longer processing times. Primarily dealing with multilingual data and requiring high-quality re-ranking results. |
-| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. | Having abundant GPU resources, but aiming for faster processing speed. Mainly dealing with English or Chinese data and requiring high-quality re-ranking results. |
+For **multilingual**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma)
 
+For **Chinese or English**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
+
+For **tasks prioritizing speed**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
 
 ### Using FlagEmbedding
+
 ```
 pip install -U FlagEmbedding
 ```
@@ -30,11 +38,17 @@ Get relevance scores (higher scores indicate more relevance):
 from FlagEmbedding import FlagReranker
 reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], normalize=False)
+score = reranker.compute_score(['query', 'passage'])
 print(score) # -5.65234375
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
+score = reranker.compute_score(['query', 'passage'], normalize=True)
+print(score) # 0.003497010252573502
+
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
 print(scores) # [-8.1875, 5.26171875]
+
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=True)
+print(scores) # [0.00027803096387751553, 0.9948403768236574]
 ```
 
 #### For LLM-based reranker
@@ -43,10 +57,10 @@ print(scores) # [-8.1875, 5.26171875]
 from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], normalize=False)
+score = reranker.compute_score(['query', 'passage'])
 print(score) # 2.15625
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
 print(scores) # [-0.84765625, 10.625]
 ```
 
@@ -54,12 +68,12 @@ print(scores) # [-0.84765625, 10.625]
 
 ```python
 from FlagEmbedding import LayerWiseFlagLLMReranker
-reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True, cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], normalize=False) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
+score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
 print(score) # -7.03125
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28], normalize=False)
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28])
 print(scores) # [-10.0, 1.8203125]
 ```
 
