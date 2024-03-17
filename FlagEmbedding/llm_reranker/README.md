@@ -6,15 +6,15 @@ Different from embedding model, reranker uses question and document as input and
 You can get a relevance score by inputting query and passage to the reranker. 
 The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
 
-## Model List
+**Model List**
 
-| Model                                                                     | Language | layerwise |                                                             Description                                                             |                           feature                            |
+| Model                                                                     | Language | layerwise |                           feature                            |                           Applicable Scenarios        |
 |:--------------------------------------------------------------------------|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
-| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | Chinese and English |     -     | a cross-encoder model which is more accurate but less efficient | Lightweight reranker model, easy to deploy, with fast inference. |
-| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | Chinese and English |     -     | a cross-encoder model which is more accurate but less efficient | Lightweight reranker model, easy to deploy, with fast inference. |
-| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) |    Multilingual     |     -     | a cross-encoder model which is more accurate but less efficient | Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference. |
-| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) |    Multilingual     |     -     | a cross-encoder model which is more accurate but less efficient | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |
-| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) |    Multilingual     |   8-40    | a cross-encoder model which is more accurate but less efficient | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with English or Chinese data. |
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with English or Chinese data. |
+| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) |    Multilingual     |     -     | Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference. | Having some GPU resources, with an extremely large dataset or aiming for extremely fast processing speed. Primarily dealing with multilingual data. |
+| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. | Having abundant GPU resources, a relatively small dataset or tolerance for longer processing times. Primarily dealing with multilingual data and requiring high-quality re-ranking results. |
+| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. | Having abundant GPU resources, but aiming for faster processing speed. Mainly dealing with English or Chinese data and requiring high-quality re-ranking results. |
 
 
 ### Using FlagEmbedding
@@ -30,11 +30,11 @@ Get relevance scores (higher scores indicate more relevance):
 from FlagEmbedding import FlagReranker
 reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'])
-print(score) # -5.65234375
+score = reranker.compute_score(['query', 'passage'], normalize=False)
+print(score) # -5.6523
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
-print(scores) # [-8.1875, 5.26171875]
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
+print(scores) # [-8.1875, 5.2617]
 ```
 
 #### For LLM-based reranker
@@ -43,24 +43,24 @@ print(scores) # [-8.1875, 5.26171875]
 from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'])
-print(score) # 2.15625
+score = reranker.compute_score(['query', 'passage'], normalize=False)
+print(score) # 2.1563
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
-print(scores) # [-0.84765625, 10.625]
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
+print(scores) # [-0.8477, 10.625]
 ```
 
 #### For LLM-based layerwise reranker
 
 ```python
 from FlagEmbedding import LayerWiseFlagLLMReranker
-reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True, cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
-print(score) # [-7.03125]
+score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], normalize=False) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
+print(score) # [-7.0313]
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28])
-print(scores) # [-10,   1.8203125]
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28], normalize=False)
+print(scores) # [-10,   1.8203]
 ```
 
 ### Using Huggingface transformers
@@ -228,4 +228,27 @@ Here are the evaluation results of miracl (multi-language). It rereank the top 1
 
 Here are the evaluation results of llama-index.
 
-![image-20240317173318511](./evaluation/llama-index.png)
+![image-20240317180559538](./evaluation/llama-index.png)
+
+
+## Citation
+
+If you find this repository useful, please consider giving a star :star: and citation
+
+```
+@misc{li2023making,
+      title={Making Large Language Models A Better Foundation For Dense Retrieval}, 
+      author={Chaofan Li and Zheng Liu and Shitao Xiao and Yingxia Shao},
+      year={2023},
+      eprint={2312.15503},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+@misc{chen2024bge,
+      title={BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation}, 
+      author={Jianlv Chen and Shitao Xiao and Peitian Zhang and Kun Luo and Defu Lian and Zheng Liu},
+      year={2024},
+      eprint={2402.03216},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}

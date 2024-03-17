@@ -1,4 +1,4 @@
-from typing import Union, List, Tuple
+from typing import Union, List, Tuple, Any
 
 import numpy as np
 import torch
@@ -45,7 +45,6 @@ class DatasetForReranker(Dataset):
 
         self.encode_max_length = self.max_len + len(self.sep_inputs) + len(self.prompt_inputs)
 
-
     def __len__(self):
         return self.total_len
 
@@ -80,66 +79,6 @@ class DatasetForReranker(Dataset):
             item['position_ids'] = list(range(len(item['input_ids'])))
 
         return item
-
-class FlagReranker:
-    def __init__(
-            self,
-            model_name_or_path: str = None,
-            use_fp16: bool = False
-    ) -> None:
-
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
-
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-        elif torch.backends.mps.is_available():
-            self.device = torch.device("mps")
-        elif is_torch_npu_available():
-            self.device = torch.device("npu")
-        else:
-            self.device = torch.device("cpu")
-            use_fp16 = False
-        if use_fp16:
-            self.model.half()
-
-        self.model = self.model.to(self.device)
-
-        self.model.eval()
-
-        self.num_gpus = torch.cuda.device_count()
-        if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
-            self.model = torch.nn.DataParallel(self.model)
-
-    @torch.no_grad()
-    def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 256,
-                      max_length: int = 512) -> List[float]:
-        if self.num_gpus > 0:
-            batch_size = batch_size * self.num_gpus
-
-        assert isinstance(sentence_pairs, list)
-        if isinstance(sentence_pairs[0], str):
-            sentence_pairs = [sentence_pairs]
-
-        all_scores = []
-        for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
-                                disable=len(sentence_pairs) < 128):
-            sentences_batch = sentence_pairs[start_index:start_index + batch_size]
-            inputs = self.tokenizer(
-                sentences_batch,
-                padding=True,
-                truncation=True,
-                return_tensors='pt',
-                max_length=max_length,
-            ).to(self.device)
-
-            scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
-            all_scores.extend(scores.cpu().numpy().tolist())
-
-        if len(all_scores) == 1:
-            return all_scores[0]
-        return all_scores
 
 class collater():
     def __init__(self, tokenizer, max_len):
@@ -193,6 +132,83 @@ def last_logit_pool(logits: Tensor,
         batch_size = logits.shape[0]
         return torch.stack([logits[i, sequence_lengths[i], :] for i in range(batch_size)], dim=0)
 
+def last_logit_pool_layerwise(logits: Tensor,
+                              attention_mask: Tensor) -> Tensor:
+    left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
+    if left_padding:
+        return logits[:, -1]
+    else:
+        sequence_lengths = attention_mask.sum(dim=1) - 1
+        batch_size = logits.shape[0]
+        return logits[torch.arange(batch_size, device=logits.device), sequence_lengths]
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+class FlagReranker:
+    def __init__(
+            self,
+            model_name_or_path: str = None,
+            use_fp16: bool = False
+    ) -> None:
+
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
+        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
+
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            self.device = torch.device("mps")
+        elif is_torch_npu_available():
+            self.device = torch.device("npu")
+        else:
+            self.device = torch.device("cpu")
+            use_fp16 = False
+        if use_fp16:
+            self.model.half()
+
+        self.model = self.model.to(self.device)
+
+        self.model.eval()
+
+        self.num_gpus = torch.cuda.device_count()
+        if self.num_gpus > 1:
+            print(f"----------using {self.num_gpus}*GPUs----------")
+            self.model = torch.nn.DataParallel(self.model)
+
+    @torch.no_grad()
+    def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 256,
+                      max_length: int = 512, normalize: bool = False) -> List[float]:
+        if self.num_gpus > 0:
+            batch_size = batch_size * self.num_gpus
+
+        assert isinstance(sentence_pairs, list)
+        if isinstance(sentence_pairs[0], str):
+            sentence_pairs = [sentence_pairs]
+
+        all_scores = []
+        for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
+                                disable=len(sentence_pairs) < 128):
+            sentences_batch = sentence_pairs[start_index:start_index + batch_size]
+            inputs = self.tokenizer(
+                sentences_batch,
+                padding=True,
+                truncation=True,
+                return_tensors='pt',
+                max_length=max_length,
+            ).to(self.device)
+
+            scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
+            all_scores.extend(scores.cpu().numpy().tolist())
+
+        if normalize:
+            all_scores = [sigmoid(score) for score in all_scores]
+
+        if len(all_scores) == 1:
+            return all_scores[0]
+        return all_scores
+
+
 class FlagLLMReranker:
     def __init__(
             self,
@@ -232,7 +248,7 @@ class FlagLLMReranker:
 
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
-                      max_length: int = 512, prompt: str = None) -> List[float]:
+                      max_length: int = 512, prompt: str = None, normalize: bool = False) -> List[float]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -257,10 +273,12 @@ class FlagLLMReranker:
             logits = outputs.logits
             scores = last_logit_pool(logits, inputs['attention_mask'])
             scores = scores[:, self.yes_loc]
-            all_scores.extend(scores.cpu().float())
+            all_scores.extend(scores.cpu().float().tolist())
 
         all_scores = [all_scores[idx] for idx in np.argsort(length_sorted_idx)]
-        all_scores = np.asarray(all_scores)
+
+        if normalize:
+            all_scores = [sigmoid(score) for score in all_scores]
 
         if len(all_scores) == 1:
             return all_scores[0]
@@ -283,16 +301,6 @@ class FlagLLMReranker:
             return len(text)
         else:
             return sum([len(t) for t in text])  # Sum of length of individual strings
-
-def last_logit_pool_layerwise(logits: Tensor,
-                              attention_mask: Tensor) -> Tensor:
-    left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
-    if left_padding:
-        return logits[:, -1]
-    else:
-        sequence_lengths = attention_mask.sum(dim=1) - 1
-        batch_size = logits.shape[0]
-        return logits[torch.arange(batch_size, device=logits.device), sequence_lengths]
 
 class LayerWiseFlagLLMReranker:
     def __init__(
@@ -333,7 +341,8 @@ class LayerWiseFlagLLMReranker:
 
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
-                      max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None) -> List[float]:
+                      max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
+                      normalize: bool = False) -> List[float]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -366,11 +375,12 @@ class LayerWiseFlagLLMReranker:
                     all_scores.append([])
 
             for i in range(len(tmp_all_scores)):
-                all_scores[i].extend(tmp_all_scores[i].cpu().float())
+                all_scores[i].extend(tmp_all_scores[i].cpu().float().tolist())
 
         for i in range(len(all_scores)):
             all_scores[i] = [all_scores[i][idx] for idx in np.argsort(length_sorted_idx)]
-            all_scores[i] = np.asarray([score.numpy() for score in all_scores[i]])
+            if normalize:
+                all_scores[i] = [sigmoid(score) for score in all_scores[i]]
 
         if len(all_scores) == 1:
             return all_scores[0]
