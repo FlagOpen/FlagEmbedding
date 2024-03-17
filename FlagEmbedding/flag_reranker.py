@@ -20,7 +20,7 @@ class DatasetForReranker(Dataset):
             max_len: int = 512,
             query_prefix: str = 'A: ',
             passage_prefix: str = 'B: ',
-            cache_dir: str = '/share/LMs',
+            cache_dir: str = None,
             prompt: str = None
     ):
         self.tokenizer = AutoTokenizer.from_pretrained(tokenizer_path,
@@ -149,11 +149,12 @@ class FlagReranker:
     def __init__(
             self,
             model_name_or_path: str = None,
-            use_fp16: bool = False
+            use_fp16: bool = False,
+            cache_dir: str = None
     ) -> None:
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path)
+        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, cache_dir=cache_dir)
+        self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, cache_dir=cache_dir)
 
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
@@ -342,7 +343,8 @@ class LayerWiseFlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
-                      normalize: bool = False) -> List[float]:
+                      normalize: bool = False) -> float | list[Any] | list[float | Any] | list[
+        list[Any] | list[float | Any]] | Any:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -383,6 +385,8 @@ class LayerWiseFlagLLMReranker:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
 
         if len(all_scores) == 1:
+            if len(all_scores[0]) == 1:
+                return all_scores[0][0]
             return all_scores[0]
 
         return all_scores

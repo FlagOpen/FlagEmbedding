@@ -31,10 +31,10 @@ from FlagEmbedding import FlagReranker
 reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'], normalize=False)
-print(score) # -5.6523
+print(score) # -5.65234375
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
-print(scores) # [-8.1875, 5.2617]
+print(scores) # [-8.1875, 5.26171875]
 ```
 
 #### For LLM-based reranker
@@ -44,23 +44,23 @@ from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'], normalize=False)
-print(score) # 2.1563
+print(score) # 2.15625
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=False)
-print(scores) # [-0.8477, 10.625]
+print(scores) # [-0.84765625, 10.625]
 ```
 
 #### For LLM-based layerwise reranker
 
 ```python
 from FlagEmbedding import LayerWiseFlagLLMReranker
-reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True, cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], normalize=False) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
-print(score) # [-7.0313]
+print(score) # -7.03125
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28], normalize=False)
-print(scores) # [-10,   1.8203]
+print(scores) # [-10.0, 1.8203125]
 ```
 
 ### Using Huggingface transformers
@@ -207,6 +207,82 @@ with torch.no_grad():
     print(all_scores)
 ```
 
+## Fine-tune
+
+You can fine-tune the reranker with the following code:
+
+**For llm-based reranker**
+
+```shell
+torchrun --nproc_per_node {number of gpus} \
+-m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
+--output_dir {path to save model} \
+--model_name_or_path google/gemma-2b \
+--train_data ./toy_finetune_data.jsonl \
+--learning_rate 2e-4 \
+--num_train_epochs 1 \
+--per_device_train_batch_size 1 \
+--gradient_accumulation_steps 16 \
+--dataloader_drop_last True \
+--query_max_len 512 \
+--passage_max_len 512 \
+--train_group_size 16 \
+--logging_steps 1 \
+--save_steps 2000 \
+--save_total_limit 50 \
+--ddp_find_unused_parameters False \
+--gradient_checkpointing \
+--deepspeed stage1.json \
+--warmup_ratio 0.1 \
+--bf16 \
+--use_lora True \
+--lora_rank 32 \
+--lora_alpha 64 \
+--use_flash_attn True \
+--target_modules q_proj k_proj v_proj o_proj
+```
+
+**For llm-based layerwise reranker**
+
+**For llm-based reranker**
+
+```shell
+torchrun --nproc_per_node {number of gpus} \
+-m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
+--output_dir {path to save model} \
+--model_name_or_path openbmb/MiniCPM-2B-dpo-fp16 \
+--train_data ./toy_finetune_data.jsonl \
+--learning_rate 2e-4 \
+--num_train_epochs 1 \
+--per_device_train_batch_size 1 \
+--gradient_accumulation_steps 16 \
+--dataloader_drop_last True \
+--query_max_len 512 \
+--passage_max_len 512 \
+--train_group_size 16 \
+--logging_steps 1 \
+--save_steps 2000 \
+--save_total_limit 50 \
+--ddp_find_unused_parameters False \
+--gradient_checkpointing \
+--deepspeed stage1.json \
+--warmup_ratio 0.1 \
+--bf16 \
+--use_lora True \
+--lora_rank 32 \
+--lora_alpha 64 \
+--use_flash_attn True \
+--target_modules q_proj k_proj v_proj o_proj \
+--start_layer 8 \
+--head_multi True \
+--head_type simple
+```
+
+This reranker is initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
+
+- [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data)
+- [quora train data](https://huggingface.co/datasets/quora)
+- [fever train data](https://fever.ai/dataset/fever.html)
 
 ## Evaluation
 
