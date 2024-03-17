@@ -31,7 +31,7 @@ print(scores)
 
 ```python
 from FlagEmbedding import FlagLLMReranker
-reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=False,cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=False) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
 print(score)
@@ -44,7 +44,7 @@ print(scores)
 
 ```python
 from FlagEmbedding import LayerWiseFlagLLMReranker
-reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True,cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28,40]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score."
 print(score)
@@ -63,8 +63,8 @@ Get relevance scores (higher scores indicate more relevance):
 import torch
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-m3', cache_dir='/share/LMs')
-model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-v2-m3', cache_dir='/share/LMs')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-m3')
+model = AutoModelForSequenceClassification.from_pretrained('BAAI/bge-reranker-v2-m3')
 model.eval()
 
 pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
@@ -123,8 +123,8 @@ def get_inputs(pairs, tokenizer, prompt=None, max_length=1024):
             return_tensors='pt',
     )
 
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-gemma',cache_dir='/share/LMs')
-model = AutoModelForCausalLM.from_pretrained('BAAI/bge-reranker-v2-gemma',cache_dir='/share/LMs')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-gemma')
+model = AutoModelForCausalLM.from_pretrained('BAAI/bge-reranker-v2-gemma')
 yes_loc = tokenizer('Yes', add_special_tokens=False)['input_ids'][0]
 model.eval()
 
@@ -184,8 +184,8 @@ def get_inputs(pairs, tokenizer, prompt=None, max_length=1024):
             return_tensors='pt',
     )
 
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-minicpm-layerwise', trust_remote_code=True, torch_dtype=torch.bfloat16,cache_dir='/share/LMs')
-model = AutoModelForCausalLM.from_pretrained('BAAI/bge-reranker-v2-minicpm-layerwise', trust_remote_code=True, torch_dtype=torch.bfloat16,cache_dir='/share/LMs')
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-reranker-v2-minicpm-layerwise', trust_remote_code=True, torch_dtype=torch.bfloat16)
+model = AutoModelForCausalLM.from_pretrained('BAAI/bge-reranker-v2-minicpm-layerwise', trust_remote_code=True, torch_dtype=torch.bfloat16)
 model = model.to('cuda')
 model.eval()
 
@@ -236,14 +236,14 @@ Here are the evaluation results of CMTEB-retrieval. It rereank the top 100 resul
 
 Here are the evaluation results of miracl (multi-language). It rereank the top 100 results from bge-m3.
 
-| model                    | inference length | avg       |  ar   |  bn   |  en   |  es   |  fa   |  fi   |  fr   |  hi   |  id   |  ja   |  ko   |  ru   |  sw   |  te   |  th   |  zh   |  de   |  yo   |
-| ------------------------ | :--------------: | --------- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| bge-m3                   |     512+512      | 67.91     | 78.4  |  80   | 59.6  | 55.5  | 57.7  | 78.6  | 57.8  | 59.3  |  56   | 72.8  | 69.9  | 70.1  | 78.6  | 86.2  | 82.6  | 61.7  | 56.8  | 60.7  |
-| m3 rerank                |       1024       | 72.84     | 81.7  | 84.63 | 63.45 | 63.71 | 62.49 | 82.41 | 63.26 | 68.25 | 62.71 | 79.96 | 73.79 | 76.93 | 82.27 | 89.36 | 85.3  | 64.2  | 62.64 | 64.03 |
-| gemma 2B                 |       1024       | 73.39     | 82.26 | 85.15 | 66.62 | 64.29 | 62.03 | 82.58 | 64.26 | 68.68 | 61.33 | 79.72 | 74.83 | 78.36 | 81.46 | 89.22 | 86.06 | 65.61 | 64.25 | 64.37 |
-| minicpm - layer - 20     |       1024       | 62.26     | 71.8  | 62.15 | 62.51 | 56.45 | 45.28 | 74.73 | 52.77 | 50.64 | 57.3  | 70.57 | 69.12 | 60.58 | 67.4  | 76.98 | 67.87 | 61.61 | 49.74 | 63.2  |
-| minicpm - layer - 28     |       1024       | 67.75     | 77.4  | 64.87 | 66.03 | 61.89 | 51.91 | 80.02 | 63.42 |  56   | 60.5  | 78.25 | 73.39 | 72.5  | 72.09 | 78.41 | 74.46 | 66.09 | 59.15 | 63.07 |
-| **minicpm - layer - 40** |       1024       | **67.77** | 77.49 | 64.8  | 66.02 | 62.05 | 51.78 | 80.12 | 62.98 | 55.7  | 60.51 | 78.07 | 73.01 | 72.64 | 72.81 | 78.51 | 74.24 | 65.82 | 59.43 | 63.91 |
+| model                | inference length | avg       |  ar   |  bn   |  en   |  es   |  fa   |  fi   |  fr   |  hi   |  id   |  ja   |  ko   |  ru   |  sw   |  te   |  th   |  zh   |  de   |  yo   |
+| -------------------- | :--------------: | --------- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| bge-m3               |     512+512      | 67.91     | 78.4  |  80   | 59.6  | 55.5  | 57.7  | 78.6  | 57.8  | 59.3  |  56   | 72.8  | 69.9  | 70.1  | 78.6  | 86.2  | 82.6  | 61.7  | 56.8  | 60.7  |
+| m3 rerank            |       1024       | 72.84     | 81.7  | 84.63 | 63.45 | 63.71 | 62.49 | 82.41 | 63.26 | 68.25 | 62.71 | 79.96 | 73.79 | 76.93 | 82.27 | 89.36 | 85.3  | 64.2  | 62.64 | 64.03 |
+| **gemma 2B**         |       1024       | **73.39** | 82.26 | 85.15 | 66.62 | 64.29 | 62.03 | 82.58 | 64.26 | 68.68 | 61.33 | 79.72 | 74.83 | 78.36 | 81.46 | 89.22 | 86.06 | 65.61 | 64.25 | 64.37 |
+| minicpm - layer - 20 |       1024       | 62.26     | 71.8  | 62.15 | 62.51 | 56.45 | 45.28 | 74.73 | 52.77 | 50.64 | 57.3  | 70.57 | 69.12 | 60.58 | 67.4  | 76.98 | 67.87 | 61.61 | 49.74 | 63.2  |
+| minicpm - layer - 28 |       1024       | 67.75     | 77.4  | 64.87 | 66.03 | 61.89 | 51.91 | 80.02 | 63.42 |  56   | 60.5  | 78.25 | 73.39 | 72.5  | 72.09 | 78.41 | 74.46 | 66.09 | 59.15 | 63.07 |
+| minicpm - layer - 40 |       1024       | 67.77     | 77.49 | 64.8  | 66.02 | 62.05 | 51.78 | 80.12 | 62.98 | 55.7  | 60.51 | 78.07 | 73.01 | 72.64 | 72.81 | 78.51 | 74.24 | 65.82 | 59.43 | 63.91 |
 
 Here are the evaluation results of llama-index.
 
