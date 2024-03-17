@@ -1,7 +1,7 @@
 # Reranker
 
 - [Model List](#model-list)
-- [Usage](#usage-)
+- [Usage](#usage)
 - [Fine-tuning](#fine-tune)
 - [Evaluation](#evaluation)
 - [Citation](#citation)
@@ -241,7 +241,7 @@ You can fine-tune the reranker with the following code:
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
 --output_dir {path to save model} \
---model_name_or_path google/gemma-2b \
+--model_name_or_path BAAI/bge-reranker-v2-gemma \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -272,7 +272,7 @@ torchrun --nproc_per_node {number of gpus} \
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
 --output_dir {path to save model} \
---model_name_or_path openbmb/MiniCPM-2B-dpo-fp16 \
+--model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -323,7 +323,8 @@ rereank the top 100 results from e5 mistral 7b instruct.
 
 ![image-20240317172949713](./evaluation/BEIR-e5-mistral.png)
 
-Here are the evaluation results of CMTEB-retrieval. It rereank the top 100 results from bge-zh-v1.5 large.
+- CMTEB-retrieval.   
+It rereank the top 100 results from bge-zh-v1.5 large.
 
 ![image-20240317173026235](./evaluation/CMTEB-retrieval-bge-zh-v1.5.png)
 
