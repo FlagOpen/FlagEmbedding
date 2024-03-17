@@ -68,10 +68,10 @@ from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
-print(score) # 2.15625
+print(score)
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
-print(scores) # [-0.84765625, 10.625]
+print(scores)
 ```
 
 #### For LLM-based layerwise reranker
@@ -81,10 +81,10 @@ from FlagEmbedding import LayerWiseFlagLLMReranker
 reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
-print(score) # -7.03125
+print(score)
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28])
-print(scores) # [-10.0, 1.8203125]
+print(scores)
 ```
 
 ### Using Huggingface transformers
