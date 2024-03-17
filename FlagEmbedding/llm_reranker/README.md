@@ -1,8 +1,17 @@
 # Reranker
 
-## Usage 
+- [Model List](#model-list)
+- [Usage](#usage)
+- [Fine-tuning](#fine-tune)
+- [Evaluation](#evaluation)
+- [Citation](#citation)
 
-**Model List**
+Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. 
+You can get a relevance score by inputting query and passage to the reranker. 
+And the score can be mapped to a float value in [0,1] by sigmoid function.
+
+
+## Model List
 
 | Model                                                                     | Base model                                                           | Language | layerwise |                           feature                            |
 |:--------------------------------------------------------------------------|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
@@ -12,18 +21,17 @@
 | [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | [google/gemma-2b](https://huggingface.co/google/gemma-2b) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |
 | [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |
 
-Different from embedding model, reranker uses question and document as input and directly output similarity instead of embedding. 
-You can get a relevance score by inputting query and passage to the reranker. 
-The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
 
-The use of different programming languages is recommended based on specific requirements: 
+You can select the model according your senario and resource. 
+- For **multilingual**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma)
 
-For **multilingual**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma)
+- For **Chinese or English**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
 
-For **Chinese or English**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
+- For **efficiency**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and the low layer of [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
 
-Regarding the need for **rapid inference**, utilize [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) and the low layer of [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise). 
+- For better performance, recommand [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) and [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma)
 
+## Usage 
 ### Using FlagEmbedding
 
 ```
@@ -41,12 +49,14 @@ reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_
 score = reranker.compute_score(['query', 'passage'])
 print(score) # -5.65234375
 
+# You can map the scores into 0-1 by set "normalize=True", which will apply sigmoid function to the score
 score = reranker.compute_score(['query', 'passage'], normalize=True)
 print(score) # 0.003497010252573502
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
 print(scores) # [-8.1875, 5.26171875]
 
+# You can map the scores into 0-1 by set "normalize=True", which will apply sigmoid function to the score
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], normalize=True)
 print(scores) # [0.00027803096387751553, 0.9948403768236574]
 ```
@@ -231,7 +241,7 @@ You can fine-tune the reranker with the following code:
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
 --output_dir {path to save model} \
---model_name_or_path google/gemma-2b \
+--model_name_or_path BAAI/bge-reranker-v2-gemma \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -262,7 +272,7 @@ torchrun --nproc_per_node {number of gpus} \
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
 --output_dir {path to save model} \
---model_name_or_path openbmb/MiniCPM-2B-dpo-fp16 \
+--model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -290,7 +300,7 @@ torchrun --nproc_per_node {number of gpus} \
 --head_type simple
 ```
 
-This reranker is initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
+Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
 
 - [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data)
 - [quora train data](https://huggingface.co/datasets/quora)
@@ -298,25 +308,31 @@ This reranker is initialized from [google/gemma-2b](https://huggingface.co/googl
 
 ## Evaluation
 
-Here are the evaluation results of BEIR. It rereank the top 100 results from bge-en-v1.5 large.
+- llama-index.
+
+![image-20240317193909373](./evaluation/llama-index.png)
+
+
+- BEIR.   
+
+rereank the top 100 results from bge-en-v1.5 large.
 
 ![image-20240317174633333](./evaluation/BEIR-bge-en-v1.5.png)
 
-Here are the evaluation results of BEIR. It rereank the top 100 results from e5 mistral 7b instruct.
+rereank the top 100 results from e5 mistral 7b instruct.
 
 ![image-20240317172949713](./evaluation/BEIR-e5-mistral.png)
 
-Here are the evaluation results of CMTEB-retrieval. It rereank the top 100 results from bge-zh-v1.5 large.
+- CMTEB-retrieval.   
+It rereank the top 100 results from bge-zh-v1.5 large.
 
 ![image-20240317173026235](./evaluation/CMTEB-retrieval-bge-zh-v1.5.png)
 
-Here are the evaluation results of miracl (multi-language). It rereank the top 100 results from bge-m3.
+- miracl (multi-language).   
+It rereank the top 100 results from bge-m3.
 
 ![image-20240317173117639](./evaluation/miracl-bge-m3.png)
 
-Here are the evaluation results of llama-index.
-
-![image-20240317193909373](./evaluation/llama-index.png)
 
 
 ## Citation
