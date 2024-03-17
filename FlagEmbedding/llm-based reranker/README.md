@@ -212,20 +212,20 @@ with torch.no_grad():
 
 Here are the evaluation results of BEIR. It rereank the top 100 results from bge-en-v1.5 large.
 
-![image-20240317172827450](evaluation\BEIR-bge-en-v1.5.png)
+![image-20240317174355071](./evaluation/BEIR-bge-en-v1.5.png)
 
 Here are the evaluation results of BEIR. It rereank the top 100 results from e5 mistral 7b instruct.
 
-![image-20240317172949713](evaluation\BEIR-e5-mistral.png)
+![image-20240317172949713](./evaluation/BEIR-e5-mistral.png)
 
 Here are the evaluation results of CMTEB-retrieval. It rereank the top 100 results from bge-zh-v1.5 large.
 
-![image-20240317173026235](evaluation\CMTEB-retrieval-bge-zh-v1.5.png)
+![image-20240317173026235](./evaluation/CMTEB-retrieval-bge-zh-v1.5.png)
 
 Here are the evaluation results of miracl (multi-language). It rereank the top 100 results from bge-m3.
 
-![image-20240317173117639](evaluation\miracl-bge-m3.png)
+![image-20240317173117639](./evaluation/miracl-bge-m3.png)
 
 Here are the evaluation results of llama-index.
 
-![image-20240317173318511](evaluation\llama-index.png)
+![image-20240317173318511](./evaluation/llama-index.png)
