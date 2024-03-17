@@ -255,7 +255,108 @@ The small-batch strategy is simple but effective, which also can used to fine-tu
 - MCLS: A simple method to improve the performance on long text without fine-tuning. 
 If you have no enough resource to fine-tuning model with long text, the method is useful.
 
-Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details.
+Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details. 
+
+
+## Examples
+
+### Zilliz
+
+```python
+# A demo showing semantic search with dense and sparse vectors, implemented
+# with BGE-M3 embedding model and the Milvus vector database.
+
+# The overall steps are as follows:
+# 1. embed the text as dense and sparse vectors using BGE-M3 model
+# 2. setup a Milvus collection to store the dense and sparse vectors
+# 3. insert the data to Milvus
+# 4. search and inspect the result!
+
+# 1. prepare a small corpus to search
+docs = [
+    "Artificial intelligence was founded as an academic discipline in 1956.",
+    "Alan Turing was the first person to conduct substantial research in AI.",
+    "Born in Maida Vale, London, Turing was raised in southern England.",
+]
+query = "Who started AI research?"
+
+# BGE-M3 model can embed texts as dense and sparse vectors.
+# It is included in the optional `model` module in pymilvus, to install it,
+# simply run "pip install pymilvus[model]".
+from pymilvus.model.hybrid import BGEM3EmbeddingFunction
+
+bge_m3_ef = BGEM3EmbeddingFunction(use_fp16=False, device="cpu")
+
+docs_embeddings = bge_m3_ef(docs)
+query_embeddings = bge_m3_ef([query])
+
+# 2. setup Milvus collection and index
+from pymilvus import (
+    utility,
+    FieldSchema, CollectionSchema, DataType,
+    Collection, AnnSearchRequest, RRFRanker, connections,
+)
+connections.connect("default", host="localhost", port="19530")
+
+# Specify the data schema for the new Collection.
+fields = [
+    # Use auto generated id as primary key
+    FieldSchema(name="pk", dtype=DataType.VARCHAR,
+                is_primary=True, auto_id=True, max_length=100),
+    # Store the original text to retrieve based on semantically distance
+    FieldSchema(name="text", dtype=DataType.VARCHAR, max_length=512),
+    # Milvus now supports both sparse and dense vectors, we can store each in
+    # a separate field to conduct hybrid search on both vectors.
+    FieldSchema(name="sparse_vector", dtype=DataType.SPARSE_FLOAT_VECTOR),
+    FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR,
+                dim=bge_m3_ef.dim["dense"]),
+]
+schema = CollectionSchema(fields, "")
+col_name = 'hybrid_demo'
+# Now we can create the new collection with above name and schema.
+col = Collection(col_name, schema, consistency_level="Strong")
+
+# We need to create indices for the vector fields. The indices will be loaded
+# into memory for efficient search.
+sparse_index = {"index_type": "SPARSE_INVERTED_INDEX", "metric_type": "IP"}
+col.create_index("sparse_vector", sparse_index)
+dense_index = {"index_type": "FLAT", "metric_type": "L2"}
+col.create_index("dense_vector", dense_index)
+col.load()
+
+# 3. insert text and sparse/dense vector representations into the collection
+entities = [docs, docs_embeddings["sparse"], docs_embeddings["dense"]]
+col.insert(entities)
+col.flush()
+
+# 4. search and inspect the result!
+k = 2 # we want to get the top 2 docs closest to the query
+
+# Prepare the search requests for both vector fields
+sparse_search_params = {"metric_type": "IP"}
+sparse_req = AnnSearchRequest(query_embeddings["sparse"],
+                              "sparse_vector", sparse_search_params, limit=k)
+dense_search_params = {"metric_type": "L2"}
+dense_req = AnnSearchRequest(query_embeddings["dense"],
+                             "dense_vector", dense_search_params, limit=k)
+
+# Search topK docs based on dense and sparse vectors and rerank with RRF.
+res = col.hybrid_search([sparse_req, dense_req], rerank=RRFRanker(),
+                        limit=k, output_fields=['text'])
+
+# Currently Milvus only support 1 query in the same hybrid search request, so
+# we inspect res[0] directly. In future release Milvus will accept batch
+# hybrid search queries in the same call.
+for hit in res[0]:
+    # print out the data of topK search results
+    print(f'text: {hit.fields["text"]} distance {hit.distance}')
+# Output is:
+# text: Alan Turing was the first person to conduct substantial research in AI. distance 0.032786883413791656
+# text: Artificial intelligence was founded as an academic discipline in 1956. distance 0.016129031777381897
+
+# Drop the collection to clean up the data.
+utility.drop_collection(col_name)
+```
 
 
 
