@@ -6,6 +6,28 @@ Different from embedding model, reranker uses question and document as input and
 You can get a relevance score by inputting query and passage to the reranker. 
 The reranker is optimized based cross-entropy loss, so the relevance score is not bounded to a specific range.
 
+## Model List
+
+| Model                                                                     | Language |                                                                                                                                                                                             |                                                             Description                                                             |                                query instruction for retrieval                                 |
+|:--------------------------------------------------------------------------|:--------:|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:----------------------------------------------------------------------------------------------:|
+| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     |    [Inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3#usage) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3)    | Multi-Functionality(dense retrieval, sparse retrieval, multi-vector(colbert)), Multi-Linguality, and Multi-Granularity(8192 tokens) |  |
+| [LM-Cocktail](https://huggingface.co/Shitao)                   |   English |                                                                                                                                                                                             |                     fine-tuned models (Llama and BGE) which can be used to reproduce the results of LM-Cocktail                     |  |
+| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English | [Inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |                         a unified embedding model to support diverse retrieval augmentation needs for LLMs                          | See [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English |                                    [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker)                                    |                                   a cross-encoder model which is more accurate but less efficient                                   |                                                                                                |
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base)   |   Chinese and English |                                    [Inference](#usage-for-reranker) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker)                                    |                                   a cross-encoder model which is more accurate but less efficient                                   |                                                                                                |
+| [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)   |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5)     |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)   |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5)   |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5)     |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5)   |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                      version 1.5 with more reasonable similarity distribution                                       |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en)             |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                             Embedding Model which map text into vector                                              |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en)               |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                    a base-scale model but with similar ability to `bge-large-en`                                    |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en)             |   English |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                        a small-scale model but with competitive performance                                         |                  `Represent this sentence for searching relevant passages: `                   |
+| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh)             |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                             Embedding Model which map text into vector                                              |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh)               |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                    a base-scale model but with similar ability to `bge-large-zh`                                    |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh)             |   Chinese |                                [Inference](#usage-for-embedding-model) [Fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune)                                 |                                        a small-scale model but with competitive performance                                         |                                     `为这个句子生成表示以用于检索相关文章：`                                      |
+
 
 ### Using FlagEmbedding
 ```
@@ -21,10 +43,10 @@ from FlagEmbedding import FlagReranker
 reranker = FlagReranker('BAAI/bge-reranker-v2-m3', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
-print(score)
+print(score) # -5.65234375
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
-print(scores)
+print(scores) # [-8.1875, 5.26171875]
 ```
 
 #### For LLM-based reranker
@@ -34,23 +56,23 @@ from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
-print(score)
+print(score) # 2.15625
 
 scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']])
-print(scores)
+print(scores) # [-0.84765625, 10.625]
 ```
 
 #### For LLM-based layerwise reranker
 
 ```python
 from FlagEmbedding import LayerWiseFlagLLMReranker
-reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True) # Setting use_bf16 to True speeds up computation with a slight performance degradation
+reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', use_bf16=True, cache_dir='/share/LMs') # Setting use_bf16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28,40]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score."
-print(score)
+score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
+print(score) # [-7.03125]
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28,40])
-print(scores)
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28])
+print(scores) # [-10,   1.8203125]
 ```
 
 ### Using Huggingface transformers
@@ -192,7 +214,7 @@ model.eval()
 pairs = [['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']]
 with torch.no_grad():
     inputs = get_inputs(pairs, tokenizer).to(model.device)
-    all_scores = model(**inputs, return_dict=True, cutoff_layers=[28,40])
+    all_scores = model(**inputs, return_dict=True, cutoff_layers=[28])
     all_scores = [scores[:, -1].view(-1, ).float() for scores in all_scores[0]]
     print(all_scores)
 ```

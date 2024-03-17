@@ -12,7 +12,7 @@ from torch.utils.data import Dataset
 import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 
-class DatasetForEmbedding(Dataset):
+class DatasetForReranker(Dataset):
     def __init__(
             self,
             dataset,
@@ -240,11 +240,11 @@ class FlagLLMReranker:
         length_sorted_idx = np.argsort([-self._text_length(q) - self._text_length(p) for q, p in sentence_pairs])
         sentences_sorted = [sentence_pairs[idx] for idx in length_sorted_idx]
 
-        dataset = DatasetForEmbedding(sentences_sorted,
-                                      self.model_name_or_path,
-                                      max_length,
-                                      cache_dir=self.cache_dir,
-                                      prompt=prompt)
+        dataset = DatasetForReranker(sentences_sorted,
+                                     self.model_name_or_path,
+                                     max_length,
+                                     cache_dir=self.cache_dir,
+                                     prompt=prompt)
         dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
                                 num_workers=min(batch_size, 16),
                                 collate_fn=collater(self.tokenizer, max_length))
@@ -341,11 +341,11 @@ class LayerWiseFlagLLMReranker:
         length_sorted_idx = np.argsort([-self._text_length(q) - self._text_length(p) for q, p in sentence_pairs])
         sentences_sorted = [sentence_pairs[idx] for idx in length_sorted_idx]
 
-        dataset = DatasetForEmbedding(sentences_sorted,
-                                      self.model_name_or_path,
-                                      max_length,
-                                      cache_dir=self.cache_dir,
-                                      prompt=prompt)
+        dataset = DatasetForReranker(sentences_sorted,
+                                     self.model_name_or_path,
+                                     max_length,
+                                     cache_dir=self.cache_dir,
+                                     prompt=prompt)
         dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
                                 num_workers=min(batch_size, 16),
                                 collate_fn=collater(self.tokenizer, max_length))
