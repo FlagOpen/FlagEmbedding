@@ -212,7 +212,7 @@ with torch.no_grad():
 
 Here are the evaluation results of BEIR. It rereank the top 100 results from bge-en-v1.5 large.
 
-![image-20240317174355071](./evaluation/BEIR-bge-en-v1.5.png)
+![image-20240317174633333](./evaluation/BEIR-bge-en-v1.5.png)
 
 Here are the evaluation results of BEIR. It rereank the top 100 results from e5 mistral 7b instruct.
 
