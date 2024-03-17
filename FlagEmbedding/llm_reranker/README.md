@@ -244,8 +244,6 @@ torchrun --nproc_per_node {number of gpus} \
 
 **For llm-based layerwise reranker**
 
-**For llm-based reranker**
-
 ```shell
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
