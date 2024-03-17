@@ -302,7 +302,7 @@ Here are the evaluation results of miracl (multi-language). It rereank the top 1
 
 Here are the evaluation results of llama-index.
 
-![image-20240317180559538](./evaluation/llama-index.png)
+![image-20240317193909373](./evaluation/llama-index.png)
 
 
 ## Citation
