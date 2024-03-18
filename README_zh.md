@@ -68,7 +68,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 我们优化了批处理策略，支持大批处理大小，这可以在对长文本或大型语言模型进行向量微调时简单使用。
 我们还构建了一个用于文档检索的数据集，并提出了一个简单的策略来提高长文本的建模能力。
 **训练代码和微调数据将在不久的将来开源。**
- 
+
 
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
@@ -105,6 +105,10 @@ LLM-Embedder向量模型是根据LLM的反馈进行微调的。
 更多细节请参考[./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/reranker/README.md)
 
 
+
+我们以大语言模型为基础在多语言数据上训练了新的交叉编码器，数据格式与向量模型类似，但是新增了prompt的数据，您可以根根据我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune) 轻松地对其进行微调。
+
+更多细节请参考[./FlagEmbedding/llm_reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_reranker/README.md)
 
 ### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
 
@@ -153,7 +157,7 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
 <a href="https://github.com/FlagOpen/FlagEmbedding/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=FlagOpen/FlagEmbedding" />
 </a>
- 
+
 
 
 ## Citation
