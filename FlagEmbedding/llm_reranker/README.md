@@ -233,6 +233,20 @@ with torch.no_grad():
 
 ## Fine-tune
 
+### Data Format
+
+Train data should be a json file, where each line is a dict like this:
+
+```
+{"query": str, "pos": List[str], "neg":List[str], "prompt": str}
+```
+
+`query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts, `prompt` indicates the relationship between query and texts. If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
+
+See [toy_finetune_data.jsonl](FlagEmbedding/llm_reranker/toy_finetune_data.jsonl) for a toy data file.
+
+### Train
+
 You can fine-tune the reranker with the following code:
 
 **For llm-based reranker**

@@ -106,8 +106,7 @@ LLM-Embedder向量模型是根据LLM的反馈进行微调的。
 
 
 
-我们以大语言模型为基础在多语言数据上训练了新的交叉编码器，数据格式与向量模型类似，但是新增了prompt的数据。您可以使用特定的层进行推理或使用完整的层进行推理，您可以根根据我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune) 轻松地对其进行微调。
-
+我们提供了新版的交叉编码器，支持更多的语言以及更长的长度。使用的数据格式与向量模型类似，但是新增了prompt用于微调以及推理。您可以使用特定的层进行推理或使用完整的层进行推理，您可以根根据我们的[示例](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune) 轻松地对其进行微调。
 更多细节请参考[./FlagEmbedding/llm_reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_reranker/README.md)
 
 ### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
