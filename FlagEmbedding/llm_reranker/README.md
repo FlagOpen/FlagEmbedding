@@ -331,7 +331,7 @@ Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/goog
 
 rereank the top 100 results from bge-en-v1.5 large.
 
-![image-20240317174633333](./evaluation/BEIR-bge-en-v1.5.png)
+![image-20240318152741276](./evaluation/BEIR-bge-en-v1.5.png)
 
 rereank the top 100 results from e5 mistral 7b instruct.
 
