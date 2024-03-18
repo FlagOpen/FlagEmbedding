@@ -1,7 +1,7 @@
 # Visualized BGE
 
 
-In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By integrating image token embedding into the BGE Text Embedding framework, Visualized-BGE is equipped to handle multi-modal data that extends beyond text in a flexible manner. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
+In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By incorporating image token embedding into the BGE Text Embedding framework, Visualized-BGE gains the flexibility to process multi-modal data that goes beyond just text. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
 
 - Multi-Modal Knowledge Retrieval (query: text; candidate: image-text pairs, text, or image)  e.g. [WebQA](https://github.com/WebQnA/WebQA)
 - Composed Image Retrieval (query: image-text pair; candidate: images) e.g. [CIRR](), [FashionIQ]()
@@ -10,9 +10,6 @@ In this project, we introduce Visualized-BGE, a universal multi-modal embedding 
 Moreover, Visualized BGE fully preserves the strong text embedding capabilities of the original BGE model : )
 
 ## Specs
-
-
-
 ### Model
 | **Model Name** | **Dimension** | **Text Embedding Model** | **Language** | **Weight** |
 | --- | --- | --- | --- | --- |
@@ -38,13 +35,13 @@ pip install torchvision timm einops ftfy
 You don't need to install `xformer` and `apex`. They are not essential for inference and can often cause issues.
 
 ### Generate Embedding for Multi-Modal Data:
-You have the flexibility to use Visualized-BGE encoding for multi-modal data in various formats. This includes data that is exclusively text-based, solely image-based, or a combination of both text and image data.
+Visualized-BGE provides the versatility to encode multi-modal data in a variety of formats, whether it's purely text, solely image-based, or a combination of both.
 
 > **Note:** Please download the model weight file ([bge-visualized-base-en-v1.5](https://huggingface.co/BAAI/bge-visualized/resolve/main/Visualized_base_en_v1.5.pth?download=true), [bge-visualized-m3](https://huggingface.co/BAAI/bge-visualized/resolve/main/Visualized_m3.pth?download=true)) in advance and pass the path to the `model_weight` parameter.
 
 - Composed Image Retrieval
 ``` python
-############ Use Visualized BGE doing composed image retrieval
+####### Use Visualized BGE doing composed image retrieval
 import torch
 from FlagEmbedding.visual.modeling import Visualized_BGE
 
@@ -79,11 +76,9 @@ sim_2 = query_emb @ candi_emb_2.T
 sim_3 = query_emb @ candi_emb_3.T
 print(sim_1, sim_2, sim_3) # tensor([[0.6932]]) tensor([[0.4441]]) tensor([[0.6415]])
 ```
-
 - Multilingual Multi-Modal Retrieval
 ``` python
 ##### Use M3 doing Multilingual Multi-Modal Retrieval
-
 import torch
 from FlagEmbedding.visual.modeling import Visualized_BGE
 
