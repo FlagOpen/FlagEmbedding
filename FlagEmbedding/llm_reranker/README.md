@@ -18,8 +18,8 @@ And the score can be mapped to a float value in [0,1] by sigmoid function.
 | [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base) | [xlm-roberta-base](https://huggingface.co/xlm-roberta-base) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. |
 | [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | [xlm-roberta-large](https://huggingface.co/FacebookAI/xlm-roberta-large) | Chinese and English |     -     | Lightweight reranker model, easy to deploy, with fast inference. |
 | [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | [bge-m3](https://huggingface.co/BAAI/bge-m3) |    Multilingual     |     -     | Lightweight reranker model, possesses strong multilingual capabilities, easy to deploy, with fast inference. |
-| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | [google/gemma-2b](https://huggingface.co/google/gemma-2b) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |
-| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |
+| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | [gemma-2b](https://huggingface.co/google/gemma-2b) |    Multilingual     |     -     | Suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |
+| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | [MiniCPM-2B-dpo-bf16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-bf16) |    Multilingual     |   8-40    | Suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |
 
 
 You can select the model according your senario and resource. 
@@ -255,7 +255,7 @@ You can fine-tune the reranker with the following code:
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-reranker-v2-gemma \
+--model_name_or_path google/gemma-2b \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -286,7 +286,7 @@ torchrun --nproc_per_node {number of gpus} \
 torchrun --nproc_per_node {number of gpus} \
 -m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
 --output_dir {path to save model} \
---model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
+--model_name_or_path openbmb/MiniCPM-2B-dpo-bf16 \
 --train_data ./toy_finetune_data.jsonl \
 --learning_rate 2e-4 \
 --num_train_epochs 1 \
@@ -314,7 +314,7 @@ torchrun --nproc_per_node {number of gpus} \
 --head_type simple
 ```
 
-Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-fp16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-fp16/tree/main) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
+Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-bf16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-bf16) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
 
 - [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data)
 - [quora train data](https://huggingface.co/datasets/quora)
