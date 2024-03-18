@@ -26,6 +26,7 @@ def get_model(model_args, training_args, only_for_one_logit: int = None):
         trust_remote_code=True,
     )
 
+
     config.start_layer = model_args.start_layer
     config.head_multi = model_args.head_multi
     config.head_type = model_args.head_type

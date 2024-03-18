@@ -258,3 +258,4 @@ class LLMEmbedder:
             return s / d
         else:
             raise NotImplementedError(f"Pooling method {self.pooling_method} not implemented!")
+

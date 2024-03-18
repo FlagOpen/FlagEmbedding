@@ -9,7 +9,6 @@ from transformers.file_utils import ModelOutput
 
 logger = logging.getLogger(__name__)
 
-
 @dataclass
 class RerankerOutput(ModelOutput):
     loss: Optional[Tensor] = None

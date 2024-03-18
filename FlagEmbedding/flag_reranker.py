@@ -12,6 +12,7 @@ from torch.utils.data import Dataset
 import os
 os.environ['TOKENIZERS_PARALLELISM'] = 'true'
 
+
 class DatasetForReranker(Dataset):
     def __init__(
             self,
