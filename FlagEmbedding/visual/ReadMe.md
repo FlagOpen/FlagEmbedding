@@ -126,5 +126,5 @@ The image token embedding model in this project is built upon the foundations la
 
 ## Citation
 If you find this repository useful, please consider giving a star ⭐ and citation
-> paper will be released soon
+> Paper will be released soon
 
