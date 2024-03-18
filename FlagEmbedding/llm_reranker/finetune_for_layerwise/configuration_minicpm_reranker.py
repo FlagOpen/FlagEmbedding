@@ -27,7 +27,6 @@ logger = logging.get_logger(__name__)
 
 MINICPM_PRETRAINED_CONFIG_ARCHIVE_MAP = {}
 
-
 class LayerWiseMiniCPMConfig(PretrainedConfig):
     r"""
     This is the configuration class to store the configuration of a [`MiniCPMModel`]. It is used to instantiate an MiniCPM

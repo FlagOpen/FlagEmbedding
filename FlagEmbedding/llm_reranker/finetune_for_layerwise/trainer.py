@@ -43,7 +43,6 @@ class BiTrainer(Trainer):
 
         Subclass and override for custom behavior.
         """
-
         outputs = model(**inputs)
         loss = outputs.loss
 

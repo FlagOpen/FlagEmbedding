@@ -134,6 +134,7 @@ class TrainDatasetForReranker(Dataset):
 
         return passages_inputs
 
+
 @dataclass
 class RerankCollator(DataCollatorForSeq2Seq):
     """

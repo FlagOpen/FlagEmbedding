@@ -49,18 +49,19 @@ It is the first embedding model which supports all three retrieval methods, achi
 - 09/12/2023: New models: 
     - **New reranker model**: release cross-encoder models `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`, which are more powerful than embedding model. We recommend to use/fine-tune them to re-rank top-k documents returned by embedding models. 
     - **update embedding model**: release `bge-*-v1.5` embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
- 
+
 
 <details>
   <summary>More</summary>
 <!-- ### More -->
-    
+
 - 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning. 
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**  
 - 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada:   
 - 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
   
+
 </details>
 
 
@@ -120,6 +121,9 @@ The data format is the same as embedding model, so you can fine-tune it easily f
 For more details please refer to [./FlagEmbedding/reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker)
 
 
+
+We provide a new version of the cross-encoder that supports more languages and longer lengths. The data format is similar to our embedding models, but now includes prompt data for fine-tuning and inference. You can perform inference using specific layers or using the entire layers. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune).
+For more details please refer to [./FlagEmbedding/llm_reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker).
 
 ### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
 
@@ -217,5 +221,4 @@ If you find this repository useful, please consider giving a star :star: and cit
 
 ## License
 FlagEmbedding is licensed under the [MIT License](https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE). 
-
 

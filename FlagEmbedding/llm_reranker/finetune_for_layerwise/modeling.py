@@ -15,7 +15,6 @@ class RerankerOutput(ModelOutput):
     loss: Optional[Tensor] = None
     scores: Optional[Tensor] = None
 
-
 class BiEncoderModel(nn.Module):
     def __init__(self,
                  model: None,

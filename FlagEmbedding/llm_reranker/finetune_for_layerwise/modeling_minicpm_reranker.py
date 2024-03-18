@@ -54,6 +54,7 @@ from transformers.utils.import_utils import is_torch_fx_available
 from .configuration_minicpm_reranker import LayerWiseMiniCPMConfig
 import re
 
+
 try:
     from flash_attn import flash_attn_func, flash_attn_varlen_func
     from flash_attn.bert_padding import index_first_axis, pad_input, unpad_input  # noqa

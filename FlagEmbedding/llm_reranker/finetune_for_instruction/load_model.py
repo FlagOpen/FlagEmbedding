@@ -13,7 +13,6 @@ def get_model(model_args, training_args):
         from_tf=bool(".ckpt" in model_args.model_name_or_path),
         trust_remote_code=True,
     )
-
     model.config.use_cache = False
 
     if model_args.from_peft is not None:

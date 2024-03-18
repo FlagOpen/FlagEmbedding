@@ -25,7 +25,6 @@ def main():
     data_args: DataArguments
     training_args: TrainingArguments
 
-
     if (
             os.path.exists(training_args.output_dir)
             and os.listdir(training_args.output_dir)
