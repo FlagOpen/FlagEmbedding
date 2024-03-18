@@ -316,11 +316,16 @@ class LayerWiseFlagLLMReranker:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
                                                        cache_dir=cache_dir,
                                                        trust_remote_code=True)
-
-        self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
-                                                          cache_dir=cache_dir,
-                                                          trust_remote_code=True,
-                                                          torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+        if use_bf16:
+            self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
+                                                              cache_dir=cache_dir,
+                                                              trust_remote_code=True,
+                                                              torch_dtype=torch.bfloat16)
+        else:
+            self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
+                                                              cache_dir=cache_dir,
+                                                              trust_remote_code=True,
+                                                              use_flash_attention_2=False)
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
@@ -344,8 +349,8 @@ class LayerWiseFlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
-                      normalize: bool = False) -> float | list[Any] | list[float | Any] | list[
-        list[Any] | list[float | Any]] | Any:
+                      normalize: bool = False) -> Union[float, List[Any], List[Union[float, Any]], List[
+    List[Any], List[Union[float, Any]]], Any]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -408,46 +413,3 @@ class LayerWiseFlagLLMReranker:
             return len(text)
         else:
             return sum([len(t) for t in text])  # Sum of length of individual strings
-
-def get_inputs(pairs, tokenizer, prompt=None, max_length=1024):
-    if prompt is None:
-        prompt = "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'."
-    sep = "\n"
-    prompt_inputs = tokenizer(prompt,
-                              return_tensors=None,
-                              add_special_tokens=False)['input_ids']
-    sep_inputs = tokenizer(sep,
-                           return_tensors=None,
-                           add_special_tokens=False)['input_ids']
-    inputs = []
-    for query, passage in pairs:
-        query_inputs = tokenizer(query,
-                                 return_tensors=None,
-                                 add_special_tokens=False,
-                                 max_length=max_length * 3 // 4,
-                                 truncation=True)
-        passage_inputs = tokenizer(passage,
-                                   return_tensors=None,
-                                   add_special_tokens=False,
-                                   max_length=max_length,
-                                   truncation=True)
-        item = tokenizer.prepare_for_model(
-            [tokenizer.bos_token_id] + query_inputs['input_ids'],
-            sep_inputs + passage_inputs['input_ids'],
-            truncation='only_second',
-            max_length=max_length,
-            padding=False,
-            return_attention_mask=False,
-            return_token_type_ids=False,
-            add_special_tokens=False
-        )
-        item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
-        item['attention_mask'] = [1] * len(item['input_ids'])
-        inputs.append(item)
-    return tokenizer.pad(
-            inputs,
-            padding=True,
-            max_length=max_length,
-            pad_to_multiple_of=8,
-            return_tensors='pt',
-    )
