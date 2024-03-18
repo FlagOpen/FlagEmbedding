@@ -301,7 +301,7 @@ class Visualized_BGE(nn.Module):
         ### for stage-2 training
         if task_type == "edit_image":
             mm_query_reps = self.encode_mm(mm_it_query[0], mm_it_query[1])
-            image_candi_reps = self.encode_image_only(image_candidate) #输入的是token序列
+            image_candi_reps = self.encode_image(image_candidate) #输入的是token序列
             query_reps = mm_query_reps
             candi_reps = image_candi_reps
                 
@@ -326,8 +326,6 @@ class Visualized_BGE(nn.Module):
             
             loss_edit = self.compute_loss(scores, target)
             loss = loss_edit
-
-            # self.tf_writer.add_scalar("loss_image_edit", loss_edit)
             
             logging.info("task types: %s; loss: %s" %(task_type, str(loss_edit)))
         else:
