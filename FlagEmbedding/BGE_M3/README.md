@@ -258,9 +258,9 @@ If you have no enough resource to fine-tuning model with long text, the method i
 Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details. 
 
 
-## Examples
+## Examples of hybrid retrieval
 
-### Zilliz
+### Milvus
 
 ```python
 # A demo showing semantic search with dense and sparse vectors, implemented
@@ -382,7 +382,7 @@ If you find this repository useful, please consider giving a star :star: and cit
 }
 ```
 
-## Zilliz Example 
+
 
 
 
