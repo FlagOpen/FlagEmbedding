@@ -42,7 +42,7 @@ You have the flexibility to use Visualized-BGE encoding for multi-modal data in 
 
 > **Note:** Please download the model weight file ([bge-visualized-base-en-v1.5](https://huggingface.co/BAAI/bge-visualized/resolve/main/Visualized_base_en_v1.5.pth?download=true), [bge-visualized-m3](https://huggingface.co/BAAI/bge-visualized/resolve/main/Visualized_m3.pth?download=true)) in advance and pass the path to the `model_weight` parameter.
 
-- Composed Image Retrival
+- Composed Image Retrieval
 ``` python
 ############ Use Visualized BGE doing composed image retrieval
 import torch
