@@ -36,6 +36,7 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 - **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 
 ## 更新
+- 3/18/2024: 发布[Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/visual)，该项目通过引入image token embedding赋予BGE视觉编码能力。Visualized-BGE可以对混合图文数据进行编码，用于广泛的混合模态检索任务。
 - 1/30/2024: 发布**BGE-M3**, 第一个具有多功能、多语言和多粒度特性的文本检索模型，高效支持多语言（100+语言）、长文本（至多8192长度的输入文本）、和混合检索（稠密、稀疏、多向量）。 详见[report](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/BGE_M3/BGE_M3.pdf)和[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3)  :fire:
 
 - 1/9/2024: 发布[Activation-Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon), 一个有效、高效、兼容、低成本（训练）的扩展大预言模型上下文长度的方法。[技术报告](https://arxiv.org/abs/2401.03462) :fire:
@@ -69,6 +70,9 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 我们还构建了一个用于文档检索的数据集，并提出了一个简单的策略来提高长文本的建模能力。
 **训练代码和微调数据将在不久的将来开源。**
 
+### [Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/visual)
+在这个项目中，我们发布了Visualized-BGE。
+通过引入image token embedding，Visualized-BGE可以被用来编码混合图文数据。它可以被应用在广泛的多模态检索任务中，包括但不限于：多模态知识检索，多模态查询的图像检索等。
 
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
