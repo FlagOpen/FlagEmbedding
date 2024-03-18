@@ -78,7 +78,13 @@ We optimize the batching strategy, enabling a large batch size, which can used s
 We also construct a dataset for document retrieval and propose a simple strategy to improve the ability to model long text.
 **The training code and fine-tuning data will be open-sourced in the near future.**
 
+### [Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/visual)
+In this project, we introduce Visualized-BGE, which integrating image token embedding into the BGE Text Embedding framework. Visualized-BGE can be used for hybrid modal retrieval tasks, including but not limited to:
+- Multi-Modal Knowledge Retrieval
+- Composed Image Retrieval
+- Knowledge Retrieval with Multi-Modal Queries
 
+Our model delivers outstanding zero-shot performance across multiple hybrid modal retrieval tasks. It can also serve as a base model for downstream fine-tuning for hybrid modal retrieval tasks.
 
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
