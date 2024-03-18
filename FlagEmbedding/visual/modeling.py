@@ -171,7 +171,7 @@ class Visualized_BGE(nn.Module):
 
         token_type_ids = torch.zeros(input_shape, dtype=torch.long, device=device)
 
-        head_mask = [None] * 24
+        head_mask = [None] * self.depth
         extended_attention_mask: torch.Tensor = self.get_extended_attention_mask(attention_mask, input_shape)
         
         embedding_output = self.bge_embeddings(
