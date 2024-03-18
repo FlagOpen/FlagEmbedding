@@ -37,6 +37,7 @@ FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following p
 - **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB)
 
 ## News 
+- 3/18/2024: Release [Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/visual), equipping BGE with visual capabilities. Visualized-BGE can be utilized to generate embeddings for hybrid image-text data. :fire:
 - 1/30/2024: Release **BGE-M3**, a new member to BGE model series! M3 stands for **M**ulti-linguality (100+ languages), **M**ulti-granularities (input length up to 8192), **M**ulti-Functionality (unification of dense, lexical, multi-vec/colbert retrieval). 
 It is the first embedding model which supports all three retrieval methods, achieving new SOTA on multi-lingual (MIRACL) and cross-lingual (MKQA) benchmarks.
 [Technical Report](https://arxiv.org/pdf/2402.03216.pdf) and [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3). :fire:
@@ -79,7 +80,10 @@ We optimize the batching strategy, enabling a large batch size, which can used s
 We also construct a dataset for document retrieval and propose a simple strategy to improve the ability to model long text.
 **The training code and fine-tuning data will be open-sourced in the near future.**
 
+### [Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/visual)
+In this project, we introduce Visualized-BGE, which integrating image token embedding into the BGE Text Embedding framework. Visualized-BGE can be used for various hybrid modal retrieval tasks, such as Multi-Modal Knowledge Retrieval, Composed Image Retrieval, and Knowledge Retrieval with Multi-Modal Queries.
 
+Our model delivers outstanding zero-shot performance across multiple hybrid modal retrieval tasks. It can also serve as a base model for downstream fine-tuning for hybrid modal retrieval tasks.
 
 ### [Activation Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/activation_beacon)
 
