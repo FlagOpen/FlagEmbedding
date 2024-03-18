@@ -123,7 +123,7 @@ For more details please refer to [./FlagEmbedding/reranker/README.md](https://gi
 
 
 We provide a new version of the cross-encoder that supports more languages and longer lengths. The data format is similar to our embedding models, but now includes prompt data for fine-tuning and inference. You can perform inference using specific layers or using the entire layers. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune).
-For more details please refer to [./FlagEmbedding/llm_reranker/README.md](https://chat.openai.com/c/d01ef7ef-5c1c-4e2a-89aa-15f31f5ac368).
+For more details please refer to [./FlagEmbedding/llm_reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker).
 
 ### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding) 
 
