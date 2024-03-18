@@ -122,7 +122,7 @@ For more details please refer to [./FlagEmbedding/reranker/README.md](https://gi
 
 
 
-We train some new cross-encoders on a multilingual pair data based on LLM. The data format is similar to our embedding models, but with the addition of prompt data. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune).
+We train some new cross-encoders on a multilingual pair data based on LLM. The data format is similar to our embedding models, but with the addition of prompt data. You can perform inference using specific layers or using the entire layers. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune).
 
 For more details please refer to [./FlagEmbedding/llm_reranker/README.md](https://chat.openai.com/c/d01ef7ef-5c1c-4e2a-89aa-15f31f5ac368).
 
