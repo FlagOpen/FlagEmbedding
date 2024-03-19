@@ -1,16 +1,18 @@
 """
 python step0-hybrid_search_results.py \
 --model_name_or_path BAAI/bge-m3 \
---languages ar de en es fr hi it ja ko pt ru th zh \
+--languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
 --dense_search_result_save_dir ../dense_retrieval/search_results \
 --sparse_search_result_save_dir ../sparse_retrieval/search_results \
 --hybrid_result_save_dir ./search_results \
 --top_k 1000 \
---dense_weight 0.2 --sparse_weight 0.8
+--dense_weight 1 --sparse_weight 0.3 \
+--threads 32
 """
 import os
 import pandas as pd
 from tqdm import tqdm
+import multiprocessing
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 
@@ -23,20 +25,20 @@ class EvalArgs:
     )
     languages: str = field(
         default="en",
-        metadata={'help': 'Languages to evaluate. Avaliable languages: ar de en es fr hi it ja ko pt ru th zh', 
+        metadata={'help': 'Languages to evaluate. Avaliable languages: en ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw', 
                   "nargs": "+"}
     )
     top_k: int = field(
         default=1000,
         metadata={'help': 'Use reranker to rerank top-k retrieval results'}
     )
-    sparse_weight: float = field(
-        default=0.8,
-        metadata={'help': 'Hybrid weight of sparse score'}
-    )
     dense_weight: float = field(
-        default=0.2,
+        default=1,
         metadata={'help': 'Hybrid weight of dense score'}
+    )
+    sparse_weight: float = field(
+        default=0.3,
+        metadata={'help': 'Hybrid weight of sparse score'}
     )
     dense_search_result_save_dir: str = field(
         default='../dense_retrieval/search_results',
@@ -50,12 +52,16 @@ class EvalArgs:
         default='./search_results',
         metadata={'help': 'Dir to saving hybrid search results. Reranked results will be saved to `hybrid_result_save_dir/{model_name_or_path}/{lang}.txt`'}
     )
+    threads: int = field(
+        default=1,
+        metadata={"help": "num of evaluation threads. <= 1 means single thread"}
+    )
 
 
 def check_languages(languages):
     if isinstance(languages, str):
         languages = [languages]
-    avaliable_languages = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'th', 'zh']
+    avaliable_languages = ['en', 'ar', 'fi', 'ja', 'ko', 'ru', 'es', 'sv', 'he', 'th', 'da', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'hu', 'vi', 'ms', 'km', 'no', 'tr', 'zh_cn', 'zh_hk', 'zh_tw']
     for lang in languages:
         if lang not in avaliable_languages:
             raise ValueError(f"Language `{lang}` is not supported. Avaliable languages: {avaliable_languages}")
@@ -82,7 +88,19 @@ def get_search_result_dict(search_result_path: str, top_k: int=1000):
     return search_result_dict
 
 
-def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dict: dict, hybrid_result_save_path: str, top_k: int=1000, dense_weight: float=0.2, sparse_weight: float=0.8):
+def get_queries_dict(queries_path: str):
+    queries_dict = {}
+    for _, row in pd.read_csv(queries_path, sep='\t', header=None).iterrows():
+        qid = str(row.iloc[0])
+        query = row.iloc[1]
+        queries_dict[qid] = query
+    return queries_dict
+
+
+def save_hybrid_results(sparse_search_result_path: str, dense_search_result_path: str, hybrid_result_save_path: str, top_k: int=1000, dense_weight: float=0.2, sparse_weight: float=0.5):
+    sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=top_k)
+    dense_search_result_dict = get_search_result_dict(dense_search_result_path, top_k=top_k)
+    
     if not os.path.exists(os.path.dirname(hybrid_result_save_path)):
         os.makedirs(os.path.dirname(hybrid_result_save_path))
     
@@ -123,35 +141,55 @@ def main():
     if os.path.basename(eval_args.model_name_or_path).startswith('checkpoint-'):
         eval_args.model_name_or_path = os.path.dirname(eval_args.model_name_or_path) + '_' + os.path.basename(eval_args.model_name_or_path)
     
-    for lang in languages:
-        print("**************************************************")
-        print(f"Start hybrid search results of {lang} ...")
-        
-        hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, f"{os.path.basename(eval_args.model_name_or_path)}", f"{lang}.txt")
-        
-        sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
-        sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
-        
-        sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=eval_args.top_k)
-        
-        dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
-
-        dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
-        
-        dense_search_result_dict = get_search_result_dict(dense_search_result_path, top_k=eval_args.top_k)
-        
-        save_hybrid_results(
-            sparse_search_result_dict=sparse_search_result_dict, 
-            dense_search_result_dict=dense_search_result_dict, 
-            hybrid_result_save_path=hybrid_result_save_path,
-            top_k=eval_args.top_k,
-            sparse_weight=eval_args.sparse_weight,
-            dense_weight=eval_args.dense_weight
-        )
+    if eval_args.threads > 1:
+        threads = min(len(languages), eval_args.threads)
+        pool = multiprocessing.Pool(processes=threads)
+        for lang in languages:
+            print("**************************************************")
+            print(f"Start hybrid search results of {lang} ...")
+            
+            hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, f"{os.path.basename(eval_args.model_name_or_path)}", f"{lang}.txt")
+            
+            sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
+            sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
+            
+            dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
+            dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
+            
+            pool.apply_async(save_hybrid_results, args=(
+                sparse_search_result_path,
+                dense_search_result_path,
+                hybrid_result_save_path,
+                eval_args.top_k,
+                eval_args.dense_weight,
+                eval_args.sparse_weight
+            ))
+        pool.close()
+        pool.join()
+    else:
+        for lang in languages:
+            print("**************************************************")
+            print(f"Start hybrid search results of {lang} ...")
+            
+            hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, f"{os.path.basename(eval_args.model_name_or_path)}", f"{lang}.txt")
+            
+            sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
+            sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
+            
+            dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, os.path.basename(eval_args.model_name_or_path))
+            dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
+            
+            save_hybrid_results(
+                sparse_search_result_path=sparse_search_result_path, 
+                dense_search_result_path=dense_search_result_path, 
+                hybrid_result_save_path=hybrid_result_save_path,
+                top_k=eval_args.top_k,
+                dense_weight=eval_args.dense_weight,
+                sparse_weight=eval_args.sparse_weight
+            )
     
     print("==================================================")
-    print("Finish generating reranked results with following model:")
-    print(eval_args.model_name_or_path)
+    print("Finish generating reranked results with following model:", eval_args.model_name_or_path)
 
 
 if __name__ == "__main__":

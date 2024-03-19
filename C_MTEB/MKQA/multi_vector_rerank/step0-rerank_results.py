@@ -2,19 +2,20 @@
 python step0-rerank_results.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar de en es fr hi it ja ko pt ru th zh \
+--languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
 --search_result_save_dir ../dense_retrieval/search_results \
+--qa_data_dir ../qa_data \
 --rerank_result_save_dir ./rerank_results \
---top_k 200 \
+--top_k 100 \
 --batch_size 4 \
---max_query_length 512 \
---max_passage_length 8192 \
+--max_length 512 \
 --pooling_method cls \
 --normalize_embeddings True \
---dense_weight 0.15 --sparse_weight 0.5 --colbert_weight 0.35 \
+--dense_weight 1 --sparse_weight 0.3 --colbert_weight 1 \
 --num_shards 1 --shard_id 0 --cuda_id 0
 """
 import os
+import sys
 import copy
 import datasets
 import pandas as pd
@@ -22,6 +23,10 @@ from tqdm import tqdm
 from FlagEmbedding import BGEM3FlagModel
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+
+sys.path.append("..")
+
+from utils.normalize_text import normalize
 
 
 @dataclass
@@ -31,7 +36,7 @@ class ModelArgs:
         metadata={'help': 'Name or path of reranker'}
     )
     fp16: bool = field(
-        default=True,
+        default=False,
         metadata={'help': 'Use fp16 in inference?'}
     )
     pooling_method: str = field(
@@ -48,15 +53,11 @@ class ModelArgs:
 class EvalArgs:
     languages: str = field(
         default="en",
-        metadata={'help': 'Languages to evaluate. Avaliable languages: ar de en es fr hi it ja ko pt ru th zh', 
+        metadata={'help': 'Languages to evaluate. Avaliable languages: en ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw', 
                   "nargs": "+"}
     )
-    max_query_length: int = field(
+    max_length: int = field(
         default=512,
-        metadata={'help': 'Max text length.'}
-    )
-    max_passage_length: int = field(
-        default=8192,
         metadata={'help': 'Max text length.'}
     )
     batch_size: int = field(
@@ -75,6 +76,10 @@ class EvalArgs:
         default='./output_results',
         metadata={'help': 'Dir to saving search results. Search results path is `result_save_dir/{encoder}/{lang}.txt`'}
     )
+    qa_data_dir: str = field(
+        default='./qa_data',
+        metadata={'help': 'Dir to topics and qrels.'}
+    )
     rerank_result_save_dir: str = field(
         default='./rerank_results',
         metadata={'help': 'Dir to saving reranked results. Reranked results will be saved to `rerank_result_save_dir/{encoder}-{reranker}/{lang}.txt`'}
@@ -92,15 +97,15 @@ class EvalArgs:
         metadata={'help': 'CUDA ID to use. -1 means only use CPU.'}
     )
     dense_weight: float = field(
-        default=0.15,
+        default=1,
         metadata={'help': 'The weight of dense score when hybriding all scores'}
     )
     sparse_weight: float = field(
-        default=0.5,
+        default=0.3,
         metadata={'help': 'The weight of sparse score when hybriding all scores'}
     )
     colbert_weight: float = field(
-        default=0.35,
+        default=1,
         metadata={'help': 'The weight of colbert score when hybriding all scores'}
     )
 
@@ -108,7 +113,7 @@ class EvalArgs:
 def check_languages(languages):
     if isinstance(languages, str):
         languages = [languages]
-    avaliable_languages = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'th', 'zh']
+    avaliable_languages = ['en', 'ar', 'fi', 'ja', 'ko', 'ru', 'es', 'sv', 'he', 'th', 'da', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'hu', 'vi', 'ms', 'km', 'no', 'tr', 'zh_cn', 'zh_hk', 'zh_tw']
     for lang in languages:
         if lang not in avaliable_languages:
             raise ValueError(f"Language `{lang}` is not supported. Avaliable languages: {avaliable_languages}")
@@ -125,7 +130,7 @@ def get_reranker(model_args: ModelArgs, device: str=None):
     return reranker
 
 
-def get_search_result_dict(search_result_path: str, top_k: int=200):
+def get_search_result_dict(search_result_path: str, top_k: int=100):
     search_result_dict = {}
     flag = True
     for _, row in pd.read_csv(search_result_path, sep=' ', header=None).iterrows():
@@ -144,29 +149,27 @@ def get_search_result_dict(search_result_path: str, top_k: int=200):
     return search_result_dict
 
 
-def get_queries_dict(lang: str, split: str='test'):
-    dataset = datasets.load_dataset('Shitao/MLDR', lang, split=split)
-    
+def get_queries_dict(queries_path: str):
     queries_dict = {}
+    dataset = datasets.load_dataset('json', data_files=queries_path)['train']
     for data in dataset:
-        qid = data['query_id']
-        query = data['query']
+        qid = str(data['id'])
+        query = data['question']
         queries_dict[qid] = query
     return queries_dict
 
 
-def get_corpus_dict(lang: str):
-    corpus = datasets.load_dataset('Shitao/MLDR', f'corpus-{lang}', split='corpus')
-    
+def get_corpus_dict(corpus: datasets.Dataset):
     corpus_dict = {}
-    for data in tqdm(corpus, desc="Generating corpus"):
-        docid = data['docid']
-        content = data['text']
-        corpus_dict[docid] = content
+    for data in tqdm(corpus, desc="Loading corpus"):
+        _id = str(data['_id'])
+        content = f"{data['title']}\n{data['text']}".lower()
+        content = normalize(content)
+        corpus_dict[_id] = content
     return corpus_dict
 
 
-def save_rerank_results(queries_dict: dict, corpus_dict: dict, reranker: BGEM3FlagModel, search_result_dict: dict, rerank_result_save_path: dict, batch_size: int=256, max_query_length: int=512, max_passage_length: int=512, dense_weight: float=0.15, sparse_weight: float=0.5, colbert_weight: float=0.35):
+def save_rerank_results(queries_dict: dict, corpus_dict: dict, reranker: BGEM3FlagModel, search_result_dict: dict, rerank_result_save_path: dict, batch_size: int=256, max_length: int=512, dense_weight: float=1, sparse_weight: float=0.3, colbert_weight: float=1):
     qid_list = []
     sentence_pairs = []
     for qid, docids in search_result_dict.items():
@@ -175,14 +178,15 @@ def save_rerank_results(queries_dict: dict, corpus_dict: dict, reranker: BGEM3Fl
         for docid in docids:
             passage = corpus_dict[docid]
             sentence_pairs.append((query, passage))
-
+    
     scores_dict = reranker.compute_score(
         sentence_pairs, 
         batch_size=batch_size, 
-        max_query_length=max_query_length, 
-        max_passage_length=max_passage_length, 
+        max_query_length=max_length, 
+        max_passage_length=max_length, 
         weights_for_different_modes=[dense_weight, sparse_weight, colbert_weight]
     )
+
     for sub_dir, _rerank_result_save_path in rerank_result_save_path.items():
         if not os.path.exists(os.path.dirname(_rerank_result_save_path)):
             os.makedirs(os.path.dirname(_rerank_result_save_path))
@@ -218,7 +222,7 @@ def get_shard(search_result_dict: dict, num_shards: int, shard_id: int):
     return shard_search_result_dict
 
 
-def rerank_results(languages: list, eval_args: EvalArgs, model_args: ModelArgs, device: str=None):
+def rerank_results(corpus_dict: dict, languages: list, eval_args: EvalArgs, model_args: ModelArgs, device: str=None):
     eval_args = copy.deepcopy(eval_args)
     model_args = copy.deepcopy(model_args)
     
@@ -239,7 +243,8 @@ def rerank_results(languages: list, eval_args: EvalArgs, model_args: ModelArgs, 
         print("**************************************************")
         print(f"Start reranking results of {lang} ...")
         
-        queries_dict = get_queries_dict(lang, split='test')
+        queries_path = os.path.join(eval_args.qa_data_dir, f"{lang}.jsonl")
+        queries_dict = get_queries_dict(queries_path)
         
         search_result_save_dir = os.path.join(eval_args.search_result_save_dir, os.path.basename(eval_args.encoder))
         search_result_path = os.path.join(search_result_save_dir, f"{lang}.txt")
@@ -247,19 +252,16 @@ def rerank_results(languages: list, eval_args: EvalArgs, model_args: ModelArgs, 
         search_result_dict = get_search_result_dict(search_result_path, top_k=eval_args.top_k)
         
         search_result_dict = get_shard(search_result_dict, num_shards=num_shards, shard_id=shard_id)
-        
-        corpus_dict = get_corpus_dict(lang)
-        
+
         rerank_result_save_path = {}
         for sub_dir in ['colbert', 'sparse', 'dense', 'colbert+sparse+dense']:
             _rerank_result_save_path = os.path.join(
                 eval_args.rerank_result_save_dir, 
                 sub_dir, 
                 f"{os.path.basename(eval_args.encoder)}-{os.path.basename(model_args.reranker)}", 
-                f"{lang}_{shard_id}-of-{num_shards}.txt" if num_shards > 1 else f"{lang}.txt"
-            )
+                f"{lang}.txt")
             rerank_result_save_path[sub_dir] = _rerank_result_save_path
-        
+
         save_rerank_results(
             queries_dict=queries_dict,
             corpus_dict=corpus_dict, 
@@ -267,11 +269,8 @@ def rerank_results(languages: list, eval_args: EvalArgs, model_args: ModelArgs, 
             search_result_dict=search_result_dict, 
             rerank_result_save_path=rerank_result_save_path,
             batch_size=eval_args.batch_size,
-            max_query_length=eval_args.max_query_length,
-            max_passage_length=eval_args.max_passage_length,
+            max_length=eval_args.max_length,
             dense_weight=eval_args.dense_weight,
-            sparse_weight=eval_args.sparse_weight,
-            colbert_weight=eval_args.colbert_weight
         )
 
 
@@ -283,18 +282,20 @@ def main():
     
     languages = check_languages(eval_args.languages)
     
+    corpus = datasets.load_dataset("BeIR/nq", 'corpus')['corpus']
+    corpus_dict = get_corpus_dict(corpus=corpus)
+    
     cuda_id = eval_args.cuda_id
     
     if cuda_id < 0:
-        rerank_results(languages, eval_args, model_args, device='cpu')
+        rerank_results(corpus_dict, languages, eval_args, model_args, device='cpu')
     else:
-        rerank_results(languages, eval_args, model_args, device=f"cuda:{cuda_id}")
+        rerank_results(corpus_dict, languages, eval_args, model_args, device=f"cuda:{cuda_id}")
     
     print("==================================================")
-    print("Finish generating reranked results with following encoder and reranker:")
+    print("Finish generating reranked results with following model and reranker:")
     print(eval_args.encoder)
     print(model_args.reranker)
-
 
 if __name__ == "__main__":
     main()

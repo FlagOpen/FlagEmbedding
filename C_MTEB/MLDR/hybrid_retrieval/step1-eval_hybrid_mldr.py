@@ -162,7 +162,7 @@ def main():
     
     if eval_args.model_name_or_path[-1] == '/':
         eval_args.model_name_or_path = eval_args.model_name_or_path[:-1]
-    if 'checkpoint-' in os.path.basename(eval_args.model_name_or_path):
+    if os.path.basename(eval_args.model_name_or_path).startswith('checkpoint-'):
         eval_args.model_name_or_path = os.path.dirname(eval_args.model_name_or_path) + '_' + os.path.basename(eval_args.model_name_or_path)
     
     results = {}
