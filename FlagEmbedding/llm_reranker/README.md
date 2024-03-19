@@ -313,7 +313,8 @@ torchrun --nproc_per_node {number of gpus} \
 --target_modules q_proj k_proj v_proj o_proj \
 --start_layer 8 \
 --head_multi True \
---head_type simple
+--head_type simple \
+--lora_extra_parameters linear_head
 ```
 
 Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-bf16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-bf16) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
