@@ -2,17 +2,19 @@
 python hybrid_all_results.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar de en es fr hi it ja ko pt ru th zh \
+--languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
 --dense_search_result_save_dir ./rerank_results/dense \
 --sparse_search_result_save_dir ./rerank_results/sparse \
 --colbert_search_result_save_dir ./rerank_results/colbert \
 --hybrid_result_save_dir ./hybrid_search_results \
 --top_k 200 \
---dense_weight 0.2 --sparse_weight 0.4 --colbert_weight 0.4
+--threads 32 \
+--dense_weight 1 --sparse_weight 0.1 --colbert_weight 1
 """
 import os
 import pandas as pd
 from tqdm import tqdm
+import multiprocessing
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 
@@ -29,7 +31,7 @@ class EvalArgs:
     )
     languages: str = field(
         default="en",
-        metadata={'help': 'Languages to evaluate. Avaliable languages: ar de en es fr hi it ja ko pt ru th zh', 
+        metadata={'help': 'Languages to evaluate. Avaliable languages: en ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw', 
                   "nargs": "+"}
     )
     top_k: int = field(
@@ -37,16 +39,16 @@ class EvalArgs:
         metadata={'help': 'Use reranker to rerank top-k retrieval results'}
     )
     dense_weight: float = field(
-        default=0.15,
-        metadata={'help': 'Hybrid weight of dense score'}
+        default=1,
+        metadata={'help': 'Hybrid weight of sparse score'}
     )
     sparse_weight: float = field(
-        default=0.5,
+        default=0.3,
         metadata={'help': 'Hybrid weight of sparse score'}
     )
     colbert_weight: float = field(
-        default=0.35,
-        metadata={'help': 'Hybrid weight of colbert score'}
+        default=1,
+        metadata={'help': 'Hybrid weight of sparse score'}
     )
     dense_search_result_save_dir: str = field(
         default='../rerank/unify_rerank_results/dense',
@@ -61,15 +63,19 @@ class EvalArgs:
         metadata={'help': 'Dir to saving sparse search results. Search results path is `sparse_search_result_save_dir/{encoder}-{reranker}/{lang}.txt`'}
     )
     hybrid_result_save_dir: str = field(
-        default='./hybrid_search_results',
+        default='./search_results',
         metadata={'help': 'Dir to saving hybrid search results. Reranked results will be saved to `hybrid_result_save_dir/{encoder}-{reranker}/{lang}.txt`'}
+    )
+    threads: int = field(
+        default=1,
+        metadata={"help": "num of evaluation threads. <= 1 means single thread"}
     )
 
 
 def check_languages(languages):
     if isinstance(languages, str):
         languages = [languages]
-    avaliable_languages = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'it', 'ja', 'ko', 'pt', 'ru', 'th', 'zh']
+    avaliable_languages = ['en', 'ar', 'fi', 'ja', 'ko', 'ru', 'es', 'sv', 'he', 'th', 'da', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'hu', 'vi', 'ms', 'km', 'no', 'tr', 'zh_cn', 'zh_hk', 'zh_tw']
     for lang in languages:
         if lang not in avaliable_languages:
             raise ValueError(f"Language `{lang}` is not supported. Avaliable languages: {avaliable_languages}")
@@ -96,16 +102,26 @@ def get_search_result_dict(search_result_path: str, top_k: int=1000):
     return search_result_dict
 
 
-def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dict: dict, colbert_search_result_dict: dict, hybrid_result_save_path: str, top_k: int=200, dense_weight: float=0.15, sparse_weight: float=0.5, colbert_weight: float=0.35):
+def get_queries_dict(queries_path: str):
+    queries_dict = {}
+    for _, row in pd.read_csv(queries_path, sep='\t', header=None).iterrows():
+        qid = str(row.iloc[0])
+        query = row.iloc[1]
+        queries_dict[qid] = query
+    return queries_dict
+
+
+def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dict: dict, colbert_search_result_dict: dict, hybrid_result_save_path: str, top_k: int=1000, dense_weight: float=1, sparse_weight: float=0.3, colbert_weight: float=1):
     if not os.path.exists(os.path.dirname(hybrid_result_save_path)):
         os.makedirs(os.path.dirname(hybrid_result_save_path))
     
-    qid_list = list(set(sparse_search_result_dict.keys()) | set(dense_search_result_dict.keys() | set(colbert_search_result_dict.keys())))
+    qid_list = list(set(sparse_search_result_dict.keys()) | set(dense_search_result_dict.keys()) | set(colbert_search_result_dict.keys()))
     hybrid_results_list = []
     for qid in tqdm(qid_list, desc="Hybriding dense, sparse and colbert scores"):
         results = {}
         if qid in sparse_search_result_dict:
             for docid, score in sparse_search_result_dict[qid]:
+                score = score / 0.3     # use 0.3 to restore
                 results[docid] = score * sparse_weight
         if qid in dense_search_result_dict:
             for docid, score in dense_search_result_dict[qid]:
@@ -119,7 +135,6 @@ def save_hybrid_results(sparse_search_result_dict: dict, dense_search_result_dic
                     results[docid] = results[docid] + score * colbert_weight
                 else:
                     results[docid] = score * colbert_weight
-        
         hybrid_results = [(docid, score) for docid, score in results.items()]
         hybrid_results.sort(key=lambda x: x[1], reverse=True)
         
@@ -148,40 +163,80 @@ def main():
     
     dir_name = f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}"
     
-    for lang in languages:
-        print("**************************************************")
-        print(f"Start hybrid search results of {lang} ...")
-        
-        hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, dir_name, f"{lang}.txt")
-        
-        sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, dir_name)
-        
-        sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
-        
-        sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=eval_args.top_k)
-        
-        dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, dir_name)
-
-        dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
-        
-        dense_search_result_dict = get_search_result_dict(dense_search_result_path, top_k=eval_args.top_k)
-        
-        colbert_search_result_save_dir = os.path.join(eval_args.colbert_search_result_save_dir, dir_name)
-
-        colbert_search_result_path = os.path.join(colbert_search_result_save_dir, f"{lang}.txt")
-        
-        colbert_search_result_dict = get_search_result_dict(colbert_search_result_path, top_k=eval_args.top_k)
-        
-        save_hybrid_results(
-            sparse_search_result_dict=sparse_search_result_dict, 
-            dense_search_result_dict=dense_search_result_dict, 
-            colbert_search_result_dict=colbert_search_result_dict,
-            hybrid_result_save_path=hybrid_result_save_path,
-            top_k=eval_args.top_k,
-            sparse_weight=eval_args.sparse_weight,
-            dense_weight=eval_args.dense_weight,
-            colbert_weight=eval_args.colbert_weight
-        )
+    if eval_args.threads > 1:
+        threads = min(len(languages), eval_args.threads)
+        pool = multiprocessing.Pool(processes=threads)
+        for lang in languages:
+            print("**************************************************")
+            print(f"Start hybrid search results of {lang} ...")
+            
+            hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, dir_name, f"{lang}.txt")
+            
+            sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, dir_name)
+            
+            sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
+            
+            sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=eval_args.top_k)
+            
+            dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, dir_name)
+            
+            dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
+            
+            dense_search_result_dict = get_search_result_dict(dense_search_result_path, top_k=eval_args.top_k)
+            
+            colbert_search_result_save_dir = os.path.join(eval_args.colbert_search_result_save_dir, dir_name)
+            
+            colbert_search_result_path = os.path.join(colbert_search_result_save_dir, f"{lang}.txt")
+            
+            colbert_search_result_dict = get_search_result_dict(colbert_search_result_path, top_k=eval_args.top_k)
+            
+            pool.apply_async(save_hybrid_results, args=(
+                sparse_search_result_dict,
+                dense_search_result_dict,
+                colbert_search_result_dict,
+                hybrid_result_save_path,
+                eval_args.top_k,
+                eval_args.dense_weight,
+                eval_args.sparse_weight,
+                eval_args.colbert_weight
+            ))
+        pool.close()
+        pool.join()
+    else:
+        for lang in languages:
+            print("**************************************************")
+            print(f"Start hybrid search results of {lang} ...")
+            
+            hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, dir_name, f"{lang}.txt")
+            
+            sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, dir_name)
+            
+            sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
+            
+            sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=eval_args.top_k)
+            
+            dense_search_result_save_dir = os.path.join(eval_args.dense_search_result_save_dir, dir_name)
+            
+            dense_search_result_path = os.path.join(dense_search_result_save_dir, f"{lang}.txt")
+            
+            dense_search_result_dict = get_search_result_dict(dense_search_result_path, top_k=eval_args.top_k)
+            
+            colbert_search_result_save_dir = os.path.join(eval_args.colbert_search_result_save_dir, dir_name)
+            
+            colbert_search_result_path = os.path.join(colbert_search_result_save_dir, f"{lang}.txt")
+            
+            colbert_search_result_dict = get_search_result_dict(colbert_search_result_path, top_k=eval_args.top_k)
+            
+            save_hybrid_results(
+                sparse_search_result_dict=sparse_search_result_dict, 
+                dense_search_result_dict=dense_search_result_dict, 
+                colbert_search_result_dict=colbert_search_result_dict,
+                hybrid_result_save_path=hybrid_result_save_path,
+                top_k=eval_args.top_k,
+                dense_weight=eval_args.dense_weight,
+                sparse_weight=eval_args.sparse_weight,
+                colbert_weight=eval_args.colbert_weight
+            )
     
     print("==================================================")
     print("Finish generating reranked results with following model and reranker:")

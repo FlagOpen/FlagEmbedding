@@ -50,7 +50,7 @@ class EvalArgs:
     )
     encoder: str = field(
         default='BAAI/bge-m3',
-        metadata={'help': 'Name of encoder'}
+        metadata={'help': 'Name or path of encoder'}
     )
     search_result_save_dir: str = field(
         default='./rerank_results',
@@ -233,8 +233,9 @@ def main():
         )
     
     print("==================================================")
-    print("Finish generating evaluation results with following model and reranker:", eval_args.encoder, eval_args.reranker)
-
+    print("Finish generating evaluation results with following model and reranker:")
+    print(eval_args.encoder)
+    print(eval_args.reranker)
 
 if __name__ == "__main__":
     main()
