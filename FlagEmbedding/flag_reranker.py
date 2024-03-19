@@ -216,7 +216,7 @@ class FlagLLMReranker:
             self,
             model_name_or_path: str = None,
             use_fp16: bool = False,
-            use_bf16: bool = True,
+            use_bf16: bool = False,
             cache_dir: str = None,
             device: int = 0
     ) -> None:
@@ -309,23 +309,23 @@ class LayerWiseFlagLLMReranker:
             self,
             model_name_or_path: str = None,
             use_fp16: bool = False,
-            use_bf16: bool = True,
+            use_bf16: bool = False,
             cache_dir: str = None,
             device: int = 0
     ) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
                                                        cache_dir=cache_dir,
                                                        trust_remote_code=True)
-        if use_bf16:
-            self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
-                                                              cache_dir=cache_dir,
-                                                              trust_remote_code=True,
-                                                              torch_dtype=torch.bfloat16)
-        else:
-            self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
-                                                              cache_dir=cache_dir,
-                                                              trust_remote_code=True,
-                                                              use_flash_attention_2=False)
+
+        if use_bf16 is False and use_fp16 is False:
+            warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
+            use_fp16 = True
+
+        self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
+                                                          cache_dir=cache_dir,
+                                                          trust_remote_code=True,
+                                                          torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
