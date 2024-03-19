@@ -33,7 +33,7 @@ python step0-generate_embedding.py \
 # 2. Search Results
 python step1-search_results.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --index_save_dir ./corpus-index \
 --result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
@@ -47,7 +47,7 @@ python step1-search_results.py \
 # 3. Print and Save Evaluation Results
 python step2-eval_dense_mkqa.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -61,7 +61,7 @@ There are some important parameters:
 
 - `encoder`: Name or path of the model to evaluate.
 
-- `languages`: The languages you want to evaluate on. Avaliable languages: `ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw`.
+- `languages`: The languages you want to evaluate on. Avaliable languages: `ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw`.
 
 - `max_passage_length`: Maximum passage length when encoding.
 
@@ -112,7 +112,7 @@ python step0-generate_embedding.py \
 # 2. Search Results
 python step1-search_results.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --index_save_dir ./corpus-index \
 --result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
@@ -126,7 +126,7 @@ python step1-search_results.py \
 # 3. Print and Save Evaluation Results
 python step2-eval_dense_mkqa.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -144,7 +144,7 @@ cd sparse_retrieval
 # 1. Generate Query and Corpus Sparse Vector
 python step0-encode_query-and-corpus.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --qa_data_dir ../qa_data \
 --save_dir ./encoded_query-and-corpus \
 --max_query_length 512 \
@@ -156,7 +156,7 @@ python step0-encode_query-and-corpus.py \
 # 2. Output Search Results
 python step1-search_results.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --encoded_query_and_corpus_save_dir ./encoded_query-and-corpus \
 --result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
@@ -166,7 +166,7 @@ python step1-search_results.py \
 # 3. Print and Save Evaluation Results
 python step2-eval_sparse_mkqa.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -188,7 +188,7 @@ Sparse Retrieval
 # 2. Hybrid Dense and Sparse Search Results
 python step0-hybrid_search_results.py \
 --model_name_or_path BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --dense_search_result_save_dir ../dense_retrieval/search_results \
 --sparse_search_result_save_dir ../sparse_retrieval/search_results \
 --hybrid_result_save_dir ./search_results \
@@ -199,7 +199,7 @@ python step0-hybrid_search_results.py \
 # 3. Print and Save Evaluation Results
 python step1-eval_hybrid_mkqa.py \
 --model_name_or_path BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw  \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw  \
 --search_result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -250,7 +250,7 @@ python step0-generate_embedding.py \
 # 2. Search Results
 python step1-search_results.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --index_save_dir ./corpus-index \
 --result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
@@ -264,7 +264,7 @@ python step1-search_results.py \
 # 3. Print and Save Evaluation Results
 python step2-eval_dense_mkqa.py \
 --encoder BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -283,7 +283,7 @@ cd multi_vector_rerank
 python step0-rerank_results.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ../dense_retrieval/search_results \
 --qa_data_dir ../qa_data \
 --rerank_result_save_dir ./rerank_results \
@@ -299,7 +299,7 @@ python step0-rerank_results.py \
 python step1-eval_rerank_mkqa.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./rerank_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_results \
@@ -313,7 +313,7 @@ python step1-eval_rerank_mkqa.py \
 >
 >- Based on our experience, dividing the sentence pairs to be reranked into several shards and computing scores for each shard on a single GPU tends to be more efficient than using multiple GPUs to compute scores for all sentence pairs directly.Therefore, if your machine have multiple GPUs, you can set `num_shards` to the number of GPUs and launch multiple terminals to execute the command (`shard_id` should be equal to `cuda_id`). Therefore, if you have multiple GPUs on your machine, you can launch multiple terminals and run multiple commands simultaneously. Make sure to set the `shard_id` and `cuda_id` appropriately, and ensure that you have computed scores for all shards before proceeding to the second step.
 
-5. (*Optional*) In the 4th step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}-{reranker}`, `rerank_result_save_dir/sparse/{encoder}-{reranker}` and `rerank_result_save_dir/colbert/{encoder}-{reranker}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./multi_vector_rerank/hybrid_all_results.py) to hybrid the three kinds of scores directly.
+4. (*Optional*) In the 3rd step, you can get all three kinds of scores, saved to `rerank_result_save_dir/dense/{encoder}-{reranker}`, `rerank_result_save_dir/sparse/{encoder}-{reranker}` and `rerank_result_save_dir/colbert/{encoder}-{reranker}`. If you want to try other weights, you don't need to rerun the 4th step. Instead, you can use [this script](./multi_vector_rerank/hybrid_all_results.py) to hybrid the three kinds of scores directly.
 
 ```bash
 cd multi_vector_rerank
@@ -322,7 +322,7 @@ cd multi_vector_rerank
 python hybrid_all_results.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --dense_search_result_save_dir ./rerank_results/dense \
 --sparse_search_result_save_dir ./rerank_results/sparse \
 --colbert_search_result_save_dir ./rerank_results/colbert \
@@ -335,10 +335,54 @@ python hybrid_all_results.py \
 python step1-eval_rerank_mkqa.py \
 --encoder BAAI/bge-m3 \
 --reranker BAAI/bge-m3 \
---languages ar fi ja ko ru es sv he th da de fr it nl pl pt hu vi ms km no tr zh_cn zh_hk zh_tw \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
 --search_result_save_dir ./hybrid_search_results \
 --qa_data_dir ../qa_data \
 --eval_result_save_dir ./eval_hybrid_results \
 --metrics recall@20 recall@100 \
 --threads 32
 ```
+
+
+## BM25 Baseline
+
+We provide two methods of evaluating BM25 baseline:
+
+1. Use the same tokenizer with [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3) (i.e., tokenizer of [XLM-Roberta](https://huggingface.co/FacebookAI/xlm-roberta-large)):
+
+```bash
+cd sparse_retrieval
+
+# 1. Output Search Results with BM25
+python bm25_baseline_same_tokenizer.py
+
+# 2. Print and Save Evaluation Results
+python step2-eval_sparse_mkqa.py \
+--encoder bm25_same_tokenizer \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
+--search_result_save_dir ./search_results \
+--qa_data_dir ../qa_data \
+--eval_result_save_dir ./eval_results \
+--metrics recall@20 recall@100 \
+--threads 32
+```
+
+2. Use the language analyzer provided by [Anserini](https://github.com/castorini/anserini/blob/master/src/main/java/io/anserini/analysis/AnalyzerMap.java) ([Lucene Tokenizer](https://github.com/apache/lucene/tree/main/lucene/analysis/common/src/java/org/apache/lucene/analysis)):
+
+```bash
+cd sparse_retrieval
+
+# 1. Output Search Results with BM25
+python bm25_baseline.py
+
+# 2. Print and Save Evaluation Results
+python step2-eval_sparse_mkqa.py \
+--encoder bm25 \
+--languages ar da de es fi fr he hu it ja km ko ms nl no pl pt ru sv th tr vi zh_cn zh_hk zh_tw \
+--search_result_save_dir ./search_results \
+--qa_data_dir ../qa_data \
+--eval_result_save_dir ./eval_results \
+--metrics recall@20 recall@100 \
+--threads 32
+```
+

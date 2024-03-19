@@ -65,7 +65,7 @@ class EvalArgs:
     )
     qa_data_dir: str = field(
         default='../qa_data',
-        metadata={'help': 'Dir to topics and qrels.'}
+        metadata={'help': 'Dir to qa data.'}
     )
     threads: int = field(
         default=1,

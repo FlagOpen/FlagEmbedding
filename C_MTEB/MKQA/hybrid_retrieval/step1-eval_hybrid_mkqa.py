@@ -71,7 +71,7 @@ class EvalArgs:
     )
     qa_data_dir: str = field(
         default='../qa_data',
-        metadata={'help': 'Dir to topics and qrels.'}
+        metadata={'help': 'Dir to qa data.'}
     )
     metrics: str = field(
         default="recall@20",
