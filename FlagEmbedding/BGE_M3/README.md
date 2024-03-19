@@ -207,6 +207,8 @@ print(model.compute_score(sentence_pairs,
 
 ## Evaluation  
 
+We provide the evaluation script for [MKQA](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MKQA) and [MLDR](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR)
+
 ### Benchmarks from the open-source community
   ![avatar](./imgs/others.webp)
  The BGE-M3 model emerged as the top performer on this benchmark (OAI is short for OpenAI). 
