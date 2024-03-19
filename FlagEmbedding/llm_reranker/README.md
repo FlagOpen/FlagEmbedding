@@ -66,7 +66,7 @@ print(scores) # [0.00027803096387751553, 0.9948403768236574]
 ```python
 from FlagEmbedding import FlagLLMReranker
 reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
-# reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_fp16=True) # You can also set use_bf16=True to speed up computation with a slight performance degradation
+# reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', use_bf16=True) # You can also set use_bf16=True to speed up computation with a slight performance degradation
 
 score = reranker.compute_score(['query', 'passage'])
 print(score)
