@@ -216,7 +216,7 @@ class FlagLLMReranker:
             self,
             model_name_or_path: str = None,
             use_fp16: bool = False,
-            use_bf16: bool = True,
+            use_bf16: bool = False,
             cache_dir: str = None,
             device: int = 0
     ) -> None:
@@ -309,7 +309,7 @@ class LayerWiseFlagLLMReranker:
             self,
             model_name_or_path: str = None,
             use_fp16: bool = False,
-            use_bf16: bool = True,
+            use_bf16: bool = False,
             cache_dir: str = None,
             device: int = 0
     ) -> None:
