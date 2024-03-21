@@ -301,13 +301,13 @@ class Visualized_BGE(nn.Module):
         ### for stage-2 training
         if task_type == "edit_image":
             mm_query_reps = self.encode_mm(mm_it_query[0], mm_it_query[1])
-            image_candi_reps = self.encode_image(image_candidate) #输入的是token序列
+            image_candi_reps = self.encode_image(image_candidate)
             query_reps = mm_query_reps
             candi_reps = image_candi_reps
                 
         elif task_type == "t2it":
             text_query_reps = self.encode_text(text_query)
-            mmit_candi_reps = self.encode_mm(mm_it_candidate[0], mm_it_candidate[1]) #输入的是token序列
+            mmit_candi_reps = self.encode_mm(mm_it_candidate[0], mm_it_candidate[1])
             query_reps = text_query_reps
             candi_reps = mmit_candi_reps
             
