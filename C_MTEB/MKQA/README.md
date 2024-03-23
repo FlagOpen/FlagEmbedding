@@ -16,6 +16,26 @@ We use the well-processed NQ [corpus](https://huggingface.co/datasets/BeIR/nq) o
 
 If you only want to perform dense retrieval with embedding models, you can follow the following steps:
 
+1. Install Java, Pyserini and Faiss (CPU version or GPU version):
+
+```bash
+# install java (Linux)
+apt update
+apt install openjdk-11-jdk
+
+# install pyserini
+pip install pyserini
+
+# install faiss
+## CPU version
+conda install -c conda-forge faiss-cpu
+
+## GPU version
+conda install -c conda-forge faiss-gpu
+```
+
+2. Dense retrieval:
+
 ```bash
 cd dense_retrieval
 

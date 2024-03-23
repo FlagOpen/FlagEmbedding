@@ -14,6 +14,7 @@ import json
 import math
 import time
 import argparse
+import datasets
 from tqdm import tqdm
 from pprint import pprint
 from transformers import AutoTokenizer
@@ -54,8 +55,7 @@ class SplitByLengthHandler:
             results['idx'] = []
             results['max_length'] = []
             for i in range(len(examples['query'])):
-                results['idx'].append(i)
-
+                idx = examples['idx'][i]
                 query = examples['query'][i]
                 pos, neg = examples['pos'][i], examples['neg'][i]
                 all_texts = [query] + pos + neg
@@ -65,6 +65,8 @@ class SplitByLengthHandler:
                     tokenized_x = self.tokenizer(x)['input_ids']
                     if len(tokenized_x) > max_len:
                         max_len = len(tokenized_x)
+                
+                results['idx'].append(idx)
                 results['max_length'].append(max_len)
             return results
 
@@ -120,8 +122,15 @@ class SplitByLengthHandler:
             dataset = load_dataset('json', data_files=file_path, cache_dir=self.cache_dir, features=features)['train']
         except:
             dataset = load_dataset('json', data_files=file_path, cache_dir=self.cache_dir, features=kd_features)['train']
-        mapped_dataset = dataset.map(self._map_func, batched=True, num_proc=self.num_proc)
 
+        dataset_with_idx_list = []
+        for i, data in enumerate(dataset):
+            data['idx'] = i
+            dataset_with_idx_list.append(data)
+        dataset_with_idx = datasets.Dataset.from_list(dataset_with_idx_list)
+        
+        mapped_dataset = dataset_with_idx.map(self._map_func, batched=True, num_proc=self.num_proc)
+        
         split_info_dict = {}
         for length_l, length_r in self.length_ranges_list:
             save_path = output_path + f'_len-{length_l}-{length_r}.jsonl'
@@ -130,7 +139,8 @@ class SplitByLengthHandler:
                 continue
 
             idxs = mapped_dataset.filter(lambda x: length_l <= x['max_length'] < length_r, num_proc=self.num_proc)
-            split_dataset = dataset.select(idxs['idx'])
+            split_dataset = dataset_with_idx.select(idxs['idx'])
+            split_dataset = split_dataset.remove_columns('idx')
 
             split_info_dict[f'len-{length_l}-{length_r}'] = len(split_dataset)
 
