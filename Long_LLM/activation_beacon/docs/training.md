@@ -1,4 +1,4 @@
-# Evaluation
+# Training
 
 ## Environment
 The main dependencies are:
