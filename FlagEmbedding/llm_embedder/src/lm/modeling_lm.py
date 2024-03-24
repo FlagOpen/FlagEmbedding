@@ -38,7 +38,7 @@ class LM(torch.nn.Module):
         except ValueError:
             self.model = AutoModelForSeq2SeqLM.from_pretrained(model_name_or_path, cache_dir=cache_dir, torch_dtype=dtype, trust_remote_code=True, device_map=device_map)
 
-        # if device_map is specified, we don't need to move the model to any specifc gpu
+        # if device_map is specified, we don't need to move the model to any specific gpu
         if device_map is None:
             if accelerator is not None:
                 device = accelerator.device
