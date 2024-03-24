@@ -130,7 +130,7 @@ class SplitByLengthHandler:
                 continue
 
             idxs = mapped_dataset.filter(lambda x: length_l <= x['max_length'] < length_r, num_proc=self.num_proc)
-            split_dataset = dataset.select(idxs['idx'])
+            split_dataset = dataset.select(list(idxs._indices.to_pandas()['indices'].values))
 
             split_info_dict[f'len-{length_l}-{length_r}'] = len(split_dataset)
 
