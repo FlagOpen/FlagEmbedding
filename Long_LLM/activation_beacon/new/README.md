@@ -21,6 +21,9 @@ wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/activati
 
 cd /data
 tar -xzvf activation-beacon.tar.gz
+
+# you must download the new longalpaca dataset that was organized into single-turn conversation
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/longalpaca.json?download=true -O /data/activation-beacon/finetune/longalpaca.new.json
 ```
 
 **IMPORTANT NOTE**
@@ -36,7 +39,7 @@ cd new
 torchrun --nproc_per_node 8 -m main.train \
 --output_dir data/outputs/activation-beacon-llama2-chat-7b \
 --model_name_or_path meta-llama/Llama-2-7b-chat-hf \
---train_data activation-beacon:pretrain/redpajama-sample.json activation-beacon:finetune/longalpaca.json \
+--train_data activation-beacon:pretrain/redpajama-sample.json activation-beacon:finetune/longalpaca.new.json \
 --max_length 8192 \
 --min_length 1200 \
 --max_train_num_per_data 200000 \
