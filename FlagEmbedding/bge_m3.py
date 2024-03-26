@@ -87,6 +87,16 @@ class BGEM3FlagModel:
                 scores += weight * lexical_weights_2[token]
         return scores
 
+    def compute_lexical_matching_score_with_normalized(self, lexical_weights_1: Dict, lexical_weights_2: Dict):
+        scores = 0
+        sum_lexical_weight_1 = sum(lexical_weights_1.values())
+        sum_lexical_weight_2 = sum(lexical_weights_2.values())
+        scale = sum_lexical_weight_1 * sum_lexical_weight_2
+        for token, weight in lexical_weights_1.items():
+            if token in lexical_weights_2:
+                scores += (weight * lexical_weights_2[token] / scale) ** 0.5
+        return scores
+      
     def colbert_score(self, q_reps, p_reps):
         q_reps, p_reps = torch.from_numpy(q_reps), torch.from_numpy(p_reps)
         token_scores = torch.einsum('in,jn->ij', q_reps, p_reps)
