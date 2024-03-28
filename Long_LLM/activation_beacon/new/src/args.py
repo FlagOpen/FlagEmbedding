@@ -36,7 +36,7 @@ class ModelArgs:
         metadata={'help': 'Tokenizer padding side.'}
     )
     access_token: Optional[str] = field(
-        default="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",
+        default=None,
         metadata={'help': 'Huggingface access token.'}
     )
     attn_impl: Optional[str] = field(
