@@ -31,7 +31,7 @@ try:
     import xformers.ops as xops
 except ImportError:
     xops = None
-    print("Please 'pip install xformers'")
+    # print("Please 'pip install xformers'")
 
 @dataclass
 class CLIPVisionCfg:
