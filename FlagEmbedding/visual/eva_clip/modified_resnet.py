@@ -4,7 +4,7 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-from eva_clip.utils import freeze_batch_norm_2d
+from FlagEmbedding.visual.eva_clip.utils import freeze_batch_norm_2d
 
 
 class Bottleneck(nn.Module):
