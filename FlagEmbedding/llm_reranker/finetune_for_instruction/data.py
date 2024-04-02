@@ -1,5 +1,6 @@
 import re
 import sys
+from typing import List
 
 import math
 import os.path
@@ -60,7 +61,7 @@ class TrainDatasetForReranker(Dataset):
         chinese_pattern = re.compile('[\u4e00-\u9fa5]')
         return bool(chinese_pattern.search(text))
 
-    def __getitem__(self, item) -> list[BatchEncoding]:
+    def __getitem__(self, item) -> List[BatchEncoding]:
         query = self.dataset[item]['query']
 
         passages = []

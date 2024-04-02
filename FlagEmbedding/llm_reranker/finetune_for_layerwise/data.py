@@ -1,5 +1,6 @@
 import re
 import sys
+from typing import List
 
 import math
 import os.path
@@ -56,7 +57,7 @@ class TrainDatasetForReranker(Dataset):
     def __len__(self):
         return self.total_len
 
-    def __getitem__(self, item) -> list[BatchEncoding]:
+    def __getitem__(self, item) -> List[BatchEncoding]:
         query = self.dataset[item]['query']
 
         passages = []
