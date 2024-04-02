@@ -282,14 +282,14 @@ class FlagLLMReranker:
         if use_dataloader:
             if num_workers is None:
                 num_workers = min(batch_size, 16)
-                dataset = DatasetForReranker(sentences_sorted,
-                                             self.model_name_or_path,
-                                             max_length,
-                                             cache_dir=self.cache_dir,
-                                             prompt=prompt)
-                dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
-                                        num_workers=num_workers,
-                                        collate_fn=collater(self.tokenizer, max_length))
+            dataset = DatasetForReranker(sentences_sorted,
+                                         self.model_name_or_path,
+                                         max_length,
+                                         cache_dir=self.cache_dir,
+                                         prompt=prompt)
+            dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
+                                    num_workers=num_workers,
+                                    collate_fn=collater(self.tokenizer, max_length))
 
         all_scores = []
         if dataloader is not None:
@@ -456,14 +456,14 @@ class LayerWiseFlagLLMReranker:
         if use_dataloader:
             if num_workers is None:
                 num_workers = min(batch_size, 16)
-                dataset = DatasetForReranker(sentences_sorted,
-                                             self.model_name_or_path,
-                                             max_length,
-                                             cache_dir=self.cache_dir,
-                                             prompt=prompt)
-                dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
-                                        num_workers=num_workers,
-                                        collate_fn=collater(self.tokenizer, max_length))
+            dataset = DatasetForReranker(sentences_sorted,
+                                         self.model_name_or_path,
+                                         max_length,
+                                         cache_dir=self.cache_dir,
+                                         prompt=prompt)
+            dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
+                                    num_workers=num_workers,
+                                    collate_fn=collater(self.tokenizer, max_length))
 
         all_scores = []
         if dataloader is not None:
