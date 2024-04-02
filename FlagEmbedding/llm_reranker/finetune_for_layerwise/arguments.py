@@ -71,7 +71,7 @@ class ModelArguments:
     from_peft: str = field(
         default=None
     )
-    lora_extra_parameters: str = field(
+    lora_extra_parameters: Optional[List[str]] = field(
         default=None
     )
     start_layer: int = field(
