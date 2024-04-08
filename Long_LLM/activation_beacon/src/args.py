@@ -117,7 +117,7 @@ class ModelArgs:
         metadata={'help': 'Condensing ratios for beacons.'}
     )
     beacon_ratio_mix: str = field(
-        default="step-random",
+        default="adapt-1024",
         metadata={'help': 'How to determine the beacon_ratio for each input. {step-random, instance-random, mix-random, adapt-x}'}
     )
     beacon_param: List[str] = field(
