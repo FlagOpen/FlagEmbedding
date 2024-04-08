@@ -64,7 +64,7 @@ import torch
 from FlagEmbedding.visual.modeling import Visualized_BGE
 
 model = Visualized_BGE(model_name_bge = "BAAI/bge-base-en-v1.5", model_weight="path: Visualized_base_en_v1.5.pth")
-
+model.eval()
 with torch.no_grad():
     query_emb = model.encode(text="Are there sidewalks on both sides of the Mid-Hudson Bridge?")
     candi_emb_1 = model.encode(text="The Mid-Hudson Bridge, spanning the Hudson River between Poughkeepsie and Highland.", image="./imgs/wiki_candi_1.jpg")
