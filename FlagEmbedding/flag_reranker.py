@@ -218,8 +218,6 @@ class FlagReranker:
         if normalize:
             all_scores = [sigmoid(score) for score in all_scores]
 
-        if len(all_scores) == 1:
-            return all_scores[0]
         return all_scores
 
 
