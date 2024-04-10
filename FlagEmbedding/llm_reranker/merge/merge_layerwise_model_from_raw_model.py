@@ -1,10 +1,9 @@
 from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer, AutoConfig
-from modeling_minicpm_reranker import LayerWiseMiniCPMForCausalLM
-from configuration_minicpm_reranker import LayerWiseMiniCPMConfig
+from .configuration_minicpm_reranker import LayerWiseMiniCPMConfig
 
 
-def merge(model_name_or_path, lora_name_or_path, save_path, cache_dir: str = None, token: str = None):
+def merge_layerwise_raw_llm(model_name_or_path, lora_name_or_path, save_path, cache_dir: str = None, token: str = None):
     config = AutoConfig.from_pretrained('BAAI/bge-reranker-v2-minicpm-layerwise',
                                         cache_dir=cache_dir,
                                         token=token,

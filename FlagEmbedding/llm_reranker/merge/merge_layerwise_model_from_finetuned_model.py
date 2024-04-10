@@ -2,7 +2,7 @@ from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 
-def merge(model_name_or_path, lora_name_or_path, save_path, cache_dir: str = None, token: str = None):
+def merge_layerwise_finetuned_llm(model_name_or_path, lora_name_or_path, save_path, cache_dir: str = None, token: str = None):
     model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                  cache_dir=cache_dir,
                                                  token=token,
