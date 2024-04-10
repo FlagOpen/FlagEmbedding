@@ -126,6 +126,7 @@ def main():
     # so that you can share your model easily on huggingface.co/models =)
     if trainer.is_world_process_zero():
         tokenizer.save_pretrained(training_args.output_dir)
+        model.model.config.save_pretrained(training_args.output_dir)
 
 
 if __name__ == "__main__":

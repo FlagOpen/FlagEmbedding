@@ -86,6 +86,9 @@ class ModelArguments:
         default='simple',
         metadata={"help": "the type of the classifier"}
     )
+    finetune_type: str = field(
+        default='from_raw_model'  # ['from_raw_model', 'from_finetuned_model']
+    )
 
 
 @dataclass
