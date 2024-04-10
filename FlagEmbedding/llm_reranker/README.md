@@ -326,7 +326,7 @@ Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/goog
 
 ### Merge Model
 
-After train, you need to merge the model
+After finetune, you need to merge the model
 
 **For llm-based reranker**
 
