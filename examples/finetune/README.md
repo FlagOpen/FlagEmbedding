@@ -76,6 +76,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_group_size 2 \
 --negatives_cross_device \
 --logging_steps 10 \
+--save_steps 1000 \
 --query_instruction_for_retrieval "" 
 ```
 
