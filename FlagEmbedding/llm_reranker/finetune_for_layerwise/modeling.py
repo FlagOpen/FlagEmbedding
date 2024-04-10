@@ -110,3 +110,4 @@ class BiEncoderModel(nn.Module):
         self.model.config.save_pretrained(**kwargs)
         return self.model.save_pretrained(**kwargs)
 
+
