@@ -86,6 +86,11 @@ class ModelArguments:
         default='simple',
         metadata={"help": "the type of the classifier"}
     )
+    finetune_type: str = field(
+        default='from_raw_model'  # should be one of ['from_raw_model', 'from_finetuned_model']
+        # from_raw_model -- openbmb/MiniCPM-2B-dpo-bf16
+        # from_finetuned_model -- BAAI/bge-reranker-v2-minicpm-layerwise
+    )
 
 
 @dataclass
