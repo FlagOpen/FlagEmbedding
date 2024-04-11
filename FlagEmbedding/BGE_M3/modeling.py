@@ -252,7 +252,7 @@ class BGEM3Model(nn.Module):
 
             else:
                 idxs = torch.arange(q_dense_vecs.size(0), device=q_dense_vecs.device, dtype=torch.long)
-                targets = idxs * (p_sparse_vecs.size(0) // q_sparse_vecs.size(0))
+                targets = idxs * (p_dense_vecs.size(0) // q_dense_vecs.size(0))
 
                 # dense loss
                 dense_scores = self.dense_score(q_dense_vecs, p_dense_vecs)  # B, B * N
