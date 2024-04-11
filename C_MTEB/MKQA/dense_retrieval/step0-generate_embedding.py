@@ -5,7 +5,6 @@ python step0-generate_embedding.py \
 --max_passage_length 512 \
 --batch_size 256 \
 --fp16 \
---add_instruction False \
 --pooling_method cls \
 --normalize_embeddings True
 """
@@ -34,14 +33,6 @@ class ModelArgs:
     fp16: bool = field(
         default=True,
         metadata={'help': 'Use fp16 in inference?'}
-    )
-    add_instruction: bool = field(
-        default=False,
-        metadata={'help': 'Add instruction?'}
-    )
-    passage_instruction_for_retrieval: str = field(
-        default=None,
-        metadata={'help': 'passage instruction for retrieval'}
     )
     pooling_method: str = field(
         default='cls',
@@ -78,8 +69,6 @@ def get_model(model_args: ModelArgs):
         model_args.encoder, 
         pooling_method=model_args.pooling_method,
         normalize_embeddings=model_args.normalize_embeddings,
-        # query_instruction_for_retrieval=model_args.query_instruction_for_retrieval if model_args.add_instruction else None,
-        passage_instruction_for_retrieval=model_args.passage_instruction_for_retrieval if model_args.add_instruction else None,
         use_fp16=model_args.fp16
     )
     return model
