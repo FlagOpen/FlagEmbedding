@@ -13,6 +13,6 @@ setup(
     url='https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB',
     packages=find_packages(),
     install_requires=[
-        'mteb[beir]=1.1.1',
+        'mteb[beir]==1.1.1',
     ],
 )
