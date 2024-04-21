@@ -34,6 +34,7 @@ class CrossEncoder(nn.Module):
         ranker_out: SequenceClassifierOutput = self.hf_model(**batch, return_dict=True)
         logits = ranker_out.logits
 
+        #相当于是一个 group_size 个 cls 的多分类任务
         if self.training:
             scores = logits.view(
                 self.train_args.per_device_train_batch_size,
