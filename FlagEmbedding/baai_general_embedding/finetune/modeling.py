@@ -43,6 +43,9 @@ class BiEncoderModel(nn.Module):
         if not normlized:
             self.temperature = 1.0
             logger.info("reset temperature = 1.0 due to using inner product to compute similarity")
+        if normlized:
+            if self.temperature > 0.5:
+                raise ValueError("Temperature should be smaller than 1.0 when use cosine similarity (i.e., normlized=True). Recommend to set it 0.01-0.1")
 
         self.negatives_cross_device = negatives_cross_device
         if self.negatives_cross_device:
