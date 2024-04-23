@@ -100,10 +100,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
     with open(output_file, 'w') as f:
         for data in train_data:
             if len(data['neg']) < negative_number:
-                candidates = list(set(corpus) - set(data['pos'] + data['neg']))
-                if not candidates:
-                    candidates = list(set(corpus) - set(data['pos']))
-                data['neg'].extend(random.sample(candidates, negative_number - len(data['neg'])))
+                samples = random.sample(corpus, negative_number - len(data['neg']) + len(data['pos']))
+                samples = [sent for sent in samples if sent not in data['pos']]
+                data['neg'].extend(samples[: negative_number - len(data['neg'])])
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
 
 
