@@ -19,6 +19,15 @@ This is the codebase for Activation Beacon, an effective, efficient, compatible,
   - train with 80000 texts within 9 hours;
   - most training samples are shorter than 4096.
 
+## Note
+Activation Beacon is a working project. We have released newer code in the [new folder](./new/), which support:
+- deepspeed-3 training
+- fine-tuning and evaluating with chat template
+- needle-in-a-haystack evaluation
+
+You can use code there if you're interested. The code in this current folder will be deprecated in the future.
+
+
 ## Environment
 The main dependencies are:
 ```
@@ -66,7 +75,7 @@ with torch.no_grad():
 **NOTE**: It's okay to see warnings like `This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (4096). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.` Just ignore it.
 
 ## Training
-*coming soon*
+See [training section](./docs/training.md).
 
 ## Evaluation
 See [evaluation section](./docs/evaluation.md).

@@ -68,8 +68,8 @@ class EvalArgs:
         metadata={'help': 'Use reranker to rerank top-k retrieval results'}
     )
     encoder: str = field(
-        default='/home/baaiks/jianlv/models/baselines/mdpr-tied-pft-msmarco',
-        metadata={'help': 'Name of encoder'}
+        default='BAAI/bge-m3',
+        metadata={'help': 'Name or path of encoder'}
     )
     search_result_save_dir: str = field(
         default='./output_results',

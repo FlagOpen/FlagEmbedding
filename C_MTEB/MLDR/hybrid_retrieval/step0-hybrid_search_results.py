@@ -9,7 +9,6 @@ python step0-hybrid_search_results.py \
 --dense_weight 0.2 --sparse_weight 0.8
 """
 import os
-import torch
 import pandas as pd
 from tqdm import tqdm
 from dataclasses import dataclass, field
@@ -37,7 +36,7 @@ class EvalArgs:
     )
     dense_weight: float = field(
         default=0.2,
-        metadata={'help': 'Hybrid weight of sparse score'}
+        metadata={'help': 'Hybrid weight of dense score'}
     )
     dense_search_result_save_dir: str = field(
         default='../dense_retrieval/search_results',
@@ -121,7 +120,7 @@ def main():
     
     languages = check_languages(eval_args.languages)
     
-    if 'checkpoint-' in os.path.basename(eval_args.model_name_or_path):
+    if os.path.basename(eval_args.model_name_or_path).startswith('checkpoint-'):
         eval_args.model_name_or_path = os.path.dirname(eval_args.model_name_or_path) + '_' + os.path.basename(eval_args.model_name_or_path)
     
     for lang in languages:

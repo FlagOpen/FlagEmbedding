@@ -15,7 +15,7 @@ class ModelArgs:
         metadata={'help': 'Default path to save huggingface datasets.'}
     )
     data_root: str = field(
-        default="/data", 
+        default="/data/activation-beacon", 
         metadata={'help': 'The base directory storing all data used for training and evaluation. If specified, make sure all train_data, eval_data, and corpus are path relative to data_root!'},
     )
     train_data: Optional[List[str]] = field(
@@ -117,7 +117,7 @@ class ModelArgs:
         metadata={'help': 'Condensing ratios for beacons.'}
     )
     beacon_ratio_mix: str = field(
-        default="step-random",
+        default="adapt-1024",
         metadata={'help': 'How to determine the beacon_ratio for each input. {step-random, instance-random, mix-random, adapt-x}'}
     )
     beacon_param: List[str] = field(

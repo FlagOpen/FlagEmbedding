@@ -9,7 +9,7 @@ from datasets import load_dataset
 from torch.utils.data import Dataset, SequentialSampler
 from torch_geometric.data import DataLoader
 from tqdm import tqdm
-from transformers import AutoTokenizer, HfArgumentParser
+from transformers import AutoTokenizer, HfArgumentParser, is_torch_npu_available
 from transformers import PreTrainedTokenizer, AutoModel
 
 
@@ -37,7 +37,12 @@ class EmbDataset(Dataset):
 
 
 def inference(json_path, emb_path, model_path):
-    device = torch.device("cuda" if torch.cuda.is_available() else 'cpu')
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    elif is_torch_npu_available():
+        device = torch.device("npu")
+    else:
+        device = torch.device("cpu")
 
     tokenizer = AutoTokenizer.from_pretrained(model_path)
 

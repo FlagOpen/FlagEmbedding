@@ -1,21 +1,34 @@
 # BGE-M3 ([paper](https://arxiv.org/pdf/2402.03216.pdf), [code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3))
+
 In this project, we introduce BGE-M3, which is distinguished for its versatility in Multi-Functionality, Multi-Linguality, and Multi-Granularity. 
 - Multi-Functionality: It can simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval. 
 - Multi-Linguality: It can support more than 100 working languages. 
 - Multi-Granularity: It is able to process inputs of different granularities, spanning from short sentences to long documents of up to 8192 tokens. 
 
-**Some suggestions for retrieval pipeline in RAG:**
+For more details, please refer to our paper: [BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation](https://arxiv.org/pdf/2402.03216.pdf)
+
+
+**Some suggestions for retrieval pipeline in RAG**
+
 We recommend to use following pipeline: hybrid retrieval + re-ranking. 
 - Hybrid retrieval leverages the strengths of various methods, offering higher accuracy and stronger generalization capabilities. 
 A classic example: using both embedding retrieval and the BM25 algorithm. 
 Now, you can try to use BGE-M3, which supports both embedding and sparse retrieval. 
 This allows you to obtain token weights (similar to the BM25) without any additional cost when generate dense embeddings.
+To use hybrid retrieval, you can refer to [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+) and [Milvus](https://github.com/milvus-io/pymilvus/blob/master/examples/hello_hybrid_sparse_dense.py).
+
 - As cross-encoder models, re-ranker demonstrates higher accuracy than bi-encoder embedding model. 
-Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [cohere-reranker](https://txt.cohere.com/rerank/)) after retrieval can further filter the selected text.
+Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/reranker), [bge-reranker-v2](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker)) after retrieval can further filter the selected text.
+
 
 ## News:
-- 2/6/2024: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
-- 2/1/2024: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
+- 2024/3/20: **Thanks Milvus team!** Now you can use hybrid retrieval of bge-m3 in Milvus: [pymilvus/examples
+/hello_hybrid_sparse_dense.py](https://github.com/milvus-io/pymilvus/blob/master/examples/hello_hybrid_sparse_dense.py).
+- 2024/3/8: **Thanks for the [experimental results](https://towardsdatascience.com/openai-vs-open-source-multilingual-embedding-models-e5ccb7c90f05) from @[Yannael](https://huggingface.co/Yannael). In this benchmark, BGE-M3 achieves top performance in both English and other languages, surpassing models such as OpenAI.**
+- 2024/3/2: Release unified fine-tuning [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune) and [data](https://huggingface.co/datasets/Shitao/bge-m3-data) 
+- 2024/2/6: We release the [MLDR](https://huggingface.co/datasets/Shitao/MLDR) (a long document retrieval dataset covering 13 languages) and [evaluation pipeline](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR). 
+- 2024/2/1: **Thanks for the excellent tool from Vespa.** You can easily use multiple modes of BGE-M3 following this [notebook](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb)
 
 
 ## Specs
@@ -33,9 +46,11 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 
 - Data
 
-| Dataset |  Introduction |
-|:----:|:---:|
-| [MLDR](https://huggingface.co/datasets/Shitao/MLDR) | Docuemtn Retrieval Dataset, covering 13 languages|
+|                          Dataset                           |                   Introduction                    |
+|:----------------------------------------------------------:|:-------------------------------------------------:|
+|    [MLDR](https://huggingface.co/datasets/Shitao/MLDR)     | Docuemtn Retrieval Dataset, covering 13 languages |
+| [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data) |          Fine-tuning data used by bge-m3          |
+
 
 
 ## FAQ
@@ -46,36 +61,24 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 - Sparse retrieval (lexical matching): a vector of size equal to the vocabulary, with the majority of positions set to zero, calculating a weight only for tokens present in the text. e.g., BM25, [unicoil](https://arxiv.org/pdf/2106.14807.pdf), and [splade](https://arxiv.org/abs/2107.05720)
 - Multi-vector retrieval: use multiple vectors to represent a text, e.g., [ColBERT](https://arxiv.org/abs/2004.12832).
 
-**2. Comparison with BGE-v1.5 and other monolingual models**
 
-BGE-M3 is a multilingual model, and its ability in monolingual embedding retrieval may not surpass models specifically designed for single languages. 
-However, we still recommend trying BGE-M3 because of its versatility (support for multiple languages and long texts). 
-Moreover, it can simultaneously generate multiple representations, and using them together can enhance accuracy and generalization, 
-unlike most existing models that can only perform dense retrieval. 
-
-In the open-source community, there are many excellent models (e.g., jina-embedding, colbert, e5, etc), 
-and users can choose a model that suits their specific needs based on practical considerations, 
-such as whether to require multilingual or cross-language support, and whether to process long texts.
-
-**3. How to use BGE-M3 in other projects?**
+**2. How to use BGE-M3 in other projects?**
 
 For embedding retrieval, you can employ the BGE-M3 model using the same approach as BGE. 
 The only difference is that the BGE-M3 model no longer requires adding instructions to the queries. 
-For sparse retrieval methods, most open-source libraries currently do not support direct utilization of the BGE-M3 model. 
-Contributions from the community are welcome. 
+
+For hybrid retrieval, you can use [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
+) and [Milvus](https://github.com/milvus-io/pymilvus/blob/master/examples/hello_hybrid_sparse_dense.py).
 
 
-In our experiments, we use [Pyserini](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR#hybrid-retrieval-dense--sparse) and Faiss to do hybrid retrieval.
-**Now you can ou can try the hybrid mode of BGE-M3 in [Vespa](https://github.com/vespa-engine/pyvespa/blob/master/docs/sphinx/source/examples/mother-of-all-embedding-models-cloud.ipynb
-). Thanks @jobergum.**
-
-
-**4. How to fine-tune bge-M3 model?**
+**3. How to fine-tune bge-M3 model?**
 
 You can follow the common in this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune) 
 to fine-tune the dense embedding.
 
-Our code and data for unified fine-tuning (dense, sparse, and multi-vectors) will be released.
+If you want to fine-tune all embedding function of m3 (dense, sparse and colbert), you can refer to the [unified_fine-tuning example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/unified_finetune)
+
+
 
 
 
@@ -197,11 +200,18 @@ print(model.compute_score(sentence_pairs,
 
 
 
+
 ## Evaluation  
 
-We compare BGE-M3 with some popular methods, including BM25, openAI embedding, etc.
+We provide the evaluation script for [MKQA](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MKQA) and [MLDR](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB/MLDR)
+
+### Benchmarks from the open-source community
+  ![avatar](./imgs/others.webp)
+ The BGE-M3 model emerged as the top performer on this benchmark (OAI is short for OpenAI). 
+  For more details, please refer to the [article](https://towardsdatascience.com/openai-vs-open-source-multilingual-embedding-models-e5ccb7c90f05) and [Github Repo](https://github.com/Yannael/multilingual-embeddings)
 
 
+### Our results
 - Multilingual (Miracl dataset) 
 
 ![avatar](./imgs/miracl.jpg)
@@ -211,12 +221,12 @@ We compare BGE-M3 with some popular methods, including BM25, openAI embedding, e
 ![avatar](./imgs/mkqa.jpg)
 
 - Long Document Retrieval
-  - MLDR:
+  - MLDR:   
   ![avatar](./imgs/long.jpg)
   Please note that [MLDR](https://huggingface.co/datasets/Shitao/MLDR) is a document retrieval dataset we constructed via LLM, 
   covering 13 languages, including test set, validation set, and training set. 
   We utilized the training set from MLDR to enhance the model's long document retrieval capabilities. 
-  Therefore, comparing baseline with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
+  Therefore, comparing baselines with `Dense w.o.long`(fine-tuning without long document dataset) is more equitable. 
   Additionally, this long document retrieval dataset will be open-sourced to address the current lack of open-source multilingual long text retrieval datasets.
   We believe that this data will be helpful for the open-source community in training document retrieval models.
 
@@ -233,6 +243,8 @@ especially in long document retrieval.
 
 ![avatar](./imgs/bm25.jpg)
 
+
+
 ## Training
 - Self-knowledge Distillation: combining multiple outputs from different 
 retrieval modes as reward signal to enhance the performance of single mode(especially for sparse retrieval and multi-vec(colbert) retrival)
@@ -241,15 +253,17 @@ The small-batch strategy is simple but effective, which also can used to fine-tu
 - MCLS: A simple method to improve the performance on long text without fine-tuning. 
 If you have no enough resource to fine-tuning model with long text, the method is useful.
 
-Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details.
+Refer to our [report](https://arxiv.org/pdf/2402.03216.pdf) for more details. 
 
-**The fine-tuning codes and datasets will be open-sourced in the near future.**
+
+
+
 
 
 ## Acknowledgement
 
-Thanks the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc. 
-Thanks the open-sourced libraries like [Tevatron](https://github.com/texttron/tevatron), [pyserial](https://github.com/pyserial/pyserial).
+Thanks to the authors of open-sourced datasets, including Miracl, MKQA, NarritiveQA, etc. 
+Thanks to the open-sourced libraries like [Tevatron](https://github.com/texttron/tevatron), [Pyserini](https://github.com/castorini/pyserini).
 
 
 
@@ -267,6 +281,9 @@ If you find this repository useful, please consider giving a star :star: and cit
       primaryClass={cs.CL}
 }
 ```
+
+
+
 
 
 

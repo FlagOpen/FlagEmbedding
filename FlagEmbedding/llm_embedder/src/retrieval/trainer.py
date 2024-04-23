@@ -47,7 +47,7 @@ class RetrievalTrainer(Trainer):
         save_json(all_args, os.path.join(output_dir, "args.json"))
 
     @torch.no_grad()
-    def evaluate(self, eval_dataset: Dataset | None = None, ignore_keys: List[str] | None = None, metric_key_prefix: str = "eval") -> Dict[str, float]:
+    def evaluate(self, eval_dataset: Optional[Dataset] = None, ignore_keys: Optional[List[str]] = None, metric_key_prefix: str = "eval") -> Dict[str, float]:
         # memory metrics - must set up as early as possible
         self._memory_tracker.start()
 

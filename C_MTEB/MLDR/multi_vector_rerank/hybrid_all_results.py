@@ -4,14 +4,13 @@ python hybrid_all_results.py \
 --reranker BAAI/bge-m3 \
 --languages ar de en es fr hi it ja ko pt ru th zh \
 --dense_search_result_save_dir ./rerank_results/dense \
---sparse_search_result_save_dir ../rerank_results/sparse \
---colbert_search_result_save_dir ../rerank_results/colbert \
+--sparse_search_result_save_dir ./rerank_results/sparse \
+--colbert_search_result_save_dir ./rerank_results/colbert \
 --hybrid_result_save_dir ./hybrid_search_results \
 --top_k 200 \
 --dense_weight 0.2 --sparse_weight 0.4 --colbert_weight 0.4
 """
 import os
-import torch
 import pandas as pd
 from tqdm import tqdm
 from dataclasses import dataclass, field
@@ -141,10 +140,10 @@ def main():
     
     languages = check_languages(eval_args.languages)
     
-    if 'checkpoint-' in os.path.basename(eval_args.encoder):
+    if os.path.basename(eval_args.encoder).startswith('checkpoint-'):
         eval_args.encoder = os.path.dirname(eval_args.encoder) + '_' + os.path.basename(eval_args.encoder)
     
-    if 'checkpoint-' in os.path.basename(eval_args.reranker):
+    if os.path.basename(eval_args.reranker).startswith('checkpoint-'):
         eval_args.reranker = os.path.dirname(eval_args.reranker) + '_' + os.path.basename(eval_args.reranker)
     
     dir_name = f"{os.path.basename(eval_args.encoder)}-{os.path.basename(eval_args.reranker)}"
@@ -156,6 +155,7 @@ def main():
         hybrid_result_save_path = os.path.join(eval_args.hybrid_result_save_dir, dir_name, f"{lang}.txt")
         
         sparse_search_result_save_dir = os.path.join(eval_args.sparse_search_result_save_dir, dir_name)
+        
         sparse_search_result_path = os.path.join(sparse_search_result_save_dir, f"{lang}.txt")
         
         sparse_search_result_dict = get_search_result_dict(sparse_search_result_path, top_k=eval_args.top_k)

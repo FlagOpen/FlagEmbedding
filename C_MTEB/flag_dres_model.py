@@ -2,12 +2,11 @@ from typing import cast, List, Dict, Union
 
 import numpy as np
 import torch
-from mteb import DRESModel
 from tqdm import tqdm
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
 
-class FlagDRESModel(DRESModel):
+class FlagDRESModel:
     def __init__(
             self,
             model_name_or_path: str = None,
@@ -15,7 +14,6 @@ class FlagDRESModel(DRESModel):
             normalize_embeddings: bool = True,
             query_instruction_for_retrieval: str = None,
             batch_size: int = 256,
-            **kwargs
     ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
@@ -25,7 +23,12 @@ class FlagDRESModel(DRESModel):
         self.pooling_method = pooling_method
         self.batch_size = batch_size
 
-        self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+        if torch.cuda.is_available():
+            self.device = torch.device("cuda")
+        elif is_torch_npu_available():
+            self.device = torch.device("npu")
+        else:
+            self.device = torch.device("cpu")
         self.model = self.model.to(self.device)
 
         num_gpus = torch.cuda.device_count()
