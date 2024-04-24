@@ -6,5 +6,5 @@ This is the codebase for Activation Beacon, an effective, efficient, compatible,
 
 
 ## File structure:
-- The `old` folder contains our initial implementation of Activation Beacon for Llama-2. You can use the code in it to reproduce the training/evaluation of the Llama-2 based model shown in our paper.
-- The `new` folder contains **newer** implementation of Activation Beacon for both Llama-2 and Mistral. It also supports more features, including **Deepspeed Zero3 training**, adding **chat template** in training and inference, and **evaluating on more tasks**. However, code in this folder are under development and subject to change in the future.
+- The [old](./old/) folder contains our initial implementation of Activation Beacon for Llama-2. You can use the code in it to reproduce the training/evaluation of the Llama-2 based model shown in our paper.
+- The [new](./new/) folder contains **newer** implementation of Activation Beacon for both Llama-2 and Mistral. It also supports more features, including **Deepspeed Zero3 training**, adding **chat template** in training and inference, and **evaluating on more tasks**. However, code in this folder are under development and subject to change in the future.
