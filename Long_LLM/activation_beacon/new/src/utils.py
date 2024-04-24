@@ -71,18 +71,34 @@ def save_json(obj, path:str):
     if not os.path.exists(path):
         makedirs(path)
     with open(path, "w") as f:
-        return json.dump(obj, f, ensure_ascii=False)
+        return json.dump(obj, f)
 
 def load_json(path, lines=False):
     if lines:
         output = []
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             for line in f:
                 output.append(json.loads(line))
         return output
     else:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
+
+def format_numel_str(numel: int) -> str:
+    T = 1e12
+    B = 1e9
+    M = 1e6
+    K = 1e3
+    if numel >= T:
+        return f"{numel / T:.2f} T"
+    if numel >= B:
+        return f"{numel / B:.2f} B"
+    elif numel >= M:
+        return f"{numel / M:.2f} M"
+    elif numel >= K:
+        return f"{numel / K:.2f} K"
+    else:
+        return f"{numel}"
 
 def batched_iter(iterable: Iterable, max_batch_size: int):
     """ Batches an iterable into lists of given maximum size, yielding them one by one. """

@@ -1,3 +1,4 @@
+import os
 import math
 import torch
 import datasets
@@ -27,7 +28,7 @@ class ActivationBeaconTrainer(Trainer):
 
         outputs = super().compute_loss(model, inputs, return_outputs)
 
-        if hasattr(self.model.memory, "_retrieval_span"):
+        if hasattr(self.model, "memory") and hasattr(self.model.memory, "_retrieval_span"):
             del self.model.memory._retrieval_span
             del self.model.memory._retrieval_condensing_ratios
         return outputs
@@ -42,7 +43,7 @@ class ActivationBeaconTrainer(Trainer):
         # move to GPU
         inputs = self._prepare_input(inputs)
         # NOTE: reset memory for each individual input
-        if hasattr(self.model, "memory") and self.model.memory is not None:
+        if hasattr(self.model, "memory"):
             self.model.memory.reset()
         return inputs
     
@@ -70,6 +71,12 @@ class ActivationBeaconTrainer(Trainer):
 
         else:
             return super()._get_train_sampler()
+    
+    def _save(self, output_dir: Optional[str] = None, state_dict=None):
+        outputs = super()._save(output_dir, state_dict)
+        # NOTE: also save model_args
+        self.model_args.save(os.path.join(output_dir, "model_args.json"))
+        return outputs
 
     @torch.no_grad()
     def evaluate(self, eval_dataset: Dataset | None = None, ignore_keys: List[str] | None = None, metric_key_prefix: str = "eval") -> Dict[str, float]:        
