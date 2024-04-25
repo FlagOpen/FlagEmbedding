@@ -29,3 +29,7 @@ class CETrainer(Trainer):
 
     def compute_loss(self, model: CrossEncoder, inputs):
         return model(inputs)['loss']
+    
+    def _load_from_checkpoint(self, resume_from_checkpoint, model=None):
+        model = self.model.hf_model
+        super()._load_from_checkpoint(resume_from_checkpoint, model)

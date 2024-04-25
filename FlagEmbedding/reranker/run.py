@@ -106,6 +106,7 @@ def main():
 
     train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
     _trainer_class = CETrainer
+    
     trainer = _trainer_class(
         model=model,
         args=training_args,
