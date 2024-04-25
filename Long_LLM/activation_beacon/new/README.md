@@ -31,9 +31,9 @@ model = model.cuda().eval()
 
 with torch.no_grad():
   # short context
-  text = "Tell me about yourself."
-  inputs = tokenizer(text, return_tensors="pt").to("cuda")
-  outputs = model.generate(**inputs, max_new_tokens=20)
+  messages = [{"role": "user", "content": "Tell me about yourself."}]
+  inputs = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
+  outputs = model.generate(**inputs, max_new_tokens=50)
   print(f"Input Length: {inputs['input_ids'].shape[1]}")
   print(f"Output:       {tokenizer.decode(outputs[0], skip_special_tokens=True)}")
 
@@ -43,7 +43,8 @@ with torch.no_grad():
   # long context
   with open("data/toy/infbench.json", encoding="utf-8") as f:
     example = json.load(f)
-  inputs = tokenizer(example["context"], return_tensors="pt").to("cuda")
+  messages = [{"role": "user", "content": example["context"]}]
+  inputs = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
   outputs = model.generate(**inputs, do_sample=False, top_p=1, temperature=1, max_new_tokens=20)[:, inputs["input_ids"].shape[1]:]
   print("*"*20)
   print(f"Input Length: {inputs['input_ids'].shape[1]}")
