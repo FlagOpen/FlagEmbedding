@@ -8,13 +8,25 @@ from transformers import (
     set_seed,
 )
 
-from .arguments import ModelArguments, DataArguments
-from .data import TrainDatasetForCE, GroupCollator
-from .modeling import CrossEncoder
-from .trainer import CETrainer
+from arguments import ModelArguments, DataArguments
+from data import TrainDatasetForCE, GroupCollator
+from modeling import CrossEncoder
+from trainer import CETrainer
 
 logger = logging.getLogger(__name__)
+from pprint import pprint as pp
+import sys 
+sys.path.append("/opt/tiger/FlagEmbedding")
+from utils import get_complete_last_checkpoint
+import transformers
 
+def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str):
+    """Collects the state dict and dump to disk."""
+    state_dict = trainer.model.state_dict()
+    if trainer.args.should_save:
+        cpu_state_dict = {key: value.cpu() for key, value in state_dict.items()}
+        del state_dict
+        trainer._save(output_dir, state_dict=cpu_state_dict)
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
@@ -23,15 +35,22 @@ def main():
     data_args: DataArguments
     training_args: TrainingArguments
 
-    if (
-            os.path.exists(training_args.output_dir)
-            and os.listdir(training_args.output_dir)
-            and training_args.do_train
-            and not training_args.overwrite_output_dir
-    ):
-        raise ValueError(
-            f"Output directory ({training_args.output_dir}) already exists and is not empty. Use --overwrite_output_dir to overcome."
-        )
+    # for args in (model_args, data_args, training_args): pp(args)
+
+    # check and load checkpoint
+    last_checkpoint = None
+    if os.path.isdir(training_args.output_dir) and not training_args.overwrite_output_dir:
+        last_checkpoint = get_complete_last_checkpoint(training_args.output_dir)
+        if last_checkpoint is None and len(os.listdir(training_args.output_dir)) > 0:
+            logger.info(
+                f"Output directory ({training_args.output_dir}) already exists and is empty."
+                "Train from scratch"
+            )
+        elif last_checkpoint is not None and training_args.resume_from_checkpoint is None:
+            logger.info(
+                f"Checkpoint detected, resuming training at {last_checkpoint}. To avoid this behavior, change "
+                "the `--output_dir` or add `--overwrite_output_dir` to train from scratch."
+            )
 
     # Setup logging
     logging.basicConfig(
@@ -64,6 +83,7 @@ def main():
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
         cache_dir=model_args.cache_dir,
+        trust_remote_code=True
     )
     _model_class = CrossEncoder
 
@@ -73,7 +93,16 @@ def main():
         from_tf=bool(".ckpt" in model_args.model_name_or_path),
         config=config,
         cache_dir=model_args.cache_dir,
+        trust_remote_code=True
     )
+
+    checkpoint = None
+    if training_args.resume_from_checkpoint is not None:
+        logger.info(f"train start from {training_args.resume_from_checkpoint}")
+        checkpoint = training_args.resume_from_checkpoint
+    elif last_checkpoint is not None:
+        logger.info(f"train start from {last_checkpoint}")
+        checkpoint = last_checkpoint
 
     train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
     _trainer_class = CETrainer
@@ -84,11 +113,13 @@ def main():
         data_collator=GroupCollator(tokenizer),
         tokenizer=tokenizer
     )
+    trainer.train(resume_from_checkpoint=checkpoint)
+    trainer.save_state()
+    safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)
+    # Path(training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
-    Path(training_args.output_dir).mkdir(parents=True, exist_ok=True)
-
-    trainer.train()
-    trainer.save_model()
+    # trainer.train()
+    # trainer.save_model()
 
 
 if __name__ == "__main__":

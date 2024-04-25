@@ -5,7 +5,7 @@ from typing import Optional
 import torch
 from transformers.trainer import Trainer
 
-from .modeling import CrossEncoder
+from modeling import CrossEncoder
 
 logger = logging.getLogger(__name__)
 

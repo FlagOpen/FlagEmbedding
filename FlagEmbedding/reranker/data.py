@@ -10,7 +10,7 @@ from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding
 from transformers import PreTrainedTokenizer, BatchEncoding
 
-from .arguments import DataArguments
+from arguments import DataArguments
 
 
 class TrainDatasetForCE(Dataset):

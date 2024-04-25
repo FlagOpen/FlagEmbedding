@@ -5,7 +5,7 @@ from torch import nn
 from transformers import AutoModelForSequenceClassification, PreTrainedModel, TrainingArguments
 from transformers.modeling_outputs import SequenceClassifierOutput
 
-from .arguments import ModelArguments, DataArguments
+from arguments import ModelArguments, DataArguments
 
 logger = logging.getLogger(__name__)
 
