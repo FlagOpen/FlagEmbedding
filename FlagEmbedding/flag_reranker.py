@@ -408,6 +408,7 @@ class LayerWiseFlagLLMReranker:
         self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
+                                                          local_files_only=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
 
         self.model_name_or_path = model_name_or_path
