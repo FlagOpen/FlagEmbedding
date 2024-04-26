@@ -4,14 +4,15 @@ import os
 import sys
 import torch
 
-def find_unused_port(start_port=37624):
+def find_unused_port(start_port=37625):
     """
     寻找一个从start_port开始的未使用的端口。
     """
     for port in range(start_port, start_port + 20000):  # 检查1000个端口
         with contextlib.suppress(Exception):
-            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-                sock.bind(('', port))
+            for i in range(10):
+                with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
+                    sock.bind(('', port))
                 return port
     return None  # 如果没有找到，返回None
 
