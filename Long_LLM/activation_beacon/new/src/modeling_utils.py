@@ -70,10 +70,14 @@ def evaluate_perplexity(model, dataloader, accelerator:Optional[Accelerator]=Non
         # if the dataloader has been prepared, we shall not prepare it twice, especially in case of deepspeed
         dataloader = accelerator.prepare(dataloader)
 
+    # if accelerator.process_index == 0:
+    #     for name, x in model.named_parameters():
+    #         print(f"{name: ^80} {x.dtype}")
+
     all_loss = defaultdict(list)
     for i, x in enumerate(tqdm(dataloader, desc="Computing Perplexity")):
         # NOTE: important to reset memory for every batch
-        if hasattr(model, "memory") and model.memory is not None:
+        if hasattr(model, "memory"):
             model.memory.reset()
 
         # the seq id
@@ -92,7 +96,7 @@ def evaluate_perplexity(model, dataloader, accelerator:Optional[Accelerator]=Non
             # output from other models does not
             loss, batch_loss, valid_token_num = compute_loss(output.logits, x["labels"], shift=True)
 
-        if accelerator is not None:
+        if accelerator is not None and accelerator.num_processes > 1:
             # num_device * batch_size
             index = accelerator.gather_for_metrics(index)
             batch_loss = accelerator.gather_for_metrics(batch_loss)
@@ -125,7 +129,7 @@ def evaluate_generation(model, dataloader, accelerator:Optional[Accelerator]=Non
         #     break
         
         # NOTE: important to reset memory for every batch
-        if hasattr(model, "memory") and model.memory is not None:
+        if hasattr(model, "memory"):
             model.memory.reset()
 
         indices = x.pop("index")
@@ -137,10 +141,9 @@ def evaluate_generation(model, dataloader, accelerator:Optional[Accelerator]=Non
             start_idx = x["input_ids"].shape[1]
             outputs = outputs[:, start_idx:]
 
-        if accelerator is not None:
+        if accelerator is not None and accelerator.num_processes > 1:
             # must be contiguous
-            outputs = outputs.contiguous()
-            outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
+            outputs = accelerator.pad_across_processes(outputs.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
             outputs = accelerator.gather_for_metrics(outputs)
             indices = accelerator.gather_for_metrics(indices)
 

@@ -399,17 +399,24 @@ class MistralAttention(nn.Module):
         else:
             # only copy the value in-place, without tieing the weight
             if "q" in beacon_param and any("beacon_q_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_q_proj.weight == 0).all():
+                # FIXME: some beacon weights are not initialized as zero for mistral model, why? 
+                # if (self.beacon_q_proj.weight == 0).all():
                     self.beacon_q_proj.weight.data[:] = self.q_proj.weight.data
             if "k" in beacon_param and any("beacon_k_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_k_proj.weight == 0).all():
+                # if (self.beacon_k_proj.weight == 0).all():
                     self.beacon_k_proj.weight.data[:] = self.k_proj.weight.data
             if "v" in beacon_param and any("beacon_v_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_v_proj.weight == 0).all():
+                # if (self.beacon_v_proj.weight == 0).all():
                     self.beacon_v_proj.weight.data[:] = self.v_proj.weight.data
             if "o" in beacon_param and any("beacon_o_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_o_proj.weight == 0).all():
+                # if (self.beacon_o_proj.weight == 0).all():
                     self.beacon_o_proj.weight.data[:] = self.o_proj.weight.data
+
+            # debug
+            # assert (self.beacon_q_proj.weight.data == self.q_proj.weight.data).all()
+            # assert (self.beacon_k_proj.weight.data == self.k_proj.weight.data).all()
+            # assert (self.beacon_v_proj.weight.data == self.v_proj.weight.data).all()
+            # assert (self.beacon_o_proj.weight.data == self.o_proj.weight.data).all()
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         return tensor.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2).contiguous()
@@ -493,12 +500,17 @@ class MistralAttention(nn.Module):
 
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        if window_size > 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
+        
+        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
+        if window_size == 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         key_position_ids = position_ids
         # align query position_ids with key
@@ -600,13 +612,18 @@ class MistralSdpaAttention(MistralAttention):
 
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        if window_size > 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
         
+        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
+        if window_size == 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+
         key_position_ids = position_ids
         # align query position_ids with key
         query_position_ids = key_position_ids[:, -q_len:]
@@ -884,10 +901,20 @@ class MistralModel(MistralPreTrainedModel):
             with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
                 # deepspeed will initialize the parameters to zero
                 if (self.beacon_embed_tokens.weight == 0).all():
-                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                    if self.config.beacon_embed_init == "bos":
+                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
+                    elif self.config.beacon_embed_init == "eos":
+                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                    else:
+                        raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
         else:
             if any("beacon_embed_tokens" in missing_key for missing_key in missing_keys):
-                self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                if self.config.beacon_embed_init == "bos":
+                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
+                elif self.config.beacon_embed_init == "eos":
+                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                else:
+                    raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
 
 
     def get_input_embeddings(self):
@@ -980,6 +1007,9 @@ class MistralModel(MistralPreTrainedModel):
 
             beacon_start_idx = -total_beacon_size
 
+            # batch_size, head_num, window_size
+            reference_attention_mask = attention_mask[..., -total_beacon_size - 1, -window_size_with_beacon: -total_beacon_size]
+
             for beacon_size in beacon_sizes:
                 # in this case, the activations of ordinal tokens are used as beacon activations
                 if beacon_size < 0:
@@ -1003,17 +1033,25 @@ class MistralModel(MistralPreTrainedModel):
                     valid_pos = ordinal_arange.expand(beacon_size, window_size) < beacon_arange.unsqueeze(-1)
                     # beacon_size, window_size
                     ordinal_attention_mask = torch.where(valid_pos, 0, min_value)
+                    # NOTE: add reference attention_mask so that padding tokens are considered
+                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
 
-                    beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                    if self.config.beacon_attend_prev:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
+                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
+                    else:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
                     attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
                     # beacons of different ratios are blind to others
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                    # the beacon token is next to the last oridinal token it attends to
-                    beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
-                    position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                 elif self.config.beacon_attn == "segmentation":
                     # each beacon can attend to its corresponding sub-interval
@@ -1023,17 +1061,25 @@ class MistralModel(MistralPreTrainedModel):
                     # beacon_size, window_size
                     ordinal_attention_mask = attention_mask.new_full((beacon_size, window_size), min_value)
                     ordinal_attention_mask.scatter_(dim=-1, index=indices, value=0)
+                    # NOTE: add reference attention_mask so that padding tokens are considered
+                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
 
-                    beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                    if self.config.beacon_attend_prev:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
+                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
+                    else:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
                     attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
                     # beacons of different ratios are blind to others
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                    # the beacon token is next to the last oridinal token it attends to
-                    beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
-                    position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                 elif self.config.beacon_attn == "full-coverage":
                     pass
@@ -1145,25 +1191,15 @@ class MistralForCausalLM(MistralPreTrainedModel):
     @classmethod
     def from_pretrained(cls, *args, **kwargs):
         """Override the default from_pretrained to extend vocab size according to beacon_size."""
-        model, loading_info = super().from_pretrained(*args, **kwargs, output_loading_info=True)
+        kwargs.update(output_loading_info=True)
+        model, loading_info = super().from_pretrained(*args, **kwargs)
 
         # NOTE: set memory after from_pretrained because there may be another transformer model inside the Memory object, which may cause weird erros during loading
         config = model.config
         model.memory = Memory(
             model_config=config,
-            beacon_window=config.beacon_window,
-            beacon_stride=config.beacon_stride,
-            beacon_attn=config.beacon_attn,
-            beacon_ratio=config.beacon_ratio,
-            beacon_ratio_mix=config.beacon_ratio_mix,
-            beacon_param=config.beacon_param,
-            beacon_sink_size=config.beacon_sink_size,
             k_seq_dim=2,
             v_seq_dim=2,
-            retrieval_method=config.retrieval_method,
-            retrieval_topk=config.retrieval_topk,
-            retrieval_key_length=config.retrieval_key_length,
-            retrieval_cache_dir=config.retrieval_cache_dir,
         )
 
         missing_keys = loading_info["missing_keys"]
@@ -1196,6 +1232,11 @@ class MistralForCausalLM(MistralPreTrainedModel):
             output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
         )
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+
+        # when we directly call _native_forward, the past_key_values would be None
+        if past_key_values is None:
+            # NOTE: set window size to 0, so that new past_key_values are returned properly, see MistralAttention.forward
+            past_key_values = [(None, None, [0], 0, 0, 0) for _ in range(self.config.num_hidden_layers)]
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         outputs = self.model(
@@ -1294,7 +1335,11 @@ class MistralForCausalLM(MistralPreTrainedModel):
         """
         # only allow gradient when training
         with optional_grad_ctx(with_grad=self.training):
-            return self._beacon_forward(**kwargs)
+            # we can disable beacon to use the original mistral
+            if hasattr(self, "_enable_beacon") and self._enable_beacon == False:
+                return self._native_forward(**kwargs)
+            else:
+                return self._beacon_forward(**kwargs)
 
     def prepare_inputs_for_generation(
         self, input_ids, past_key_values=None, attention_mask=None, inputs_embeds=None, **kwargs
