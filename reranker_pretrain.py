@@ -1,7 +1,6 @@
 import socket
 import contextlib
 import os
-import argparse
 import sys
 import torch
 
@@ -29,6 +28,8 @@ else:
 num_gpus = torch.cuda.device_count()
 
 os.system("cd /opt/tiger/FlagEmbedding")
+
+if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-tns-live-llm/leon/experiments/llm/fcbank/train_15neg /opt/tiger/train_15neg")
 
 # 构建训练命令
 command = f"""
