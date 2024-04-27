@@ -10,109 +10,104 @@ from typing import List, Any, Dict, Union, Tuple
 
 import numpy as np
 from copy import deepcopy
-from transformers.tokenization_utils import PreTrainedTokenizer
+from transformers.tokenization_utils import PreTrainedTokenizer, BatchEncoding
 
 
-from src.utils import mask_nested_lists
+@dataclasses.dataclass
+class ChatTemplateOutput:
+    raw: str = None
+    encoded: BatchEncoding = None
 
-def apply_chat_template(template, messages, system_message=None, tokenizer:PreTrainedTokenizer=None, add_generation_prompt=False, return_labels=False, return_raw=False, **tokenizer_kwargs):
+
+def mask_nested_lists(lst, mask_target, mask_value=0):
+    if isinstance(lst[0], list):
+        for i, elem in enumerate(lst):
+            lst[i] = mask_nested_lists(elem, mask_target, mask_value)
+        return lst
+    else:
+        return [x if x != mask_target else mask_value for x in lst]
+
+
+def apply_chat_template(template, messages, system_message=None, tokenizer:PreTrainedTokenizer=None, add_generation_prompt=False, return_labels=False, **tokenization_kwargs):
     """
     Wrap the message using the template from fastchat according to its role
 
     Args:
         template: fastchat template name
         messages: a list of dictionaries, each of which is {'role': 'user/assistant', 'content': 'xxx'}
-        system_info: system input
+        system_message: system input
     """
-    if len(tokenizer_kwargs):
+    if len(tokenization_kwargs):
         assert tokenizer is not None, f"Make sure the tokenizer is not None when passing tokenizer kwargs!"
 
     if template == "no":
-        assert tokenizer is not None, f"Make sure the tokenizer is not None when using chat_template == 'no'!"
-
-        input_ids = []
-
-        if return_labels:
-            labels = []
-            tokenizer.add_tokens(["[PAD_FOR_LABELS]"])
-            label_pad_token_id = len(tokenizer) - 1
-
-        eos_token_id = tokenizer.eos_token_id
+        assert tokenizer is not None, f"Make sure the tokenizer is not None when template is no!"
 
         prev_role = None
+        conversation = ""
+
+        tokenization_kwargs["add_special_tokens"] = False
+        
         for i, message in enumerate(messages):
             role = message['role']
             content = message['content']
             if prev_role == role:
                 raise ValueError(f"Current role (idx={i}) {role} and previous role {messages[i-1]['role']} are the same!")
             
-            if role == "user":
-                if i == 0:
-                    # do not add bos for the first utterance
-                    encoded_content = tokenizer.encode(content, add_special_tokens=False)
-                else:
-                    encoded_content = tokenizer.encode(content)
+            if i == 0:
+                content = tokenizer.decode(tokenizer.encode(content))
+                user_message = content
+            elif i == 1:
+                # we use a space to separate user message and assistant response
+                if content.startswith(" "):
+                    content = content[1:]
+                content = content + tokenizer.eos_token
+                assistant_message = content
             else:
-                encoded_content = tokenizer.encode(content, add_special_tokens=False)
-                if encoded_content[-1] != eos_token_id:
-                    encoded_content.append(eos_token_id)
+                raise ValueError(f"Please use chat template when there are multi-turn conversations")
 
-            input_ids.extend(encoded_content)
-            
-            if return_labels:
-                if role == "assistant":
-                    label = encoded_content.copy()
-                else:
-                    label = [label_pad_token_id for _ in encoded_content]
-                labels.extend(label)
-            
-            prev_role = role
+            conversation += content
 
-        # the bos token is added at the start of each conversation turn
-        # however, after decoding, the bos token will be separated with a space against the regular tokens
-        # if we encode the sequence, this results in an extra 'space' token, which breaks the correspondence between input_ids and labels
-        # thus, we should matually remove this space
-        if tokenizer.bos_token is not None:
-            conversation = tokenizer.decode(input_ids).replace(f"{tokenizer.bos_token} ", tokenizer.bos_token)
-
-        encoded = tokenizer(conversation, **tokenizer_kwargs)
+        encoded = tokenizer(conversation, **tokenization_kwargs)
 
         if return_labels:
-            # all consecutive label_pad_tokens must be separated with a space
-            labels = tokenizer.decode(labels).replace("][", "] [")
-            # using the same set of kwargs to encode labels
-            labels = tokenizer.encode(labels, **tokenizer_kwargs)
-
-            if isinstance(labels, list):
-                labels = mask_nested_lists(labels, label_pad_token_id, -100)
-                labels = mask_nested_lists(labels, tokenizer.bos_token_id, -100)
-            else:
-                labels[labels == label_pad_token_id] = -100
-                labels[labels == tokenizer.bos_token_id] = -100
-
+            labels = encoded['input_ids'].copy()
+            assistant_message_len = len(tokenizer.encode(assistant_message, add_special_tokens=False))
+            labels[:-assistant_message_len] = [-100 for _ in labels[:-assistant_message_len]]
             encoded["labels"] = labels
 
-        if return_raw:
-            return encoded, conversation
-        else:
-            return encoded
+            # sanity check
+            for id_, label_ in zip(encoded['input_ids'], encoded['labels']):
+                assert id_ == label_ or label_ == -100, f"Found mismatch input_ids and labels!"
+
+        return ChatTemplateOutput(raw=conversation, encoded=encoded)
     
     conversation_template = get_conv_template(template)
     if system_message is not None:
         conversation_template.set_system_message(system_message)
     
-    offset_map = {
-        'llama-2': {
-            "initial": 1,
-            "turn": 3,
-            "instruction": 0,
-        },
+    config = {
         'mistral': {
-            "initial": 1,
-            "turn": 1,
-            "instruction": 0,
-        }
-    }
+            "turn_sep": "</s>",
+            "role_sep": " [/INST]",
+            "begin_of_text_len": 1,
+            "role_sep_left_offset": 0,
+        },
+        'llama-2': {
+            "turn_sep": " </s><s>",
+            "role_sep": " [/INST]",
+            "begin_of_text_len": 1,
+            "role_sep_left_offset": -1,
+        },
+        'llama-3': {
+            "turn_sep": "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
+            "role_sep": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
+            # the bos of llama3 is added explicitly to the input string, instead of added by the tokenizer
+            "begin_of_text_len": 0,
+            "role_sep_left_offset": -4,
+        },
+    }[template]
+
     role_map = {
         'user': conversation_template.roles[0],
         'assistant': conversation_template.roles[1]
@@ -134,55 +129,66 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
     conversation = conversation_template.get_prompt()
 
     if tokenizer is not None:
-        encoded = tokenizer(conversation, **tokenizer_kwargs)
+        encoded = tokenizer(conversation, **tokenization_kwargs)
 
         if return_labels:
             # Mask targets. Only compute loss on the assistant outputs.
-            sep = conversation_template.sep + conversation_template.roles[1]
+
+            turn_sep = config["turn_sep"]
+            role_sep = config["role_sep"]
+            begin_of_text_len = config["begin_of_text_len"]
+            role_sep_left_offset = config["role_sep_left_offset"]
+            turn_sep_len = len(tokenizer.encode(turn_sep, add_special_tokens=False))
+
             # transform to array for fast value assignment
             labels = deepcopy(encoded['input_ids'])
             labels = np.array(labels)
             total_len = len(labels)
 
-            turns = conversation.split(conversation_template.sep2)
+            turns = conversation.split(turn_sep)
 
             cur_len = 0
             for i, turn in enumerate(turns):
                 if turn == "":
                     break
                 
-                turn_len = len(tokenizer(turn, add_special_tokens=False).input_ids) + offset_map[template]["turn"]
+                turn_len = len(tokenizer(turn, add_special_tokens=False).input_ids)
 
-                parts = turn.split(sep)
+                parts = turn.split(role_sep)
 
                 if len(parts) != 2:
                     break
 
-                parts[0] += sep
-                instruction_len = len(tokenizer(parts[0], add_special_tokens=False).input_ids) + offset_map[template]["instruction"]
+                user_message, assistant_message = parts
+
+                user_message += role_sep
+                instruction_len = len(tokenizer(user_message, add_special_tokens=False).input_ids)
 
                 # for bos tokens
                 if i == 0:
-                    turn_len += offset_map[template]["initial"]
-                    instruction_len += offset_map[template]["initial"]
+                    turn_len += begin_of_text_len
+                    instruction_len += begin_of_text_len
 
                 # Ignore the user instructions
-                labels[cur_len : cur_len + instruction_len] = -100
-                cur_len += turn_len
+                labels[max(cur_len + role_sep_left_offset, 0): cur_len + instruction_len] = -100
+
+                cur_len = cur_len + turn_len + turn_sep_len
+
                 if cur_len > total_len:
                     break
 
-            labels[cur_len:] = -100
+            labels[max(cur_len + role_sep_left_offset, 0):] = -100
+
             encoded['labels'] = labels.tolist()
 
-        if return_raw:
-            return encoded, conversation
-        else:
-            return encoded
+            # sanity check
+            for id_, label_ in zip(encoded['input_ids'], encoded['labels']):
+                assert id_ == label_ or label_ == -100, f"Found mismatch input_ids and labels!"
 
     else:
-        return conversation
+        encoded = None
 
+    return ChatTemplateOutput(raw=conversation, encoded=encoded)
 
 
 class SeparatorStyle(IntEnum):
@@ -195,6 +201,7 @@ class SeparatorStyle(IntEnum):
     NO_COLON_TWO = auto()
     ADD_NEW_LINE_SINGLE = auto()
     LLAMA2 = auto()
+    LLAMA3 = auto()
     CHATGLM = auto()
     CHATML = auto()
     CHATINTERN = auto()
@@ -207,6 +214,9 @@ class SeparatorStyle(IntEnum):
     DEEPSEEK_CHAT = auto()
     METAMATH = auto()
     YUAN2 = auto()
+    GEMMA = auto()
+    CLLM = auto()
+    DEFAULT = auto()
 
 
 IMAGE_PLACEHOLDER_STR = "$$<image>$$"
@@ -320,6 +330,18 @@ class Conversation:
                         ret += message + " "
                     else:
                         ret += tag + " " + message + seps[i % 2]
+                else:
+                    ret += tag
+            return ret
+        elif self.sep_style == SeparatorStyle.LLAMA3:
+            if self.system_message:
+                ret = system_prompt
+            else:
+                ret = "<|begin_of_text|>"
+            for i, (role, message) in enumerate(self.messages):
+                tag = self.roles[i % 2]
+                if message:
+                    ret += tag + message + self.sep
                 else:
                     ret += tag
             return ret
@@ -443,6 +465,34 @@ class Conversation:
                     ret += ""
             ret = ret.rstrip("<n>") + seps[0]
             return ret
+        elif self.sep_style == SeparatorStyle.GEMMA:
+            ret = "<bos>"
+            for role, message in self.messages:
+                if message:
+                    ret += "<start_of_turn>" + role + "\n" + message + self.sep
+                else:
+                    ret += "<start_of_turn>" + role + "\n"
+            return ret
+        elif self.sep_style == SeparatorStyle.CLLM:
+            seps = [self.sep, self.sep2]
+            ret = system_prompt + seps[0]
+            for i, (role, message) in enumerate(self.messages[-2:]):
+                if message:
+                    if type(message) is tuple:
+                        message, images = message
+                        message = IMAGE_PLACEHOLDER_STR * len(images) + message
+                    ret += role + ": " + message + seps[i % 2]
+                else:
+                    ret += role + ":"
+            return ret
+        elif self.sep_style == SeparatorStyle.DEFAULT:
+            ret = system_prompt + "\n"
+            for role, message in self.messages:
+                if message:
+                    ret += role + ": " + message + "\n"
+                else:
+                    ret += role + ":"
+            return ret
         else:
             raise ValueError(f"Invalid style: {self.sep_style}")
 
@@ -459,6 +509,10 @@ class Conversation:
     def set_system_message(self, system_message: str):
         """Set the system message."""
         self.system_message = system_message
+
+    def get_system_message(self):
+        """return the system message."""
+        return self.system_message
 
     def append_message(self, role: str, message: str):
         """Append a new message."""
@@ -655,6 +709,17 @@ register_conv_template(
         sep_style=SeparatorStyle.ADD_COLON_TWO,
         sep=" ",
         sep2="</s>",
+    )
+)
+
+# api-based default template
+register_conv_template(
+    Conversation(
+        name="api_based_default",
+        system_message="",
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
     )
 )
 
@@ -942,7 +1007,23 @@ register_conv_template(
         name="chatgpt",
         system_message="You are a helpful assistant.",
         roles=("user", "assistant"),
-        sep_style=None,
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="gpt-4-turbo-2024-04-09",
+        system_message=(
+            "You are ChatGPT, a large language model trained by OpenAI, based on the GPT-4 architecture.\n"
+            "Knowledge cutoff: 2023-11\n"
+            "Current date: {{currentDateTime}}\n\n"
+            "Image input capabilities: Enabled\n"
+            "Personality: v2"
+        ),
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.DEFAULT,
         sep=None,
     )
 )
@@ -953,7 +1034,7 @@ register_conv_template(
         name="pplxai",
         system_message="Be precise and concise.",
         roles=("user", "assistant"),
-        sep_style=None,
+        sep_style=SeparatorStyle.DEFAULT,
         sep=None,
     )
 )
@@ -965,6 +1046,84 @@ register_conv_template(
         roles=("Human", "Assistant"),
         sep_style=SeparatorStyle.ADD_COLON_SINGLE,
         sep="\n\n",
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="claude-3-haiku-20240307",
+        system_message=(
+            "The assistant is Claude, created by Anthropic. The current date is "
+            "{{currentDateTime}}. Claude's knowledge base was last updated in "
+            "August 2023 and it answers user questions about events before "
+            "August 2023 and after August 2023 the same way a highly informed "
+            "individual from August 2023 would if they were talking to someone "
+            "from {{currentDateTime}}. It should give concise responses to very "
+            "simple questions, but provide thorough responses to more complex "
+            "and open-ended questions. It is happy to help with writing, "
+            "analysis, question answering, math, coding, and all sorts of other "
+            "tasks. It uses markdown for coding. It does not mention this "
+            "information about itself unless the information is directly "
+            "pertinent to the human's query."
+        ),
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="claude-3-sonnet-20240229",
+        system_message=(
+            "The assistant is Claude, created by Anthropic. The current date is "
+            "{{currentDateTime}}. Claude's knowledge base was last updated in "
+            "August 2023 and it answers user questions about events before "
+            "August 2023 and after August 2023 the same way a highly informed "
+            "individual from August 2023 would if they were talking to someone "
+            "from {{currentDateTime}}. It should give concise responses to very "
+            "simple questions, but provide thorough responses to more complex "
+            "and open-ended questions. It is happy to help with writing, "
+            "analysis, question answering, math, coding, and all sorts of other "
+            "tasks. It uses markdown for coding. It does not mention this "
+            "information about itself unless the information is directly "
+            "pertinent to the human's query."
+        ),
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="claude-3-opus-20240229",
+        system_message=(
+            "The assistant is Claude, created by Anthropic. The current date is "
+            "{{currentDateTime}}. Claude's knowledge base was last updated on "
+            "August 2023. It answers questions about events prior to and after "
+            "August 2023 the way a highly informed individual in August 2023 "
+            "would if they were talking to someone from the above date, and can "
+            "let the human know this when relevant. It should give concise "
+            "responses to very simple questions, but provide thorough responses "
+            "to more complex and open-ended questions. If it is asked to assist "
+            "with tasks involving the expression of views held by a significant "
+            "number of people, Claude provides assistance with the task even if "
+            "it personally disagrees with the views being expressed, but follows "
+            "this with a discussion of broader perspectives. Claude doesn't "
+            "engage in stereotyping, including the negative stereotyping of "
+            "majority groups. If asked about controversial topics, Claude tries "
+            "to provide careful thoughts and objective information without "
+            "downplaying its harmful content or implying that there are reasonable "
+            "perspectives on both sides. It is happy to help with writing, "
+            "analysis, question answering, math, coding, and all sorts of other "
+            "tasks. It uses markdown for coding. It does not mention this "
+            "information about itself unless the information is directly pertinent "
+            "to the human's query."
+        ),
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
     )
 )
 
@@ -1049,7 +1208,7 @@ register_conv_template(
     Conversation(
         name="bard",
         roles=("0", "1"),
-        sep_style=None,
+        sep_style=SeparatorStyle.DEFAULT,
         sep=None,
     )
 )
@@ -1058,7 +1217,7 @@ register_conv_template(
     Conversation(
         name="gemini",
         roles=("user", "model"),
-        sep_style=None,
+        sep_style=SeparatorStyle.DEFAULT,
         sep=None,
     )
 )
@@ -1277,6 +1436,18 @@ register_conv_template(
         sep2=" </s><s>",
     )
 )
+
+# Llama-3 Template
+register_conv_template(
+        Conversation(
+            name="llama-3",
+            system_template="<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",            
+            roles=["<|start_header_id|>user<|end_header_id|>\n\n", "<|start_header_id|>assistant<|end_header_id|>\n\n"],
+            sep_style=SeparatorStyle.LLAMA3,
+            sep="<|eot_id|>",
+            sep2="<|eot_id|>",
+        )
+    )
 
 register_conv_template(
     Conversation(
@@ -1719,7 +1890,7 @@ register_conv_template(
         name="steerlm",
         system_message="",
         roles=("user", "assistant"),
-        sep_style=None,
+        sep_style=SeparatorStyle.DEFAULT,
         sep=None,
     )
 )
@@ -1737,6 +1908,21 @@ register_conv_template(
         stop_str="<eod>",
     )
 )
+
+# Cllm chat template
+# reference:
+register_conv_template(
+    Conversation(
+        name="cllm",
+        system_message="A chat between a curious user and an artificial intelligence assistant. "
+        "The assistant gives helpful, detailed, and polite answers to the user's questions.",
+        roles=("USER", "ASSISTANT"),
+        sep_style=SeparatorStyle.CLLM,
+        sep=" ",
+        sep2="</s>",
+    )
+)
+
 
 # Llava-chatml
 # reference: https://github.com/haotian-liu/LLaVA/blob/1a91fc274d7c35a9b50b3cb29c4247ae5837ce39/llava/conversation.py#L361
@@ -1757,11 +1943,30 @@ register_conv_template(
 register_conv_template(
     Conversation(
         name="gemma",
-        system_message="<bos>",
-        roles=("<start_of_turn>user\n", "<start_of_turn>model\n"),
-        sep_style=SeparatorStyle.NO_COLON_SINGLE,
+        roles=("user", "model"),
+        sep_style=SeparatorStyle.GEMMA,
         sep="<end_of_turn>\n",
         stop_str="<end_of_turn>",
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="yandexgpt",
+        system_message="",
+        roles=("user", "assistant"),
+        sep_style=None,
+        sep=None,
+    )
+)
+
+register_conv_template(
+    Conversation(
+        name="reka",
+        system_message="",
+        roles=("user", "assistant"),
+        sep_style=None,
+        sep=None,
     )
 )
 

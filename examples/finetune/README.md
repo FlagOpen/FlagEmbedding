@@ -18,7 +18,6 @@ For development, install as editable:
 pip install -e .
 ```
 
-The new version of Transformers may pose issues for fine-tuning. If you encounter problems, you can try to downgrade to versions 4.33-4.36.
  
 
 ## 2. Data format
@@ -76,6 +75,7 @@ torchrun --nproc_per_node {number of gpus} \
 --train_group_size 2 \
 --negatives_cross_device \
 --logging_steps 10 \
+--save_steps 1000 \
 --query_instruction_for_retrieval "" 
 ```
 
@@ -87,11 +87,12 @@ Noted that the number of negatives should not be larger than the numbers of nega
 Besides the negatives in this group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
-- `temperature`: It will influence the distribution of similarity scores.
+- `temperature`: It will influence the distribution of similarity scores. **Recommend set it 0.01-0.1.**
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
 - `use_inbatch_neg`: use passages in the same batch as negatives. Default value is True. 
+- `save_steps`: for setting how many training steps to save a checkpoint.
 
 For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 

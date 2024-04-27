@@ -252,7 +252,7 @@ class BGEM3Model(nn.Module):
 
             else:
                 idxs = torch.arange(q_dense_vecs.size(0), device=q_dense_vecs.device, dtype=torch.long)
-                targets = idxs * (p_sparse_vecs.size(0) // q_sparse_vecs.size(0))
+                targets = idxs * (p_dense_vecs.size(0) // q_dense_vecs.size(0))
 
                 # dense loss
                 dense_scores = self.dense_score(q_dense_vecs, p_dense_vecs)  # B, B * N
@@ -325,8 +325,11 @@ class BGEM3Model(nn.Module):
 
         self.model.save_pretrained(output_dir, state_dict=_trans_state_dict(self.model.state_dict()))
 
-        torch.save(_trans_state_dict(self.colbert_linear.state_dict()), os.path.join(output_dir, 'colbert_linear.pt'))
-        torch.save(_trans_state_dict(self.sparse_linear.state_dict()), os.path.join(output_dir, 'sparse_linear.pt'))
+        if self.unified_finetuning:
+            torch.save(_trans_state_dict(self.colbert_linear.state_dict()),
+                       os.path.join(output_dir, 'colbert_linear.pt'))
+            torch.save(_trans_state_dict(self.sparse_linear.state_dict()),
+                       os.path.join(output_dir, 'sparse_linear.pt'))
 
     def load_pooler(self, model_dir):
         colbert_state_dict = torch.load(os.path.join(model_dir, 'colbert_linear.pt'), map_location='cpu')

@@ -2,11 +2,10 @@ import os
 import datasets
 import time
 import torch
-from datetime import timedelta
 from typing import Optional
 from collections import defaultdict
 from dataclasses import dataclass, field, asdict
-from accelerate import Accelerator, InitProcessGroupKwargs
+from accelerate import Accelerator
 from transformers import HfArgumentParser
 from torch.utils.data import DataLoader
 
@@ -28,15 +27,7 @@ class Args(ModelArgs):
         default=False,
         metadata={'help': 'Retokenize the corpus?'}
     )
-    tokenize_max_char: Optional[int] = field(
-        default=None,
-        metadata={'help': 'The number of chars to truncate.'}
-    )
 
-    batch_size: int = field(
-        default=1,
-        metadata={'help': 'Evaluation batch size.'}
-    )
     padding_side: str = field(
         default="right",
         metadata={'help': 'Which side to pad?'}
@@ -86,7 +77,9 @@ def process_lm(tokenizer, max_length=4096, stride=1024, min_length=None):
     def _process(data, indices, **kwds):
         outputs = defaultdict(list)
 
-        for input_ids, index in zip(data['input_ids'], indices):
+        for text, index in zip(data["text"], indices):
+            input_ids = tokenizer.encode(text, add_special_tokens=False)
+
             seq_len = len(input_ids)
             prev_end_loc = 0
 
@@ -127,32 +120,23 @@ def process_lm(tokenizer, max_length=4096, stride=1024, min_length=None):
     return _process
 
 
+@torch.no_grad()
 def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
 
     # increase timeout to avoid error
-    accelerator = Accelerator(cpu=args.cpu, kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(seconds=100000))])
-    model, tokenizer = get_model_and_tokenizer(args, accelerator=accelerator)
+    accelerator = Accelerator(cpu=args.cpu)
+    model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
     _, dataset_name, _ = split_file_dir_name_ext(args.eval_data)
-    tokenized_dataset_path = os.path.join(args.output_dir, f"{dataset_name}-{model.config.architectures[0]}", "tokenized_inputs")
 
-    with accelerator.main_process_first():
-        if not os.path.exists(tokenized_dataset_path) or args.retokenize:
-            pre_process_fn = process_lm_pre(tokenizer=tokenizer, tokenize_max_char=args.tokenize_max_char)
-            raw_dataset = datasets.load_dataset("json", data_files=args.eval_data, cache_dir=args.dataset_cache_dir, split="train")
-            tokenized_dataset = raw_dataset.map(pre_process_fn, batched=True, num_proc=32, remove_columns=raw_dataset.column_names, batch_size=32)
-            tokenized_dataset.save_to_disk(tokenized_dataset_path)
-
-        tokenized_dataset = datasets.load_from_disk(tokenized_dataset_path)
-        process_fn = process_lm(tokenizer, max_length=args.max_length, stride=args.stride, min_length=args.min_length)
-
-        if len(tokenized_dataset) > args.max_sample_num:
-            # slice out the first max_sample_num samples
-            tokenized_dataset = tokenized_dataset.train_test_split(args.max_sample_num, shuffle=False)["test"]
-
-        dataset = tokenized_dataset.map(process_fn, batched=True, num_proc=32, remove_columns=tokenized_dataset.column_names, keep_in_memory=True, with_indices=True)
+    process_fn = process_lm(tokenizer, max_length=args.max_length, stride=args.stride, min_length=args.min_length)
+    dataset = datasets.load_dataset("json", data_files=args.eval_data, cache_dir=args.dataset_cache_dir, split="train")
+    if len(dataset) > args.max_sample_num:
+        # slice out the first max_sample_num samples
+        dataset = dataset.train_test_split(args.max_sample_num, shuffle=False)["test"]
+    dataset = dataset.map(process_fn, batched=True, num_proc=32, remove_columns=dataset.column_names, keep_in_memory=True, with_indices=True)
 
     data_collator = DefaultDataCollator(tokenizer=tokenizer)
     dataloader = DataLoader(
@@ -163,6 +147,14 @@ def main():
         pin_memory=not args.cpu,
     )
     accelerator.wait_for_everyone()
+
+    if not args.enable_tp:
+        # NOTE: if we use deepspeed in evaluation, we must prepare model and dataloader at the same time
+        model, dataloader = accelerator.prepare(model, dataloader)
+        model = accelerator.unwrap_model(model)
+    else:
+        # NOTE: prepare dataloader so the data moves to GPU automatically
+        dataloader = accelerator.prepare(dataloader)
 
     t1 = time.time()
     perplexity = evaluate_perplexity(model, dataloader, accelerator)

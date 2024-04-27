@@ -22,7 +22,11 @@ class Args(ModelArgs):
     )
     output_dir: str = field(
         default="data/results/generation/",
-        metadata={'help': 'Output directory for results and logs.'}
+        metadata={'help': 'The base directory for saving results and logs.'}
+    )
+    result_dir: Optional[str] = field(
+        default=None,
+        metadata={'help': 'The directory relative to output_dir for saving results.'}
     )
 
     min_length: int = field(
@@ -52,11 +56,8 @@ def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
 
-    result_dir_components = [args.output_dir, "--".join(args.model_name_or_path.strip(os.sep).split(os.sep)[-2:]), str(args.max_length)]
-    result_dir = os.path.join(*result_dir_components)
-
     accelerator = Accelerator(cpu=args.cpu)
-    model, tokenizer = get_model_and_tokenizer(args, accelerator=accelerator)
+    model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
     with accelerator.main_process_first():
         dataset = Data.prepare_eval_data(
@@ -83,26 +84,38 @@ def main():
         pin_memory=not args.cpu,
     )
 
+    if not args.enable_tp:
+        model, dataloader = accelerator.prepare(model, dataloader)
+        # NOTE: unwrap because we just use the model for evaluation
+        model = accelerator.unwrap_model(model)
+    else:
+        # NOTE: prepare dataloader so the data moves to GPU automatically
+        dataloader = accelerator.prepare(dataloader)
+
+    save_path = Metric.get_save_path(
+        args.eval_data,
+        os.path.join(args.output_dir, args.result_dir) if args.result_dir is not None else args.output_dir
+    )
     compute_metrics_fn = Metric.get_metric_fn(
         metrics=args.metrics, 
-        save_path=Metric.get_save_path(
-            args.eval_data,
-            result_dir
-        )
+        save_path=save_path
     )
     indices, outputs = evaluate_generation(
         model, 
         dataloader, 
         accelerator=accelerator, 
         tokenizer=tokenizer,
+        # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
+        synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
     )
     
     if accelerator.process_index == 0:
         metrics = compute_metrics_fn(outputs, labels, indices=indices)
 
-        file_name = split_file_dir_name_ext(args.eval_data)[1]
-        log_path = os.path.join(args.output_dir, f"{file_name}.log")
-        file_logger = FileLogger(makedirs(log_path))
+        config_save_path = os.path.join(split_file_dir_name_ext(save_path)[0], "config.json")
+        args.save(config_save_path)
+
+        file_logger = FileLogger(makedirs(os.path.join(args.output_dir, "metrics.log")))
         file_logger.log(metrics, Args=asdict(args))
 
 

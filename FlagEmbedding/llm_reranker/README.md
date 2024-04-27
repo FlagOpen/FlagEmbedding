@@ -314,7 +314,8 @@ torchrun --nproc_per_node {number of gpus} \
 --start_layer 8 \
 --head_multi True \
 --head_type simple \
---lora_extra_parameters linear_head
+--lora_extra_parameters linear_head \
+--finetune_type from_raw_model # should be one of ['from_raw_model', 'from_finetuned_model']
 ```
 
 Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/google/gemma-2b) (for llm-based reranker) and [openbmb/MiniCPM-2B-dpo-bf16](https://huggingface.co/openbmb/MiniCPM-2B-dpo-bf16) (for llm-based layerwise reranker), and we train it on a mixture of multilingual datasets:
@@ -322,6 +323,33 @@ Our rerankers are initialized from [google/gemma-2b](https://huggingface.co/goog
 - [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data)
 - [quora train data](https://huggingface.co/datasets/quora)
 - [fever train data](https://fever.ai/dataset/fever.html)
+
+### Merge Model
+
+After finetune, you need to merge the model
+
+**For llm-based reranker**
+
+```python
+from FlagEmbedding.llm_reranker.merge import merge_llm
+merge_llm('google/gemma-2b', 'lora_llm_output_path', 'merged_model_output_paths')
+```
+
+**For llm-based layerwise reranker**
+
+If you finetune the raw model (openbmb/MiniCPM-2B-dpo-bf16)
+
+```shell
+from FlagEmbedding.llm_reranker.merge import merge_layerwise_raw_llm
+merge_layerwise_raw_llm('openbmb/MiniCPM-2B-dpo-bf16', 'lora_llm_output_path', 'merged_model_output_paths')
+```
+
+If you finetune the finetuned model (BAAI/bge-reranker-v2-minicpm-layerwise)
+
+```shell
+from FlagEmbedding.llm_reranker.merge import merge_layerwise_finetuned_llm
+merge_layerwise_finetuned_llm('BAAI/bge-reranker-v2-minicpm-layerwise', 'lora_llm_output_path', 'merged_model_output_paths')
+```
 
 ## Evaluation
 
@@ -349,7 +377,6 @@ It rereank the top 100 results from bge-zh-v1.5 large.
 It rereank the top 100 results from bge-m3.
 
 ![image-20240317173117639](./evaluation/miracl-bge-m3.png)
-
 
 
 ## Citation

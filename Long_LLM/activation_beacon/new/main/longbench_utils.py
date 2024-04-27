@@ -119,7 +119,7 @@ def rouge_score(prediction, ground_truth, **kwargs):
         return 0.0
     return scores["rouge-l"]["f"]
 
-def rouge_zh_score(prediction, ground_truth, **kwargs):
+def rouge_score_zh(prediction, ground_truth, **kwargs):
     prediction = " ".join(list(jieba.cut(prediction, cut_all=False)))
     ground_truth = " ".join(list(jieba.cut(ground_truth, cut_all=False))) 
     score = rouge_score(prediction, ground_truth)
@@ -144,7 +144,7 @@ def qa_f1_score(prediction, ground_truth, **kwargs):
     return f1_score(prediction_tokens, ground_truth_tokens)
 
 
-def qa_f1_zh_score(prediction, ground_truth, **kwargs):
+def qa_f1_score_zh(prediction, ground_truth, **kwargs):
     prediction_tokens = list(jieba.cut(prediction, cut_all=False))
     ground_truth_tokens = list(jieba.cut(ground_truth, cut_all=False))
     prediction_tokens = [normalize_zh_answer(token) for token in prediction_tokens]
@@ -152,24 +152,6 @@ def qa_f1_zh_score(prediction, ground_truth, **kwargs):
     prediction_tokens = [token for token in prediction_tokens if len(token) > 0]
     ground_truth_tokens = [token for token in ground_truth_tokens if len(token) > 0]
     return f1_score(prediction_tokens, ground_truth_tokens)
-
-def scorer_e(dataset, predictions, answers, lengths, all_classes):
-    scores = {"0-4k": [], "4-8k": [], "8k+": []}
-    for (prediction, ground_truths, length) in zip(predictions, answers, lengths):
-        score = 0.
-        if dataset in ["trec", "triviaqa", "samsum", "lsht"]:
-            prediction = prediction.lstrip('\n').split('\n')[0]
-        for ground_truth in ground_truths:
-            score = max(score, DATASET2METRIC[dataset](prediction, ground_truth, all_classes=all_classes))
-        if length < 4000:
-            scores["0-4k"].append(score)
-        elif length < 8000:
-            scores["4-8k"].append(score)
-        else:
-            scores["8k+"].append(score)
-    for key in scores.keys():
-        scores[key] = round(100 * np.mean(scores[key]), 2)
-    return scores
 
 def scorer(dataset, predictions, answers, all_classes):
     total_score = 0.
@@ -235,15 +217,15 @@ DATASET2METRIC = {
     "narrativeqa": qa_f1_score,
     "qasper": qa_f1_score,
     "multifieldqa_en": qa_f1_score,
-    "multifieldqa_zh": qa_f1_zh_score,
+    "multifieldqa_zh": qa_f1_score_zh,
     "hotpotqa": qa_f1_score,
     "2wikimqa": qa_f1_score,
     "musique": qa_f1_score,
-    "dureader": rouge_zh_score,
+    "dureader": rouge_score_zh,
     "gov_report": rouge_score,
     "qmsum": rouge_score,
     "multi_news": rouge_score,
-    "vcsum": rouge_zh_score,
+    "vcsum": rouge_score_zh,
     "trec": classification_score,
     "triviaqa": qa_f1_score,
     "samsum": rouge_score,

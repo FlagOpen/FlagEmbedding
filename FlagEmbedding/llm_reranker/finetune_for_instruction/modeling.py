@@ -85,4 +85,6 @@ class BiEncoderModel(nn.Module):
         self.model.save_pretrained(output_dir, state_dict=state_dict)
 
     def save_pretrained(self, **kwargs):
+        self.tokenizer.save_pretrained(**kwargs)
         return self.model.save_pretrained(**kwargs)
+
