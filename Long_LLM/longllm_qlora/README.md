@@ -63,7 +63,7 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 output_name=qlora-llama3_chat-gpt_longalpaca_redpajama5000-unsloth
 
-torchrun --nproc_per_node 8 $DDP -m main.train_unsloth \
+torchrun --nproc_per_node 8 $DDP -m main.train \
 --data_root /data/long-llm \
 --output_dir data/outputs/$output_name \
 --model_name_or_path meta-llama/Meta-Llama-3-8B-Instruct \
@@ -85,6 +85,8 @@ torchrun --nproc_per_node 8 $DDP -m main.train_unsloth \
 --load_in_4_bit \
 --chat_template llama-3
 ```
+
+Note that `unsloth` will automatically download their quantized version of `Llama-3-8B-Insturct` in the first training run. No warry. Just download it.
 
 
 # Evaluation
