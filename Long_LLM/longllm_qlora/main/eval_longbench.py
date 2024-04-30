@@ -33,12 +33,12 @@ class Args(ModelArgs):
     )
 
     dataset_names: List[str] = field(
-        default_factory=lambda: ['narrativeqa', 'qasper', 'multifieldqa_en', 'hotpotqa', '2wikimqa', 'musique', 'gov_report', 'qmsum', 'multi_news', 'trec', 'triviaqa', 'samsum', 'lcc', 'repobench-p'],
+        default_factory=lambda: ['narrativeqa', 'qasper', 'multifieldqa_en', 'hotpotqa', '2wikimqa', 'musique', 'gov_report', 'qmsum', 'multi_news', 'trec', 'triviaqa', 'samsum', 'passage_count', 'passage_retrieval_en', 'lcc', 'repobench-p'],
         metadata={'help': 'Which dataset to evaluate?'}
     )
 
     max_length: int = field(
-        default=15500,
+        default=31500,
         metadata={'help': 'Max input length.'}
     )
     truncate_from_middle: bool = field(
