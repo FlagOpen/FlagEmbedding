@@ -13,6 +13,7 @@ from src import (
 )
 from src.args import TrainingArgs
 from src.metrics import Metric
+from src.trainer import LLMTrainer
 
 logger = logging.getLogger(__name__)
 
@@ -85,7 +86,7 @@ def main():
             cache_dir=model_args.dataset_cache_dir,
         )
 
-    trainer = ActivationBeaconTrainer(
+    trainer = LLMTrainer(
         model=model,
         tokenizer=tokenizer,
         args=training_args,

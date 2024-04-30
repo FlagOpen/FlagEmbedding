@@ -11,17 +11,16 @@ We extend the context length of Llama-3-8B-Instruct from 8K to 80K via QLoRA fin
 
 # Environment
 ```bash
-conda create unsloth python=3.10
-
+conda create -n unsloth python=3.10
 conda activate unsloth
 
 conda install pytorch==2.2.2 pytorch-cuda=12.1 cudatoolkit xformers -c pytorch -c nvidia -c xformers
-pip install transformers==4.39.3 deepspeed accelerate datasets peft bitsandbytes
+pip install transformers==4.39.3 deepspeed accelerate datasets==2.18.0 peft bitsandbytes
 pip install flash-attn --no-build-isolation
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 
 # these packages are used in evaluation
-pip install rouge fuzzywuzzy jieba pandas seaborn
+pip install rouge fuzzywuzzy jieba pandas seaborn python-Levenshtein
 ```
 
 **NOTE**: you must modify the source code of `unsloth` so that you can set the `rope_theta` correctly in training. Go to `$ENC_LOCATION$/lib/python3.10/site-packages/unsloth/models/llama.py`, comment all lines from `1053-1061`. The results should be like:
@@ -37,10 +36,12 @@ pip install rouge fuzzywuzzy jieba pandas seaborn
 #     rope_scaling = {"type": "linear", "factor": rope_scaling,}
 ```
 
-Full-attention models cannot run with more than 60K context length on a single A800 GPU. Parallel strategies are required. We use [`tensor_parallel`](https://github.com/BlackSamorez/tensor_parallel). You should create another environment while downgrade to `transformers==4.35.1` and install `tensor_parallel`:
+Full-attention models cannot run with more than 60K context length on a single A800 GPU. Parallel strategies are required. We use [`tensor_parallel`](https://github.com/BlackSamorez/tensor_parallel). However, `tensor_parallel` does not support `transformers>=4.36`. You should create another environment while downgrade to `transformers==4.35.1` and install `tensor_parallel`:
 ```bash
-conda create full --clone beacon
-pip install transformers==4.35.1 tensor_parallel
+conda create -n full --clone unsloth
+conda activate full
+
+pip install transformers==4.35.1 datasets==2.14.5 tensor_parallel
 ```
 
 # Data
