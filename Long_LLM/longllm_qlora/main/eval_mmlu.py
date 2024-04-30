@@ -163,8 +163,8 @@ def evaluate_mmlu(eval_data, save_path, eval_preds):
 
         category = SUBJECT_2_CATEGORY[task_name]
         metrics[f"{category}"].append(accuracy)
-        metrics["All"].append(accuracy)
-    
+        metrics["all"].append(accuracy)
+
     for k, v in metrics.items():
         metrics[k] = sum(v) / len(v)
     
