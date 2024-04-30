@@ -96,7 +96,7 @@ Note that `unsloth` will automatically download their quantized version of `Llam
 
 All evaluation results will be saved at `data/results/`.
 
-## LoRA Models
+## LoRA Model
 ```bash
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
@@ -124,7 +124,7 @@ python -m main.eval_infbench $COMMAND --max_length 80000 --enable_tp
 ```
 
 
-## Full Models
+## Full Model
 ```bash
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
