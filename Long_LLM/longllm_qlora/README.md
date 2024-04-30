@@ -1,7 +1,7 @@
 <div align="center">
 <h1>Extending Llama-3's Context Ten-Fold Overnight</h1> 
 
-[<a href="https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA">Model</a>]
+[<a href="https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA">LoRA Model</a>] [<a href="https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA-Merged">Merged Model</a>]
 
 <img src="imgs/needle.png" width="80%" class="center">
 </div>
@@ -94,6 +94,8 @@ Note that `unsloth` will automatically download their quantized version of `Llam
 
 # Evaluation
 
+All evaluation results will be saved at `data/results/`.
+
 ## LoRA Models
 ```bash
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
@@ -115,6 +117,10 @@ source /opt/conda/bin/activate full
 
 python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp
 python -m main.eval_infbench $COMMAND --max_length 80000 --enable_tp
+
+# you can use GPT3.5 as the scorer with the following command:
+# export OPENAI_API_KEY="sk-xxxx"
+# python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp --gpt_eval
 ```
 
 
@@ -137,9 +143,17 @@ source /opt/conda/bin/activate full
 
 python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp
 python -m main.eval_infbench $COMMAND --max_length 80000 --enable_tp
+
+# you can use GPT3.5 as the scorer with the following command:
+# export OPENAI_API_KEY="sk-xxxx"
+# python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp --gpt_eval
 ```
 
 # Usage
+
+You can load the model in two ways. Either loading the LoRA adapter then merge the LoRA adapter onto Llama-3-8B-Instruct, or directly load the merged model.
+
+## LoRA Model
 ```python
 import json
 import torch
@@ -195,6 +209,50 @@ with torch.no_grad():
 ```
 You may observe messages like:
 `This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (8192). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.` or `Setting pad_token_id to eos_token_id:128001 for open-end generation`. They do not matter. Just ignore them.
+
+## Full Model
+```python
+import json
+import torch
+from transformers import AutoModelForCausalLM, AutoTokenizer
+
+model_id = "namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA-Merged"
+
+torch_dtype = torch.bfloat16
+# place the model on GPU
+device_map = {"": "cuda"}
+
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+
+model = AutoModelForCausalLM.from_pretrained(
+  model_id, 
+  torch_dtype=torch.bfloat16,
+  device_map=device_map,
+  attn_implementation="flash_attention_2",
+).eval()
+
+with torch.no_grad():
+  # short context
+  messages = [{"role": "user", "content": "Tell me about yourself."}]
+  inputs = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
+  outputs = model.generate(**inputs, max_new_tokens=50)[:, inputs["input_ids"].shape[1]:]
+  print(f"Input Length: {inputs['input_ids'].shape[1]}")
+  print(f"Output:       {tokenizer.decode(outputs[0])}")
+
+  # long context
+  with open("data/narrativeqa.json", encoding="utf-8") as f:
+    example = json.load(f)
+  messages = [{"role": "user", "content": example["context"]}]
+  inputs = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
+  outputs = model.generate(**inputs, do_sample=False, top_p=1, temperature=1, max_new_tokens=20)[:, inputs["input_ids"].shape[1]:]
+  print("*"*20)
+  print(f"Input Length: {inputs['input_ids'].shape[1]}")
+  print(f"Answers:      {example['answer']}")
+  print(f"Prediction:   {tokenizer.decode(outputs[0])}")
+```
+You may observe messages like:
+`This is a friendly reminder - the current text generation call will exceed the model's predefined maximum length (8192). Depending on the model, you may observe exceptions, performance degradation, or nothing at all.` or `Setting pad_token_id to eos_token_id:128001 for open-end generation`. They do not matter. Just ignore them.
+
 
 # TODO
 - [x] release training data

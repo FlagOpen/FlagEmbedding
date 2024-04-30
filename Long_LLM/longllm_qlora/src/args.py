@@ -54,7 +54,7 @@ class ModelArgs:
         metadata={'help': 'How many tokens at maximum for each input.'},
     )
     chat_template: str = field(
-        default="llama-2",
+        default="llama-3",
         metadata={'help': 'Instruction template name in fastchat.'}
     )
 
