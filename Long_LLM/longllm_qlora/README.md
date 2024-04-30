@@ -12,7 +12,7 @@ conda create unsloth python=3.10
 
 conda activate unsloth
 
-conda install pytorch pytorch-cuda=12.1 cudatoolkit xformers -c pytorch -c nvidia -c xformers
+conda install pytorch==2.2.2 pytorch-cuda=12.1 cudatoolkit xformers -c pytorch -c nvidia -c xformers
 pip install transformers==4.39.3 deepspeed accelerate datasets peft bitsandbytes
 pip install flash-attn --no-build-isolation
 pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
