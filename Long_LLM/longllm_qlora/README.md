@@ -63,7 +63,7 @@ export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 output_name=qlora-llama3_chat-gpt_longalpaca_redpajama5000-unsloth
 
-torchrun --nproc_per_node 8 $DDP -m main.train \
+torchrun --nproc_per_node 8 -m main.train \
 --data_root /data/long-llm \
 --output_dir data/outputs/$output_name \
 --model_name_or_path meta-llama/Meta-Llama-3-8B-Instruct \
@@ -111,7 +111,7 @@ torchrun --nproc_per_node 8 -m main.eval_mmlu $COMMAND
 source /opt/conda/bin/activate full
 
 python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp
-python -m main.eval_infbench $COMMAND --enable_tp --max_length 80000
+python -m main.eval_infbench $COMMAND --max_length 80000 --enable_tp
 ```
 
 
@@ -133,7 +133,7 @@ torchrun --nproc_per_node 8 -m main.eval_mmlu $COMMAND
 source /opt/conda/bin/activate full
 
 python -m main.eval_needle $COMMAND --min_length 8000 --max_length 80000 --enable_tp
-python -m main.eval_infbench $COMMAND --enable_tp --tasks longbook_qa_eng --max_length 80000
+python -m main.eval_infbench $COMMAND --max_length 80000 --enable_tp
 ```
 
 # Usage
