@@ -264,4 +264,12 @@ If you find this repository useful, please give us a star ⭐.
 
 To cite our work:
 ```
+@misc{zhang2024extending,
+      title={Extending Llama-3's Context Ten-Fold Overnight}, 
+      author={Peitian Zhang and Ninglu Shao and Zheng Liu and Shitao Xiao and Hongjin Qian and Qiwei Ye and Zhicheng Dou},
+      year={2024},
+      eprint={2404.19553},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
 ```
