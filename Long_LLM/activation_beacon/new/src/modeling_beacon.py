@@ -13,19 +13,8 @@ class Memory(torch.nn.Module):
     def __init__(
         self, 
         model_config, 
-        beacon_window:int, 
-        beacon_stride:int, 
-        beacon_attn:str, 
-        beacon_ratio:List[int], 
-        beacon_ratio_mix:str="step-random", 
-        beacon_param:List[str]=["q", "k", "v", "o"], 
-        beacon_sink_size:int=0,
         k_seq_dim:int=2, 
         v_seq_dim:int=2, 
-        retrieval_method:str=None, 
-        retrieval_topk:int=1, 
-        retrieval_key_length:int=1024,
-        retrieval_cache_dir:str=None
     ):
         """Setup necessary attributes."""
         super().__init__()
@@ -39,20 +28,20 @@ class Memory(torch.nn.Module):
         self.max_position_embeddings = model_config.max_position_embeddings
         self.rng = np.random.default_rng(42)
 
-        self.beacon_window = beacon_window
-        self.beacon_stride = beacon_stride
-        self.beacon_attn = beacon_attn
-        self.beacon_ratio = beacon_ratio
-        self.beacon_ratio_mix = beacon_ratio_mix
-        self.beacon_param = beacon_param
-        self.beacon_sink_size = beacon_sink_size
+        self.beacon_window = model_config.beacon_window
+        self.beacon_stride = model_config.beacon_stride
+        self.beacon_attn = model_config.beacon_attn
+        self.beacon_ratio = model_config.beacon_ratio
+        self.beacon_ratio_mix = model_config.beacon_ratio_mix
+        self.beacon_param = model_config.beacon_param
+        self.beacon_sink_size = model_config.beacon_sink_size
+        self.beacon_attend_prev = model_config.beacon_attend_prev
 
         self.beacon_tokens = torch.zeros(1, dtype=torch.long) + model_config.vocab_size
 
-        self.retrieval_method = retrieval_method
-        self.retrieval_topk = retrieval_topk
-        self.retrieval_cache_dir = retrieval_cache_dir
-        self.retrieval_key_length = retrieval_key_length
+        self.retrieval_method = model_config.retrieval_method
+        self.retrieval_topk = model_config.retrieval_topk
+        self.retrieval_key_length = model_config.retrieval_key_length
         self.retriever = None
 
         self._post_validation()
@@ -64,7 +53,6 @@ class Memory(torch.nn.Module):
             assert ratio >= 0, f"Make sure all beacon ratios are greater than or equal to 0, found {self.beacon_ratio}!"
         assert self.beacon_attn in ["segmentation", "step-expansion", "full-coverage"], f"beacon_attn {self.beacon_attn} not implemented!"
         assert self.beacon_ratio_mix in ["instance-random", "step-random", "sequence", "join", "retrieval-tune"] or "adapt-" in self.beacon_ratio_mix, f"beacon_ratio_mix {self.beacon_ratio_mix} not implemented!"
-        assert any(x in self.beacon_param for x in "qkv"), "Make sure at least one of ['q', 'k', 'v'] exists in beacon_param."
         if self.retrieval_method is not None:
             assert self.beacon_ratio_mix == "join", f"Make sure the beacon_ratio_mix is join! Found {self.beacon_ratio_mix}."
         if self.beacon_ratio_mix == "join":
@@ -73,21 +61,21 @@ class Memory(torch.nn.Module):
             pass
 
         # set tokenizer and retriever here because this function will be called in `set` method
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config._name_or_path, cache_dir=self.retrieval_cache_dir, trust_remote_code=True)
+        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config._name_or_path, trust_remote_code=True)
         if self.retrieval_method == "bm25":
-            from .modeling_retrieval import BM25Retriever
+            from .modeling_rag import BM25Retriever
             if self.retriever is None or self.retriever.name != "bm25":
                 self.retriever = BM25Retriever()
         elif self.retrieval_method is not None:
-            from .modeling_retrieval import DenseRetriever
+            from .modeling_rag import DenseRetriever
             if self.retriever is None or self.retriever.name != self.retrieval_method:
-                self.retriever = DenseRetriever(encoder=self.retrieval_method, cache_dir=self.retrieval_cache_dir)
+                self.retriever = DenseRetriever(encoder=self.retrieval_method)
         # elif self.retrieval_method == "m3":
         #     self.retriever = M3Retriever()
         self._cpu = torch.device("cpu")
 
         if verbose:
-            info = f"applying activation beacon on {self.beacon_param}, with window size {self.beacon_window}, stride {self.beacon_stride}, {self.beacon_attn} attention, sink size {self.beacon_sink_size}, condensing ratio {self.beacon_ratio} (mixed by {self.beacon_ratio_mix}), {self.retrieval_method+' retrieval'+' top-'+str(self.retrieval_topk) + f' from {self.retrieval_key_length} key length corpus' if self.retrieval_method is not None else 'no retrieval'}..."
+            info = f"applying activation beacon on {self.beacon_param} (the beacon embedding is initialized from {'bos' if self.model_config.beacon_embed_init == 'bos' else 'eos'} embedding), with window size {self.beacon_window}, stride {self.beacon_stride}, {self.beacon_attn} attention{' (attending to previous beacons)' if self.beacon_attend_prev else ' (no attending to previous beacons)'}, sink size {self.beacon_sink_size}, condensing ratio {self.beacon_ratio} (mixed by {self.beacon_ratio_mix}), {self.retrieval_method+' retrieval'+' top-'+str(self.retrieval_topk) + f' from {self.retrieval_key_length} key length corpus' if self.retrieval_method is not None else 'no retrieval'}..."
             logger.info(info)
 
     def set(self, verbose=True, **kwargs):
@@ -166,10 +154,10 @@ class Memory(torch.nn.Module):
                 self.raw_activations[layer_idx] = (key, value)
 
             if trim:
-                self.all_input_ids = self.all_input_ids[:-size]
-                self.all_attention_mask = self.all_attention_mask[:-size]
+                self.all_input_ids = self.all_input_ids[:, :-size]
+                self.all_attention_mask = self.all_attention_mask[:, :-size]
                 if hasattr(self, "all_labels"):
-                    self.all_labels = self.all_labels[:-size]
+                    self.all_labels = self.all_labels[:, :-size]
 
     @property
     def finish(self):
@@ -191,32 +179,34 @@ class Memory(torch.nn.Module):
         return beacon_memory_size, raw_memory_size, memory_size
 
     def get_retrieval_state(self):
-        retrieval_corpus_shape = tuple(self.all_input_ids[:self._start_idx].view(-1, self.retrieval_key_length).shape)
+        retrieval_corpus_shape = tuple(self.all_input_ids[0, :self._start_idx].view(-1, self.retrieval_key_length)) if self.retrieval_key_length is not None else (0, 0)
         return (self.retrieval_method, self.retrieval_key_length, self.retrieval_topk, retrieval_corpus_shape, self._retrieval_query)
 
     def prepare(self, input_ids, attention_mask, labels):
         """
         Prepare inputs for the model. These inputs belong to the same sequence.
         """
-        assert input_ids.shape[0] == 1, f"Make sure batch_size is 1!"
+        assert input_ids.shape[0] == 1, "Make sure the batch size is 1!"
+        assert attention_mask is None or (attention_mask == 1).all(), "Make sure there is no padding!"
+
         if not hasattr(self, "_device"):
             self._device = input_ids.device
 
         # accumulate input_ids and attention_mask
-        self.all_input_ids = torch.cat([self.all_input_ids, input_ids[0].cpu()])
+        self.all_input_ids = torch.cat([self.all_input_ids, input_ids.cpu()], dim=1)
         if attention_mask is None:
             attention_mask = torch.ones_like(input_ids)
-        self.all_attention_mask = torch.cat([self.all_attention_mask, attention_mask[0].cpu()])
-        self.all_sequence_length = len(self.all_input_ids)
+        self.all_attention_mask = torch.cat([self.all_attention_mask, attention_mask.cpu()], dim=1)
+        self.all_sequence_length = self.all_input_ids.shape[1]
 
         if labels is not None:
             # rotate labels in advance so that the loss of the last token is not ignored in every window
-            labels = torch.cat([labels[0, 1:].cpu(), torch.tensor([-100])], dim=-1)
+            labels = torch.cat([labels[:, 1:].cpu(), torch.tensor([-100]).expand(labels.shape[0], 1)], dim=1)
             if not hasattr(self, "all_labels"):
                 self.all_labels = labels
             else:
-                self.all_labels = torch.cat([self.all_labels, labels])
-            assert len(self.all_input_ids) == len(self.all_labels), f"Found inconsistent all_input_ids {self.all_input_ids.shape} and all_labels {self.all_labels.shape}!"
+                self.all_labels = torch.cat([self.all_labels, labels], dim=1)
+            assert self.all_input_ids.shape[1] == self.all_labels.shape[1], f"Found inconsistent all_input_ids {self.all_input_ids.shape} and all_labels {self.all_labels.shape}!"
 
         if self._do_retrieval is None:
             pass
@@ -287,7 +277,7 @@ class Memory(torch.nn.Module):
         elif "adapt" in ratio_mix:
             if self._ratio is None:
                 future_length = int(ratio_mix.split("-")[1])
-                sequence_length = len(self.all_input_ids) + future_length
+                sequence_length = self.all_input_ids.shape[1] + future_length
                 max_lengths = get_max_length(beacon_ratio)
                 # ascendingly sort the max lengths
                 valid_max_lengths_and_indices = [x for x in enumerate(max_lengths) if x[1] >= sequence_length]
@@ -379,14 +369,17 @@ class Memory(torch.nn.Module):
         past_key_values = []
         default_compose_memory = True
 
+        # TODO: add batch size
         if self._do_retrieval is not None and self.retrieval_method is not None:
+            assert self.all_input_ids.shape[0] == 1, f"Make sure batch_size is 1 when enabling retrieval!"
+
             # perform retrieval
             default_compose_memory = False
 
             retrieval_state = self.get_retrieval_state()
             # NOTE: do retrieval when the state changes
             if retrieval_state != self._retrieval_state:
-                corpus = self.all_input_ids[:start_idx].view(-1, self.retrieval_key_length)
+                corpus = self.all_input_ids[0, :start_idx].view(-1, self.retrieval_key_length)
                 corpus = self.tokenizer.batch_decode(corpus, skip_special_tokens=True)
 
                 self.retriever.remove_all()
@@ -402,10 +395,8 @@ class Memory(torch.nn.Module):
                 self._retrieval_indices = [p[1] for p in score_indice_pairs]
                 self._retrieval_state = retrieval_state
 
-                # get retrieved ordinal token span (their activations will be replaced by the beacon activations of lower condensing ratios)
                 max_token_idx = self.retriever.num_keys * self.retrieval_key_length
 
-                # slice out retrieved activations from the l2 beacon activations
                 main_activations = self.l1_to_ln_beacon_activations[0]
                 augment_activations = self.l1_to_ln_beacon_activations[-1]
                 main_condensing_ratio = self.beacon_ratio[0]
@@ -435,9 +426,17 @@ class Memory(torch.nn.Module):
                     non_retrieval_token_span.append([None, None])
                     if j == len(retrieval_token_span) - 1:
                         if retrieval_token_span[j][1] < max_token_idx:
+                            # NOTE: replace the non-retrieved activations with retrieved ones
                             non_retrieval_token_span.append([retrieval_token_span[j][1], max_token_idx])
+
+                            # NOTE: append the retrieved activations in front of the non-retrieved ones
+                            # non_retrieval_token_span.append([retrieval_token_span[j][0], max_token_idx])
                     else:
+                        # NOTE: replace the non-retrieved activations with retrieved ones
                         non_retrieval_token_span.append([retrieval_token_span[j][1], retrieval_token_span[j + 1][0]])
+
+                        # NOTE: append the retrieved activations in front of the non-retrieved ones
+                        # non_retrieval_token_span.append([retrieval_token_span[j][0], retrieval_token_span[j + 1][0]])
 
                 # non_retrieved_token_span = [[None, None] for _ in retrieved_token_span]
 
@@ -445,7 +444,7 @@ class Memory(torch.nn.Module):
                 non_retrieval_beacon_span = [(s // main_condensing_ratio if s is not None else None, e // main_condensing_ratio if e is not None else None) for s, e in non_retrieval_token_span]
 
                 # compose beacon activations based on retrieved and non-retrieved activations
-                self.beacon_activations = interleave_activations(
+                self._beacon_activations = interleave_activations(
                     main_activations=main_activations,
                     augment_activations=augment_activations,
                     main_spans=non_retrieval_beacon_span,
@@ -494,7 +493,7 @@ class Memory(torch.nn.Module):
             #     print(non_retrieval_token_span)
             #     print(non_retrieval_beacon_span)
 
-            self.beacon_activations = interleave_activations(
+            self._beacon_activations = interleave_activations(
                 main_activations=main_activations,
                 augment_activations=augment_activations,
                 main_spans=non_retrieval_beacon_span,
@@ -505,11 +504,11 @@ class Memory(torch.nn.Module):
             )
 
         if default_compose_memory:
-            self.beacon_activations = self.l1_to_ln_beacon_activations[0]
+            self._beacon_activations = self.l1_to_ln_beacon_activations[0]
 
         for layer_idx in range(self.num_layers):
             sink_key, sink_value = self.sink_activations[layer_idx]
-            beacon_key, beacon_value = self.beacon_activations[layer_idx]
+            beacon_key, beacon_value = self._beacon_activations[layer_idx]
             raw_key, raw_value = self.raw_activations[layer_idx]
 
             key = cat_tensor([
@@ -526,10 +525,10 @@ class Memory(torch.nn.Module):
             #     print(f"Memory Length: {key.shape[self.k_seq_dim]}")
 
         # streamingly add new input_ids
-        input_ids = self.all_input_ids[None, self._end_idx: end_idx].to(self._device)
-        attention_mask = self.all_attention_mask[None, self._end_idx: end_idx].to(self._device)
+        input_ids = self.all_input_ids[:, self._end_idx: end_idx].to(self._device)
+        attention_mask = self.all_attention_mask[:, self._end_idx: end_idx].to(self._device)
         if hasattr(self, "all_labels"):
-            labels = self.all_labels[None, self._end_idx: end_idx].to(self._device)
+            labels = self.all_labels[:, self._end_idx: end_idx].to(self._device)
         else:
             labels = None
         batch_size = input_ids.shape[0]
@@ -670,7 +669,6 @@ class Memory(torch.nn.Module):
         if beacon_size > 0:
             model_outputs["logits"] = model_outputs["logits"][:, :-beacon_size]
 
-        # print(f"process {dist.get_rank()}: input_ids {self.all_input_ids.shape}, loss {loss}, input_ids {self.all_input_ids[-10:]}, labels {self.all_labels[-10:]}\n")
         return model_outputs
 
     def _extract_beacon_and_raw_memory(self, key, value, previous_beacon_key, previous_beacon_value, previous_raw_key, previous_raw_value, raw_size_to_cache, total_beacon_size, beacon_sizes, beacon_size_idx):
@@ -824,7 +822,7 @@ def cat_tensor(list_of_tensors, dim=-1):
         result = None
     return result
 
-def slice_activations(activations, start, end, k_seq_dim=2, v_seq_dim=2):
+def slice_activations(activations, start=None, end=None, k_seq_dim=2, v_seq_dim=2):
     new_activations = []
     for key, value in activations:
         new_key = slice_tensor(key, start=start, end=end, dim=k_seq_dim)
