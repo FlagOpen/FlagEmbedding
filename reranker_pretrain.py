@@ -19,6 +19,8 @@ def find_unused_port(start_port=37625):
 args = (" ").join(sys.argv[1:])
 print(args)
 
+script_name = "embedding_run"
+
 # 使用示例
 port = find_unused_port()
 if port:
@@ -34,7 +36,7 @@ if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-t
 
 # 构建训练命令
 command = f"""
-torchrun --master-port={port} --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/run.py {args}
+torchrun --master-port={port} --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/{script_name}.py {args}
 """
 
 # 执行命令

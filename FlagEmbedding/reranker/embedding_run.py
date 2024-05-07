@@ -7,10 +7,11 @@ from transformers import (
     HfArgumentParser,
     set_seed,
 )
+from FlagEmbedding.FlagEmbedding.reranker.data import TrainDatasetForCL
 
 from arguments import ModelArguments, DataArguments
 from data import TrainDatasetForCE, GroupCollator
-from modeling import CrossEncoder
+from modeling import CLEncoder, CrossEncoder
 from trainer import CETrainer
 
 logger = logging.getLogger(__name__)
@@ -85,7 +86,7 @@ def main():
         cache_dir=model_args.cache_dir,
         trust_remote_code=True
     )
-    _model_class = CrossEncoder
+    _model_class = CLEncoder
 
     model = _model_class.from_pretrained(
         model_args, data_args, training_args,
@@ -104,24 +105,19 @@ def main():
         logger.info(f"train start from {last_checkpoint}")
         checkpoint = last_checkpoint
 
-    train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
+    train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
     _trainer_class = CETrainer
     
     trainer = _trainer_class(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        data_collator=GroupCollator(tokenizer),
+        data_collator=GroupCollator(tokenizer), #这里依旧是拍平
         tokenizer=tokenizer
     )
     trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_state()
     safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)
-    # Path(training_args.output_dir).mkdir(parents=True, exist_ok=True)
-
-    # trainer.train()
-    # trainer.save_model()
-
 
 if __name__ == "__main__":
     main()

@@ -62,6 +62,18 @@ class TrainDatasetForCE(Dataset):
 
         return batch_data
 
+class TrainDatasetForCL(TrainDatasetForCE):
+    def __getitem__(self, item) -> List[BatchEncoding]:
+        query = self.dataset[item]['query']
+        pos = random.choice(self.dataset[item]['pos'])
+        if len(self.dataset[item]['neg']) < self.args.train_group_size - 1:
+            num = math.ceil((self.args.train_group_size - 1) / len(self.dataset[item]['neg']))
+            negs = random.sample(self.dataset[item]['neg'] * num, self.args.train_group_size - 1)
+        else:
+            negs = random.sample(self.dataset[item]['neg'], self.args.train_group_size - 1)
+
+        batch_data = self.tokenizer([query]+[pos]+negs)
+        return batch_data
 
 
 @dataclass

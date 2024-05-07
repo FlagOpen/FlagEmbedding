@@ -6,6 +6,8 @@ from transformers import AutoModelForSequenceClassification, PreTrainedModel, Tr
 from transformers.modeling_outputs import SequenceClassifierOutput
 
 from arguments import ModelArguments, DataArguments
+import torch
+import torch.nn.functional as F
 
 logger = logging.getLogger(__name__)
 
@@ -65,3 +67,50 @@ class CrossEncoder(nn.Module):
              for k,
              v in state_dict.items()})
         self.hf_model.save_pretrained(output_dir, state_dict=state_dict)
+
+class CLEncoder(CrossEncoder):
+    def get_embedding(self, input_ids, attention_mask):
+        hidden_state = self.hf_model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True).hidden_states[-1].cpu()
+        attention_mask = attention_mask.cpu()
+        seq_lengths = attention_mask.sum(dim=1)
+        embeddings = []
+        for seq_len, seq_emb in zip(seq_lengths, hidden_state):
+            valid_emb = seq_emb[:seq_len]
+            embeddings.append(torch.mean(valid_emb, dim=0))
+        embeddings = torch.stack(embeddings)
+        return embeddings
+
+    def infoNCELoss(self, anchor, positive, negatives, temperature=1):
+        # 计算所有样本的相似度
+        pos_similarity = F.cosine_similarity(anchor, positive, dim=-1)
+        # 将anchor重复到与负样本相同数量的维度，以便计算
+        neg_similarity = F.cosine_similarity(anchor, negatives, dim=-1)
+        # 合并正样本和负样本的相似度
+        all_similarity = torch.cat([pos_similarity, neg_similarity])
+        # 应用温度缩放
+        all_similarity /= temperature
+        # 计算InfoNCE损失
+        loss = - torch.log(torch.exp(pos_similarity)/torch.sum(torch.exp(all_similarity)))
+        return loss.mean()
+
+    def batchloss(self, embeddings):
+        # 遍历每个batch计算损失
+        losses = []
+        for i in range(embeddings.size(0)):
+            # anchor embeddings
+            anchor = embeddings[i, 0].unsqueeze(0)  # [1, 768]
+            # positive embeddings
+            positive = embeddings[i, 1].unsqueeze(0)  # [1, 768]
+            # 除了anchor和positive之外的所有embeddings作为负样本
+            negatives = embeddings[i, 2:]  # [len(negs), 768]
+            # 计算当前batch的InfoNCE损失
+            loss = self.infoNCELoss(anchor, positive, negatives)
+            losses.append(loss)
+        # 计算整个batch的平均损失
+        batch_loss = torch.mean(torch.stack(losses))
+        return batch_loss
+
+    def forward(self, batch):
+        embeddings = self.get_embedding(**batch)
+        loss = self.batchloss(embeddings)
+        return loss
