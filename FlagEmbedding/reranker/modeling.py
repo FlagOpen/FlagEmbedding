@@ -2,7 +2,7 @@ import logging
 
 import torch
 from torch import nn
-from transformers import AutoModelForSequenceClassification, PreTrainedModel, TrainingArguments
+from transformers import AutoModelForSequenceClassification, PreTrainedModel, TrainingArguments, AutoModel
 from transformers.modeling_outputs import SequenceClassifierOutput
 
 from arguments import ModelArguments, DataArguments
@@ -56,7 +56,7 @@ class CrossEncoder(nn.Module):
             cls, model_args: ModelArguments, data_args: DataArguments, train_args: TrainingArguments,
             *args, **kwargs
     ):
-        hf_model = AutoModelForSequenceClassification.from_pretrained(*args, **kwargs)
+        hf_model = AutoModelForSequenceClassification.from_pretrained(*args, **kwargs) #XLMR本身不带分类头
         reranker = cls(hf_model, model_args, data_args, train_args)
         return reranker
 
@@ -69,6 +69,15 @@ class CrossEncoder(nn.Module):
         self.hf_model.save_pretrained(output_dir, state_dict=state_dict)
 
 class CLEncoder(CrossEncoder):
+    @classmethod
+    def from_pretrained(
+            cls, model_args: ModelArguments, data_args: DataArguments, train_args: TrainingArguments,
+            *args, **kwargs
+    ):
+        hf_model = AutoModel.from_pretrained(*args, **kwargs)
+        reranker = cls(hf_model, model_args, data_args, train_args)
+        return reranker
+
     def get_embedding(self, input_ids, attention_mask):
         hidden_state = self.hf_model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True).hidden_states[-1].cpu()
         attention_mask = attention_mask.cpu()

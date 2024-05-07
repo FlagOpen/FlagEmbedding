@@ -7,8 +7,6 @@ from transformers import (
     HfArgumentParser,
     set_seed,
 )
-from FlagEmbedding.FlagEmbedding.reranker.data import TrainDatasetForCL
-
 from arguments import ModelArguments, DataArguments
 from data import TrainDatasetForCE, GroupCollator
 from modeling import CLEncoder, CrossEncoder
@@ -18,6 +16,7 @@ logger = logging.getLogger(__name__)
 from pprint import pprint as pp
 import sys 
 sys.path.append("/opt/tiger/FlagEmbedding")
+from FlagEmbedding.reranker.data import TrainDatasetForCL
 from utils import get_complete_last_checkpoint
 import transformers
 
