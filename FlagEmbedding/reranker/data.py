@@ -92,7 +92,6 @@ class GroupCollator(DataCollatorWithPadding):
     def __call__(
             self, features
     ) -> Tuple[Dict[str, torch.Tensor], Dict[str, torch.Tensor]]:
-        assert type(features[0]) == list
         if isinstance(features[0], list):
             features = sum(features, [])
         return super().__call__(features)
