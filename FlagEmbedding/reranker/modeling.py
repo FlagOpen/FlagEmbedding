@@ -69,6 +69,15 @@ class CrossEncoder(nn.Module):
         self.hf_model.save_pretrained(output_dir, state_dict=state_dict)
 
 class CLEncoder(CrossEncoder):
+    def __init__(self, hf_model: PreTrainedModel, model_args: ModelArguments, data_args: DataArguments,
+                 train_args: TrainingArguments):
+        super(CrossEncoder, self).__init__()
+        self.hf_model = hf_model
+        self.model_args = model_args
+        self.train_args = train_args
+        self.data_args = data_args
+        self.config = self.hf_model.config
+
     @classmethod
     def from_pretrained(
             cls, model_args: ModelArguments, data_args: DataArguments, train_args: TrainingArguments,
@@ -95,6 +104,8 @@ class CLEncoder(CrossEncoder):
         # 将anchor重复到与负样本相同数量的维度，以便计算
         neg_similarity = F.cosine_similarity(anchor, negatives, dim=-1)
         # 合并正样本和负样本的相似度
+        print(pos_similarity.shape)
+        print(neg_similarity.shape)  
         all_similarity = torch.cat([pos_similarity, neg_similarity])
         # 应用温度缩放
         all_similarity /= temperature
@@ -113,6 +124,9 @@ class CLEncoder(CrossEncoder):
             # 除了anchor和positive之外的所有embeddings作为负样本
             negatives = embeddings[i, 2:]  # [len(negs), 768]
             # 计算当前batch的InfoNCE损失
+            print("anchor", anchor.shape)
+            print("positive", positive.shape)
+            print("negatives", negatives.shape)
             loss = self.infoNCELoss(anchor, positive, negatives)
             losses.append(loss)
         # 计算整个batch的平均损失
@@ -121,5 +135,7 @@ class CLEncoder(CrossEncoder):
 
     def forward(self, batch):
         embeddings = self.get_embedding(**batch)
+        embeddings = embeddings.reshape(self.train_args.per_device_train_batch_size, self.data_args.train_group_size+1, -1)
+        print("embeddings", embeddings.shape)
         loss = self.batchloss(embeddings)
         return loss

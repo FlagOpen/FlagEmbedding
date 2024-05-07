@@ -9,8 +9,8 @@ from transformers import (
 )
 from arguments import ModelArguments, DataArguments
 from data import TrainDatasetForCE, GroupCollator
-from modeling import CLEncoder, CrossEncoder
-from trainer import CETrainer
+from modeling import CLEncoder
+from trainer import CLTrainer
 
 logger = logging.getLogger(__name__)
 from pprint import pprint as pp
@@ -79,6 +79,7 @@ def main():
         cache_dir=model_args.cache_dir,
         use_fast=False,
     )
+
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
@@ -105,7 +106,7 @@ def main():
         checkpoint = last_checkpoint
 
     train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
-    _trainer_class = CETrainer
+    _trainer_class = CLTrainer
     
     trainer = _trainer_class(
         model=model,
@@ -114,6 +115,7 @@ def main():
         data_collator=GroupCollator(tokenizer), #这里依旧是拍平
         tokenizer=tokenizer
     )
+    checkpoint=None
     trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_state()
     safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)

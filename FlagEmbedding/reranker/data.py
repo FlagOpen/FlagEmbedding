@@ -63,6 +63,15 @@ class TrainDatasetForCE(Dataset):
         return batch_data
 
 class TrainDatasetForCL(TrainDatasetForCE):
+    def create_one_example(self, input):
+        item = self.tokenizer(
+            input,
+            truncation=True,
+            max_length=self.args.max_len,
+            padding=False,
+        )
+        return item
+
     def __getitem__(self, item) -> List[BatchEncoding]:
         query = self.dataset[item]['query']
         pos = random.choice(self.dataset[item]['pos'])
@@ -71,8 +80,10 @@ class TrainDatasetForCL(TrainDatasetForCE):
             negs = random.sample(self.dataset[item]['neg'] * num, self.args.train_group_size - 1)
         else:
             negs = random.sample(self.dataset[item]['neg'], self.args.train_group_size - 1)
-
-        batch_data = self.tokenizer([query]+[pos]+negs)
+        batch_data = []
+        batch_data.append(self.create_one_example(query))
+        batch_data.append(self.create_one_example(pos))
+        for neg in negs: batch_data.append(self.create_one_example(neg))
         return batch_data
 
 
@@ -81,6 +92,7 @@ class GroupCollator(DataCollatorWithPadding):
     def __call__(
             self, features
     ) -> Tuple[Dict[str, torch.Tensor], Dict[str, torch.Tensor]]:
+        assert type(features[0]) == list
         if isinstance(features[0], list):
             features = sum(features, [])
         return super().__call__(features)
