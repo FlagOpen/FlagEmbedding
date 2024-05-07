@@ -10,7 +10,7 @@ from transformers import (
 from arguments import ModelArguments, DataArguments
 from data import TrainDatasetForCE, GroupCollator
 from modeling import CLEncoder
-from trainer import CLTrainer
+from trainer import CETrainer
 
 logger = logging.getLogger(__name__)
 from pprint import pprint as pp
@@ -19,6 +19,8 @@ sys.path.append("/opt/tiger/FlagEmbedding")
 from FlagEmbedding.reranker.data import TrainDatasetForCL
 from utils import get_complete_last_checkpoint
 import transformers
+import os
+os.environ["WANDB_DISABLED"]="true"
 
 def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str):
     """Collects the state dict and dump to disk."""
@@ -106,7 +108,7 @@ def main():
         checkpoint = last_checkpoint
 
     train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
-    _trainer_class = CLTrainer
+    _trainer_class = CETrainer
     
     trainer = _trainer_class(
         model=model,

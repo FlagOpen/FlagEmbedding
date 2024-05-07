@@ -84,6 +84,11 @@ class CLEncoder(CrossEncoder):
             *args, **kwargs
     ):
         hf_model = AutoModel.from_pretrained(*args, **kwargs)
+        try:
+            del hf_model.classifier
+        except:
+            print("model has no classifier head")
+
         reranker = cls(hf_model, model_args, data_args, train_args)
         return reranker
 
@@ -104,8 +109,8 @@ class CLEncoder(CrossEncoder):
         # 将anchor重复到与负样本相同数量的维度，以便计算
         neg_similarity = F.cosine_similarity(anchor, negatives, dim=-1)
         # 合并正样本和负样本的相似度
-        print(pos_similarity.shape)
-        print(neg_similarity.shape)  
+        # print(pos_similarity.shape)
+        # print(neg_similarity.shape)  
         all_similarity = torch.cat([pos_similarity, neg_similarity])
         # 应用温度缩放
         all_similarity /= temperature
@@ -124,9 +129,9 @@ class CLEncoder(CrossEncoder):
             # 除了anchor和positive之外的所有embeddings作为负样本
             negatives = embeddings[i, 2:]  # [len(negs), 768]
             # 计算当前batch的InfoNCE损失
-            print("anchor", anchor.shape)
-            print("positive", positive.shape)
-            print("negatives", negatives.shape)
+            # print("anchor", anchor.shape)
+            # print("positive", positive.shape)
+            # print("negatives", negatives.shape)
             loss = self.infoNCELoss(anchor, positive, negatives)
             losses.append(loss)
         # 计算整个batch的平均损失
@@ -136,6 +141,13 @@ class CLEncoder(CrossEncoder):
     def forward(self, batch):
         embeddings = self.get_embedding(**batch)
         embeddings = embeddings.reshape(self.train_args.per_device_train_batch_size, self.data_args.train_group_size+1, -1)
-        print("embeddings", embeddings.shape)
-        loss = self.batchloss(embeddings)
-        return loss
+        # print("embeddings", embeddings.shape)
+        loss = self.batchloss(embeddings).cuda()
+        #相当于是一个 group_size 个 cls 的多分类任务
+        if self.training:
+            return SequenceClassifierOutput(
+                loss=loss,
+                hidden_states=embeddings,
+            )
+        else:
+            return embeddings
