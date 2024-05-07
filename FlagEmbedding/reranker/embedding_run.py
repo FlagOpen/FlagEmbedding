@@ -117,7 +117,6 @@ def main():
         data_collator=GroupCollator(tokenizer), #这里依旧是拍平
         tokenizer=tokenizer
     )
-    checkpoint=None
     trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_state()
     safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)
