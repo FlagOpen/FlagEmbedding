@@ -70,13 +70,14 @@ class CrossEncoder(nn.Module):
 
 class CLEncoder(CrossEncoder):
     def __init__(self, hf_model: PreTrainedModel, model_args: ModelArguments, data_args: DataArguments,
-                 train_args: TrainingArguments):
+                 train_args: TrainingArguments, pooling_method = 'cls'):
         super(CrossEncoder, self).__init__()
         self.hf_model = hf_model
         self.model_args = model_args
         self.train_args = train_args
         self.data_args = data_args
         self.config = self.hf_model.config
+        self.pooling_method = pooling_method
 
     @classmethod
     def from_pretrained(
@@ -91,16 +92,22 @@ class CLEncoder(CrossEncoder):
 
         reranker = cls(hf_model, model_args, data_args, train_args)
         return reranker
+    
+    def pooling(self,
+                last_hidden_state: torch.Tensor,
+                attention_mask: torch.Tensor = None):
+        if self.pooling_method == 'cls':
+            return last_hidden_state[:, 0]
+        elif self.pooling_method == 'mean':
+            s = torch.sum(last_hidden_state * attention_mask.unsqueeze(-1).float(), dim=1)
+            d = attention_mask.sum(dim=1, keepdim=True).float()
+            return s / d
 
     def get_embedding(self, input_ids, attention_mask):
         hidden_state = self.hf_model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True).hidden_states[-1].cpu()
         attention_mask = attention_mask.cpu()
-        seq_lengths = attention_mask.sum(dim=1)
-        embeddings = []
-        for seq_len, seq_emb in zip(seq_lengths, hidden_state):
-            valid_emb = seq_emb[:seq_len]
-            embeddings.append(torch.mean(valid_emb, dim=0))
-        embeddings = torch.stack(embeddings)
+        embeddings = self.pooling(hidden_state, attention_mask)
+        embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
         return embeddings
 
     def infoNCELoss(self, anchor, positive, negatives, temperature=1):
