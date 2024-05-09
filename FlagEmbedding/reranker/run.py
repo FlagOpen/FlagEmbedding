@@ -85,16 +85,13 @@ def main():
         cache_dir=model_args.cache_dir,
         trust_remote_code=True
     )
-    
-    if model_args.model_type=="CrossEncoder":
-        _model_class = CrossEncoder
-        train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
-    elif model_args.model_type == "CLEncoder":
-        _model_class = CLEncoder
-        train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
-    else:
-        _model_class = CLProjEncoder
-        train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
+
+    if model_args.model_type=="CrossEncoder": _model_class = CrossEncoder
+    elif model_args.model_type == "CLEncoder": _model_class = CLEncoder
+    else: _model_class = CLProjEncoder
+        
+    if model_args.model_type=="CrossEncoder": train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
+    else: train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
 
     model = _model_class.from_pretrained(
         model_args, data_args, training_args,
