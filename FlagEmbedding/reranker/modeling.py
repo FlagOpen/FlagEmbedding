@@ -151,3 +151,36 @@ class CLEncoder(CrossEncoder):
             )
         else:
             return embeddings
+
+# 投影头
+class SimpleResBlock(nn.Module):
+    def __init__(self, channels=768):
+        super().__init__()
+        self.pre_norm = nn.LayerNorm(channels)
+
+        self.proj = nn.Sequential(
+            nn.Linear(channels, channels),
+            nn.GELU(),
+            nn.Linear(channels, channels)
+        )
+    def forward(self, x):
+        x = self.pre_norm(x)
+        return x + self.proj(x)
+
+class CLProjEncoder(CLEncoder):
+    def __init__(self, hf_model: PreTrainedModel, model_args: ModelArguments, data_args: DataArguments, train_args: TrainingArguments):
+        super().__init__(hf_model, model_args, data_args, train_args)
+        self.proj = SimpleResBlock()
+    
+    def get_embedding(self, input_ids, attention_mask):
+        hidden_state = self.hf_model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True).hidden_states[-1].cpu()
+        attention_mask = attention_mask.cpu()
+        seq_lengths = attention_mask.sum(dim=1)
+        embeddings = []
+        for seq_len, seq_emb in zip(seq_lengths, hidden_state):
+            valid_emb = seq_emb[:seq_len]
+            embeddings.append(torch.mean(valid_emb, dim=0))
+        # query的 embedding 还要做一个投影，和 doc 的空间进行对齐
+        embeddings[0] = self.proj.forward(embeddings[0])
+        embeddings = torch.stack(embeddings)
+        return embeddings
