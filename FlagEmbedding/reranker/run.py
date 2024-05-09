@@ -2,7 +2,7 @@ import logging
 import os
 from pathlib import Path
 
-from transformers import AutoConfig, AutoTokenizer, TrainingArguments
+from transformers import AutoConfig, AutoTokenizer, TrainingArguments, TrainerCallback, TrainerState, TrainerControl
 from transformers import (
     HfArgumentParser,
     set_seed,
@@ -19,6 +19,8 @@ import sys
 sys.path.append("/opt/tiger/FlagEmbedding")
 from utils import get_complete_last_checkpoint
 import transformers
+import os
+os.environ["WANDB_DISABLED"]="true"
 
 def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: str):
     """Collects the state dict and dump to disk."""
@@ -27,6 +29,12 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: st
         cpu_state_dict = {key: value.cpu() for key, value in state_dict.items()}
         del state_dict
         trainer._save(output_dir, state_dict=cpu_state_dict)
+
+# 记录similarity pos and neg
+# class Loggingback(TrainerCallback):
+#     def on_train_begin(self, args, state: TrainerState, control: TrainerControl, **kwargs):
+#         if state.global_step % 10 == 0:
+#             control.
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))

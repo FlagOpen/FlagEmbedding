@@ -108,6 +108,10 @@ class CLEncoder(CrossEncoder):
         pos_similarity = F.cosine_similarity(anchor, positive, dim=-1)
         # 将anchor重复到与负样本相同数量的维度，以便计算
         neg_similarity = F.cosine_similarity(anchor, negatives, dim=-1)
+        import json
+        with open("/opt/tiger/FlagEmbedding/FlagEmbedding/reranker/sim.txt", 'a') as f: 
+            f.write("pos: "+json.dumps(pos_similarity.item())+"\n")
+            f.write("neg: "+json.dumps(neg_similarity.tolist())+"\n")
         # 合并正样本和负样本的相似度
         # print(pos_similarity.shape)
         # print(neg_similarity.shape)  
