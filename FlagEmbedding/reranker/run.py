@@ -9,8 +9,8 @@ from transformers import (
 )
 
 from arguments import ModelArguments, DataArguments
-from data import TrainDatasetForCE, GroupCollator
-from modeling import CrossEncoder
+from data import TrainDatasetForCE, GroupCollator, TrainDatasetForCL
+from modeling import CLEncoder, CLProjEncoder, CrossEncoder
 from trainer import CETrainer
 
 logger = logging.getLogger(__name__)
@@ -85,7 +85,16 @@ def main():
         cache_dir=model_args.cache_dir,
         trust_remote_code=True
     )
-    _model_class = CrossEncoder
+    
+    if model_args.model_type=="CrossEncoder":
+        _model_class = CrossEncoder
+        train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
+    elif model_args.model_type == "CLEncoder":
+        _model_class = CLEncoder
+        train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
+    else:
+        _model_class = CLProjEncoder
+        train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
 
     model = _model_class.from_pretrained(
         model_args, data_args, training_args,
@@ -104,9 +113,7 @@ def main():
         logger.info(f"train start from {last_checkpoint}")
         checkpoint = last_checkpoint
 
-    train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
     _trainer_class = CETrainer
-    
     trainer = _trainer_class(
         model=model,
         args=training_args,

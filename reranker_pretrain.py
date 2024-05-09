@@ -5,8 +5,6 @@ import sys
 import torch
 args = (" ").join(sys.argv[1:])
 
-script_name = "embedding_proj_run"
-
 # 使用示例
 num_gpus = torch.cuda.device_count()
 
@@ -22,7 +20,7 @@ if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-t
 
 # 构建训练命令
 command = f"""
-torchrun --standalone --nnodes=1 --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/{script_name}.py {args}
+torchrun --standalone --nnodes=1 --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/run.py {args}
 """
 
 # 执行命令
