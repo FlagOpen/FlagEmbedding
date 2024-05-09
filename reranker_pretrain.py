@@ -5,7 +5,7 @@ import sys
 import torch
 args = (" ").join(sys.argv[1:])
 
-script_name = "embedding_run"
+script_name = "embedding_proj_run"
 
 # 使用示例
 num_gpus = torch.cuda.device_count()

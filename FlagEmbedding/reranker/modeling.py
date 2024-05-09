@@ -170,7 +170,13 @@ class SimpleResBlock(nn.Module):
 class CLProjEncoder(CLEncoder):
     def __init__(self, hf_model: PreTrainedModel, model_args: ModelArguments, data_args: DataArguments, train_args: TrainingArguments):
         super().__init__(hf_model, model_args, data_args, train_args)
-        self.proj = SimpleResBlock()
+        channels = 768
+        self.pre_norm = nn.LayerNorm(channels)
+        self.proj = nn.Sequential(
+            nn.Linear(channels, channels),
+            nn.GELU(),
+            nn.Linear(channels, channels)
+        )
     
     def get_embedding(self, input_ids, attention_mask):
         hidden_state = self.hf_model(input_ids=input_ids, attention_mask=attention_mask, output_hidden_states=True).hidden_states[-1].cpu()
@@ -181,6 +187,19 @@ class CLProjEncoder(CLEncoder):
             valid_emb = seq_emb[:seq_len]
             embeddings.append(torch.mean(valid_emb, dim=0))
         # query的 embedding 还要做一个投影，和 doc 的空间进行对齐
-        embeddings[0] = self.proj.forward(embeddings[0])
+        # torch.autograd.set_detect_anomaly(True)
+        # embeddings = torch.stack(embeddings).cuda()
+        # embeddings[0] = self.pre_norm(embeddings[0])
+        # embeddings[0] = embeddings[0] + self.proj(embeddings[0])
+
+        # embeddings = torch.stack(embeddings).cuda()
+        # 应用 pre_norm 转换，不原地修改
+        query_embedding = torch.tensor(embeddings[0]).unsqueeze(0).cuda()
+        # print("query embeddings", query_embedding.shape)
+        # 应用 proj 转换，创建一个新的张量来存储更新后的值
+        updated_embeddings = self.proj(query_embedding)
+        # 将 proj 的结果加到 embeddings[0] 上，赋值给 embeddings[0]
+        embeddings[0] = (query_embedding + updated_embeddings).squeeze(0).cpu()
         embeddings = torch.stack(embeddings)
+        # embeddings = embeddings.cpu()
         return embeddings
