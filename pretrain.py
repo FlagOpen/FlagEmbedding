@@ -3,13 +3,11 @@ import contextlib
 import os
 import sys
 import torch
+os.environ["WANDB_DISABLED"]="true"
 args = (" ").join(sys.argv)
-
 # 使用示例
 num_gpus = torch.cuda.device_count()
-
 os.system("cd /opt/tiger/FlagEmbedding")
-
 if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-tns-live-llm/leon/experiments/llm/fcbank/train_15neg /opt/tiger/train_15neg")
 
 #——————————————————————————————————————————————————debug——————————————————————————————————————————————————————————#
@@ -19,9 +17,6 @@ if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-t
 #——————————————————————————————————————————————————debug——————————————————————————————————————————————————————————#
 
 # 构建训练命令
-command = f"""
-torchrun --rdzv_backend c10d --rdzv_endpoint localhost:0 --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/run.py {args}
-"""
-
+command = f"""torchrun --rdzv_backend c10d --rdzv_endpoint localhost:0 --nproc_per_node {num_gpus} {args}"""
 # 执行命令
 os.system(command)
