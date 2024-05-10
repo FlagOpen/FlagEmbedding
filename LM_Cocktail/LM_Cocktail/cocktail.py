@@ -93,7 +93,7 @@ def mix_models_with_data(model_names_or_paths: List[str],
         new model
     """
     
-    assert model_type in ['decoder', 'encoder']
+    assert model_type in ['decoder', 'encoder', 'encoder-decoder']
     
     model = load_model(model_names_or_paths[0], model_type=model_type)
     tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
