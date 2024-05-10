@@ -150,7 +150,7 @@ class CLEncoder(CrossEncoder):
         return batch_loss
 
     def forward(self, batch):
-        embeddings = self.get_embedding(**batch)
+        embeddings = self.get_embedding(batch["input_ids"], batch["attention_mask"])
         embeddings = embeddings.reshape(self.train_args.per_device_train_batch_size, self.data_args.train_group_size+1, -1)
         # print("embeddings", embeddings.shape)
         loss = self.batchloss(embeddings).cuda()
