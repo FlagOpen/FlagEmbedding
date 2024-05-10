@@ -138,3 +138,4 @@ pic2.py
 .pyre/
 wandb/
 *.txt
+result/

@@ -8,11 +8,11 @@ from transformers import (
     set_seed,
 )
 
-from .arguments import ModelArguments, DataArguments, \
+from arguments import ModelArguments, DataArguments, \
     RetrieverTrainingArguments as TrainingArguments
-from .data import TrainDatasetForEmbedding, EmbedCollator
-from .modeling import BiEncoderModel
-from .trainer import BiTrainer
+from data import TrainDatasetForEmbedding, EmbedCollator
+from modeling import BiEncoderModel
+from trainer import BiTrainer
 
 logger = logging.getLogger(__name__)
 
