@@ -166,14 +166,12 @@ def preprocess_data_for_seq2seq(example_data, tokenizer, device, batch_size:int=
 
         input_ids = input_encodings.input_ids.to(device)
         attention_mask = input_encodings.attention_mask.to(device)
-        decoder_input_ids = input_encodings.labels.to(device)
         labels = input_encodings.labels.to(device)
 
         labels[labels == tokenizer.pad_token_id] = -100
         batch_data.append({
             "input_ids": input_ids, 
             "attention_mask": attention_mask,
-            "decoder_input_ids": decoder_input_ids,
             "labels": labels
         })
     return batch_data
@@ -212,7 +210,6 @@ def seq2seq_loss(base_model, input_data):
         for batch in input_data:
             outputs = base_model(input_ids=batch["input_ids"], 
                             attention_mask=batch["attention_mask"], 
-                            decoder_input_ids=batch["decoder_input_ids"], 
                             labels=batch["labels"])
             total_loss += outputs.loss.cpu()
     average_loss = total_loss / len(input_data)
