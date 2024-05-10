@@ -1,6 +1,7 @@
 import logging
 import os
 from pathlib import Path
+os.environ["WANDB_DISABLED"]="true"
 
 from transformers import AutoConfig, AutoTokenizer
 from transformers import (
