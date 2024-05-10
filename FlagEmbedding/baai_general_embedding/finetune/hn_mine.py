@@ -4,13 +4,20 @@ import random
 import numpy as np
 import faiss
 from tqdm import tqdm
-
+import requests
 from FlagEmbedding import FlagModel
+from concurrent.futures import ThreadPoolExecutor
+
+import os
+import requests
+import json
+import numpy as np
 
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name_or_path', default="BAAI/bge-base-en", type=str)
+    parser.add_argument('--model_name_or_path', type=str)
+    parser.add_argument('--tei_url', type=str)
     parser.add_argument('--input_file', default=None, type=str)
     parser.add_argument('--candidate_pool', default=None, type=str)
     parser.add_argument('--output_file', default=None, type=str)
@@ -20,7 +27,36 @@ def get_args():
     parser.add_argument('--query_instruction_for_retrieval', default="")
 
     return parser.parse_args()
+def post_embed(text_list, normalize=True, truncate=True, batch_size=64):
+    headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
+    all_embeddings = []
 
+    # 创建线程池
+    with ThreadPoolExecutor(max_workers=8) as executor:
+        # 定义一个函数来处理每个批次
+        def process_batch(batch_texts):
+            data = {
+                "inputs": batch_texts,
+                "normalize": normalize,
+                "truncate": truncate
+            }
+            # 发送请求
+            response = requests.post(args.tei_url, headers=headers, data=json.dumps(data), timeout=60)
+            # 检查响应状态
+            if response.status_code != 200:
+                raise Exception(f"Error: {response.status_code}, {response.text}")
+            # 返回响应的嵌入结果
+            return response.json()
+
+        # 分批处理文本列表
+        batches = [text_list[i:i + batch_size] for i in range(0, len(text_list), batch_size)]
+        # 使用线程池执行请求，并保证顺序
+        for embeddings in tqdm(executor.map(process_batch, batches), total=len(batches), desc="embedding"):
+            all_embeddings.extend(embeddings)
+
+    # 将所有嵌入结果转换为NumPy数组
+    all_embeddings = np.array(all_embeddings)
+    return all_embeddings
 
 def create_index(embeddings, use_gpu):
     index = faiss.IndexFlatIP(len(embeddings[0]))
@@ -55,17 +91,21 @@ def get_corpus(candidate_pool):
     return corpus
 
 
-def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
+def find_knn_neg(input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
     corpus = []
     queries = []
     train_data = []
     for line in open(input_file):
         line = json.loads(line.strip())
+        if line['query'].strip()=="":
+            continue
         train_data.append(line)
-        corpus.extend(line['pos'])
+        corpus.extend([item.strip() for item in line['pos'] if item.strip()!="" ])
         if 'neg' in line:
-            corpus.extend(line['neg'])
+            corpus.extend([item.strip() for item in line['neg'] if item.strip()!="" ])
         queries.append(line['query'])
+        
+    
 
     if candidate_pool is not None:
         if not isinstance(candidate_pool, list):
@@ -75,9 +115,19 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
         corpus = list(set(corpus))
 
     print(f'inferencing embedding for corpus (number={len(corpus)})--------------')
-    p_vecs = model.encode(corpus, batch_size=256)
+    if model:
+        
+        p_vecs = model.encode(corpus, batch_size=256)
+    else:
+        
+        p_vecs = post_embed(corpus)
     print(f'inferencing embedding for queries (number={len(queries)})--------------')
-    q_vecs = model.encode_queries(queries, batch_size=256)
+    if model:
+        q_vecs = model.encode_queries(queries, batch_size=256)
+    else:
+        
+        q_vecs = post_embed(queries)
+    # 
 
     print('create index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
@@ -96,7 +146,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
         if len(filtered_inx) > negative_number:
             filtered_inx = random.sample(filtered_inx, negative_number)
         data['neg'] = [corpus[inx] for inx in filtered_inx]
-
+    directory = os.path.dirname(output_file)
+    
+    os.makedirs(directory, exist_ok=True)
     with open(output_file, 'w') as f:
         for data in train_data:
             if len(data['neg']) < negative_number:
@@ -109,12 +161,22 @@ if __name__ == '__main__':
     sample_range = args.range_for_sampling.split('-')
     sample_range = [int(x) for x in sample_range]
 
-    model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
+    if args.model_name_or_path:
+        
+    
+        model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
 
-    find_knn_neg(model,
-                 input_file=args.input_file,
-                 candidate_pool=args.candidate_pool,
-                 output_file=args.output_file,
-                 sample_range=sample_range,
-                 negative_number=args.negative_number,
-                 use_gpu=args.use_gpu_for_searching)
+        find_knn_neg(input_file=args.input_file,
+                    candidate_pool=args.candidate_pool,
+                    output_file=args.output_file,
+                    sample_range=sample_range,
+                    negative_number=args.negative_number,
+                    use_gpu=args.use_gpu_for_searching)
+    elif args.tei_url:
+        
+        find_knn_neg(input_file=args.input_file,
+                    candidate_pool=args.candidate_pool,
+                    output_file=args.output_file,
+                    sample_range=sample_range,
+                    negative_number=args.negative_number,
+                    use_gpu=args.use_gpu_for_searching)
