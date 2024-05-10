@@ -3,7 +3,7 @@ import contextlib
 import os
 import sys
 import torch
-args = (" ").join(sys.argv[1:])
+args = (" ").join(sys.argv)
 
 # 使用示例
 num_gpus = torch.cuda.device_count()
@@ -20,7 +20,7 @@ if not os.path.exists("/opt/tiger/train_15neg"): os.system("cp -r /mnt/bn/data-t
 
 # 构建训练命令
 command = f"""
-torchrun --standalone --nnodes=1 --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/run.py {args}
+torchrun --rdzv_backend c10d --rdzv_endpoint localhost:0 --nproc_per_node {num_gpus} /opt/tiger/FlagEmbedding/FlagEmbedding/reranker/run.py {args}
 """
 
 # 执行命令
