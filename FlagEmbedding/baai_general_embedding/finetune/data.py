@@ -20,14 +20,15 @@ class TrainDatasetForEmbedding(Dataset):
         if os.path.isdir(args.train_data):
             train_datasets = []
             for file in os.listdir(args.train_data):
-                temp_dataset = datasets.load_dataset('json', data_files=os.path.join(args.train_data, file))
+                temp_dataset = datasets.load_dataset('json', data_files=os.path.join(args.train_data, file),
+                                                     split='train')
                 if len(temp_dataset) > args.max_example_num_per_dataset:
                     temp_dataset = temp_dataset.select(
                         random.sample(list(range(len(temp_dataset))), args.max_example_num_per_dataset))
                 train_datasets.append(temp_dataset)
             self.dataset = datasets.concatenate_datasets(train_datasets)
         else:
-            self.dataset = datasets.load_dataset('json')
+            self.dataset = datasets.load_dataset('json', data_files=args.train_data, split='train')
 
         self.tokenizer = tokenizer
         self.args = args
