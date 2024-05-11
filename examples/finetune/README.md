@@ -56,6 +56,17 @@ The format of this file is the same as [pretrain data](https://github.com/FlagOp
 - `use_gpu_for_searching`: whether to use faiss-gpu to retrieve negatives.
 
 
+You can ues [text-embeddings-inference](https://github.com/huggingface/text-embeddings-inference) with multi-threads to speed up  :
+```bash
+python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
+--tei_url http://127.0.0.1:8080/embed \
+--input_file toy_finetune_data.jsonl \
+--output_file toy_finetune_data_minedHN.jsonl \
+--range_for_sampling 2-200 \
+--negative_number 15 \
+--use_gpu_for_searching 
+```
+
 ## 3. Train
 ```
 torchrun --nproc_per_node {number of gpus} \
