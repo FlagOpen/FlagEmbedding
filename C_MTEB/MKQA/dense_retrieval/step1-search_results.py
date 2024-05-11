@@ -136,10 +136,6 @@ def save_result(search_results, result_save_path: str, qids: list, max_hits: int
                                       max_passage_hits=1000)
     with output_writer:
         for topic, hits in search_results:
-            # For some test collections, a query is doc from the corpus (e.g., arguana in BEIR).
-            # Remove the query from the results.
-            hits = [hit for hit in hits if hit.docid != topic]
-            
             output_writer.write(topic, hits)
 
 

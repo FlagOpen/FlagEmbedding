@@ -498,28 +498,7 @@ class LlamaAttention(nn.Module):
         else:
             past_seq_len = 0
 
-        if self.config.pretraining_tp > 1:
-            # TODO: support pretraining_tp
-            raise NotImplementedError
-
-            key_value_slicing = (self.num_key_value_heads * self.head_dim) // self.config.pretraining_tp
-            query_slices = self.q_proj.weight.split(
-                (self.num_heads * self.head_dim) // self.config.pretraining_tp, dim=0
-            )
-            key_slices = self.k_proj.weight.split(key_value_slicing, dim=0)
-            value_slices = self.v_proj.weight.split(key_value_slicing, dim=0)
-
-            query_states = [F.linear(hidden_states, query_slices[i]) for i in range(self.config.pretraining_tp)]
-            query_states = torch.cat(query_states, dim=-1)
-
-            key_states = [F.linear(hidden_states, key_slices[i]) for i in range(self.config.pretraining_tp)]
-            key_states = torch.cat(key_states, dim=-1)
-
-            value_states = [F.linear(hidden_states, value_slices[i]) for i in range(self.config.pretraining_tp)]
-            value_states = torch.cat(value_states, dim=-1)
-
-        else:
-            query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, total_beacon_size)
+        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, total_beacon_size)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
@@ -529,12 +508,17 @@ class LlamaAttention(nn.Module):
 
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        if window_size > 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
+        
+        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
+        if window_size == 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         key_position_ids = position_ids
         # align query position_ids with key
@@ -600,15 +584,7 @@ class LlamaAttention(nn.Module):
 
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
 
-        if self.config.pretraining_tp > 1:
-            # TODO: support pretraining_tp
-            raise NotImplementedError
-            attn_output = attn_output.split(self.hidden_size // self.config.pretraining_tp, dim=2)
-            o_proj_slices = self.o_proj.weight.split(self.hidden_size // self.config.pretraining_tp, dim=1)
-            attn_output = sum([F.linear(attn_output[i], o_proj_slices[i]) for i in range(self.config.pretraining_tp)])
-
-        else:
-            attn_output = self.o_proj_with_beacon(attn_output, total_beacon_size)
+        attn_output = self.o_proj_with_beacon(attn_output, total_beacon_size)
 
         if not output_attentions:
             attn_weights = None
@@ -666,13 +642,18 @@ class LlamaSdpaAttention(LlamaAttention):
 
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        if window_size > 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
         
+        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
+        if window_size == 0:
+            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+
         key_position_ids = position_ids
         # align query position_ids with key
         query_position_ids = key_position_ids[:, -q_len:]
@@ -972,10 +953,20 @@ class LlamaModel(LlamaPreTrainedModel):
             with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
                 # deepspeed will initialize the parameters to zero
                 if (self.beacon_embed_tokens.weight == 0).all():
-                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                    if self.config.beacon_embed_init == "bos":
+                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
+                    elif self.config.beacon_embed_init == "eos":
+                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                    else:
+                        raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
         else:
             if any("beacon_embed_tokens" in missing_key for missing_key in missing_keys):
-                self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                if self.config.beacon_embed_init == "bos":
+                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
+                elif self.config.beacon_embed_init == "eos":
+                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                else:
+                    raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
 
     def get_input_embeddings(self):
         return self.embed_tokens
@@ -1050,8 +1041,8 @@ class LlamaModel(LlamaPreTrainedModel):
             # 4d mask is passed through the layers
             attention_mask = _prepare_4d_causal_attention_mask(
                 attention_mask, (batch_size, seq_length), inputs_embeds, past_key_values_length
-            )
-        
+            )        
+
         position_ids = torch.arange(seq_length_with_past, dtype=torch.long, device=device).repeat(batch_size, 1)
 
         # prepare attention mask and position ids for beacons
@@ -1066,6 +1057,9 @@ class LlamaModel(LlamaPreTrainedModel):
             min_value = torch.finfo(inputs_embeds.dtype).min
 
             beacon_start_idx = -total_beacon_size
+
+            # batch_size, head_num, window_size
+            reference_attention_mask = attention_mask[..., -total_beacon_size - 1, -window_size_with_beacon: -total_beacon_size]
 
             for beacon_size in beacon_sizes:
                 # in this case, the activations of ordinal tokens are used as beacon activations
@@ -1090,17 +1084,25 @@ class LlamaModel(LlamaPreTrainedModel):
                     valid_pos = ordinal_arange.expand(beacon_size, window_size) < beacon_arange.unsqueeze(-1)
                     # beacon_size, window_size
                     ordinal_attention_mask = torch.where(valid_pos, 0, min_value)
+                    # NOTE: add reference attention_mask so that padding tokens are considered
+                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
 
-                    beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                    if self.config.beacon_attend_prev:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
+                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
+                    else:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
                     attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
                     # beacons of different ratios are blind to others
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                    # the beacon token is next to the last oridinal token it attends to
-                    beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
-                    position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                 elif self.config.beacon_attn == "segmentation":
                     # each beacon can attend to its corresponding sub-interval
@@ -1111,16 +1113,25 @@ class LlamaModel(LlamaPreTrainedModel):
                     ordinal_attention_mask = attention_mask.new_full((beacon_size, window_size), min_value)
                     ordinal_attention_mask.scatter_(dim=-1, index=indices, value=0)
 
-                    beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                    # NOTE: add reference attention_mask so that padding tokens are considered
+                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
+
+                    if self.config.beacon_attend_prev:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
+                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
+                    else:
+                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
+                        # the beacon token is next to the last oridinal token it attends to
+                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
+                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
                     attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
                     # beacons of different ratios are blind to others
                     attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                    # the beacon token is next to the last oridinal token it attends to
-                    beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
-                    position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
 
                 elif self.config.beacon_attn == "full-coverage":
                     pass
@@ -1239,19 +1250,8 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         config = model.config
         model.memory = Memory(
             model_config=config,
-            beacon_window=config.beacon_window,
-            beacon_stride=config.beacon_stride,
-            beacon_attn=config.beacon_attn,
-            beacon_ratio=config.beacon_ratio,
-            beacon_ratio_mix=config.beacon_ratio_mix,
-            beacon_param=config.beacon_param,
-            beacon_sink_size=config.beacon_sink_size,
             k_seq_dim=2,
             v_seq_dim=2,
-            retrieval_method=config.retrieval_method,
-            retrieval_topk=config.retrieval_topk,
-            retrieval_key_length=config.retrieval_key_length,
-            retrieval_cache_dir=config.retrieval_cache_dir,
         )
 
         missing_keys = loading_info["missing_keys"]
@@ -1284,6 +1284,11 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
             output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
         )
         return_dict = return_dict if return_dict is not None else self.config.use_return_dict
+
+        # when we directly call _native_forward, the past_key_values would be None
+        if past_key_values is None:
+            # NOTE: set window size to 0, so that new past_key_values are returned properly, see MistralAttention.forward
+            past_key_values = [(None, None, [0], 0, 0, 0) for _ in range(self.config.num_hidden_layers)]
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         outputs = self.model(
@@ -1410,7 +1415,11 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         """
         # only allow gradient when training
         with optional_grad_ctx(with_grad=self.training):
-            return self._beacon_forward(**kwargs)
+            # we can disable beacon to use the original llama
+            if hasattr(self, "_enable_beacon") and self._enable_beacon == False:
+                return self._native_forward(**kwargs)
+            else:
+                return self._beacon_forward(**kwargs)
 
     def prepare_inputs_for_generation(
         self, input_ids, past_key_values=None, attention_mask=None, inputs_embeds=None, **kwargs

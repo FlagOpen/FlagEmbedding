@@ -4,7 +4,14 @@ import torch
 import json
 import datasets
 import numpy as np
-from typing import List
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+from glob import glob
+from typing import List, Optional
 from tqdm import tqdm
 from accelerate import Accelerator
 from transformers import HfArgumentParser
@@ -12,32 +19,37 @@ from transformers.utils import logging
 from dataclasses import dataclass, field, asdict
 
 from src import ModelArgs, DefaultDataCollator, FileLogger, get_model_and_tokenizer, makedirs, apply_chat_template
-from .longbench_utils import qa_f1_score
+from .longbench_utils import rouge_score as get_rouge_score
 
 logger = logging.get_logger(__name__)
 
 
 @dataclass
 class Args(ModelArgs):
-    output_dir: str = field(
-        default="data/results/needle/",
-        metadata={'help': 'Output directory for results and logs.'}
-    )
-    corpus_path: str = field(
-        default="data/toy/book-1M.txt",
+    haystack_path: str = field(
+        default="data/toy/PaulGrahamEssays",
         metadata={'help': 'The context for evaluation.'}
     )
+    output_dir: str = field(
+        default="data/results/needle/",
+        metadata={'help': 'The base directory for saving results and logs.'}
+    )
+    result_dir: Optional[str] = field(
+        default=None,
+        metadata={'help': 'The directory relative to output_dir for saving results.'}
+    )
+
 
     min_length: int = field(
-        default=4000,
+        default=8192,
         metadata={'help': 'Minimum context length in evaluation.'}
     )
     max_length: int = field(
-        default=64000,
+        default=131072,
         metadata={'help': 'Maximum context length in evaluation.'}
     )
     num_length_interval: int = field(
-        default=6,
+        default=20,
         metadata={'help': 'Number of invervals between min_length and max_length.'}
     )
     test_length: List[int] = field(
@@ -54,7 +66,7 @@ class Args(ModelArgs):
         metadata={'help': 'Maximum pass key depth in the context.'}
     )
     num_depth_interval: int = field(
-        default=6,
+        default=10,
         metadata={'help': 'Number of invervals between min_depth and max_depth.'}
     )
     test_depth: List[int] = field(
@@ -62,18 +74,114 @@ class Args(ModelArgs):
         metadata={'help': 'Specified evaluation depths.'}
     )
 
+    needle: str = field(
+        default="\n\nThe best thing to do in San Francisco is sitting in Dolores Park and eating a hamburg on a sunny day.\n\n",
+        metadata={'help': 'The needle content'}
+    )
+    prompt: str = field(
+        default='\n\nWhat is the best thing to do in San Francisco?\nAnswer:',
+        metadata={'help': 'The needle content'}
+    )
+
+    gpt_eval: bool = field(
+        default=False,
+        metadata={'help': 'Use GPT4 to evaluate accuracy.'}
+    )
+    proxy: str = field(
+        default=None,
+        metadata={'help': 'Proxy when using gpt evaluation.'}
+    )
+
+    load_result: bool = field(
+        default=False,
+        metadata={'help': 'Load previous results?'}
+    )
 
 
-def generate_sample(tokenizer, chat_template, context, context_length, needle_depth):
+
+class OpenAIEvaluator:
+    DEFAULT_MODEL_KWARGS: dict = dict(temperature=0)
+    CRITERIA = {"accuracy": """
+                Score 1: The answer is completely unrelated to the reference.
+                Score 3: The answer has minor relevance but does not align with the reference.
+                Score 5: The answer has moderate relevance but contains inaccuracies.
+                Score 7: The answer aligns with the reference but has minor omissions.
+                Score 10: The answer is completely accurate and aligns perfectly with the reference.
+                Only respond with a numberical score"""}
+
+    def __init__(self,
+                 model_name: str = "gpt-3.5-turbo-0125",
+                 model_kwargs: dict = DEFAULT_MODEL_KWARGS,
+                 true_answer: str = None,
+                 question_asked: str = None,
+                 proxy: str = None):
+        """
+        :param model_name: The name of the model.
+        :param model_kwargs: Model configuration. Default is {temperature: 0}
+        :param true_answer: The true answer to the question asked.
+        :param question_asked: The question asked to the model.
+        """
+        from langchain_community.chat_models import ChatOpenAI
+
+        if (not true_answer) or (not question_asked):
+            raise ValueError("true_answer and question_asked must be supplied with init.")
+
+        self.model_name = model_name
+        self.model_kwargs = model_kwargs
+        self.true_answer = true_answer
+        self.question_asked = question_asked
+        self.proxy = proxy
+
+        api_key = os.getenv('OPENAI_API_KEY')
+        if (not api_key):
+            raise ValueError("OPENAI_API_KEY must be in env for using openai evaluator.")
+
+        self.api_key = api_key
+        
+        self.evaluator = ChatOpenAI(model=self.model_name,
+                                    openai_api_key=self.api_key,
+                                    openai_proxy=self.proxy,
+                                    **self.model_kwargs)
+
+    def evaluate_response(self, response: str) -> int:
+        from langchain.evaluation import load_evaluator
+
+        evaluator = load_evaluator(
+            "labeled_score_string",
+            criteria=self.CRITERIA,
+            llm=self.evaluator,
+        )
+
+        eval_result = evaluator.evaluate_strings(
+            # The models response
+            prediction=response,
+
+            # The actual answer
+            reference=self.true_answer,
+
+            # The question asked
+            input=self.question_asked,
+        )
+
+        return int(eval_result['score'])
+
+
+def generate_sample(
+    tokenizer, 
+    chat_template, 
+    context, 
+    context_length, 
+    needle_depth, 
+    needle="\n\nThe best thing to do in San Francisco is sitting in Dolores Park and eating a hamburg on a sunny day.\n\n", 
+    prompt='\n\nWhat is the best thing to do in San Francisco?\nAnswer:'
+):
     num_words = len(context.split())
     if context_length > num_words:
         context = context * math.ceil(context_length / num_words)
 
     description = "There is an important infomation hidden in the following context. Find the information and memorize it. I will quiz you about the important information there.\n"
-    needle = f"\n\nThe best thing to do in San Francisco is sitting in Dolores Park and eating a hamburg on a sunny day.\n\n"
-    prompt = "What is the best thing to do in San Francisco? Don't give information outside the document or repeat your findings."
 
-    description_input_ids = tokenizer.encode(description)
+    description_input_ids = tokenizer.encode(description, add_special_tokens=False)
     needle_input_ids = tokenizer.encode(needle, add_special_tokens=False)
     prompt_input_ids = tokenizer.encode(prompt, add_special_tokens=False)
 
@@ -94,8 +202,7 @@ def generate_sample(tokenizer, chat_template, context, context_length, needle_de
     input_ids = sum([description_input_ids, context_input_ids[:needle_pos], needle_input_ids, context_input_ids[needle_pos:], prompt_input_ids], [])
     inputs = tokenizer.decode(input_ids)
 
-    if chat_template != "no":
-        inputs = apply_chat_template(chat_template, messages=[{'role': 'user', 'content': inputs}], add_generation_prompt=True)
+    inputs = apply_chat_template(chat_template, messages=[{'role': 'user', 'content': inputs}], tokenizer=tokenizer, add_generation_prompt=True).raw
 
     return inputs, prompt, needle
 
@@ -106,7 +213,7 @@ def main():
     args: Args = parser.parse_args_into_dataclasses()[0]
 
     accelerator = Accelerator(cpu=args.cpu)
-    model, tokenizer = get_model_and_tokenizer(args, accelerator=accelerator)
+    model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
     if args.test_length is None:
         test_lengths = np.linspace(args.min_length, args.max_length, args.num_length_interval, endpoint=True).astype(int).tolist()
@@ -118,8 +225,19 @@ def main():
     else:
         test_depths = args.test_depth
 
-    with open(args.corpus_path) as f:
-        context = f.read().strip()
+    if os.path.isfile(args.haystack_path):
+        with open(args.haystack_path) as f:
+            context = f.read().strip()
+    elif os.path.isdir(args.haystack_path):
+        context = ""
+        num_tokens = 0
+        for file in glob(f"{args.haystack_path}/*.txt"):
+            with open(file, 'r') as f:
+                this_file_context = f.read()
+                num_tokens += len(tokenizer.encode(this_file_context, add_special_tokens=False))
+                context += this_file_context
+                if num_tokens > max(test_lengths):
+                    break
 
     all_inputs = []
     for length in tqdm(test_lengths, desc="Constructing Data"):
@@ -129,7 +247,9 @@ def main():
                 chat_template=args.chat_template, 
                 context=context,
                 context_length=length, 
-                needle_depth=depth
+                needle_depth=depth,
+                needle=args.needle,
+                prompt=args.prompt
             )
             all_inputs.append({'inputs': inputs, 'prompt': prompt, 'needle': needle, 'length': length, 'depth': depth})
 
@@ -141,13 +261,15 @@ def main():
         collate_fn=DefaultDataCollator(tokenizer),
         pin_memory=not args.cpu,
     )
-    dataloader = accelerator.prepare(dataloader)
+
+    if not args.enable_tp:
+        model, dataloader = accelerator.prepare(model, dataloader)
+        model = accelerator.unwrap_model(model)
+    else:
+        # NOTE: prepare dataloader so the data moves to GPU automatically
+        dataloader = accelerator.prepare(dataloader)
 
     accelerator.wait_for_everyone()
-
-    accuracy = {l: {d: [] for d in test_depths} for l in test_lengths}
-    f1_score = {l: {d: [] for d in test_depths} for l in test_lengths}
-    results = {l: {d: [] for d in test_depths} for l in test_lengths}
 
     all_outputs = []
 
@@ -157,7 +279,7 @@ def main():
         # TODO: retrieval
 
         # NOTE: important to reset memory for every batch
-        if hasattr(model, "memory") and model.memory is not None:
+        if hasattr(model, "memory"):
             model.memory.reset()
 
         inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
@@ -168,41 +290,85 @@ def main():
             num_beams=1,
             do_sample=False,
             temperature=1.,
+            # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
+            synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
         )
-        outputs = outputs[:, inputs['input_ids'].shape[1]:]
+        outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
 
-        outputs = accelerator.pad_across_processes(outputs.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
-        outputs = accelerator.gather_for_metrics(outputs).tolist()
-        all_outputs.extend(outputs)
+        if accelerator.num_processes > 1:
+            outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
+            outputs = accelerator.gather_for_metrics(outputs)
+
+        all_outputs.extend(outputs.tolist())
 
 
     if accelerator.process_index == 0:
         all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
+
+        results = {l: {d: [] for d in test_depths} for l in test_lengths}
+        rouge_score = {l: {d: [] for d in test_depths} for l in test_lengths}
+
+        if args.gpt_eval:
+            evaluator = OpenAIEvaluator(question_asked=args.prompt.strip(), true_answer=args.needle.strip(), proxy=args.proxy)
+            gpt_score = {l: {d: [] for d in test_depths} for l in test_lengths}
         
         for l, d, n, o in zip(dataset['length'], dataset['depth'], dataset['needle'], all_outputs):
-            acc = float(n == o)
-            score = round(qa_f1_score(o, n), 2)
-            accuracy[l][d].append(acc)
-            f1_score[l][d].append(score)
             results[l][d].append({'target': n, 'prediction': o})
 
-        for l, lv in accuracy.items():
-            for d, dv in lv.items():
-                accuracy[l][d] = round(sum(dv) / len(dv), 2)
-        for l, lv in f1_score.items():
-            for d, dv in lv.items():
-                f1_score[l][d] = round(sum(dv) / len(dv), 2)
+            score = round(get_rouge_score(o, n), 2)
+            rouge_score[l][d].append(score)
 
-        result_dir_components = [args.output_dir, "--".join(args.model_name_or_path.strip(os.sep).split(os.sep)[-2:])]
-        if hasattr(model, "memory"):
-            result_dir_components.append(f"{model.memory.beacon_ratio}")
-        result_dir = os.path.join(*result_dir_components)
+            if args.gpt_eval:
+                while 1:
+                    try:
+                        gpt_score[l][d].append(evaluator.evaluate_response(o))
+                        break
+                    except:
+                        pass
+
+        for l, lv in rouge_score.items():
+            for d, dv in lv.items():
+                rouge_score[l][d] = round(sum(dv) / len(dv), 2)
+
+        if args.gpt_eval:
+            for l, lv in gpt_score.items():
+                for d, dv in lv.items():
+                    gpt_score[l][d] = round(sum(dv) / len(dv), 2)
+
+        result_dir = os.path.join(args.output_dir, args.result_dir)
         with open(makedirs(os.path.join(result_dir, "results.json")), "w", encoding='utf-8') as f:
             json.dump(results, f)
+        # also save config
+        args.save(os.path.join(result_dir, "config.json"))
 
-        log_path = os.path.join(args.output_dir, f"metrics.log")
-        file_logger = FileLogger(makedirs(log_path))
-        file_logger.log({'accuracy': accuracy, 'fuzz': f1_score}, Args=asdict(args))
+        metrics = {'rouge': rouge_score}
+        if args.gpt_eval:
+            metrics["gpt"] = gpt_score
+        file_logger = FileLogger(makedirs(os.path.join(args.output_dir, "metrics.log")))
+        file_logger.log(metrics, Args=asdict(args))
+
+        for metric_key, metric_value in metrics.items():
+            # Copied from https://github.com/gkamradt/LLMTest_NeedleInAHaystack/blob/main/viz/CreateVizFromLLMTesting.ipynb
+            cmap = LinearSegmentedColormap.from_list("custom_cmap", ["#F0496E", "#EBB839", "#0CD79F"])
+            # Create the heatmap with better aesthetics
+            plt.figure(figsize=(17.5, 8))  # Can adjust these dimensions as needed
+            data = pd.DataFrame(metric_value)
+            sns.heatmap(
+                data,
+                fmt="g",
+                cmap=cmap,
+                cbar_kws={'label': metric_key}
+            )
+
+            # More aesthetics
+            plt.title('Needle In A HayStack')  # Adds a title
+            plt.xlabel('Token Limit')  # X-axis label
+            plt.ylabel('Depth Percent')  # Y-axis label
+            plt.xticks(rotation=45)  # Rotates the x-axis labels to prevent overlap
+            plt.yticks(rotation=0)  # Ensures the y-axis labels are horizontal
+            plt.tight_layout()  # Fits everything neatly into the figure area
+            # save to result_dir
+            plt.savefig(os.path.join(result_dir, f"{metric_key}.pdf"), format='pdf', dpi=1200, bbox_inches='tight')
 
 
 if __name__ == "__main__":
