@@ -360,21 +360,21 @@ merge_layerwise_finetuned_llm('BAAI/bge-reranker-v2-minicpm-layerwise', 'lora_ll
 
 - BEIR.   
 
-rereank the top 100 results from bge-en-v1.5 large.
+rerank the top 100 results from bge-en-v1.5 large.
 
 ![image-20240319140555921](./evaluation/BEIR-bge-en-v1.5.png)
 
-rereank the top 100 results from e5 mistral 7b instruct.
+rerank the top 100 results from e5 mistral 7b instruct.
 
 ![image-20240317172949713](./evaluation/BEIR-e5-mistral.png)
 
 - CMTEB-retrieval.   
-It rereank the top 100 results from bge-zh-v1.5 large.
+It rerank the top 100 results from bge-zh-v1.5 large.
 
 ![image-20240317173026235](./evaluation/CMTEB-retrieval-bge-zh-v1.5.png)
 
 - miracl (multi-language).   
-It rereank the top 100 results from bge-m3.
+It rerank the top 100 results from bge-m3.
 
 ![image-20240317173117639](./evaluation/miracl-bge-m3.png)
 

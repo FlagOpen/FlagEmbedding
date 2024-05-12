@@ -139,14 +139,15 @@ class LlamaConfig(PretrainedConfig):
         beacon_window=1024,
         beacon_stride=1024,
         beacon_attn="step-expansion",
-        beacon_ratio=[8],
+        beacon_ratio=[2,4,8,16,32],
         beacon_ratio_mix="step-random",
         beacon_param=["q","k","v","o"],
+        beacon_embed_init="eos",
         beacon_sink_size=0,
+        beacon_attend_prev=True,
         retrieval_method=None,
         retrieval_topk=None,
         retrieval_key_length=None,
-        retrieval_cache_dir=None,
         **kwargs,
     ):
         self.vocab_size = vocab_size
@@ -178,11 +179,12 @@ class LlamaConfig(PretrainedConfig):
         self.beacon_ratio = beacon_ratio
         self.beacon_ratio_mix = beacon_ratio_mix
         self.beacon_param = beacon_param
+        self.beacon_embed_init = beacon_embed_init
         self.beacon_sink_size = beacon_sink_size
+        self.beacon_attend_prev = beacon_attend_prev
         self.retrieval_method = retrieval_method
         self.retrieval_topk = retrieval_topk
         self.retrieval_key_length = retrieval_key_length
-        self.retrieval_cache_dir = retrieval_cache_dir
 
         super().__init__(
             pad_token_id=pad_token_id,

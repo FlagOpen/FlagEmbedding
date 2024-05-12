@@ -4,7 +4,14 @@ import json
 import torch
 import datasets
 import numpy as np
-from typing import List
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+
+from typing import List, Optional
 from tqdm import tqdm
 from fuzzywuzzy import fuzz
 from accelerate import Accelerator
@@ -21,19 +28,23 @@ logger = logging.get_logger(__name__)
 class Args(ModelArgs):
     output_dir: str = field(
         default="data/results/passkey/",
-        metadata={'help': 'Output directory for results and logs.'}
+        metadata={'help': 'The base directory for saving results and logs.'}
+    )
+    result_dir: Optional[str] = field(
+        default=None,
+        metadata={'help': 'The directory relative to output_dir for saving results.'}
     )
 
     min_length: int = field(
-        default=4000,
+        default=8192,
         metadata={'help': 'Minimum context length in evaluation.'}
     )
     max_length: int = field(
-        default=64000,
+        default=131072,
         metadata={'help': 'Maximum context length in evaluation.'}
     )
     num_length_interval: int = field(
-        default=6,
+        default=20,
         metadata={'help': 'Number of invervals between min_length and max_length.'}
     )
     test_length: List[int] = field(
@@ -50,7 +61,7 @@ class Args(ModelArgs):
         metadata={'help': 'Maximum pass key depth in the context.'}
     )
     num_depth_interval: int = field(
-        default=6,
+        default=10,
         metadata={'help': 'Number of invervals between min_depth and max_depth.'}
     )
     test_depth: List[int] = field(
@@ -74,10 +85,10 @@ def generate_sample(tokenizer, chat_template, context_length, passkey_depth, pas
     description = "There is an important infomation hidden in the following context. Find the information and memorize it. I will quiz you about the important information there.\n"
     noises = "The grass is green. The sky is blue. The sun is yellow. Here we go. There and back again." * (context_length // 10)
     information = f"\n\nThe pass key is {passkey}. Remember it. {passkey} is the pass key.\n\n"
-    prompt = "What is the pass key?"
+    prompt = "\n\nWhat is the pass key?"
 
     # these inputs are used only once
-    description_input_ids = tokenizer.encode(description)
+    description_input_ids = tokenizer.encode(description, add_special_tokens=False)
     information_input_ids = tokenizer.encode(information, add_special_tokens=False)
     prompt_input_ids = tokenizer.encode(prompt, add_special_tokens=False)
 
@@ -104,8 +115,7 @@ def generate_sample(tokenizer, chat_template, context_length, passkey_depth, pas
     input_ids = sum([description_input_ids, prefix_noise, information_input_ids, suffix_noise, prompt_input_ids], [])
     inputs = tokenizer.decode(input_ids)
 
-    if chat_template != "no":
-        inputs = apply_chat_template(chat_template, messages=[{'role': 'user', 'content': inputs}], add_generation_prompt=True)
+    inputs = apply_chat_template(chat_template, messages=[{'role': 'user', 'content': inputs}], tokenizer=tokenizer, add_generation_prompt=True).raw
 
     return inputs, prompt, passkey
 
@@ -115,8 +125,10 @@ def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
 
+    print(args.result_dir)
+
     accelerator = Accelerator(cpu=args.cpu)
-    model, tokenizer = get_model_and_tokenizer(args, accelerator=accelerator)
+    model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
     if args.test_length is None:
         test_lengths = np.linspace(args.min_length, args.max_length, args.num_length_interval, endpoint=True).astype(int).tolist()
@@ -151,13 +163,12 @@ def main():
         collate_fn=DefaultDataCollator(tokenizer),
         pin_memory=not args.cpu,
     )
-    dataloader = accelerator.prepare(dataloader)
+
+    if not args.enable_tp:
+        model, dataloader = accelerator.prepare(model, dataloader)
+        model = accelerator.unwrap_model(model)
 
     accelerator.wait_for_everyone()
-
-    accuracy = {l: {d: [] for d in test_depths} for l in test_lengths}
-    fuzzy_score = {l: {d: [] for d in test_depths} for l in test_lengths}
-    results = {l: {d: [] for d in test_depths} for l in test_lengths}
 
     all_outputs = []
 
@@ -167,7 +178,7 @@ def main():
         # TODO: retrieval
 
         # NOTE: important to reset memory for every batch
-        if hasattr(model, "memory") and model.memory is not None:
+        if hasattr(model, "memory"):
             model.memory.reset()
 
         inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
@@ -178,16 +189,27 @@ def main():
             num_beams=1,
             do_sample=False,
             temperature=1.,
+            # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
+            synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
         )
-        outputs = outputs[:, inputs['input_ids'].shape[1]:]
+        outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
 
-        outputs = accelerator.pad_across_processes(outputs.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
-        outputs = accelerator.gather_for_metrics(outputs).tolist()
-        all_outputs.extend(outputs)
+        if accelerator.num_processes > 1:
+            outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
+            outputs = accelerator.gather_for_metrics(outputs)
+        else:
+            # NOTE: prepare dataloader so the data moves to GPU automatically
+            dataloader = accelerator.prepare(dataloader)
+
+        all_outputs.extend(outputs.tolist())
 
 
     if accelerator.process_index == 0:
         all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
+
+        accuracy = {l: {d: [] for d in test_depths} for l in test_lengths}
+        fuzzy_score = {l: {d: [] for d in test_depths} for l in test_lengths}
+        results = {l: {d: [] for d in test_depths} for l in test_lengths}
 
         for l, d, p, o in zip(dataset['length'], dataset['depth'], dataset['passkey'], all_outputs):
             # extract numbers
@@ -196,31 +218,56 @@ def main():
                 o = o.group()
             else:
                 o = ""
+            results[l][d].append({'target': p, 'prediction': o})
 
             acc = float(p == o)
-            score = round(fuzz.ratio(o, p), 2)
+            score = round(fuzz.ratio(o, p) / 100, 2)
 
             accuracy[l][d].append(acc)
             fuzzy_score[l][d].append(score)
-            results[l][d].append({'target': p, 'prediction': o})
 
         for l, lv in accuracy.items():
             for d, dv in lv.items():
                 accuracy[l][d] = round(sum(dv) / len(dv), 2)
+
         for l, lv in fuzzy_score.items():
             for d, dv in lv.items():
                 fuzzy_score[l][d] = round(sum(dv) / len(dv), 2)
         
-        result_dir_components = [args.output_dir, "--".join(args.model_name_or_path.strip(os.sep).split(os.sep)[-2:])]
-        if hasattr(model, "memory"):
-            result_dir_components.append(f"{model.memory.beacon_ratio}")
-        result_dir = os.path.join(*result_dir_components)
+        result_dir = os.path.join(args.output_dir, args.result_dir)
         with open(makedirs(os.path.join(result_dir, "results.json")), "w", encoding='utf-8') as f:
             json.dump(results, f)
+        # also save config
+        args.save(os.path.join(result_dir, "config.json"))
 
-        log_path = os.path.join(args.output_dir, f"metrics.log")
-        file_logger = FileLogger(makedirs(log_path))
-        file_logger.log({'accuracy': accuracy, 'fuzz': fuzzy_score}, Args=asdict(args))
+        metrics = {'accuracy': accuracy, 'fuzz': fuzzy_score}
+        file_logger = FileLogger(makedirs(os.path.join(args.output_dir, "metrics.log")))
+        file_logger.log(metrics, Args=asdict(args))
+
+        for metric_key, metric_value in metrics.items():
+            # Copied from https://github.com/gkamradt/LLMTest_NeedleInAHaystack/blob/main/viz/CreateVizFromLLMTesting.ipynb
+            cmap = LinearSegmentedColormap.from_list("custom_cmap", ["#F0496E", "#EBB839", "#0CD79F"])
+            # Create the heatmap with better aesthetics
+            plt.figure(figsize=(17.5, 8))  # Can adjust these dimensions as needed
+            data = pd.DataFrame(metric_value)
+            ax = sns.heatmap(
+                data,
+                fmt="g",
+                cmap=cmap,
+                cbar_kws={'label': metric_key},
+                vmin=0,
+                vmax=1,
+            )
+
+            # More aesthetics
+            plt.title('Passkey Retrieval')  # Adds a title
+            plt.xlabel('Token Limit')  # X-axis label
+            plt.ylabel('Depth Percent')  # Y-axis label
+            plt.xticks(rotation=45)  # Rotates the x-axis labels to prevent overlap
+            plt.yticks(rotation=0)  # Ensures the y-axis labels are horizontal
+            plt.tight_layout()  # Fits everything neatly into the figure area
+            # save to result_dir
+            plt.savefig(os.path.join(result_dir, f"{metric_key}.pdf"), format='pdf', dpi=1200, bbox_inches='tight')
 
 
 if __name__ == "__main__":

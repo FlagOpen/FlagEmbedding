@@ -8,7 +8,7 @@ import numpy as np
 from tqdm import tqdm
 from typing import List, Dict, Any
 
-from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification, is_torch_npu_available
+from transformers import AutoModelForCausalLM, AutoModel, AutoModelForSequenceClassification, AutoModelForSeq2SeqLM, is_torch_npu_available
 
 
 def load_llm(model_name:str, trust_remote_code:bool):
@@ -26,6 +26,11 @@ def load_reranker(model_name:str, trust_remote_code:bool):
     return model
 
 
+def load_seq2seq_model(model_name:str, trust_remote_code:bool):
+    model = AutoModelForSeq2SeqLM.from_pretrained(model_name, trust_remote_code=trust_remote_code)
+    return model
+
+
 def load_model(model_name:str, model_type:str, trust_remote_code:bool=True):
     if model_type == 'decoder':
         model = load_llm(model_name, trust_remote_code=trust_remote_code)
@@ -33,6 +38,8 @@ def load_model(model_name:str, model_type:str, trust_remote_code:bool=True):
         model = load_embedder(model_name, trust_remote_code=trust_remote_code)
     elif model_type == 'reranker':
         model = load_reranker(model_name, trust_remote_code=trust_remote_code)
+    elif model_type == 'encoder-decoder':      
+        model = load_seq2seq_model(model_name, trust_remote_code=trust_remote_code)
     else:
         raise NotImplementedError(f"not support this model_type: {model_type}")
     return model
@@ -132,6 +139,9 @@ def compute_weights(base_model, tokenizer, param_list: List[Dict], model_type: s
     elif model_type == 'encoder':
         input_data = preprocess_data_for_embedder(example_data=example_data, tokenizer=tokenizer, device=device, batch_size=batch_size, max_input_length=max_input_length, neg_number=neg_number)
         loss_func = embedder_loss
+    elif model_type == 'encoder-decoder':     
+        input_data = preprocess_data_for_seq2seq(example_data=example_data, tokenizer=tokenizer, device=device, batch_size=batch_size, max_input_length=max_input_length)
+        loss_func = seq2seq_loss
 
     example_loss = [] 
     with torch.no_grad():
@@ -143,6 +153,28 @@ def compute_weights(base_model, tokenizer, param_list: List[Dict], model_type: s
     weights = torch.softmax(-torch.FloatTensor(example_loss)/temperature, -1).numpy().tolist()
     return weights
 
+
+
+def preprocess_data_for_seq2seq(example_data, tokenizer, device, batch_size:int=2, max_input_length:int=512):       # Added Reimer
+    batch_data = []
+    for i in range(0, len(example_data), batch_size):
+        batch_examples = example_data[i:i+batch_size]
+        input_texts = [ex['input'] for ex in batch_examples]
+        target_texts = [ex['output'] for ex in batch_examples]
+
+        input_encodings = tokenizer(input_texts, text_target=target_texts, max_length=max_input_length, padding=True, truncation=True, return_tensors="pt")
+
+        input_ids = input_encodings.input_ids.to(device)
+        attention_mask = input_encodings.attention_mask.to(device)
+        labels = input_encodings.labels.to(device)
+
+        labels[labels == tokenizer.pad_token_id] = -100
+        batch_data.append({
+            "input_ids": input_ids, 
+            "attention_mask": attention_mask,
+            "labels": labels
+        })
+    return batch_data
 
 
 
@@ -170,6 +202,18 @@ def preprocess_data_for_embedder(example_data, tokenizer, device, batch_size:int
         input_data.append([q_tokens, p_tokens])
         
     return input_data
+
+
+def seq2seq_loss(base_model, input_data):
+    total_loss = 0
+    with torch.no_grad():
+        for batch in input_data:
+            outputs = base_model(input_ids=batch["input_ids"], 
+                            attention_mask=batch["attention_mask"], 
+                            labels=batch["labels"])
+            total_loss += outputs.loss.cpu()
+    average_loss = total_loss / len(input_data)
+    return float(average_loss)
 
 
 def embedder_loss(base_model, input_data):
