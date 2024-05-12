@@ -87,7 +87,7 @@ Noted that the number of negatives should not be larger than the numbers of nega
 Besides the negatives in this group, the in-batch negatives also will be used in fine-tuning.
 - `negatives_cross_device`: share the negatives across all GPUs. This argument will extend the number of negatives.
 - `learning_rate`: select a appropriate for your model. Recommend 1e-5/2e-5/3e-5 for large/base/small-scale. 
-- `temperature`: It will influence the distribution of similarity scores. **Recommend set it 0.01-0.1.**
+- `temperature`: It will influence the distribution of similarity scores. **Recommended value: 0.01-0.1.**
 - `query_max_len`: max length for query. Please set it according the average length of queries in your data.
 - `passage_max_len`: max length for passage. Please set it according the average length of passages in your data.
 - `query_instruction_for_retrieval`: instruction for query, which will be added to each query. You also can set it `""` to add nothing to query.
@@ -150,16 +150,24 @@ Please replace the `query_instruction_for_retrieval` with your instruction if yo
 
 
 ### 6. Evaluate model
-We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance on MSMARCO, a widely used retrieval benchmark. 
+We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance.
+A brief summary of how the script works:
+1. Load the model on all available GPUs through [DataParallel](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html). 
+2. Encode the corpus and offload the embeddings in `faiss` Flat index. By default, `faiss` also dumps the index on all available GPUs.
+3. Encode the queries and search `100` nearest neighbors for each query.
+4. Compute Recall and MRR metrics.
 
 First, install `faiss`, a popular approximate nearest neighbor search library:
 ```bash
 conda install -c conda-forge faiss-gpu
 ```
 
-Next, you can check the data formats for the [msmarco corpus](https://huggingface.co/datasets/namespace-Pt/msmarco-corpus) and [evaluation queries](https://huggingface.co/datasets/namespace-Pt/msmarco). 
+#### 6.1 MSMARCO dataset
+The default evaluate data is MSMARCO, a widely used retrieval benchmark.
 
-Finally, run the following command:
+You can check the data formats for the [msmarco corpus](https://huggingface.co/datasets/namespace-Pt/msmarco-corpus) and [evaluation queries](https://huggingface.co/datasets/namespace-Pt/msmarco). 
+
+Run the following command:
 
 ```bash
 python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
@@ -186,8 +194,33 @@ The results should be similar to
 }
 ```
 
-A brief summary of how the script works:
-1. Load the model on all available GPUs through [DataParallel](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html). 
-2. Encode the corpus and offload the embeddings in `faiss` Flat index. By default, `faiss` also dumps the index on all available GPUs.
-3. Encode the queries and search `100` nearest neighbors for each query.
-4. Compute Recall and MRR metrics.
+#### 6.1 Your dataset
+
+You should prepare two files with jsonl format: 
+- One is corpus_data, which contains the text you want to search. A toy example: [toy_corpus.json](./toy_evaluation_data/toy_corpus.json)
+```
+{"content": "A is ..."}
+{"content": "B is ..."}
+{"content": "C is ..."}
+{"content": "Panda is ..."}
+{"content": "... is A"}
+```
+- The other is query_data, which contains the queries and the ground truth. A toy example: [toy_corpus.json](./toy_evaluation_data/toy_query.json)
+```
+{"query": "What is A?", "positive": ["A is ...", "... is A"]}
+{"query": "What is B?", "positive": ["B is ..."]}
+{"query": "What is C?", "positive": ["C is ..."]}
+```
+
+Then, pass the data path to evaluation script: 
+```bash
+python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
+--encoder BAAI/bge-base-en-v1.5 \
+--fp16 \
+--add_instruction \
+--k 100 \
+--corpus_data ./toy_evaluation_data/toy_corpus.json \
+--query_data ./toy_evaluation_data/toy_query.json 
+```
+
+
