@@ -26,6 +26,15 @@ class Args:
         default=False,
         metadata={'help': 'Add query-side instruction?'}
     )
+
+    corpus_data: str = field(
+        default="namespace-Pt/msmarco",
+        metadata={'help': 'candidate passages'}
+    )
+    query_data: str = field(
+        default="namespace-Pt/msmarco-corpus",
+        metadata={'help': 'queries and their positive passages for evaluation'}
+    )
     
     max_query_length: int = field(
         default=32,
@@ -183,9 +192,14 @@ def evaluate(preds, labels, cutoffs=[1,10,100]):
 def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
-    
-    eval_data = datasets.load_dataset("namespace-Pt/msmarco", split="dev")
-    corpus = datasets.load_dataset("namespace-Pt/msmarco-corpus", split="train")
+
+    if args.query_data == 'namespace-Pt/msmarco-corpus':
+        assert args.corpus_data == 'namespace-Pt/msmarco'
+        eval_data = datasets.load_dataset("namespace-Pt/msmarco", split="dev")
+        corpus = datasets.load_dataset("namespace-Pt/msmarco-corpus", split="train")
+    else:
+        eval_data = datasets.load_dataset('json', data_files=args.query_data, split='train')
+        corpus = datasets.load_dataset('json', data_files=args.corpus_data, split='train')
 
     model = FlagModel(
         args.encoder, 
