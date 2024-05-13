@@ -18,6 +18,8 @@ def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name_or_path', type=str)
     parser.add_argument('--tei_url', type=str)
+    parser.add_argument('--encode_batch_size', type=int,default=64)
+    parser.add_argument('--thread_num', type=int,default=8,help="thread num only for tei speed up ")
     parser.add_argument('--input_file', default=None, type=str)
     parser.add_argument('--candidate_pool', default=None, type=str)
     parser.add_argument('--output_file', default=None, type=str)
@@ -27,12 +29,12 @@ def get_args():
     parser.add_argument('--query_instruction_for_retrieval', default="")
 
     return parser.parse_args()
-def post_embed(text_list, normalize=True, truncate=True, batch_size=64):
+def post_embed(tei_url, text_list, normalize=True, truncate=True, batch_size=64,thread_num=8):
     headers = {'accept': 'application/json', 'Content-Type': 'application/json'}
     all_embeddings = []
 
     # 创建线程池
-    with ThreadPoolExecutor(max_workers=8) as executor:
+    with ThreadPoolExecutor(max_workers=thread_num) as executor:
         # 定义一个函数来处理每个批次
         def process_batch(batch_texts):
             data = {
@@ -41,7 +43,7 @@ def post_embed(text_list, normalize=True, truncate=True, batch_size=64):
                 "truncate": truncate
             }
             # 发送请求
-            response = requests.post(args.tei_url, headers=headers, data=json.dumps(data), timeout=60)
+            response = requests.post(tei_url, headers=headers, data=json.dumps(data), timeout=60)
             # 检查响应状态
             if response.status_code != 200:
                 raise Exception(f"Error: {response.status_code}, {response.text}")
@@ -91,7 +93,7 @@ def get_corpus(candidate_pool):
     return corpus
 
 
-def find_knn_neg(input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
+def find_knn_neg(embed_fn,input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
     corpus = []
     queries = []
     train_data = []
@@ -115,19 +117,11 @@ def find_knn_neg(input_file, candidate_pool, output_file, sample_range, negative
         corpus = list(set(corpus))
 
     print(f'inferencing embedding for corpus (number={len(corpus)})--------------')
-    if model:
-        
-        p_vecs = model.encode(corpus, batch_size=256)
-    else:
-        
-        p_vecs = post_embed(corpus)
+
+    p_vecs = embed_fn(corpus)
+
     print(f'inferencing embedding for queries (number={len(queries)})--------------')
-    if model:
-        q_vecs = model.encode_queries(queries, batch_size=256)
-    else:
-        
-        q_vecs = post_embed(queries)
-    # 
+    q_vecs = embed_fn(queries)
 
     print('create index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
@@ -165,20 +159,22 @@ if __name__ == '__main__':
 
     if args.model_name_or_path:
         
-    
         model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
 
-        find_knn_neg(input_file=args.input_file,
-                    candidate_pool=args.candidate_pool,
-                    output_file=args.output_file,
-                    sample_range=sample_range,
-                    negative_number=args.negative_number,
-                    use_gpu=args.use_gpu_for_searching)
-    elif args.tei_url:
+        embedd_fn = lambda corpus :  model.encode(corpus, batch_size=args.encode_batch_size)
         
-        find_knn_neg(input_file=args.input_file,
-                    candidate_pool=args.candidate_pool,
-                    output_file=args.output_file,
-                    sample_range=sample_range,
-                    negative_number=args.negative_number,
-                    use_gpu=args.use_gpu_for_searching)
+    elif args.tei_url: 
+
+        embedd_fn = lambda corpus : post_embed(args.tei_url,corpus,batch_size=args.encode_batch_size)
+
+    else:
+
+        raise Exception("Both of model_name_or_path or tei_url is NULL !! ")
+    
+    find_knn_neg(embedd_fn,
+        input_file=args.input_file,
+        candidate_pool=args.candidate_pool,
+        output_file=args.output_file,
+        sample_range=sample_range,
+        negative_number=args.negative_number,
+        use_gpu=args.use_gpu_for_searching)
