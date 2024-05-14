@@ -132,7 +132,7 @@ example_data = [
 model = mix_models_with_data(
     model_names_or_paths=["meta-llama/Llama-2-7b-chat-hf", "Shitao/llama2-ag-news", "Shitao/llama2-nq"], 
     model_type='decoder', 
-    example_ata=example_data, 
+    example_data=example_data, 
     temperature=5.0)
 # you can set the temperature argument to adjust the distribution of mixing weights
 ```
@@ -158,7 +158,7 @@ example_data = [
 model = mix_models_with_data(
     model_names_or_paths=["BAAI/bge-base-en-v1.5", "Shitao/bge-hotpotqa", "Shitao/bge-quora"], 
     model_type='encoder', 
-    example_ata=example_data,
+    example_data=example_data,
     temperature=5.0,
     max_input_length=512,
     neg_number=2)

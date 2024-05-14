@@ -1,0 +1,3 @@
+{"query": "What is A?", "positive": ["A is ...", "... is A"]}
+{"query": "What is B?", "positive": ["B is ..."]}
+{"query": "What is C?", "positive": ["C is ..."]}

@@ -240,7 +240,8 @@ Please refer to [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C
 | [text2vec-base](https://huggingface.co/shibing624/text2vec-base-chinese) | 768 |  47.63 | 38.79 | 43.41 | 67.41 | 62.19 | 49.45 | 37.66 |
 | [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 44.97 | 70.86 | 60.66 | 49.16 | 30.02 |
 
-
+- **Your data**  
+If you want to evaluate the model on your data, you can refer to this [command]()
 
 ## Acknowledgement
 

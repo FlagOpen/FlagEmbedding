@@ -71,7 +71,7 @@ def mix_models(model_names_or_paths: List[str],
 
 def mix_models_with_data(model_names_or_paths: List[str], 
                          model_type: str, 
-                         example_ata: List[Dict], 
+                         example_data: List[Dict], 
                          temperature: float=5.0,
                          batch_size:int=2, 
                          max_input_length:int=2048, 
@@ -82,7 +82,7 @@ def mix_models_with_data(model_names_or_paths: List[str],
     Args:
         model_names_or_paths (List[str]):  a list of names or paths to models
         model_type (str): type of model to mix, should be in ["decoder", "encoder"]
-        example_ata (List[Any]): a list of examples
+        example_data (List[Any]): a list of examples
         temperature (float, optional): temperature can impact the distribution of weights . Defaults to 3.0.
         batch_size (int, optional): batch size to compute loss. Defaults to 2.
         max_input_length (int, optional): max number of input tokens for model. Defaults to 2048.
@@ -93,14 +93,14 @@ def mix_models_with_data(model_names_or_paths: List[str],
         new model
     """
     
-    assert model_type in ['decoder', 'encoder']
+    assert model_type in ['decoder', 'encoder', 'encoder-decoder']
     
     model = load_model(model_names_or_paths[0], model_type=model_type)
     tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
     param_list = get_model_param_list(model_names_or_paths, model_type=model_type)
     
     weights = compute_weights(model, tokenizer=tokenizer, param_list=param_list, model_type=model_type, 
-                              example_data=example_ata, temperature=temperature, neg_number=neg_number,
+                              example_data=example_data, temperature=temperature, neg_number=neg_number,
                               batch_size=batch_size, max_input_length=max_input_length)
     
     print("***weight for each model***: ")
