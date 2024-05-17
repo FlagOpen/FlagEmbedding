@@ -237,8 +237,6 @@ def main():
     for sample in eval_data:
         ground_truths.append(sample["positive"])
         
-    from FlagEmbedding.llm_embedder.src.utils import save_json
-
     metrics = evaluate(retrieval_results, ground_truths)
 
     print(metrics)
