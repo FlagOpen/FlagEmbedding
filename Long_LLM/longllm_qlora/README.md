@@ -23,7 +23,7 @@ pip install "unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
 pip install rouge fuzzywuzzy jieba pandas seaborn python-Levenshtein
 ```
 
-**NOTE**: you must modify the source code of `unsloth` so that you can set the `rope_theta` correctly in training. Go to `$ENC_LOCATION$/lib/python3.10/site-packages/unsloth/models/llama.py`, comment all lines from `1053-1061`. The results should be like:
+**NOTE**: you must modify the source code of `unsloth` so that you can set the `rope_theta` correctly in training. Go to `$ENC_LOCATION$/lib/python3.10/site-packages/unsloth/models/llama.py`, comment all lines from `1080-1088`. The results should be like:
 ```python
 # if (rope_scaling is None) and (max_seq_length > model_max_seq_length):
 #     rope_scaling = max_seq_length / model_max_seq_length
