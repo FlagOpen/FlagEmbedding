@@ -270,7 +270,7 @@ class FlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, prompt: str = None, normalize: bool = False,
-                      use_dataloader: bool = True, num_workers: int = None) -> List[float]:
+                      use_dataloader: bool = False, num_workers: int = None) -> List[float]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -443,7 +443,7 @@ class LayerWiseFlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
-                      normalize: bool = False, use_dataloader: bool = True,
+                      normalize: bool = False, use_dataloader: bool = False,
                       num_workers: int = None) -> Union[float, List[float], List[List[float]]]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
