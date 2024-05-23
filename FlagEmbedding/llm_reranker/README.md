@@ -286,7 +286,7 @@ torchrun --nproc_per_node {number of gpus} \
 --target_modules q_proj k_proj v_proj o_proj
 ```
 
-**For llm-based layerwise reranker** (bge-reranker-v2-minicpm-layerwise)
+**For llm-based layerwise reranker** (bge-reranker-v2-minicpm-layerwise) 
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
