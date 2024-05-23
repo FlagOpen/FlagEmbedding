@@ -251,7 +251,11 @@ See [toy_finetune_data.jsonl](https://github.com/FlagOpen/FlagEmbedding/tree/mas
 
 You can fine-tune the reranker with the following code:
 
-**For llm-based reranker**
+**For normal reranker** (bge-reranker-base / bge-reranker-large / bge-reranker-v2-m3 )
+
+Refer to: https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker
+
+**For llm-based reranker** (bge-reranker-v2-gemma)
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
@@ -282,7 +286,7 @@ torchrun --nproc_per_node {number of gpus} \
 --target_modules q_proj k_proj v_proj o_proj
 ```
 
-**For llm-based layerwise reranker**
+**For llm-based layerwise reranker** (bge-reranker-v2-minicpm-layerwise)
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \

@@ -194,7 +194,7 @@ The results should be similar to
 }
 ```
 
-#### 6.1 Your dataset
+#### 6.2 Your dataset
 
 You should prepare two files with jsonl format: 
 - One is corpus_data, which contains the text you want to search. A toy example: [toy_corpus.json](./toy_evaluation_data/toy_corpus.json)

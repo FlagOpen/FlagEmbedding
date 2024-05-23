@@ -192,7 +192,11 @@ print("Sentence embeddings:", sentence_embeddings)
 ## Evaluation  
 
 `baai-general-embedding` models achieve **state-of-the-art performance on both MTEB and C-MTEB leaderboard!**
-For more details and evaluation tools see our [scripts](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/README.md)
+For more details and evaluation tools see our [scripts](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/README.md) 
+
+If you want to evaluate the model(or your model) on **your data**, you can refer to this [tool](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#6-evaluate-model).
+
+
 - **MTEB**:   
 
 | Model Name |  Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |
@@ -240,8 +244,7 @@ Please refer to [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C
 | [text2vec-base](https://huggingface.co/shibing624/text2vec-base-chinese) | 768 |  47.63 | 38.79 | 43.41 | 67.41 | 62.19 | 49.45 | 37.66 |
 | [text2vec-large](https://huggingface.co/GanymedeNil/text2vec-large-chinese) | 1024 | 47.36 | 41.94 | 44.97 | 70.86 | 60.66 | 49.16 | 30.02 |
 
-- **Your data**  
-If you want to evaluate the model on your data, you can refer to this [command]()
+
 
 ## Acknowledgement
 
