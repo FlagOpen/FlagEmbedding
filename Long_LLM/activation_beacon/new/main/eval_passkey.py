@@ -78,6 +78,7 @@ class Args(ModelArgs):
         metadata={'help': 'Random seed.'}
     )
 
+    do_sample: bool = False
 
 
 def generate_sample(tokenizer, chat_template, context_length, passkey_depth, passkey_length, rng:np.random.Generator=np.random.default_rng(42)):
@@ -124,8 +125,6 @@ def generate_sample(tokenizer, chat_template, context_length, passkey_depth, pas
 def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
-
-    print(args.result_dir)
 
     accelerator = Accelerator(cpu=args.cpu)
     model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)

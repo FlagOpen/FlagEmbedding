@@ -34,7 +34,7 @@ class Args(ModelArgs):
         metadata={'help': 'How many tokens at minimum for evaluation?'}
     )
     max_length: int = field(
-        default=100000,
+        default=None,
         metadata={'help': 'How many tokens at maximum for evaluation?'}
     )
 
@@ -46,7 +46,7 @@ class Args(ModelArgs):
         metadata={'help': 'Max number of instances to evaluate.'}
     )
     metrics: List[str] = field(
-        default_factory=lambda: [],
+        default_factory=lambda: ["save_result"],
         metadata={'help': 'List of metrics. {rouge, save_result}'}
     )
 

@@ -25,7 +25,7 @@ class Args(ModelArgs):
         metadata={'help': 'Configuration json path for standard pretraining (concatenating multiple documents to form instances of equal lengths).'}
     )
     train_data: str = field(
-        default="activation-beacon:slimpajama/upsampled",
+        default="activation-beacon:slimpajama/",
         metadata={'help': 'Directory of training data (multiple json files whose name correspond to the ones in config).'}
     )
     output_dir: str = field(
@@ -154,8 +154,10 @@ if __name__ == "__main__":
     accelerator = Accelerator(cpu=args.cpu, kwargs_handlers=[InitProcessGroupKwargs(timeout=timedelta(days=10))])
     # this script may be executed in DDP, so we make sure the dataset is create only on the main process
     if accelerator.process_index == 0:
-
         tokenizer = get_model_and_tokenizer(args, return_tokenizer_only=True)
+
+        if args.add_eos:
+            assert tokenizer.eos_token_id is not None, "Make sure the eos_token_id is not None when enabling add_eos!"
 
         with open(args.config, encoding="utf-8") as f:
             config = json.load(f)

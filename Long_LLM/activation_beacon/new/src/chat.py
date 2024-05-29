@@ -46,8 +46,6 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
         prev_role = None
         conversation = ""
 
-        tokenization_kwargs["add_special_tokens"] = False
-        
         for i, message in enumerate(messages):
             role = message['role']
             content = message['content']
@@ -55,13 +53,11 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
                 raise ValueError(f"Current role (idx={i}) {role} and previous role {messages[i-1]['role']} are the same!")
             
             if i == 0:
-                content = tokenizer.decode(tokenizer.encode(content))
+                content = tokenizer.decode(tokenizer.encode(content), skip_special_tokens=True)
                 user_message = content
             elif i == 1:
                 # we use a space to separate user message and assistant response
-                if content.startswith(" "):
-                    content = content[1:]
-                content = content + tokenizer.eos_token
+                content = ' ' + content + tokenizer.eos_token
                 assistant_message = content
             else:
                 raise ValueError(f"Please use chat template when there are multi-turn conversations")
@@ -72,7 +68,7 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
 
         if return_labels:
             labels = encoded['input_ids'].copy()
-            assistant_message_len = len(tokenizer.encode(assistant_message, add_special_tokens=False))
+            assistant_message_len = len(tokenizer.encode(assistant_message.lstrip(), add_special_tokens=False))
             labels[:-assistant_message_len] = [-100 for _ in labels[:-assistant_message_len]]
             encoded["labels"] = labels
 
@@ -103,7 +99,7 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
             "turn_sep": "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
             "role_sep": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
             # the bos of llama3 is added explicitly to the input string, instead of added by the tokenizer
-            "begin_of_text_len": 0,
+            "begin_of_text_len": 1,
             "role_sep_left_offset": -4,
         },
     }[template]
@@ -334,16 +330,17 @@ class Conversation:
                     ret += tag
             return ret
         elif self.sep_style == SeparatorStyle.LLAMA3:
+            # ret = "<|begin_of_text|>"
             if self.system_message:
                 ret = system_prompt
             else:
-                ret = "<|begin_of_text|>"
+                ret = ""
             for i, (role, message) in enumerate(self.messages):
-                tag = self.roles[i % 2]
                 if message:
-                    ret += tag + message + self.sep
+                    ret += f"<|start_header_id|>{role}<|end_header_id|>\n\n"
+                    ret += f"{message}<|eot_id|>"
                 else:
-                    ret += tag
+                    ret += f"<|start_header_id|>{role}<|end_header_id|>\n\n"
             return ret
         elif self.sep_style == SeparatorStyle.CHATGLM:
             # source: https://huggingface.co/THUDM/chatglm-6b/blob/1d240ba371910e9282298d4592532d7f0f3e9f3e/modeling_chatglm.py#L1302-L1308
@@ -1222,6 +1219,23 @@ register_conv_template(
     )
 )
 
+register_conv_template(
+    Conversation(
+        name="gemini-dev",
+        roles=("user", "model"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
+        system_message=(
+            "You are a friendly and helpful assistant.\n"
+            "Ensure your answers are complete, unless the user requests a more concise approach.\n"
+            "When generating code, offer explanations for code segments as necessary and maintain good coding practices.\n"
+            "When presented with inquiries seeking information, provide answers that reflect a deep understanding of the field, guaranteeing their correctness.\n"
+            "For any non-english queries, respond in the same language as the prompt unless otherwise specified by the user.\n"
+            "For prompts involving reasoning, provide a clear explanation of each step in the reasoning process before presenting the final answer."
+        ),
+    )
+)
+
 # BiLLa default template
 register_conv_template(
     Conversation(
@@ -1437,17 +1451,20 @@ register_conv_template(
     )
 )
 
-# Llama-3 Template
+# llama3 template
+# reference: https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/blob/main/tokenizer_config.json
+# reference: https://github.com/meta-llama/llama3/blob/0cee08ec68f4cfc0c89fe4a9366d82679aaa2a66/llama/tokenizer.py#L222
 register_conv_template(
-        Conversation(
-            name="llama-3",
-            system_template="<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",            
-            roles=["<|start_header_id|>user<|end_header_id|>\n\n", "<|start_header_id|>assistant<|end_header_id|>\n\n"],
-            sep_style=SeparatorStyle.LLAMA3,
-            sep="<|eot_id|>",
-            sep2="<|eot_id|>",
-        )
+    Conversation(
+        name="llama-3",
+        system_template="<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.LLAMA3,
+        sep="",
+        stop_str="<|eot_id|>",
+        stop_token_ids=[128001, 128009],
     )
+)
 
 register_conv_template(
     Conversation(
@@ -1953,16 +1970,6 @@ register_conv_template(
 register_conv_template(
     Conversation(
         name="yandexgpt",
-        system_message="",
-        roles=("user", "assistant"),
-        sep_style=None,
-        sep=None,
-    )
-)
-
-register_conv_template(
-    Conversation(
-        name="reka",
         system_message="",
         roles=("user", "assistant"),
         sep_style=None,

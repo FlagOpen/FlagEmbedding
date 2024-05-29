@@ -1140,14 +1140,14 @@ class LlamaModel(LlamaPreTrainedModel):
                     raise NotImplementedError
 
                 beacon_start_idx = beacon_end_idx
-            
+
         # print(f"total_beacon_size:  {total_beacon_size}")
         # print(f"raw_size_to_cache:  {raw_size_to_cache}")
         # print(f"position_ids:       {position_ids}")
         # print(f"attention_mask:\n{attention_mask}")
         # x = input()
         # if x == "s":
-        #     return
+            # return
 
         # embed positions
         hidden_states = inputs_embeds

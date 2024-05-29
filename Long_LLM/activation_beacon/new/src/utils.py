@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from transformers.tokenization_utils import PreTrainedTokenizer
 from datetime import datetime
 from collections import OrderedDict
-from typing import Optional, List, Dict, Any, Mapping, Iterable
+from typing import Optional, List, Dict, Any, Mapping, Iterable, Union
 
 logger = logging.getLogger(__name__)
 
@@ -235,9 +235,11 @@ def add_eos(inputs: Mapping, eos_token_id: int):
             inputs[k] = v
     return inputs
 
-def remove_eos(inputs: Mapping, eos_token_id: int):
+def remove_eos(inputs: Mapping, eos_token_ids: Union[List,int]):
+    if isinstance(eos_token_ids, int):
+        eos_token_ids = [eos_token_ids]
     input_ids = inputs["input_ids"]
-    eos_idx = [i for i, x in enumerate(input_ids) if x == eos_token_id][0]
+    eos_idx = [i for i, x in enumerate(input_ids) if x in eos_token_ids][0]
     for k, v in inputs.items():
         inputs[k].pop(eos_idx)
     return inputs

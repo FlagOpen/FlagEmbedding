@@ -56,6 +56,8 @@ class Args(ModelArgs):
         metadata={'help': 'Load result from saved files?'}
     )
 
+    do_sample: bool = False
+
 
 def process_infbench(data, indices, tokenizer, chat_template, task:str, prompt_template:str="mistral", max_length=100000, truncate_from_middle=True):
     outputs = {'input_ids': [], 'attention_mask': [], "index": [], "answer": []}
@@ -208,10 +210,9 @@ def main():
                 output = model.generate(
                     **x,
                     max_new_tokens=max_new_tokens,
-                    num_beams=1,
-                    do_sample=False,
-                    temperature=1.0,
-                    top_p=1.0,
+                    do_sample=args.do_sample,
+                    temperature=args.temperature,
+                    top_p=args.top_p,
                     # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
                     synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
                 )
@@ -231,6 +232,7 @@ def main():
                 if accelerator.process_index == 0:
                     pred = tokenizer.batch_decode(output, skip_special_tokens=True)
                     preds.extend(pred)
+
                     if isinstance(index, list):
                         indices.extend(index)
                     else:

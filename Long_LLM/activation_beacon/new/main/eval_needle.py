@@ -10,6 +10,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 
+from rouge import Rouge
 from glob import glob
 from typing import List, Optional
 from tqdm import tqdm
@@ -19,7 +20,6 @@ from transformers.utils import logging
 from dataclasses import dataclass, field, asdict
 
 from src import ModelArgs, DefaultDataCollator, FileLogger, get_model_and_tokenizer, makedirs, apply_chat_template
-from .longbench_utils import rouge_score as get_rouge_score
 
 logger = logging.get_logger(__name__)
 
@@ -27,7 +27,7 @@ logger = logging.get_logger(__name__)
 @dataclass
 class Args(ModelArgs):
     haystack_path: str = field(
-        default="data/toy/PaulGrahamEssays",
+        default="activation-beacon:needle/PaulGrahamEssays",
         metadata={'help': 'The context for evaluation.'}
     )
     output_dir: str = field(
@@ -49,7 +49,7 @@ class Args(ModelArgs):
         metadata={'help': 'Maximum context length in evaluation.'}
     )
     num_length_interval: int = field(
-        default=20,
+        default=10,
         metadata={'help': 'Number of invervals between min_length and max_length.'}
     )
     test_length: List[int] = field(
@@ -87,8 +87,8 @@ class Args(ModelArgs):
         default=False,
         metadata={'help': 'Use GPT4 to evaluate accuracy.'}
     )
-    proxy: str = field(
-        default=None,
+    proxy: Optional[str] = field(
+        default="http://127.0.0.1:15777",
         metadata={'help': 'Proxy when using gpt evaluation.'}
     )
 
@@ -97,6 +97,11 @@ class Args(ModelArgs):
         metadata={'help': 'Load previous results?'}
     )
 
+    do_sample: bool = False
+
+    def __post_init__(self):
+        super().__post_init__()
+        self.haystack_path = self.resolve_path(self.haystack_path)
 
 
 class OpenAIEvaluator:
@@ -121,6 +126,7 @@ class OpenAIEvaluator:
         :param true_answer: The true answer to the question asked.
         :param question_asked: The question asked to the model.
         """
+        # from langchain_openai import ChatOpenAI
         from langchain_community.chat_models import ChatOpenAI
 
         if (not true_answer) or (not question_asked):
@@ -213,133 +219,148 @@ def main():
     args: Args = parser.parse_args_into_dataclasses()[0]
 
     accelerator = Accelerator(cpu=args.cpu)
-    model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
-    if args.test_length is None:
-        test_lengths = np.linspace(args.min_length, args.max_length, args.num_length_interval, endpoint=True).astype(int).tolist()
+    result_dir = os.path.join(args.output_dir, args.result_dir)
+
+    if args.load_result:
+        with open(makedirs(os.path.join(result_dir, "results.json")), "r", encoding='utf-8') as f:
+            results = json.load(f)
+
     else:
-        test_lengths = args.test_length
+        model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
-    if args.test_depth is None:
-        test_depths = np.linspace(args.min_depth, args.max_depth, args.num_depth_interval, endpoint=True).astype(int).tolist()
-    else:
-        test_depths = args.test_depth
+        if args.test_length is None:
+            test_lengths = np.linspace(args.min_length, args.max_length, args.num_length_interval, endpoint=True).astype(int).tolist()
+        else:
+            test_lengths = args.test_length
 
-    if os.path.isfile(args.haystack_path):
-        with open(args.haystack_path) as f:
-            context = f.read().strip()
-    elif os.path.isdir(args.haystack_path):
-        context = ""
-        num_tokens = 0
-        for file in glob(f"{args.haystack_path}/*.txt"):
-            with open(file, 'r') as f:
-                this_file_context = f.read()
-                num_tokens += len(tokenizer.encode(this_file_context, add_special_tokens=False))
-                context += this_file_context
-                if num_tokens > max(test_lengths):
-                    break
+        if args.test_depth is None:
+            test_depths = np.linspace(args.min_depth, args.max_depth, args.num_depth_interval, endpoint=True).astype(int).tolist()
+        else:
+            test_depths = args.test_depth
 
-    all_inputs = []
-    for length in tqdm(test_lengths, desc="Constructing Data"):
-        for depth in test_depths:
-            inputs, prompt, needle = generate_sample(
-                tokenizer=tokenizer, 
-                chat_template=args.chat_template, 
-                context=context,
-                context_length=length, 
-                needle_depth=depth,
-                needle=args.needle,
-                prompt=args.prompt
-            )
-            all_inputs.append({'inputs': inputs, 'prompt': prompt, 'needle': needle, 'length': length, 'depth': depth})
+        if os.path.isfile(args.haystack_path):
+            with open(args.haystack_path) as f:
+                context = f.read().strip()
+        elif os.path.isdir(args.haystack_path):
+            context = ""
+            num_tokens = 0
+            for file in glob(f"{args.haystack_path}/*.txt"):
+                with open(file, 'r') as f:
+                    this_file_context = f.read()
+                    num_tokens += len(tokenizer.encode(this_file_context, add_special_tokens=False))
+                    context += this_file_context
+                    if num_tokens > max(test_lengths):
+                        break
+        else:
+            raise ValueError(f"Cannot find haystack: {args.haystack_path}")
 
-    dataset = datasets.Dataset.from_list(all_inputs)
-    dataloader = torch.utils.data.DataLoader(
-        # length and depth are useless in forward computation
-        dataset.remove_columns(['length', 'depth', 'needle']), 
-        batch_size=args.batch_size, 
-        collate_fn=DefaultDataCollator(tokenizer),
-        pin_memory=not args.cpu,
-    )
+        all_inputs = []
+        for length in tqdm(test_lengths, desc="Constructing Data"):
+            for depth in test_depths:
+                inputs, prompt, needle = generate_sample(
+                    tokenizer=tokenizer, 
+                    chat_template=args.chat_template, 
+                    context=context,
+                    context_length=length, 
+                    needle_depth=depth,
+                    needle=args.needle,
+                    prompt=args.prompt
+                )
+                all_inputs.append({'inputs': inputs, 'prompt': prompt, 'needle': needle, 'length': length, 'depth': depth})
 
-    if not args.enable_tp:
-        model, dataloader = accelerator.prepare(model, dataloader)
-        model = accelerator.unwrap_model(model)
-    else:
-        # NOTE: prepare dataloader so the data moves to GPU automatically
-        dataloader = accelerator.prepare(dataloader)
-
-    accelerator.wait_for_everyone()
-
-    all_outputs = []
-
-    for x in tqdm(dataloader, desc="Evaluating"):
-        prompt = x.pop("prompt")
-        inputs = x.pop("inputs")
-        # TODO: retrieval
-
-        # NOTE: important to reset memory for every batch
-        if hasattr(model, "memory"):
-            model.memory.reset()
-
-        inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
-
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=50,
-            num_beams=1,
-            do_sample=False,
-            temperature=1.,
-            # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-            synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
+        dataset = datasets.Dataset.from_list(all_inputs)
+        dataloader = torch.utils.data.DataLoader(
+            # length and depth are useless in forward computation
+            dataset.remove_columns(['length', 'depth', 'needle']), 
+            batch_size=args.batch_size, 
+            collate_fn=DefaultDataCollator(tokenizer),
+            pin_memory=not args.cpu,
         )
-        outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
 
-        if accelerator.num_processes > 1:
-            outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
-            outputs = accelerator.gather_for_metrics(outputs)
+        if not args.enable_tp:
+            model, dataloader = accelerator.prepare(model, dataloader)
+            model = accelerator.unwrap_model(model)
+        else:
+            # NOTE: prepare dataloader so the data moves to GPU automatically
+            dataloader = accelerator.prepare(dataloader)
 
-        all_outputs.extend(outputs.tolist())
+        accelerator.wait_for_everyone()
+
+        all_outputs = []
+
+        for x in tqdm(dataloader, desc="Evaluating"):
+            prompt = x.pop("prompt")
+            inputs = x.pop("inputs")
+            # TODO: retrieval
+
+            # NOTE: important to reset memory for every batch
+            if hasattr(model, "memory"):
+                model.memory.reset()
+
+            inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
+
+            outputs = model.generate(
+                **inputs,
+                max_new_tokens=50,
+                num_beams=1,
+                do_sample=False,
+                temperature=1.,
+                # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
+                synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
+            )
+            outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
+
+            if accelerator.num_processes > 1:
+                outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
+                outputs = accelerator.gather_for_metrics(outputs)
+
+            all_outputs.extend(outputs.tolist())
+
+        if accelerator.process_index == 0:
+            results = {l: {d: [] for d in test_depths} for l in test_lengths}
+
+            all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
+            all_lengths = dataset['length']
+            all_depths = dataset['depth']
+            all_needles = dataset['needle']
+
+            for l, d, n, o in zip(all_lengths, all_depths, all_needles, all_outputs):
+                results[l][d].append({'target': n, 'prediction': o})
+
+            with open(makedirs(os.path.join(result_dir, "results.json")), "w", encoding='utf-8') as f:
+                json.dump(results, f)
+            # also save config
+            args.save(os.path.join(result_dir, "config.json"))
 
 
     if accelerator.process_index == 0:
-        all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
-
-        results = {l: {d: [] for d in test_depths} for l in test_lengths}
-        rouge_score = {l: {d: [] for d in test_depths} for l in test_lengths}
-
+        rouge = Rouge()
+        rouge_score = {l: {d: [] for d in v.keys()} for l, v in results.items()}
         if args.gpt_eval:
             evaluator = OpenAIEvaluator(question_asked=args.prompt.strip(), true_answer=args.needle.strip(), proxy=args.proxy)
-            gpt_score = {l: {d: [] for d in test_depths} for l in test_lengths}
-        
-        for l, d, n, o in zip(dataset['length'], dataset['depth'], dataset['needle'], all_outputs):
-            results[l][d].append({'target': n, 'prediction': o})
+            gpt_score = {l: {d: [] for d in v.keys()} for l, v in results.items()}
 
-            score = round(get_rouge_score(o, n), 2)
-            rouge_score[l][d].append(score)
-
-            if args.gpt_eval:
-                while 1:
-                    try:
-                        gpt_score[l][d].append(evaluator.evaluate_response(o))
-                        break
-                    except:
-                        pass
-
-        for l, lv in rouge_score.items():
+        for l, lv in results.items():
             for d, dv in lv.items():
-                rouge_score[l][d] = round(sum(dv) / len(dv), 2)
+                for v in dv:
+                    prediction = v["prediction"]
+                    target = v["target"]
 
-        if args.gpt_eval:
-            for l, lv in gpt_score.items():
-                for d, dv in lv.items():
-                    gpt_score[l][d] = round(sum(dv) / len(dv), 2)
+                    score = rouge.get_scores([prediction], [target], avg=True)["rouge-l"]["r"]
+                    rouge_score[l][d].append(score)
 
-        result_dir = os.path.join(args.output_dir, args.result_dir)
-        with open(makedirs(os.path.join(result_dir, "results.json")), "w", encoding='utf-8') as f:
-            json.dump(results, f)
-        # also save config
-        args.save(os.path.join(result_dir, "config.json"))
+                    if args.gpt_eval:
+                        gpt_score[l][d].append(evaluator.evaluate_response(prediction))
+
+                rouge_score[l][d] = round(sum(rouge_score[l][d]) / len(dv), 2)
+                if args.gpt_eval:
+                    while 1:
+                        try:
+                            gpt_score[l][d] = round(sum(gpt_score[l][d]) / len(dv), 2)
+                            break
+                        except ValueError:
+                            pass
 
         metrics = {'rouge': rouge_score}
         if args.gpt_eval:
@@ -353,11 +374,21 @@ def main():
             # Create the heatmap with better aesthetics
             plt.figure(figsize=(17.5, 8))  # Can adjust these dimensions as needed
             data = pd.DataFrame(metric_value)
+
+            if metric_key == "rouge":
+                vmin = 0
+                vmax = 1
+            elif metric_key == "gpt":
+                vmin = 1
+                vmax = 10
+
             sns.heatmap(
                 data,
                 fmt="g",
                 cmap=cmap,
-                cbar_kws={'label': metric_key}
+                cbar_kws={'label': metric_key},
+                vmin=vmin,
+                vmax=vmax,
             )
 
             # More aesthetics

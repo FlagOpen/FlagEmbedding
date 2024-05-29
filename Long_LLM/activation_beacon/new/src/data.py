@@ -70,9 +70,9 @@ class Data:
             ).encoded
 
             # skip data that not fall in between min_length and max_length
-            if len(encoded["input_ids"]) < min_length:
+            if min_length is not None and len(encoded["input_ids"]) < min_length:
                 continue
-            if len(encoded["input_ids"]) > max_length:
+            if max_length is not None and len(encoded["input_ids"]) > max_length:
                 continue
 
             if eval_mode:
@@ -85,7 +85,7 @@ class Data:
 
         return outputs
 
-    def prepare_train_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", max_sample_num=None, seed=42, cache_dir=None, load_from_cache_file=None):
+    def prepare_train_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", seed=42, cache_dir=None, load_from_cache_file=None):
         if data_files is None:
             return None
 

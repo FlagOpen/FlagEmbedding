@@ -4,7 +4,9 @@ import os
 import json
 import torch
 import datasets
+import numpy as np
 from tqdm import tqdm
+from functools import partial
 from typing import List, Optional
 from accelerate import Accelerator
 from transformers import HfArgumentParser
@@ -37,31 +39,39 @@ class Args(ModelArgs):
         default_factory=lambda: [5, 10, 15, 20, 25, 30, 40, 50, 60, 70],
         metadata={'help': 'How many topics to in the conversation?'}
     )
+    do_sample: bool = False
 
-def process_topic_retrieval(tokenizer, chat_template, num_topic):
-    def _process(data):
-        outputs = {'input_ids': [], 'attention_mask': [], 'target': [], 'length': [], 'num': []}
-        
-        for context, question, topics, num in zip(data['context'], data['question'], data['topics'], data['num_topics']):
-            # filter out samples that do not have proper number of topics/lines
-            if num not in num_topic:
-                continue
+    adapt_window: bool = field(
+        default=False,
+        metadata={'help': 'Dynamically change the beacon window so that the input is always compressed?'}
+    )
 
-            prompt = " ".join([context, question])
-            # the question always asks for the first topic
-            target = topics[0]
+def process_topic_retrieval(data, tokenizer, chat_template, num_topic):
+    outputs = {'input_ids': [], 'attention_mask': [], 'target': [], 'length': [], 'num': []}
+    
+    for context, question, topics, num in zip(data['context'], data['question'], data['topics'], data['num_topics']):
+        # filter out samples that do not have proper number of topics/lines
+        if num not in num_topic:
+            continue
 
-            encoded = apply_chat_template(chat_template, [{'role': 'user', 'content': prompt}], tokenizer=tokenizer, add_generation_prompt=True).encoded
+        if num == 1:
+            context = context.split(" \n USER: Great, this is the end of our discussion")[0]
+            context = context + " Now the record ends."
 
-            encoded["target"] = target
-            encoded["length"] = len(encoded.input_ids)
-            encoded["num"] = num
+        prompt = " ".join([context, question])
+        # the question always asks for the first topic
+        target = topics[0]
 
-            for k, v in encoded.items():
-                outputs[k].append(v)
+        encoded = apply_chat_template(chat_template, [{'role': 'user', 'content': prompt}], tokenizer=tokenizer, add_generation_prompt=True).encoded
 
-        return outputs
-    return _process
+        encoded["target"] = target
+        encoded["length"] = len(encoded.input_ids)
+        encoded["num"] = num
+
+        for k, v in encoded.items():
+            outputs[k].append(v)
+
+    return outputs
 
 
 @torch.no_grad()
@@ -73,8 +83,8 @@ def main():
     model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
     with accelerator.main_process_first():
-        process_fn = process_topic_retrieval(
-            tokenizer,
+        process_fn = partial(process_topic_retrieval,
+            tokenizer=tokenizer,
             chat_template=args.chat_template,
             num_topic=args.num_topic,
         )
@@ -89,6 +99,9 @@ def main():
     accuracy = {}
     f1_score = {}
     results = defaultdict(list)
+    # used for adapt_window
+    if args.adapt_window:
+        beacon_window = getattr(model.config, "beacon_window", None)
 
     for num, dataset in groupby_dataset:
         dataset = datasets.Dataset.from_pandas(groupby_dataset.get_group(num), preserve_index=False)
@@ -120,6 +133,16 @@ def main():
         for i, x in enumerate(tqdm(dataloader, desc=f"Evaluating {num} Topics")):
             # NOTE: important to reset memory for every batch
             if hasattr(model, "memory"):
+                if args.adapt_window:
+                    length = x['length'][0].item()
+                    if length < beacon_window:
+                        beacon_window = (length // 256) * 256
+                        beacon_stride = beacon_window
+                        model.memory.set(
+                            beacon_window=beacon_window,
+                            beacon_stride=beacon_stride,
+                        )
+
                 model.memory.reset()
 
             length = x.pop("length")
@@ -160,14 +183,14 @@ def main():
                 acc += 1
             else:
                 acc += 0
-            f1 += round(qa_f1_score(output, target), 4)
+            f1 += qa_f1_score(output, target)
             results[length].append({"target": target, "prediction": output})
 
         acc /= len(all_outputs)
         f1 /= len(all_outputs)
 
         accuracy[length] = acc
-        f1_score[length] = f1
+        f1_score[length] = round(f1, 4)
     
     if accelerator.process_index == 0:
         result_dir = os.path.join(args.output_dir, args.result_dir) if args.result_dir is not None else args.output_dir

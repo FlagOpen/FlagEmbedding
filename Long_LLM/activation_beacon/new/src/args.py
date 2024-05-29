@@ -48,10 +48,6 @@ class ModelArgs:
         default="sdpa",
         metadata={'help': 'The implementation of attention.'}
     )
-    enable_flash: bool = field(
-        default=False,
-        metadata={'help': 'If True, use flash attention 2 in transformers models. This is only used for transformers<=4.36.'}
-    )
 
     max_length: int = field(
         default=4096,
@@ -90,6 +86,10 @@ class ModelArgs:
     lora_unload: bool = field(
         default=True,
         metadata={'help': 'Merge and unload LoRA?'},
+    )
+    load_in_4_bit: bool = field(
+        default=False,
+        metadata={'help': 'Load model in 4 bits?'},
     )
 
     dtype: str = field(
@@ -229,8 +229,11 @@ class ModelArgs:
 
         if hasattr(self, "result_dir"):
             if self.result_dir is None: 
-                name_or_path_components = [x for x in self.model_name_or_path.split("/") if len(x)]
-                self.result_dir = os.path.join(*name_or_path_components[-2:])
+                if self.lora is not None:
+                    name_or_path_components = [x for x in self.lora.split("/") if len(x)][-2:]
+                else:
+                    name_or_path_components = [x for x in self.model_name_or_path.split("/") if len(x)][-2:]
+                self.result_dir = os.path.join(*name_or_path_components)
             else:
                 self.result_dir = self.resolve_path(self.result_dir)
 
@@ -277,8 +280,8 @@ class TrainingArgs(TrainingArguments):
         metadata={'help': 'Find unusuable parameters?'}
     )
     # NOTE: essential to keep comuputation graph because we need gradients for beacon tokens
-    use_reentrant: bool = field(
-        default=False,
+    use_reentrant: Optional[bool] = field(
+        default=None,
         metadata={'help': "Use reetrant in gradient checkpointing?"}
     )
     report_to: str = field(

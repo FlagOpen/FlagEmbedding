@@ -4,6 +4,7 @@ import json
 import torch
 from tqdm import tqdm
 from typing import Optional, Dict, List
+from functools import partial
 from collections import defaultdict
 from dataclasses import dataclass, field, asdict
 from accelerate import Accelerator
@@ -37,15 +38,10 @@ class Args(ModelArgs):
         metadata={'help': 'Which dataset to evaluate?'}
     )
 
-    model_name_or_path: str = field(
-        default="meta-llama/Llama-2-7b-chat-hf",
-        metadata={'help': 'Model name on huggingface.'}
-    )
     max_length: int = field(
         default=15500,
         metadata={'help': 'Max input length.'}
     )
-    
     truncate_from_middle: bool = field(
         default=True,
         metadata={'help': 'Truncate inputs from the middle.'}
@@ -55,46 +51,45 @@ class Args(ModelArgs):
         metadata={'help': 'Load result from saved files?'}
     )
 
+    do_sample: bool = False
 
 
-def process_longbench(tokenizer, chat_template, prompt_templates:Optional[Dict]=None, max_length=3500, truncate_from_middle=True):
-    def _process(data, indices):
-        outputs = {'input_ids': [], 'attention_mask': [], "dataset": [], "index": []}
+def process_longbench(data, indices, tokenizer, chat_template, prompt_templates:Optional[Dict]=None, max_length=3500, truncate_from_middle=True):
+    outputs = {'input_ids': [], 'attention_mask': [], "dataset": [], "index": []}
 
-        for input, context, dataset, index in zip(data['input'], data['context'], data['dataset'], indices):
-            if dataset.endswith("_e"):
-                dataset = dataset[:-2]
-            
-            prompt_template = prompt_templates[dataset]
-            prompt = prompt_template.format(input=input, context=context)
+    for input, context, dataset, index in zip(data['input'], data['context'], data['dataset'], indices):
+        if dataset.endswith("_e"):
+            dataset = dataset[:-2]
+        
+        prompt_template = prompt_templates[dataset]
+        prompt = prompt_template.format(input=input, context=context)
 
-            if truncate_from_middle:
-                tokenized_prompt = tokenizer.encode(prompt)
-                if len(tokenized_prompt) > max_length:
-                    half = int(max_length / 2)
-                    prompt = tokenizer.decode(tokenized_prompt[:half], skip_special_tokens=True) + tokenizer.decode(tokenized_prompt[-half:], skip_special_tokens=True)
-            else:
-                tokenized_prompt = tokenizer.encode(prompt)
-                prompt = tokenizer.decode(tokenized_prompt[-max_length:], skip_special_tokens=True)
+        if truncate_from_middle:
+            tokenized_prompt = tokenizer.encode(prompt)
+            if len(tokenized_prompt) > max_length:
+                half = int(max_length / 2)
+                prompt = tokenizer.decode(tokenized_prompt[:half], skip_special_tokens=True) + tokenizer.decode(tokenized_prompt[-half:], skip_special_tokens=True)
+        else:
+            tokenized_prompt = tokenizer.encode(prompt)
+            prompt = tokenizer.decode(tokenized_prompt[-max_length:], skip_special_tokens=True)
 
-            # in fewshot learning and code completion we do not need chat template
-            if not any(x in DATASET2CATEGORY[dataset] for x in ["Few-Shot Learning", "Code Completion"]):
-                prompt = apply_chat_template(
-                    chat_template, 
-                    messages=[{'role': 'user', 'content': prompt}],
-                    tokenizer=tokenizer,
-                    add_generation_prompt=True,
-                ).raw
+        # in fewshot learning and code completion we do not need chat template
+        if not any(x in DATASET2CATEGORY[dataset] for x in ["Few-Shot Learning", "Code Completion"]):
+            prompt = apply_chat_template(
+                chat_template, 
+                messages=[{'role': 'user', 'content': prompt}],
+                tokenizer=tokenizer,
+                add_generation_prompt=True,
+            ).raw
 
-            encoded = tokenizer(prompt)
+        encoded = tokenizer(prompt)
 
-            for k, v in encoded.items():
-                outputs[k].append(v)
-            outputs["dataset"].append(dataset)
-            outputs["index"].append(index)
+        for k, v in encoded.items():
+            outputs[k].append(v)
+        outputs["dataset"].append(dataset)
+        outputs["index"].append(index)
 
-        return outputs
-    return _process
+    return outputs
 
 
 @torch.no_grad()
@@ -105,9 +100,18 @@ def main():
     accelerator = Accelerator(cpu=args.cpu)
     model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
+    # stop generation for QA tasks when \n appears
+    if hasattr(model, "generation_config"):
+        eos_token_id = model.generation_config.eos_token_id
+    else:
+        eos_token_id = tokenizer.eos_token_id
+    if isinstance(eos_token_id, int):
+        eos_token_id = [eos_token_id]
+    eos_token_id.append(tokenizer.encode("\n", add_special_tokens=False)[-1])
+
     with accelerator.main_process_first():
-        process_fn = process_longbench(
-            tokenizer,
+        process_fn = partial(process_longbench,
+            tokenizer=tokenizer,
             chat_template=args.chat_template,
             max_length=args.max_length,
             prompt_templates=DATASET2PROMPT,
@@ -180,13 +184,11 @@ def main():
                     output = model.generate(
                         **x,
                         max_new_tokens=max_new_tokens,
-                        num_beams=1,
-                        do_sample=False,
-                        eos_token_id=[tokenizer.eos_token_id, tokenizer.encode("\n", add_special_tokens=False)[-1]],
-                        begin_suppress_tokens=[tokenizer.eos_token_id, tokenizer.encode("\n", add_special_tokens=False)[-1]],
-                        # prevent warning
-                        temperature=1.0,
-                        top_p=1.0,
+                        do_sample=args.do_sample,
+                        temperature=args.temperature,
+                        top_p=args.top_p,
+                        eos_token_id=eos_token_id,
+                        begin_suppress_tokens=eos_token_id,
                         # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
                         synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
                     )
@@ -194,10 +196,9 @@ def main():
                     output = model.generate(
                         **x,
                         max_new_tokens=max_new_tokens,
-                        num_beams=1,
-                        do_sample=False,
-                        temperature=1.0,
-                        top_p=1.0,
+                        do_sample=args.do_sample,
+                        temperature=args.temperature,
+                        top_p=args.top_p,
                         # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
                         synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
                     )

@@ -1,3 +1,4 @@
+import os
 import torch
 import numpy as np
 import torch.distributed as dist
@@ -61,15 +62,16 @@ class Memory(torch.nn.Module):
             pass
 
         # set tokenizer and retriever here because this function will be called in `set` method
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_config._name_or_path, trust_remote_code=True)
-        if self.retrieval_method == "bm25":
-            from .modeling_rag import BM25Retriever
-            if self.retriever is None or self.retriever.name != "bm25":
-                self.retriever = BM25Retriever()
-        elif self.retrieval_method is not None:
-            from .modeling_rag import DenseRetriever
-            if self.retriever is None or self.retriever.name != self.retrieval_method:
-                self.retriever = DenseRetriever(encoder=self.retrieval_method)
+        if self.retrieval_method is not None:
+            self.tokenizer = AutoTokenizer.from_pretrained(self.model_config._name_or_path, trust_remote_code=True)
+            if self.retrieval_method == "bm25":
+                from .modeling_retrieval import BM25Retriever
+                if self.retriever is None or self.retriever.name != "bm25":
+                    self.retriever = BM25Retriever()
+            elif self.retrieval_method is not None:
+                from .modeling_retrieval import DenseRetriever
+                if self.retriever is None or self.retriever.name != self.retrieval_method:
+                    self.retriever = DenseRetriever(encoder=self.retrieval_method)
         # elif self.retrieval_method == "m3":
         #     self.retriever = M3Retriever()
         self._cpu = torch.device("cpu")
@@ -616,8 +618,7 @@ class Memory(torch.nn.Module):
                     # if beacon_size_idx == 0:
                     #     ctx_manager = nullcontext()
                     # else:
-                    #     ctx_manager = torch.cuda.stream(self.stream)
-                    
+                    #     ctx_manager = torch.cuda.stream(self.stream)                    
                     # FIXME: only the first iteration works...
                     # with ctx_manager:
 
