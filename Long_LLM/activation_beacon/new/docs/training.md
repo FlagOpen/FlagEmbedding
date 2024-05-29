@@ -14,7 +14,7 @@ Make sure you have created the environment and downloaded the data according to 
 torchrun --nproc_per_node 8 -m main.train \
 --output_dir data/outputs/beacon-llama2-chat-7b \
 --model_name_or_path meta-llama/Llama-2-7b-chat-hf \
---train_data activation-beacon:redpajama/train.json[80000] activation-beacon:longalpaca/train.json \
+--train_data activation-beacon:redpajama/train.json[200000] activation-beacon:longalpaca/train.json \
 --max_length 8192 \
 --min_length 1200 \
 --enable_beacon \
