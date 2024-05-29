@@ -39,7 +39,7 @@ class Args(ModelArgs):
     )
 
     max_length: int = field(
-        default=15500,
+        default=31500,
         metadata={'help': 'Max input length.'}
     )
     truncate_from_middle: bool = field(
