@@ -69,7 +69,7 @@ For any path specified for `train_data` and `eval_data`: if it is prefixed with 
 
 
 ## Training
-See [training section](./docs/training.md). **The training script for Mistral will be released in future.**
+See [training section](./docs/training.md).
 
 ## Evaluation
 See [evaluation section](./docs/evaluation.md). 
