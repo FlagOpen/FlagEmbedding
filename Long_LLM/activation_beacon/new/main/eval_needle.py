@@ -88,7 +88,7 @@ class Args(ModelArgs):
         metadata={'help': 'Use GPT4 to evaluate accuracy.'}
     )
     proxy: Optional[str] = field(
-        default="http://127.0.0.1:15777",
+        default=None,
         metadata={'help': 'Proxy when using gpt evaluation.'}
     )
 
