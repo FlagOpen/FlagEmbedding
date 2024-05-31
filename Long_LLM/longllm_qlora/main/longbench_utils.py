@@ -95,7 +95,7 @@ def classification_score(prediction, ground_truth, **kwargs):
     for match_term in em_match_list:
         if match_term in ground_truth and match_term != ground_truth:
             em_match_list.remove(match_term)
-    if em_match_list != 0:
+    if len(em_match_list) != 0:
         if ground_truth in em_match_list:
             score = (1.0 / len(em_match_list))
         else:
