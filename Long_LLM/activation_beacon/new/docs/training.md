@@ -175,3 +175,69 @@ torchrun --nproc_per_node 8 -m main.train \
 --chat_template mistral \
 --deepspeed data/deepspeed/stage2.json
 ```
+
+### Llama-3
+Llama-3 modifies the attention mask to forbid self attention across document boundaries. However, since we have not implemented the 4D attention mask as input, we cannot pack documents from slimpajama for pre-training. Alternatively, we use single documents from redpajama for pre-training.
+
+#### Pre-Training
+```bash
+output_name=beacon-llama3-8b-inst-pt
+
+torchrun --nproc_per_node 8 $DDP -m main.train \
+--output_dir data/outputs/$output_name \
+--model_name_or_path meta-llama/Meta-Llama-3-8B-Instruct \
+--train_data activation-beacon:redpajama/train.json \
+--min_length 1200 \
+--max_length 10240 \
+--group_by_stride strict \
+--enable_beacon \
+--beacon_window 1024 \
+--beacon_stride 1024 \
+--beacon_attn step-expansion \
+--beacon_attend_prev True \
+--beacon_sink_size 1 \
+--beacon_ratio 2 4 8 16 32 \
+--beacon_ratio_mix step-random \
+--beacon_param q k v o \
+--gradient_checkpointing \
+--use_reentrant False \
+--save_only_model \
+--save_strategy epoch \
+--num_train_epochs 1 \
+--logging_steps 50 \
+--bf16 \
+--deepspeed data/deepspeed/stage2.json
+```
+
+#### Fine-Tuning
+```bash
+# re-use 5000 samples from redpajama to prevent forgetting
+output_name=beacon-llama3-8b-inst-ft
+
+torchrun --nproc_per_node 8 $DDP -m main.train \
+--output_dir data/outputs/$output_name \
+--model_name_or_path data/outputs/beacon-llama3-8b-inst-pt/checkpoint-xxxx \
+--train_data activation-beacon:gpt/one_detail_book.train.8K.json activation-beacon:gpt/one_detail_paper.train.8K.json activation-beacon:longalpaca/train.json activation-beacon:booksum/train.8K.json activation-beacon:needle/train.8K.json activation-beacon:redpajama/train.json[5000] \
+--max_length 10240 \
+--min_length 7200 \
+--group_by_stride strict \
+--enable_beacon \
+--beacon_window 1024 \
+--beacon_stride 1024 \
+--beacon_attn step-expansion \
+--beacon_attend_prev True \
+--beacon_sink_size 1 \
+--beacon_ratio 2 4 8 \
+--beacon_ratio_mix step-random \
+--beacon_param q k v o \
+--learning_rate 1e-5 \
+--gradient_checkpointing \
+--use_reentrant False \
+--save_only_model \
+--num_train_epochs 1 \
+--save_strategy epoch \
+--logging_steps 50 \
+--bf16 \
+--chat_template llama-3 \
+--deepspeed data/deepspeed/stage2.json
+```
