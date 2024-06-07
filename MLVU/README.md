@@ -27,26 +27,26 @@ We introduce MLVU: the first comprehensive benchmark designed for evaluating Mul
 | Model | Input | M-Avg | G-Avg |
 | --- | --- | --- | --- |
 | Full mark | - | 100 | 10 |
-| GPT-4o | - | 64.6 | 5.80 |
-| InternVL-1.5 | - | 50.4 | 4.02 |
-| GPT-4 Turbo | - | 49.2 | 5.35 |
-| Video-LLaVA | - | 47.3 | 3.84 |
-| VideoChat2 | - | 44.5 | 3.81 |
-| MiniGPT4-Video | - | 44.5 | 3.36 |
-| Qwen-VL-Max | - | 42.2 | 3.96 |
-| LLaVA-1.6 | - | 39.3 | 3.23 |
-| Claude-3-Opus | - | 36.5 | 3.39 |
-| MA-LMM | - | 36.4 | 3.46 |
-| Video-LLaMA-2 | - | 35.5 | 3.78 |
-| LLaMA-VID | - | 33.2 | 4.22 |
-| Video-ChatGPT | - | 31.3 | 3.90 |
-| TimeChat | - | 30.9 | 3.42 |
-| VideoChat | - | 29.2 | 3.66 |
-| Movie-LLM | - | 26.1 | 3.94 |
-| mPLUG-Owl-V | - | 25.9 | 3.84 |
-| MovieChat | - | 25.8 | 2.78 |
-| Otter-V | - | 24.4 | 3.31 |
-| Otter-I | - | 23.3 | 3.15 |
+| GPT-4o | 0.5 fps | 64.6 | 5.80 |
+| InternVL-1.5 | 16 frm | 50.4 | 4.02 |
+| GPT-4 Turbo | 16 frm | 49.2 | 5.35 |
+| Video-LLaVA | 8 frm | 47.3 | 3.84 |
+| VideoChat2 | 16 frm | 44.5 | 3.81 |
+| MiniGPT4-Video | 90 frm | 44.5 | 3.36 |
+| Qwen-VL-Max | 16 frm | 42.2 | 3.96 |
+| LLaVA-1.6 | 16 frm | 39.3 | 3.23 |
+| Claude-3-Opus | 16 frm | 36.5 | 3.39 |
+| MA-LMM | 1000 frm | 36.4 | 3.46 |
+| Video-LLaMA-2 | 16 frm | 35.5 | 3.78 |
+| LLaMA-VID | 1 fps | 33.2 | 4.22 |
+| Video-ChatGPT | 100 frm | 31.3 | 3.90 |
+| TimeChat | 96 frm | 30.9 | 3.42 |
+| VideoChat | 16 frm | 29.2 | 3.66 |
+| Movie-LLM | 1 fps | 26.1 | 3.94 |
+| mPLUG-Owl-V | 16 frm | 25.9 | 3.84 |
+| MovieChat | 2048 frm | 25.8 | 2.78 |
+| Otter-V | 16 frm | 24.4 | 3.31 |
+| Otter-I | 16 frm | 23.3 | 3.15 |
 
 
 
