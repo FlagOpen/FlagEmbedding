@@ -63,7 +63,6 @@ We do not own the copyright of any raw video files. Currently, we provide video 
 
 If the original authors of the related works still believe that the videos should be removed, please contact mlvubenchmark@gmail.com or directly raise an issue.
 
-
 ## MLVU Benchmark
 > Before you access our dataset, we kindly ask you to thoroughly read and understand the license outlined above. If you cannot agree to these terms, we request that you refrain from downloading our video data.
 
@@ -78,7 +77,7 @@ MLVU encompasses nine distinct tasks, which include multiple-choice tasks as wel
 
 
 ## Evaluation
-Please refer to our eval folder for more details.
+Please refer to our [evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master/MLVU/evaluation) folder for more details.
 
 
 
