@@ -1,5 +1,6 @@
 # Visualized BGE
 
+**We have released our paper. [Arxiv Link](https://arxiv.org/abs/2406.04292)**
 
 In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By incorporating image token embedding into the BGE Text Embedding framework, Visualized-BGE gains the flexibility to process multi-modal data that goes beyond just text. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
 
