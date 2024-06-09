@@ -100,13 +100,11 @@ If even retaining the frame set is not allowed, we will still keep the relevant 
 If you find this repository useful, please consider giving a star :star: and citation
 
 ```
-@misc{MLVU,
-      title={MLVU: A Comprehensive Benchmark for Multi-Task Long Video Understanding}, 
-      author={Junjie Zhou and Yan Shu and Bo Zhao and Boya Wu and Shitao Xiao and Xi Yang and Yongping Xiong and Bo Zhang and Tiejun Huang and Zheng Liu},
-      year={2024},
-      eprint={2406.04264},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@article{MLVU,
+  title={MLVU: A Comprehensive Benchmark for Multi-Task Long Video Understanding},
+  author={Zhou, Junjie and Shu, Yan and Zhao, Bo and Wu, Boya and Xiao, Shitao and Yang, Xi and Xiong, Yongping and Zhang, Bo and Huang, Tiejun and Liu, Zheng},
+  journal={arXiv preprint arXiv:2406.04264},
+  year={2024}
 }
 ```
 
