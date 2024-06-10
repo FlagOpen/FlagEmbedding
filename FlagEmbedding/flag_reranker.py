@@ -242,7 +242,8 @@ class FlagLLMReranker:
                                                           trust_remote_code=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
         if peft_path:
-            self.model=PeftModel.from_pretrained(self.model,peft_path)
+            self.model = PeftModel.from_pretrained(self.model,peft_path)
+            self.model = self.model.merge_and_unload()
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
@@ -414,7 +415,8 @@ class LayerWiseFlagLLMReranker:
                                                           trust_remote_code=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
         if peft_path:
-            self.model=PeftModel.from_pretrained(self.model,peft_path)
+            self.model = PeftModel.from_pretrained(self.model,peft_path)
+            self.model = self.model.merge_and_unload()
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
