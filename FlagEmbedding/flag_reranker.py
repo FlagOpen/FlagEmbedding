@@ -6,7 +6,7 @@ from torch import Tensor
 from torch.utils.data import DataLoader
 from tqdm import tqdm, trange
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification, is_torch_npu_available
-
+from peft import PeftModel
 import warnings
 from torch.utils.data import Dataset
 import os
@@ -227,6 +227,7 @@ class FlagLLMReranker:
     def __init__(
             self,
             model_name_or_path: str = None,
+            peft_path: str = None,
             use_fp16: bool = False,
             use_bf16: bool = False,
             cache_dir: str = None,
@@ -240,6 +241,8 @@ class FlagLLMReranker:
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+        if peft_path:
+            self.model=PeftModel.from_pretrained(self.model,peft_path)
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
@@ -392,6 +395,7 @@ class LayerWiseFlagLLMReranker:
     def __init__(
             self,
             model_name_or_path: str = None,
+            peft_path: str = None,
             use_fp16: bool = False,
             use_bf16: bool = False,
             cache_dir: str = None,
@@ -409,7 +413,8 @@ class LayerWiseFlagLLMReranker:
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
-
+        if peft_path:
+            self.model=PeftModel.from_pretrained(self.model,peft_path)
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
