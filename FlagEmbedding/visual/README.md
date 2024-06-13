@@ -1,7 +1,13 @@
 # Visualized BGE
 
-**We have released our paper. [Arxiv Link](https://arxiv.org/abs/2406.04292)**
+## 🔔 News
+**[2024.3.18] We have released our code and model.**
 
+**[2024.6.7] We have released our paper. [Arxiv Link](https://arxiv.org/abs/2406.04292)**
+
+**[2024.6.13] We have released [VISTA-S2 dataset](https://huggingface.co/datasets/JUNJIE99/VISTA_S2), a hybrid multi-modal dataset consisting of over 500,000 instances for multi-modal training (Stage-2 training in our paper).**
+
+## Introduction
 In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By incorporating image token embedding into the BGE Text Embedding framework, Visualized-BGE gains the flexibility to process multi-modal data that goes beyond just text. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
 
 - Multi-Modal Knowledge Retrieval (query: text; candidate: image-text pairs, text, or image)  e.g. [WebQA](https://github.com/WebQnA/WebQA)
@@ -19,7 +25,19 @@ Moreover, Visualized BGE fully preserves the strong text embedding capabilities 
 
 
 ### Data
-We have generated a hybrid multi-modal dataset consisting of over 500,000 instances for training. The dataset will be released at a later time.
+We have generated a hybrid multi-modal dataset consisting of over 500,000 instances for multi-modal training (Stage-2 training in our paper). You can download our dataset from this [🤗 HF Link](https://huggingface.co/datasets/JUNJIE99/VISTA_S2). 
+Process the image compression package with the following commands:
+
+```bash
+cat images.tar.part* > my_folder.tar
+tar -xvf images.tar
+```
+If you obtain the following directory structure. You can then use the annotation information (json files) in the repository for your own training:
+```
+images
+|__coco
+|__edit_image
+```
 
 ## Usage
 ### Installation:
