@@ -121,17 +121,17 @@ def check_ans(pred, gt):
 def main():
 
     data_list = {
-        "count": ("4_count.json", f"/LVBench_all/video/count", "video"),
-        "ego": ("3_ego.json", f"/LVBench_all/video/ego", "video"),
-        "needle": ("2_needle.json", f"/LVBench_all/video/needle", "video"),
-        "order": ("5_order.json", f"/LVBench_all/video/order", "video"),
-        "plotQA": ("1_plotQA.json", f"/LVBench_all/video/plotQA", "video"),
-        "anomaly_reco": ("6_anomaly_reco.json", f"/LVBench_all/video/anomaly_reco", "video"),
-        "topic_reasoning": ("7_topic_reasoning.json", f"/LVBench_all/video/topic_reasoning", "video")
+        "count": ("4_count.json", f"/MLVU_all/video/count", "video"),
+        "ego": ("3_ego.json", f"/MLVU_all/video/ego", "video"),
+        "needle": ("2_needle.json", f"/MLVU_all/video/needle", "video"),
+        "order": ("5_order.json", f"/MLVU_all/video/order", "video"),
+        "plotQA": ("1_plotQA.json", f"/MLVU_all/video/plotQA", "video"),
+        "anomaly_reco": ("6_anomaly_reco.json", f"/MLVU_all/video/anomaly_reco", "video"),
+        "topic_reasoning": ("7_topic_reasoning.json", f"/MLVU_all/video/topic_reasoning", "video")
     }
    
 
-    data_dir = f"/LVBench_all/upload_json"
+    data_dir = f"/MLVU_all/upload_json"
     save_path = f"./test_all_choice"
     result_path=f"bench_all.json"
 
