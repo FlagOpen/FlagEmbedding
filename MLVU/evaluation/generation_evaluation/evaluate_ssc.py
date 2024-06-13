@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser(description="ssc-evaluation-gpt-4")
-    parser.add_argument("--pred_path", default="output_dir/qwen/16_subPlot_all.json", help="The path to file containing prediction.")
+    parser.add_argument("--pred_path", default="output_dir/qwen/pred_subPlot_all.json", help="The path to file containing prediction.")
     parser.add_argument("--output_dir", default="output_dir/qwen_subplot_all", help="The path to save annotation json files.")
     parser.add_argument("--output_json", default="output_dir/qwen_subplot_all_results.json", help="The path to save annotation final combined json file.")
     parser.add_argument("--api_key", default="", help="OpenAI API key.")
@@ -17,7 +17,7 @@ def parse_args():
     return args
 
 
-def get_scoring_points(score_points="/MLVU_all/new_json/subPlot_scorepoint.json"):
+def get_scoring_points(score_points="MLVU_all/json/8_sub_scene.json"):
     q_s_dict = {}
     all_data = json.load(open(score_points, "r"))
     for data in all_data:
