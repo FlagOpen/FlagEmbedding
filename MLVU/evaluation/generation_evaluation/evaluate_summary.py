@@ -1,9 +1,5 @@
-## summary 评测脚本
-
 import openai
 import os
-os.environ['https_proxy'] = "http://127.0.0.1:15777"
-os.environ['http_proxy'] = "http://127.0.0.1:15777"
 import argparse
 import json
 import ast
@@ -12,7 +8,7 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser(description="question-answer-generation-using-gpt-4")
-    parser.add_argument("--pred_path", default="/evaluation_lvbench/qwen/16_subPlot_all.json", help="The path to file containing prediction.")
+    parser.add_argument("--pred_path", default="output_dir/qwen/16_summary_all.json", help="The path to file containing prediction.")
     parser.add_argument("--output_dir", default="output_dir/qwen_subplot_all", help="The path to save annotation json files.")
     parser.add_argument("--output_json", default="output_dir/qwen_subplot_all_results.json", help="The path to save annotation final combined json file.")
     parser.add_argument("--api_key", default="", help="OpenAI API key.")
@@ -21,20 +17,10 @@ def parse_args():
     return args
 
 
-# def get_scoring_points(score_points="/share/junjie/code/videofactory/Evaluation_LVBench/LVBench_all/new_json/subPlot_scorepoint.json"):
-#     q_s_dict = {}
-#     all_data = json.load(open(score_points, "r"))
-#     for data in all_data:
-#         question = data["question"]
-#         score_point = data["scoring_points"]
-#         q_s_dict[question] = score_point
-#     return q_s_dict
-
 
 def annotate(prediction_set, caption_files, output_dir):
     """
-    Evaluates question and answer pairs using GPT-3
-    Returns a score for correctness.
+    Evaluates question and answer pairs using GPT-4
     """
     # q_s_dict = get_scoring_points()
     for file in tqdm(caption_files):
