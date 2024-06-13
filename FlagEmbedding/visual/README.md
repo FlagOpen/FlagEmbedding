@@ -32,7 +32,7 @@ Process the image compression package with the following commands:
 cat images.tar.part* > my_folder.tar
 tar -xvf images.tar
 ```
-If you obtain the following directory structure. You can then use the annotation information (json files) in the repository for your own training:
+If you obtain the following directory structure. You can then use the annotation information (json files) for your own training:
 ```
 images
 |__coco
