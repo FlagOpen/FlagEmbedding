@@ -141,12 +141,10 @@ The image token embedding model in this project is built upon the foundations la
 ## Citation
 If you find this repository useful, please consider giving a star ⭐ and citation
 ```
-@misc{VISTA,
-      title={VISTA: Visualized Text Embedding For Universal Multi-Modal Retrieval}, 
-      author={Junjie Zhou and Zheng Liu and Shitao Xiao and Bo Zhao and Yongping Xiong},
-      year={2024},
-      eprint={2406.04292},
-      archivePrefix={arXiv},
-      primaryClass={cs.IR}
+@article{zhou2024vista,
+  title={VISTA: Visualized Text Embedding For Universal Multi-Modal Retrieval},
+  author={Zhou, Junjie and Liu, Zheng and Xiao, Shitao and Zhao, Bo and Xiong, Yongping},
+  journal={arXiv preprint arXiv:2406.04292},
+  year={2024}
 }
 ```
