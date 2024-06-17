@@ -29,7 +29,7 @@ We have generated a hybrid multi-modal dataset consisting of over 500,000 instan
 Process the image compression package with the following commands:
 
 ```bash
-cat images.tar.part* > my_folder.tar
+cat images.tar.part* > images.tar
 tar -xvf images.tar
 ```
 If you obtain the following directory structure. You can then use the annotation information (json files) for your own training:
