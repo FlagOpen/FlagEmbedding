@@ -197,14 +197,13 @@ def main():
         }, f)
 
     final_res = dict()
-    correct = 0
-    total = 0
+    total=0
+    idx=0
     for k, v in acc_dict.items():
-        final_res[k] = v[0] / v[1] * 100
-        correct += v[0]
-        total += v[1]    
-    final_res['Avg'] = correct / total * 100
-
+        idx+=1
+        final_res[k] = v[0] / v[1] * 100  
+        total+=final_res[k]
+    final_res['Avg'] = total /idx 
     print(final_res)
 
     with open(result_path, "w") as f:
