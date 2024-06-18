@@ -186,7 +186,6 @@ def main():
             acc_dict[task_type][0] += 1
             correct += 1
         print(f"Part  Acc: {acc_dict[task_type][0] / acc_dict[task_type][1] * 100 :.2f}%")
-        print(f"Total Acc: {correct / total * 100 :.2f}%")
         print('-' * 30, task_type, '-' * 30)
 
 
