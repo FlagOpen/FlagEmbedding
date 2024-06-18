@@ -134,17 +134,17 @@ def main():
 
 
     data_list = {
-    "count": ("4_count.json", f"/LVBench_all/video/count", "video"),
-    "ego": ("3_ego.json", f"/LVBench_all/video/ego", "video"),
-    "needle": ("2_needle.json", f"/LVBench_all/video/needle", "video"),
-    "order": ("5_order.json", f"/LVBench_all/video/order", "video"),
-    "plotQA": ("1_plotQA.json", f"/LVBench_all/video/plotQA", "video"),
-    "anomaly_reco": ("6_anomaly_reco.json", f"/LVBench_all/video/anomaly_reco", "video"),
-    "topic_reasoning": ("7_topic_reasoning.json", f"/LVBench_all/video/topic_reasoning", "video")
+    "count": ("4_count.json", f"/MLVU_all/video/count", "video"),
+    "ego": ("3_ego.json", f"/MLVU_all/video/ego", "video"),
+    "needle": ("2_needle.json", f"/MLVU_all/video/needle", "video"),
+    "order": ("5_order.json", f"/MLVU_all/video/order", "video"),
+    "plotQA": ("1_plotQA.json", f"/MLVU_all/video/plotQA", "video"),
+    "anomaly_reco": ("6_anomaly_reco.json", f"/MLVU_all/video/anomaly_reco", "video"),
+    "topic_reasoning": ("7_topic_reasoning.json", f"/MLVU_all/video/topic_reasoning", "video")
 }
 
 
-    data_dir = f"/LVBench_all/upload_json"
+    data_dir = f"/MLVU_all/json"
     save_path = f"./test_all_choice"
     result_path=f"bench_all.json"
 
@@ -229,7 +229,6 @@ def main():
             acc_dict[task_type][0] += 1
             correct += 1
         print(f"Part  Acc: {acc_dict[task_type][0] / acc_dict[task_type][1] * 100 :.2f}%")
-        print(f"Total Acc: {correct / total * 100 :.2f}%")
         print('-' * 30, task_type, '-' * 30)
 
 
@@ -240,14 +239,13 @@ def main():
         }, f)
 
     final_res = dict()
-    correct = 0
-    total = 0
+    total=0
+    idx=0
     for k, v in acc_dict.items():
-        final_res[k] = v[0] / v[1] * 100
-        correct += v[0]
-        total += v[1]    
-    final_res['Avg'] = correct / total * 100
-
+        idx+=1
+        final_res[k] = v[0] / v[1] * 100  
+        total+=final_res[k]
+    final_res['Avg'] = total /idx 
     print(final_res)
 
     with open(result_path, "w") as f:
