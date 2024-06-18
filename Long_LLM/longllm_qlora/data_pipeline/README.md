@@ -11,6 +11,7 @@ data_pipeline/
 ├── prepare_multi_details_paper_long.ipynb
 ├── prepare_one_detail_book.ipynb
 ├── prepare_one_detail_paper_long.ipynb
+├── _openai.py
 └── README.md
 ```
 
