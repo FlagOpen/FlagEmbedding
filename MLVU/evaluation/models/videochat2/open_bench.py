@@ -6,7 +6,7 @@ import os
 
 import io
 import json
-from models.videochat2_it import VideoChat2_it
+from models import VideoChat2_it_vicuna
 from utils.easydict import EasyDict
 import torch
 
@@ -37,7 +37,7 @@ import copy
 
 # load stage2 model
 cfg.model.vision_encoder.num_frames = 4
-model = VideoChat2_it(config=cfg.model)
+model = VideoChat2_it_vicuna(config=cfg.model)
 
 model = model.to(torch.device(cfg.device))
 model = model.eval().cuda()
@@ -250,12 +250,15 @@ def get_sinusoid_encoding_table(n_position=784, d_hid=1024, cur_frame=8, ckpt_nu
     return sinusoid_table
 
 
+
+
+
 data_list = {
-    "subPlot": ("8_sub_scene.json", f"/share/junjie/code/videofactory/Evaluation_LVBench/LVBench_all/video/subPlot", "video"),
-    "summary": ("9_summary.json", f"/share/junjie/code/videofactory/Evaluation_LVBench/LVBench_all/video/summary", "video")
+    "subPlot": ("8_sub_scene.json", f"/MLVU_all/video/subPlot", "video", False),
+    "summary": ("9_summary.json", f"/MLVU_all/video/summary", "video", False)
         }
 
-data_dir = f"/share/junjie/code/videofactory/Evaluation_LVBench/LVBench_all/upload_json"
+data_dir = f"/MLVU_all/json"
 
 
 class MLVU(Dataset):
@@ -461,8 +464,9 @@ for example in tqdm(dataset):
     # print("##################3")
 
 
-    with open(f"subplot_all.json", "w") as f:
-        json.dump(res_list_subplot, f)
 
-    with open(f"summary_all.json", "w") as f:
-        json.dump(res_list_summary, f)
+with open(f"subplot_all.json", "w") as f:
+    json.dump(res_list_subplot, f)
+
+with open(f"summary_all.json", "w") as f:
+    json.dump(res_list_summary, f)
