@@ -8,10 +8,13 @@
     </a>
 </p>
 
+## 🔥 For better maintenance and updates of MLVU, please refer to our [NEW REPO](https://github.com/JUNJIE99/MLVU). All updates and news will be published [there](https://github.com/JUNJIE99/MLVU).
+
+
+
 This repo contains the annotation data and evaluation code for the paper "[MLVU: A Comprehensive Benchmark for Multi-Task Long Video Understanding](https://arxiv.org/abs/2406.04264)".
 
 
-🔥🔥🔥 For better maintenance and updates of MLVU, please refer to our [NEW REPO](https://github.com/JUNJIE99/MLVU). All updates and news will be published [here](https://github.com/JUNJIE99/MLVU). 
 
 ## :bell: News:
 - 🥳 6/7/2024: We have released the MLVU [Benchmark](https://huggingface.co/datasets/MLVU/MVLU) and [Paper](https://arxiv.org/abs/2406.04264)! :fire:
