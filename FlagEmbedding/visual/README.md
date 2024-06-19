@@ -1,4 +1,4 @@
-# Visualized BGE
+<h1 align="center">Visualized BGE</h1>
 
 <p align="center">
     <a href="https://arxiv.org/abs/2406.04292">
