@@ -1,5 +1,20 @@
 # Visualized BGE
 
+<p align="center">
+    <a href="https://arxiv.org/abs/2406.04292">
+            <img alt="Build" src="http://img.shields.io/badge/cs.CV-arXiv%3A2406.04292-B31B1B.svg">
+    </a>
+    <a href="https://huggingface.co/BAAI/bge-visualized">
+        <img alt="Build" src="https://img.shields.io/badge/Github-VISTA Code-blue">
+    </a>
+    <a href="https://huggingface.co/BAAI/bge-visualized">
+        <img alt="Build" src="https://img.shields.io/badge/🤗 Model-VISTA Model-yellow">
+    </a>
+    <a href="https://huggingface.co/datasets/JUNJIE99/VISTA_S2">
+        <img alt="Build" src="https://img.shields.io/badge/🤗 Dataset-VISTA_S2 Dataset-yellow">
+    </a>
+</p>
+
 ## 🔔 News
 **[2024.3.18] We have released our code and model.**
 
