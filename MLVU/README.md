@@ -10,8 +10,12 @@
 
 This repo contains the annotation data and evaluation code for the paper "[MLVU: A Comprehensive Benchmark for Multi-Task Long Video Understanding](https://arxiv.org/abs/2406.04264)".
 
+
+🔥🔥🔥 For better maintenance and updates of MLVU, please refer to our [NEW REPO](https://github.com/JUNJIE99/MLVU). All updates and news will be published [here](https://github.com/JUNJIE99/MLVU). 
+
 ## :bell: News:
 - 🥳 6/7/2024: We have released the MLVU [Benchmark](https://huggingface.co/datasets/MLVU/MVLU) and [Paper](https://arxiv.org/abs/2406.04264)! :fire:
+- 🏠 6/19/2024: For better maintenance and updates of MLVU, we have moved the MLVU to a [new repository](https://github.com/JUNJIE99/MLVU).
 
 
 
@@ -32,8 +36,9 @@ Our evaluation of 20 popular MLLMs, including GPT-4o, reveals significant challe
 | GPT-4o | 0.5 fps | 64.6 | 5.80 |
 | InternVL-1.5 | 16 frm | 50.4 | 4.02 |
 | GPT-4 Turbo | 16 frm | 49.2 | 5.35 |
+| VideoChat2-Mistral | 16 frm | 47.9 | 3.99 |
 | Video-LLaVA | 8 frm | 47.3 | 3.84 |
-| VideoChat2 | 16 frm | 44.5 | 3.81 |
+| VideoChat2-Vicuna | 16 frm | 44.5 | 3.81 |
 | MiniGPT4-Video | 90 frm | 44.5 | 3.36 |
 | Qwen-VL-Max | 16 frm | 42.2 | 3.96 |
 | LLaVA-1.6 | 16 frm | 39.3 | 3.23 |
