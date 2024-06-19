@@ -8,7 +8,7 @@
     </a>
 </p>
 
-## 🔥 For better maintenance and updates of MLVU, please refer to our [NEW REPO](https://github.com/JUNJIE99/MLVU). All updates and news will be published [there](https://github.com/JUNJIE99/MLVU).
+## 🔥 For better maintenance and updates of MLVU, we have moved the MLVU to a [NEW REPO](https://github.com/JUNJIE99/MLVU). All updates and news will be published [there](https://github.com/JUNJIE99/MLVU).
 
 
 
