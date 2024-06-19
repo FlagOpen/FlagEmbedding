@@ -6,7 +6,7 @@ import os
 
 import io
 import json
-from models.videochat2_it import VideoChat2_it
+from models import VideoChat2_it_vicuna
 from utils.easydict import EasyDict
 import torch
 
@@ -37,7 +37,7 @@ import copy
 
 # load stage2 model
 cfg.model.vision_encoder.num_frames = 4
-model = VideoChat2_it(config=cfg.model)
+model = VideoChat2_it_vicuna(config=cfg.model)
 
 model = model.to(torch.device(cfg.device))
 model = model.eval().cuda()
@@ -251,18 +251,20 @@ def get_sinusoid_encoding_table(n_position=784, d_hid=1024, cur_frame=8, ckpt_nu
 
 
 
+
+
 data_list = {
-    "count": ("4_count.json", f"/LVBench_all/video/count", "video"),
-    "ego": ("3_ego.json", f"/share/junjie/code/videofactory/Evaluation_LVBench/LVBench_all/video/ego", "video"),
-    "needle": ("2_needle.json", f"/LVBench_all/video/needle", "video"),
-    "order": ("5_order.json", f"/LVBench_all/video/order", "video"),
-    "plotQA": ("1_plotQA.json", f"/LVBench_all/video/plotQA", "video"),
-    "anomaly_reco": ("6_anomaly_reco.json", f"/LVBench_all/video/anomaly_reco", "video"),
-    "topic_reasoning": ("7_topic_reasoning.json", f"/LVBench_all/video/topic_reasoning", "video")
+    "count": ("4_count.json", f"/MLVU_all/video/count", "video"),
+    "ego": ("3_ego.json", f"/MLVU_all/video/ego", "video"),
+    "needle": ("2_needle.json", f"/MLVU_all/video/needle", "video"),
+    "order": ("5_order.json", f"/MLVU_all/video/order", "video"),
+    "plotQA": ("1_plotQA.json", f"/MLVU_all/video/plotQA", "video"),
+    "anomaly_reco": ("6_anomaly_reco.json", f"/MLVU_all/video/anomaly_reco", "video"),
+    "topic_reasoning": ("7_topic_reasoning.json", f"/MLVU_all/video/topic_reasoning", "video")
 }
 
 
-data_dir = f"LVBench_all/upload_json"
+data_dir = f"/MLVU_all/json"
 save_path = f"./test_all_choice"
 result_path=f"bench_all.json"
 
@@ -284,6 +286,7 @@ class MLVU(Dataset):
         self.decord_method = {
             'video': self.read_video
         }
+        
         self.num_segments = num_segments
         
         # transform
@@ -461,7 +464,6 @@ correct = 0
 total = 0
 res_list = []
 acc_dict = {}
-
 for example in tqdm(dataset):
     task_type = example['task_type']
     if task_type not in acc_dict:
@@ -491,8 +493,9 @@ for example in tqdm(dataset):
         acc_dict[task_type][0] += 1
         correct += 1
     print(f"Part  Acc: {acc_dict[task_type][0] / acc_dict[task_type][1] * 100 :.2f}%")
-    print(f"Total Acc: {correct / total * 100 :.2f}%")
     print('-' * 30, task_type, '-' * 30)
+
+
 
 with open(f"{save_path}.json", "w") as f:
     json.dump({
@@ -501,14 +504,15 @@ with open(f"{save_path}.json", "w") as f:
     }, f)
 
 final_res = dict()
-correct = 0
-total = 0
-for k, v in acc_dict.items():
-    final_res[k] = v[0] / v[1] * 100
-    correct += v[0]
-    total += v[1]    
-final_res['Avg'] = correct / total * 100
 
+total=0
+idx=0
+for k, v in acc_dict.items():
+    idx+=1
+    final_res[k] = v[0] / v[1] * 100  
+    total+=final_res[k]
+
+final_res['Avg'] = total /idx 
 print(final_res)
 
 with open(result_path, "w") as f:
