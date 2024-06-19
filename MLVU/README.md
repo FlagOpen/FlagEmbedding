@@ -36,7 +36,7 @@ Our evaluation of 20 popular MLLMs, including GPT-4o, reveals significant challe
 | GPT-4o | 0.5 fps | 64.6 | 5.80 |
 | InternVL-1.5 | 16 frm | 50.4 | 4.02 |
 | GPT-4 Turbo | 16 frm | 49.2 | 5.35 |
-| VideoChat2-Mistral | 16 frm | 47.9 | 3.99 |
+| VideoChat2_HD | 16 frm | 47.9 | 3.99 |
 | Video-LLaVA | 8 frm | 47.3 | 3.84 |
 | VideoChat2-Vicuna | 16 frm | 44.5 | 3.81 |
 | MiniGPT4-Video | 90 frm | 44.5 | 3.36 |
