@@ -36,8 +36,6 @@ class BiEncoderModel(nn.Module):
 
         self.start_layer = start_layer
 
-        self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][0]
-
 
     def gradient_checkpointing_enable(self, **kwargs):
         self.model.gradient_checkpointing_enable(**kwargs)
