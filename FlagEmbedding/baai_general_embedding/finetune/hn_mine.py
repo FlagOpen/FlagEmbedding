@@ -59,6 +59,7 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
     corpus = []
     queries = []
     train_data = []
+    # input_file is jsonl, jsonl也是由 query，pos，neg三元组组成，并且 pos 和 neg 都全部放入 corpus 中, query放入 querys 中
     for line in open(input_file):
         line = json.loads(line.strip())
         train_data.append(line)
@@ -67,6 +68,7 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
             corpus.extend(line['neg'])
         queries.append(line['query'])
 
+    # candidate pool和 corpus 库是二选一的
     if candidate_pool is not None:
         if not isinstance(candidate_pool, list):
             candidate_pool = get_corpus(candidate_pool)

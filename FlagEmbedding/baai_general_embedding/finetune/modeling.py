@@ -60,19 +60,21 @@ class BiEncoderModel(nn.Module):
     def gradient_checkpointing_enable(self, **kwargs):
         self.model.gradient_checkpointing_enable(**kwargs)
 
-    def sentence_embedding(self, hidden_state, mask):
+    def sentence_embedding(self, output, mask):
         if self.sentence_pooling_method == 'mean':
-            s = torch.sum(hidden_state * mask.unsqueeze(-1).float(), dim=1)
+            s = torch.sum(output.last_hidden_state * mask.unsqueeze(-1).float(), dim=1)
             d = mask.sum(axis=1, keepdim=True).float()
             return s / d
         elif self.sentence_pooling_method == 'cls':
-            return hidden_state[:, 0]
+            return output.last_hidden_state[:, 0]
+        elif self.sentence_pooling_method == 'cls_after_pooler':
+            return output.pooler_output
 
     def encode(self, features):
         if features is None:
             return None
         psg_out = self.model(**features, return_dict=True)
-        p_reps = self.sentence_embedding(psg_out.last_hidden_state, features['attention_mask'])
+        p_reps = self.sentence_embedding(psg_out, features['attention_mask'])
         if self.normlized:
             p_reps = torch.nn.functional.normalize(p_reps, dim=-1)
         return p_reps.contiguous()

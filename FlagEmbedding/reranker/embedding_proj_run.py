@@ -2,21 +2,21 @@ import logging
 import os
 from pathlib import Path
 
-from transformers import AutoConfig, AutoTokenizer, TrainingArguments, TrainerCallback, TrainerState, TrainerControl
+from transformers import AutoConfig, AutoTokenizer, TrainingArguments
 from transformers import (
     HfArgumentParser,
     set_seed,
 )
-
 from arguments import ModelArguments, DataArguments
-from data import TrainDatasetForCE, GroupCollator, TrainDatasetForCL
-from modeling import CLEncoder, CLProjEncoder, CrossEncoder
+from data import TrainDatasetForCE, GroupCollator
+from modeling import CLProjEncoder
 from trainer import CETrainer
 
 logger = logging.getLogger(__name__)
 from pprint import pprint as pp
 import sys 
 sys.path.append("/opt/tiger/FlagEmbedding")
+from FlagEmbedding.reranker.data import TrainDatasetForCL
 from utils import get_complete_last_checkpoint
 import transformers
 import os
@@ -29,12 +29,6 @@ def safe_save_model_for_hf_trainer(trainer: transformers.Trainer, output_dir: st
         cpu_state_dict = {key: value.cpu() for key, value in state_dict.items()}
         del state_dict
         trainer._save(output_dir, state_dict=cpu_state_dict)
-
-# 记录similarity pos and neg
-# class Loggingback(TrainerCallback):
-#     def on_train_begin(self, args, state: TrainerState, control: TrainerControl, **kwargs):
-#         if state.global_step % 10 == 0:
-#             control.
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
@@ -87,19 +81,14 @@ def main():
         cache_dir=model_args.cache_dir,
         use_fast=False,
     )
+
     config = AutoConfig.from_pretrained(
         model_args.config_name if model_args.config_name else model_args.model_name_or_path,
         num_labels=num_labels,
         cache_dir=model_args.cache_dir,
         trust_remote_code=True
     )
-
-    if model_args.model_type=="CrossEncoder": _model_class = CrossEncoder
-    elif model_args.model_type == "CLEncoder": _model_class = CLEncoder
-    else: _model_class = CLProjEncoder
-        
-    if model_args.model_type=="CrossEncoder": train_dataset = TrainDatasetForCE(data_args, tokenizer=tokenizer)
-    else: train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
+    _model_class = CLProjEncoder
 
     model = _model_class.from_pretrained(
         model_args, data_args, training_args,
@@ -118,22 +107,19 @@ def main():
         logger.info(f"train start from {last_checkpoint}")
         checkpoint = last_checkpoint
 
+    train_dataset = TrainDatasetForCL(data_args, tokenizer=tokenizer)
     _trainer_class = CETrainer
+    
     trainer = _trainer_class(
         model=model,
         args=training_args,
         train_dataset=train_dataset,
-        data_collator=GroupCollator(tokenizer),
+        data_collator=GroupCollator(tokenizer), #这里依旧是拍平
         tokenizer=tokenizer
     )
     trainer.train(resume_from_checkpoint=checkpoint)
     trainer.save_state()
     safe_save_model_for_hf_trainer(trainer=trainer, output_dir=training_args.output_dir)
-    # Path(training_args.output_dir).mkdir(parents=True, exist_ok=True)
-
-    # trainer.train()
-    # trainer.save_model()
-
 
 if __name__ == "__main__":
     main()

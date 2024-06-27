@@ -21,6 +21,7 @@ class ModelArguments:
     cache_dir: Optional[str] = field(
         default=None, metadata={"help": "Where do you want to store the pretrained models downloaded from s3"}
     )
+    model_type: str = field(default="CrossEncoder")
 
 
 @dataclass
