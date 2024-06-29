@@ -5,7 +5,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme_file:
 
 setup(
     name='LM_Cocktail',
-    version='0.0.4',
+    version='0.0.5',
     description='LM_Cocktail',
     long_description=readme,
     long_description_content_type="text/markdown",

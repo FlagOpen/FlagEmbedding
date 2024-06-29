@@ -367,8 +367,8 @@ class FlagLLMReranker:
         if normalize:
             all_scores = [sigmoid(score) for score in all_scores]
 
-        if len(all_scores) == 1:
-            return all_scores[0]
+        # if len(all_scores) == 1:
+        #     return all_scores[0]
 
         return all_scores
 
@@ -560,10 +560,10 @@ class LayerWiseFlagLLMReranker:
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
 
-        if len(all_scores) == 1:
-            if len(all_scores[0]) == 1:
-                return all_scores[0][0]
-            return all_scores[0]
+        # if len(all_scores) == 1:
+        #     if len(all_scores[0]) == 1:
+        #         return all_scores[0][0]
+        #     return all_scores[0]
 
         return all_scores
 
