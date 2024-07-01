@@ -62,6 +62,9 @@ For any path specified for `train_data` and `eval_data`: if it is prefixed with 
 
 
 # Training
+
+**NOTE: `unsloth` does not support DDP training now despite they used to in May 2024. So the training script won't work. You're encouraged to open a feature request in the [unsloth repo](https://github.com/unslothai/unsloth). Or, you can try to use some other framework for efficient tuning, like MegatronLM. More details can be found in [this issue](https://github.com/FlagOpen/FlagEmbedding/issues/919).**
+
 ```bash
 export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
