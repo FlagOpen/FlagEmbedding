@@ -23,6 +23,14 @@ Utilizing the re-ranking model (e.g., [bge-reranker](https://github.com/FlagOpen
 
 
 ## News:
+
+- 2024/7/1: **We update the MIRACL evaluation results of BGE-M3**. To reproduce the new results, you can refer to: [bge-m3_miracl_2cr](https://huggingface.co/datasets/hanhainebula/bge-m3_miracl_2cr). We have also updated our [paper](https://arxiv.org/pdf/2402.03216) on arXiv.
+  <details>
+  <summary> Details </summary>
+
+  > The previous test results were lower because we mistakenly removed the passages that have the same id as the query from the search results. After correcting this mistake, the overall performance of BGE-M3 on MIRACL is higher than the previous results, but the experimental conclusion remains unchanged. The other results are not affected by this mistake. To reproduce the previous lower results, you need to add the `--remove-query` parameter when using `pyserini.search.faiss` or `pyserini.search.lucene` to search the passages.
+
+  </details>
 - 2024/3/20: **Thanks Milvus team!** Now you can use hybrid retrieval of bge-m3 in Milvus: [pymilvus/examples
 /hello_hybrid_sparse_dense.py](https://github.com/milvus-io/pymilvus/blob/master/examples/hello_hybrid_sparse_dense.py).
 - 2024/3/8: **Thanks for the [experimental results](https://towardsdatascience.com/openai-vs-open-source-multilingual-embedding-models-e5ccb7c90f05) from @[Yannael](https://huggingface.co/Yannael). In this benchmark, BGE-M3 achieves top performance in both English and other languages, surpassing models such as OpenAI.**
@@ -213,7 +221,7 @@ We provide the evaluation script for [MKQA](https://github.com/FlagOpen/FlagEmbe
 
 
 ### Our results
-- Multilingual (Miracl dataset) 
+- Multilingual (MIRACL dataset) 
 
 ![avatar](./imgs/miracl.jpg)
 
