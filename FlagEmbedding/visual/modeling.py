@@ -96,6 +96,8 @@ class Visualized_BGE(nn.Module):
         if torch.cuda.is_available():
             self.device = torch.device('cuda')
             self.to(self.device)
+        else:
+            self.device = torch.device('cpu')
     
     def load_model(self, model_weight):
         self.load_state_dict(torch.load(model_weight, map_location='cpu'))
