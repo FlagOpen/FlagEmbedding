@@ -79,6 +79,7 @@ class Args(ModelArgs):
     )
 
     do_sample: bool = False
+    max_new_tokens: int = 50
 
 
 def generate_sample(tokenizer, chat_template, context_length, passkey_depth, passkey_length, rng:np.random.Generator=np.random.default_rng(42)):
@@ -163,9 +164,8 @@ def main():
         pin_memory=not args.cpu,
     )
 
-    if not args.enable_tp:
-        model, dataloader = accelerator.prepare(model, dataloader)
-        model = accelerator.unwrap_model(model)
+    # NOTE: prepare dataloader so the data moves to GPU automatically
+    dataloader = accelerator.prepare(dataloader)
 
     accelerator.wait_for_everyone()
 
@@ -182,30 +182,21 @@ def main():
 
         inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
 
-        outputs = model.generate(
-            **inputs,
-            max_new_tokens=50,
-            num_beams=1,
-            do_sample=False,
-            temperature=1.,
-            # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-            synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
-        )
-        outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
+        output = model.generate(**inputs)
+
+        if isinstance(output, torch.Tensor):
+            # 1, max_new_tokens
+            output = output[:, inputs['input_ids'].shape[1]:]
+            output = tokenizer.batch_decode(output, skip_special_tokens=True)
+        elif isinstance(output, list):
+            pass
 
         if accelerator.num_processes > 1:
-            outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
-            outputs = accelerator.gather_for_metrics(outputs)
-        else:
-            # NOTE: prepare dataloader so the data moves to GPU automatically
-            dataloader = accelerator.prepare(dataloader)
+            output = accelerator.gather_for_metrics(output)
 
-        all_outputs.extend(outputs.tolist())
-
+        all_outputs.extend(output)
 
     if accelerator.process_index == 0:
-        all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
-
         accuracy = {l: {d: [] for d in test_depths} for l in test_lengths}
         fuzzy_score = {l: {d: [] for d in test_depths} for l in test_lengths}
         results = {l: {d: [] for d in test_depths} for l in test_lengths}
@@ -247,26 +238,29 @@ def main():
             # Copied from https://github.com/gkamradt/LLMTest_NeedleInAHaystack/blob/main/viz/CreateVizFromLLMTesting.ipynb
             cmap = LinearSegmentedColormap.from_list("custom_cmap", ["#F0496E", "#EBB839", "#0CD79F"])
             # Create the heatmap with better aesthetics
-            plt.figure(figsize=(17.5, 8))  # Can adjust these dimensions as needed
+            sns.set(rc={"figure.figsize": (17.5, 8), "axes.titlesize":14, "axes.labelsize":12}, style="whitegrid", palette="colorblind")
             data = pd.DataFrame(metric_value)
             ax = sns.heatmap(
                 data,
-                fmt="g",
                 cmap=cmap,
-                cbar_kws={'label': metric_key},
                 vmin=0,
                 vmax=1,
+                fmt="g",
+                linewidth=.5,
             )
+            cbar = ax.collections[0].colorbar
+            cbar.set_label(metric_key, size=14)
 
             # More aesthetics
             plt.title('Passkey Retrieval')  # Adds a title
-            plt.xlabel('Token Limit')  # X-axis label
-            plt.ylabel('Depth Percent')  # Y-axis label
-            plt.xticks(rotation=45)  # Rotates the x-axis labels to prevent overlap
-            plt.yticks(rotation=0)  # Ensures the y-axis labels are horizontal
+            plt.xlabel('Context Length', fontsize=14)  # X-axis label
+            plt.ylabel('Depth Percent', fontsize=14)  # Y-axis label
+            plt.xticks(rotation=45, fontsize=10)  # Rotates the x-axis labels to prevent overlap
+            plt.yticks(rotation=0, fontsize=10)  # Ensures the y-axis labels are horizontal
             plt.tight_layout()  # Fits everything neatly into the figure area
             # save to result_dir
-            plt.savefig(os.path.join(result_dir, f"{metric_key}.pdf"), format='pdf', dpi=1200, bbox_inches='tight')
+            plt.savefig(os.path.join(result_dir, f"{metric_key}.png"), format='png', bbox_inches='tight')
+            plt.close()
 
 
 if __name__ == "__main__":

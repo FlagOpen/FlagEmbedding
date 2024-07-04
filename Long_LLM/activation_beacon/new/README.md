@@ -1,6 +1,16 @@
 # Activation-Beacon
 
-This folder contains the newer code for activation beacon with the support of **Mistral models**, **Deepspeed Zero3 training**, **chat templates**, and **more evaluation tasks**. The code here are under development and subject to change in the future.
+[Activation Beacon](https://arxiv.org/abs/2401.03462) compresses the original KV into fewer yet more compact states (a.k.a. beacons) and hence enabling the LLM to perceive longer context given its fixed context window. It is known for the following features:
+- **Effective**
+  - there is little information loss given a compression ratio of 2, 4, and 8;
+- **Efficient**
+  - it drastically reduces the GPU consumption of KV cache;
+- **Compatible**
+  - it can work together with position extrapolation (e.g. YaRN) to further extends the context length; it can also work with grouped query attention to further reduce the KV cache size;
+- **Low-Cost**
+  - it is light-weight and can be efficiently trained with roughly 1B tokens. 
+
+This folder contains the newer code for activation beacon. It supports more LLMs, including Mistral, Llama-3, and Qwen-2. It also supports more features, including **Deepspeed Zero3 training**, **Flash-Attention-2**, adding **chat template** in training and inference, and **evaluating on more tasks**. However, code in this folder are under development and subject to change in the future.
 
 ## Environment
 ```bash
@@ -8,8 +18,9 @@ conda create beacon python=3.10.14
 
 conda activate beacon
 
+# You may need to adjust the cuda version
 conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
-pip install transformers==4.39.3 deepspeed accelerate datasets peft pandas seaborn rouge fuzzywuzzy jieba
+pip install transformers==4.39.3 deepspeed accelerate datasets peft pandas seaborn rouge fuzzywuzzy jieba python-Levenshtein
 pip install flash-attn --no-build-isolation
 ```
 
@@ -19,10 +30,15 @@ import json
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-model_id = "namespace-Pt/activation-beacon-mistral-7b"
+model_id = "namespace-Pt/beacon-qwen-2-7b-instruct"
 
 tokenizer = AutoTokenizer.from_pretrained(model_id, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained(model_id, trust_remote_code=True, torch_dtype=torch.bfloat16)
+model = AutoModelForCausalLM.from_pretrained(
+    model_id, 
+    trust_remote_code=True, 
+    torch_dtype=torch.bfloat16, 
+    attn_implementation="flash_attention_2"
+)
 
 model = model.cuda().eval()
 
@@ -32,7 +48,7 @@ with torch.no_grad():
   inputs = tokenizer.apply_chat_template(messages, tokenize=True, add_generation_prompt=True, return_tensors="pt", return_dict=True).to("cuda")
   outputs = model.generate(**inputs, max_new_tokens=50)
   print(f"Input Length: {inputs['input_ids'].shape[1]}")
-  print(f"Output:       {tokenizer.decode(outputs[0], skip_special_tokens=True)}")
+  print(f"Output:       {repr(tokenizer.decode(outputs[0], skip_special_tokens=True))}")
 
   # reset memory before new generation task
   model.memory.reset()
@@ -55,16 +71,16 @@ with torch.no_grad():
 You should download the data for fine-tuning & evaluation then untar the file at anywhere you prefer, e.g. `/data`:
 ```bash
 # feel free to alternate /data to your prefered location
-wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/activation-beacon-new.tar.gz?download=true -O /data/activation-beacon-new.tar.gz
+wget https://huggingface.co/datasets/namespace-Pt/projects/resolve/main/long-llm.tar.gz?download=true -O /data/long-llm.tar.gz
 
 cd /data
-tar -xzvf activation-beacon-new.tar.gz
+tar -xzvf long-llm.tar.gz
 ```
 
 **IMPORTANT NOTE**
 
-For any path specified for `train_data` and `eval_data`: if it is prefixed with `activation-beacon:`, it will be solved to the relative path against [`data_root`](./src/args.py). 
-  - e.g. `activation-beacon:lm/pg19.json` becomes `${data_root}/lm/pg19.json`
+For any path specified for `train_data` and `eval_data`: if it is prefixed with `long-llm:`, it will be solved to the relative path against [`data_root`](./src/args.py). 
+  - e.g. `long-llm:lm/pg19.json` becomes `${data_root}/lm/pg19.json`
   - you can modify the default value of [`data_root`](./src/args.py), so that you don't need to type it for each command.
 
 

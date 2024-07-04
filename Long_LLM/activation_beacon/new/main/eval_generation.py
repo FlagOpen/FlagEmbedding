@@ -84,13 +84,8 @@ def main():
         pin_memory=not args.cpu,
     )
 
-    if not args.enable_tp:
-        model, dataloader = accelerator.prepare(model, dataloader)
-        # NOTE: unwrap because we just use the model for evaluation
-        model = accelerator.unwrap_model(model)
-    else:
-        # NOTE: prepare dataloader so the data moves to GPU automatically
-        dataloader = accelerator.prepare(dataloader)
+    # NOTE: prepare dataloader so the data moves to GPU automatically
+    dataloader = accelerator.prepare(dataloader)
 
     save_path = Metric.get_save_path(
         args.eval_data,
@@ -105,8 +100,6 @@ def main():
         dataloader, 
         accelerator=accelerator, 
         tokenizer=tokenizer,
-        # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-        synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
     )
     
     if accelerator.process_index == 0:

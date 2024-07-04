@@ -24,7 +24,7 @@ logger = logging.get_logger(__name__)
 @dataclass
 class Args(ModelArgs):
     eval_data: str = field(
-        default="activation-beacon:longeval/topic_retrieval.json",
+        default="long-llm:longeval/topic_retrieval.json",
         metadata={'help': 'Evaluation json data.'}
     )
     output_dir: str = field(
@@ -39,14 +39,19 @@ class Args(ModelArgs):
         default_factory=lambda: [5, 10, 15, 20, 25, 30, 40, 50, 60, 70],
         metadata={'help': 'How many topics to in the conversation?'}
     )
-    do_sample: bool = False
-
     adapt_window: bool = field(
         default=False,
         metadata={'help': 'Dynamically change the beacon window so that the input is always compressed?'}
     )
+    target_topic: str = field(
+        default="first",
+        metadata={'help': 'Which topic to evaluate?'}
+    )
 
-def process_topic_retrieval(data, tokenizer, chat_template, num_topic):
+    do_sample: bool = False
+    max_new_tokens: int = 50
+
+def process_topic_retrieval(data, tokenizer, chat_template, num_topic, target_topic):
     outputs = {'input_ids': [], 'attention_mask': [], 'target': [], 'length': [], 'num': []}
     
     for context, question, topics, num in zip(data['context'], data['question'], data['topics'], data['num_topics']):
@@ -58,9 +63,18 @@ def process_topic_retrieval(data, tokenizer, chat_template, num_topic):
             context = context.split(" \n USER: Great, this is the end of our discussion")[0]
             context = context + " Now the record ends."
 
+        if target_topic == "first":
+            question = f"What is the first topic we have discussed? Only give me the topic name. Do not summarize yourself."
+            target = topics[0]
+        elif target_topic == "random":
+            target_idx = np.random.randint(0, num)
+            question = f"What is the No.{target_idx} topic we have discussed? Only give me the topic name. Do not summarize yourself."
+            target = topics[target_idx]
+        else:
+            raise NotImplementedError
+
         prompt = " ".join([context, question])
         # the question always asks for the first topic
-        target = topics[0]
 
         encoded = apply_chat_template(chat_template, [{'role': 'user', 'content': prompt}], tokenizer=tokenizer, add_generation_prompt=True).encoded
 
@@ -69,7 +83,8 @@ def process_topic_retrieval(data, tokenizer, chat_template, num_topic):
         encoded["num"] = num
 
         for k, v in encoded.items():
-            outputs[k].append(v)
+            if k in outputs:
+                outputs[k].append(v)
 
     return outputs
 
@@ -87,6 +102,7 @@ def main():
             tokenizer=tokenizer,
             chat_template=args.chat_template,
             num_topic=args.num_topic,
+            target_topic=args.target_topic,
         )
 
         raw_dataset = datasets.load_dataset("json", data_files=args.eval_data, cache_dir=args.dataset_cache_dir, split="train")
@@ -117,16 +133,8 @@ def main():
             pin_memory=not args.cpu,
         )
 
-        if not args.enable_tp:
-            # NOTE: prepare model only once
-            if len(accelerator._models) == 0:
-                model, dataloader = accelerator.prepare(model, dataloader)
-                model = accelerator.unwrap_model(model)
-            else:
-                dataloader = accelerator.prepare(dataloader)
-        else:
-            # NOTE: prepare dataloader so the data moves to GPU automatically
-            dataloader = accelerator.prepare(dataloader)
+        # NOTE: prepare dataloader so the data moves to GPU automatically
+        dataloader = accelerator.prepare(dataloader)
 
         all_lengths = []
         all_outputs = []
@@ -145,33 +153,22 @@ def main():
 
                 model.memory.reset()
 
-            length = x.pop("length")
+            length = x.pop("length").tolist()
 
-            # accelerator.print(tokenizer.decode(x["input_ids"][0]))
+            output = model.generate(**x)
 
-            outputs = model.generate(
-                **x, 
-                max_new_tokens=50,
-                do_sample=False,
-                num_beams=1,
-                temperature=1.0,
-                top_p=1.0,
-                # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-                synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
-            )
-            start_idx = x["input_ids"].shape[1]
-            outputs = outputs[:, start_idx:]
+            if isinstance(output, torch.Tensor):
+                # 1, max_new_tokens
+                output = output[:, x['input_ids'].shape[1]:]
+                output = tokenizer.batch_decode(output, skip_special_tokens=True)
+            elif isinstance(output, list):
+                pass
 
             if accelerator.num_processes > 1:
-                outputs = accelerator.pad_across_processes(outputs.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
-                outputs = accelerator.gather_for_metrics(outputs)
+                output = accelerator.gather_for_metrics(output)
                 length = accelerator.gather_for_metrics(length)
             
-            outputs = outputs.tolist()
-            length = length.tolist()
-
-            outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
-            all_outputs.extend(outputs)
+            all_outputs.extend(output)
             all_lengths.extend(length)
 
         length = int(sum(all_lengths) / len(all_lengths))

@@ -25,7 +25,7 @@ class Args(ModelArgs):
         metadata={'help': 'Configuration json path for standard pretraining (concatenating multiple documents to form instances of equal lengths).'}
     )
     train_data: str = field(
-        default="activation-beacon:slimpajama/",
+        default="long-llm:slimpajama",
         metadata={'help': 'Directory of training data (multiple json files whose name correspond to the ones in config).'}
     )
     output_dir: str = field(
@@ -37,6 +37,10 @@ class Args(ModelArgs):
         default_factory=lambda: ["8192:2B"],
         metadata={'help': 'How many tokens to use for a specified length? (T/t for trillion, B/b for billion, M/m for million)'}
     )
+    add_bos: bool = field(
+        default=True,
+        metadata={'help': 'Add bos at the end of each document?'}
+    )
     add_eos: bool = field(
         default=True,
         metadata={'help': 'Add eos at the end of each document?'}
@@ -47,7 +51,7 @@ class Args(ModelArgs):
     )
 
 
-def prepare_pretrain_data(data_files, tokenizer: PreTrainedTokenizer, config: dict, length_2_num_token: dict, add_eos:bool=True, seed=42, cache_dir=None, load_from_cache_file=None):
+def prepare_pretrain_data(data_files, tokenizer: PreTrainedTokenizer, config: dict, length_2_num_token: dict, add_bos:bool=True, add_eos:bool=True, seed=42, cache_dir=None, load_from_cache_file=None):
     random.seed(seed)
 
     if isinstance(data_files, list):
@@ -56,7 +60,7 @@ def prepare_pretrain_data(data_files, tokenizer: PreTrainedTokenizer, config: di
     assert os.path.isdir(data_files), f"Make sure the data_files parameter is a directory containing the pretraining data json files! Found {data_files}."
         
     def _process(data):
-        input_ids = tokenizer(data["text"])["input_ids"]
+        input_ids = tokenizer(data["text"], add_special_tokens=False)["input_ids"]
         return {"input_ids": input_ids}
 
     num_token_avg_per_source = config["num_tokens_avg"]
@@ -94,7 +98,11 @@ def prepare_pretrain_data(data_files, tokenizer: PreTrainedTokenizer, config: di
         input_ids = []
         for x in dataset:
             sample_input_ids = x["input_ids"]
+            if add_bos:
+                assert tokenizer.bos_token_id is not None, f"Make sure the bos_token_id exists when enable add_eos."
+                sample_input_ids = [tokenizer.bos_token_id] + sample_input_ids
             if add_eos:
+                assert tokenizer.eos_token_id is not None, f"Make sure the eos_token_id exists when enable add_eos."
                 sample_input_ids = sample_input_ids + [tokenizer.eos_token_id]
             # add input_ids
             input_ids.extend(sample_input_ids)
@@ -183,6 +191,7 @@ if __name__ == "__main__":
             tokenizer=tokenizer,
             config=config,
             length_2_num_token=length_2_num_token,
+            add_bos=args.add_bos,
             add_eos=args.add_eos,
             seed=args.seed,
             cache_dir=args.dataset_cache_dir,

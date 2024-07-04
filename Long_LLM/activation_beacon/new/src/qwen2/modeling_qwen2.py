@@ -17,7 +17,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" PyTorch Llama model."""
+""" PyTorch Qwen2 model."""
 import inspect
 import math
 import warnings
@@ -43,7 +43,7 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 from transformers.integrations import is_deepspeed_zero3_enabled
-from .configuration_llama import LlamaConfig
+from .configuration_qwen2 import Qwen2Config
 
 
 if is_flash_attn_2_available():
@@ -58,7 +58,15 @@ from ..modeling_utils import optional_grad_ctx, compute_loss, BeaconModelOutput
 
 logger = logging.get_logger(__name__)
 
-_CONFIG_FOR_DOC = "LlamaConfig"
+
+_CHECKPOINT_FOR_DOC = "Qwen/Qwen2-7B-beta"
+_CONFIG_FOR_DOC = "Qwen2Config"
+
+QWEN2_PRETRAINED_MODEL_ARCHIVE_LIST = [
+    "Qwen/Qwen2-7B-beta",
+    # See all Qwen2 models at https://huggingface.co/models?filter=qwen2
+]
+
 
 # Copied from transformers.models.llama.modeling_llama._get_unpad_data
 def _get_unpad_data(attention_mask):
@@ -73,11 +81,11 @@ def _get_unpad_data(attention_mask):
     )
 
 
-# Copied from transformers.models.llama.modeling_llama.LlamaRMSNorm with Llama->Llama
-class LlamaRMSNorm(nn.Module):
+# Copied from transformers.models.llama.modeling_llama.LlamaRMSNorm with Llama->Qwen2
+class Qwen2RMSNorm(nn.Module):
     def __init__(self, hidden_size, eps=1e-6):
         """
-        LlamaRMSNorm is equivalent to T5LayerNorm
+        Qwen2RMSNorm is equivalent to T5LayerNorm
         """
         super().__init__()
         self.weight = nn.Parameter(torch.ones(hidden_size))
@@ -99,7 +107,7 @@ def rotate_half(x):
     return torch.cat((-x2, x1), dim=-1)
 
 
-class LlamaRotaryEmbedding(nn.Module):
+class Qwen2RotaryEmbedding(nn.Module):
     def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None):
         super().__init__()
 
@@ -143,8 +151,8 @@ class LlamaRotaryEmbedding(nn.Module):
         return q_embed, k_embed
 
 
-class LlamaLinearScalingRotaryEmbedding(LlamaRotaryEmbedding):
-    """LlamaRotaryEmbedding extended with linear scaling. Credits to the Reddit user /u/kaiokendev"""
+class Qwen2LinearScalingRotaryEmbedding(Qwen2RotaryEmbedding):
+    """Qwen2RotaryEmbedding extended with linear scaling. Credits to the Reddit user /u/kaiokendev"""
 
     def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None, scaling_factor=1.0):
         self.scaling_factor = scaling_factor
@@ -162,8 +170,8 @@ class LlamaLinearScalingRotaryEmbedding(LlamaRotaryEmbedding):
         self.register_buffer("sin_cached", emb.sin().to(dtype), persistent=False)
 
 
-class LlamaDynamicNTKScalingRotaryEmbedding(LlamaRotaryEmbedding):
-    """LlamaRotaryEmbedding extended with Dynamic NTK scaling. Credits to the Reddit users /u/bloc97 and /u/emozilla"""
+class Qwen2DynamicNTKScalingRotaryEmbedding(Qwen2RotaryEmbedding):
+    """Qwen2RotaryEmbedding extended with Dynamic NTK scaling. Credits to the Reddit users /u/bloc97 and /u/emozilla"""
 
     def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None, scaling_factor=1.0):
         self.scaling_factor = scaling_factor
@@ -188,7 +196,7 @@ class LlamaDynamicNTKScalingRotaryEmbedding(LlamaRotaryEmbedding):
         self.register_buffer("sin_cached", emb.sin().to(dtype), persistent=False)
 
 
-class LlamaYarnRotaryEmbedding(nn.Module):
+class Qwen2YarnRotaryEmbedding(nn.Module):
     def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None, scaling_factor=1.0, beta_slow=2, beta_fast=128):
         super().__init__()
 
@@ -238,8 +246,6 @@ class LlamaYarnRotaryEmbedding(nn.Module):
         yarn_theta = factor * theta + (1 - factor) * interleave_theta
         self.register_buffer("inv_freq", yarn_theta, persistent=False)
 
-        # print(factor, self.inv_freq)
-
         t = torch.arange(seq_len, device=device, dtype=self.inv_freq.dtype)
         freqs = torch.outer(t, self.inv_freq)
         emb = torch.cat((freqs, freqs), dim=-1)
@@ -270,8 +276,8 @@ class LlamaYarnRotaryEmbedding(nn.Module):
         return q_embed, k_embed
 
 
-# Copied from transformers.models.llama.modeling_llama.LlamaMLP with Llama->Llama
-class LlamaMLP(nn.Module):
+# Copied from transformers.models.mistral.modeling_mistral.Qwen2MLP with Qwen2->Qwen2
+class Qwen2MLP(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.config = config
@@ -290,14 +296,14 @@ class LlamaMLP(nn.Module):
             self.beacon_down_proj = nn.Linear(self.intermediate_size, self.hidden_size, bias=False)
             self.beacon_down_proj.weight.data.zero_()
             self.beacon_down_proj._is_hf_initialized = True
-    
+
     def _init_beacon_proj(self, missing_keys):
         """Initialize the beacon projection weight with that of the ordinal projection."""
         if "mlp" in self.config.beacon_param:
             if is_deepspeed_zero3_enabled():
                 # FIXME: after deepspeed initialization, some weights becomes non-zero
-                # For Llama, there are rows that are full of zeros
-                # For Llama, there are values bigger than 1e29...
+                # For Mistral, there are rows that are full of zeros
+                # For Mistral, there are values bigger than 1e29...
 
                 import deepspeed
                 params = [self.up_proj.weight, self.down_proj.weight, self.beacon_up_proj.weight, self.beacon_down_proj.weight]
@@ -333,6 +339,7 @@ class LlamaMLP(nn.Module):
         return down_proj
 
 
+# Copied from transformers.models.llama.modeling_llama.repeat_kv
 def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     """
     This is the equivalent of torch.repeat_interleave(x, dim=1, repeats=n_rep). The hidden states go from (batch,
@@ -345,10 +352,10 @@ def repeat_kv(hidden_states: torch.Tensor, n_rep: int) -> torch.Tensor:
     return hidden_states.reshape(batch, num_key_value_heads * n_rep, slen, head_dim)
 
 
-class LlamaAttention(nn.Module):
+class Qwen2Attention(nn.Module):
     """Multi-headed attention from 'Attention Is All You Need' paper"""
 
-    def __init__(self, config: LlamaConfig, layer_idx: Optional[int] = None):
+    def __init__(self, config: Qwen2Config, layer_idx: Optional[int] = None):
         super().__init__()
         self.config = config
         self.layer_idx = layer_idx
@@ -374,11 +381,11 @@ class LlamaAttention(nn.Module):
                 f"hidden_size must be divisible by num_heads (got `hidden_size`: {self.hidden_size}"
                 f" and `num_heads`: {self.num_heads})."
             )
+        self.q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=True)
+        self.k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=True)
+        self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=True)
+        self.o_proj = nn.Linear(self.num_heads * self.head_dim, self.hidden_size, bias=False)
 
-        self.q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
-        self.k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
-        self.v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
-        self.o_proj = nn.Linear(self.num_heads * self.head_dim, self.hidden_size, bias=config.attention_bias)
         self._init_rope()
 
         # NOTE: add extra parameters for beacon tokens
@@ -403,7 +410,7 @@ class LlamaAttention(nn.Module):
 
     def _init_rope(self):
         if self.config.rope_scaling is None:
-            self.rotary_emb = LlamaRotaryEmbedding(
+            self.rotary_emb = Qwen2RotaryEmbedding(
                 self.head_dim,
                 max_position_embeddings=self.max_position_embeddings,
                 base=self.rope_theta,
@@ -412,21 +419,35 @@ class LlamaAttention(nn.Module):
             scaling_type = self.config.rope_scaling["type"]
             scaling_factor = self.config.rope_scaling["factor"]
             if scaling_type == "linear":
-                self.rotary_emb = LlamaLinearScalingRotaryEmbedding(
+                self.rotary_emb = Qwen2LinearScalingRotaryEmbedding(
                     self.head_dim,
                     max_position_embeddings=self.max_position_embeddings,
                     scaling_factor=scaling_factor,
                     base=self.rope_theta,
                 )
             elif scaling_type == "dynamic":
-                self.rotary_emb = LlamaDynamicNTKScalingRotaryEmbedding(
+                self.rotary_emb = Qwen2DynamicNTKScalingRotaryEmbedding(
                     self.head_dim,
                     max_position_embeddings=self.max_position_embeddings,
                     scaling_factor=scaling_factor,
                     base=self.rope_theta,
                 )
             elif scaling_type == "yarn":
-                self.rotary_emb = LlamaYarnRotaryEmbedding(
+                self.rotary_emb = Qwen2YarnRotaryEmbedding(
+                    self.head_dim,
+                    max_position_embeddings=self.max_position_embeddings,
+                    scaling_factor=scaling_factor,
+                    base=self.rope_theta,
+                )
+            elif scaling_type == "yarn-t":
+                self.rotary_emb = Qwen2YarnDynamicTemperatureRotaryEmbedding(
+                    self.head_dim,
+                    max_position_embeddings=self.max_position_embeddings,
+                    scaling_factor=scaling_factor,
+                    base=self.rope_theta,
+                )
+            elif scaling_type == "yarn-t-logn":
+                self.rotary_emb = Qwen2YarnDynamicTemperatureLogNRotaryEmbedding(
                     self.head_dim,
                     max_position_embeddings=self.max_position_embeddings,
                     scaling_factor=scaling_factor,
@@ -441,8 +462,8 @@ class LlamaAttention(nn.Module):
         
         if is_deepspeed_zero3_enabled():
             # FIXME: after deepspeed initialization, some weights becomes non-zero
-            # For Llama, there are rows that are full of zeros
-            # For Llama, there are values bigger than 1e29...
+            # For Mistral, there are rows that are full of zeros
+            # For Mistral, there are values bigger than 1e29...
 
             import deepspeed
             if "q" in beacon_param:
@@ -488,7 +509,7 @@ class LlamaAttention(nn.Module):
         else:
             # only copy the value in-place, without tieing the weight
             if "q" in beacon_param and any("beacon_q_proj" in missing_key for missing_key in missing_keys):
-                # FIXME: some beacon weights are not initialized as zero for llama model, why? 
+                # FIXME: some beacon weights are not initialized as zero for mistral model, why? 
                 # if (self.beacon_q_proj.weight == 0).all():
                     self.beacon_q_proj.weight.data[:] = self.q_proj.weight.data
                     if self.q_proj.bias is not None:
@@ -624,7 +645,7 @@ class LlamaAttention(nn.Module):
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
-        
+
         query_states, key_states = self.rotary_emb(query_states, key_states, position_ids)
 
         key_states = repeat_kv(key_states, self.num_key_value_groups)
@@ -668,14 +689,14 @@ class LlamaAttention(nn.Module):
         return attn_output, attn_weights, past_key_value
 
 
-class LlamaSdpaAttention(LlamaAttention):
+class Qwen2SdpaAttention(Qwen2Attention):
     """
-    Llama attention module using torch.nn.functional.scaled_dot_product_attention. This module inherits from
-    `LlamaAttention` as the weights of the module stays untouched. The only changes are on the forward pass to adapt to
+    Qwen2 attention module using torch.nn.functional.scaled_dot_product_attention. This module inherits from
+    `Qwen2Attention` as the weights of the module stays untouched. The only changes are on the forward pass to adapt to
     SDPA API.
     """
 
-    # Adapted from LlamaAttention.forward
+    # Adapted from Qwen2Attention.forward
     def forward(
         self,
         hidden_states: torch.Tensor,
@@ -688,7 +709,7 @@ class LlamaSdpaAttention(LlamaAttention):
         if output_attentions:
             # TODO: Improve this warning with e.g. `model.config.attn_implementation = "manual"` once this is implemented.
             logger.warning_once(
-                "LlamaModel is using LlamaSdpaAttention, but `torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to the manual attention implementation, "
+                "Qwen2Model is using Qwen2SdpaAttention, but `torch.nn.functional.scaled_dot_product_attention` does not support `output_attentions=True`. Falling back to the manual attention implementation, "
                 'but specifying the manual implementation will be required from Transformers version v5.0.0 onwards. This warning can be removed using the argument `attn_implementation="eager"` when loading the model.'
             )
             return super().forward(
@@ -758,9 +779,9 @@ class LlamaSdpaAttention(LlamaAttention):
         return attn_output, None, past_key_value
 
 
-class LlamaFlashAttention2(LlamaAttention):
+class Qwen2FlashAttention2(Qwen2Attention):
     """
-    Llama flash attention module. This module inherits from `LlamaAttention` as the weights of the module stays
+    Qwen2 flash attention module. This module inherits from `Qwen2Attention` as the weights of the module stays
     untouched. The only required change would be on the forward pass where it needs to correctly call the public API of
     flash attention and deal with padding tokens in case the input contains any of them.
     """
@@ -811,6 +832,10 @@ class LlamaFlashAttention2(LlamaAttention):
 
         query_states, key_states = self.rotary_emb(query_states, key_states, position_ids)
 
+        # FlashAttention will automatically handle grouped query attention
+        # key_states = repeat_kv(key_states, self.num_key_value_groups)
+        # value_states = repeat_kv(value_states, self.num_key_value_groups)
+        
         # TODO: These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
         # to be able to avoid many of these transpose/reshape/view.
         query_states = query_states.transpose(1, 2)
@@ -823,7 +848,7 @@ class LlamaFlashAttention2(LlamaAttention):
         # therefore the input hidden states gets silently casted in float32. Hence, we need
         # cast them back in the correct dtype just to be sure everything works as expected.
         # This might slowdown training & inference so it is recommended to not cast the LayerNorms
-        # in fp32. (LlamaRMSNorm handles it correctly)
+        # in fp32. (Qwen2RMSNorm handles it correctly)
 
         input_dtype = query_states.dtype
         if input_dtype == torch.float32:
@@ -887,7 +912,7 @@ class LlamaFlashAttention2(LlamaAttention):
         if not self._flash_attn_uses_top_left_mask:
             causal = self.is_causal
         else:
-            # TODO: Remove the `query_length != 1` check once Flash Attention for RoCm is bumped to 2.1. For details, please see the comment in LlamaFlashAttention2 __init__.
+            # TODO: Remove the `query_length != 1` check once Flash Attention for RoCm is bumped to 2.1. For details, please see the comment in Qwen2FlashAttention2 __init__.
             causal = self.is_causal and query_length != 1
 
         # Contains at least one padding token in the sequence
@@ -960,23 +985,28 @@ class LlamaFlashAttention2(LlamaAttention):
         )
 
 
-LLAMA_ATTENTION_CLASSES = {
-    "eager": LlamaAttention,
-    "sdpa": LlamaSdpaAttention,
-    "flash_attention_2": LlamaFlashAttention2,
+QWEN2_ATTENTION_CLASSES = {
+    "eager": Qwen2Attention,
+    "sdpa": Qwen2SdpaAttention,
+    "flash_attention_2": Qwen2FlashAttention2,
 }
 
 
-class LlamaDecoderLayer(nn.Module):
-    def __init__(self, config: LlamaConfig, layer_idx: int):
+class Qwen2DecoderLayer(nn.Module):
+    def __init__(self, config: Qwen2Config, layer_idx: int):
         super().__init__()
         self.hidden_size = config.hidden_size
 
-        self.self_attn = LLAMA_ATTENTION_CLASSES[config._attn_implementation](config, layer_idx)
+        if config.use_sliding_window and config._attn_implementation != "flash_attention_2":
+            logger.warning_once(
+                f"Sliding Window Attention is enabled but not implemented for `{config._attn_implementation}`; "
+                "unexpected results may be encountered."
+            )
+        self.self_attn = QWEN2_ATTENTION_CLASSES[config._attn_implementation](config, layer_idx)
 
-        self.mlp = LlamaMLP(config)
-        self.input_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
-        self.post_attention_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.mlp = Qwen2MLP(config)
+        self.input_layernorm = Qwen2RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.post_attention_layernorm = Qwen2RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
     def forward(
         self,
@@ -988,6 +1018,11 @@ class LlamaDecoderLayer(nn.Module):
         use_cache: Optional[bool] = False,
         **kwargs,
     ) -> Tuple[torch.FloatTensor, Optional[Tuple[torch.FloatTensor, torch.FloatTensor]]]:
+        if "padding_mask" in kwargs:
+            warnings.warn(
+                "Passing `padding_mask` is deprecated and will be removed in v4.37. "
+                "Please make sure use `attention_mask` instead.`"
+            )
         """
         Args:
             hidden_states (`torch.FloatTensor`): input to the layer of shape `(batch, seq_len, embed_dim)`
@@ -1001,10 +1036,6 @@ class LlamaDecoderLayer(nn.Module):
                 (see `past_key_values`).
             past_key_value (`Tuple(torch.FloatTensor)`, *optional*): cached past key and value projection states
         """
-        if "padding_mask" in kwargs:
-            warnings.warn(
-                "Passing `padding_mask` is deprecated and will be removed in v4.37. Please make sure use `attention_mask` instead.`"
-            )
 
         # NOTE: get beacon_size in case the mlp is included in beacon_param
         past_key, past_value, beacon_size, beacon_indices = past_key_value
@@ -1021,7 +1052,6 @@ class LlamaDecoderLayer(nn.Module):
             past_key_value=past_key_value,
             output_attentions=output_attentions,
             use_cache=use_cache,
-            **kwargs,
         )
         hidden_states = residual + hidden_states
 
@@ -1042,7 +1072,7 @@ class LlamaDecoderLayer(nn.Module):
         return outputs
 
 
-LLAMA_START_DOCSTRING = r"""
+QWEN2_START_DOCSTRING = r"""
     This model inherits from [`PreTrainedModel`]. Check the superclass documentation for the generic methods the
     library implements for all its model (such as downloading or saving, resizing the input embeddings, pruning heads
     etc.)
@@ -1052,7 +1082,7 @@ LLAMA_START_DOCSTRING = r"""
     and behavior.
 
     Parameters:
-        config ([`LlamaConfig`]):
+        config ([`Qwen2Config`]):
             Model configuration class with all the parameters of the model. Initializing with a config file does not
             load the weights associated with the model, only the configuration. Check out the
             [`~PreTrainedModel.from_pretrained`] method to load the model weights.
@@ -1060,14 +1090,14 @@ LLAMA_START_DOCSTRING = r"""
 
 
 @add_start_docstrings(
-    "The bare Llama Model outputting raw hidden-states without any specific head on top.",
-    LLAMA_START_DOCSTRING,
+    "The bare Qwen2 Model outputting raw hidden-states without any specific head on top.",
+    QWEN2_START_DOCSTRING,
 )
-class LlamaPreTrainedModel(PreTrainedModel):
-    config_class = LlamaConfig
+class Qwen2PreTrainedModel(PreTrainedModel):
+    config_class = Qwen2Config
     base_model_prefix = "model"
     supports_gradient_checkpointing = True
-    _no_split_modules = ["LlamaDecoderLayer"]
+    _no_split_modules = ["Qwen2DecoderLayer"]
     _skip_keys_device_placement = "past_key_values"
     _supports_flash_attn_2 = True
     _supports_sdpa = True
@@ -1085,7 +1115,7 @@ class LlamaPreTrainedModel(PreTrainedModel):
                 module.weight.data[module.padding_idx].zero_()
 
 
-LLAMA_INPUTS_DOCSTRING = r"""
+QWEN2_INPUTS_DOCSTRING = r"""
     Args:
         input_ids (`torch.LongTensor` of shape `(batch_size, sequence_length)`):
             Indices of input sequence tokens in the vocabulary. Padding will be ignored by default should you provide
@@ -1156,18 +1186,18 @@ LLAMA_INPUTS_DOCSTRING = r"""
 
 
 @add_start_docstrings(
-    "The bare Llama Model outputting raw hidden-states without any specific head on top.",
-    LLAMA_START_DOCSTRING,
+    "The bare Qwen2 Model outputting raw hidden-states without any specific head on top.",
+    QWEN2_START_DOCSTRING,
 )
-class LlamaModel(LlamaPreTrainedModel):
+class Qwen2Model(Qwen2PreTrainedModel):
     """
-    Transformer decoder consisting of *config.num_hidden_layers* layers. Each layer is a [`LlamaDecoderLayer`]
+    Transformer decoder consisting of *config.num_hidden_layers* layers. Each layer is a [`Qwen2DecoderLayer`]
 
     Args:
-        config: LlamaConfig
+        config: Qwen2Config
     """
 
-    def __init__(self, config: LlamaConfig):
+    def __init__(self, config: Qwen2Config):
         super().__init__(config)
         self.padding_idx = config.pad_token_id
         self.vocab_size = config.vocab_size
@@ -1179,10 +1209,10 @@ class LlamaModel(LlamaPreTrainedModel):
         self.beacon_embed_tokens._is_hf_initialized = True
 
         self.layers = nn.ModuleList(
-            [LlamaDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)]
+            [Qwen2DecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)]
         )
         self._attn_implementation = config._attn_implementation
-        self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
+        self.norm = Qwen2RMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
         self.gradient_checkpointing = False
         # Initialize weights and apply final processing
@@ -1225,7 +1255,7 @@ class LlamaModel(LlamaPreTrainedModel):
     def set_input_embeddings(self, value):
         self.embed_tokens = value
 
-    @add_start_docstrings_to_model_forward(LLAMA_INPUTS_DOCSTRING)
+    @add_start_docstrings_to_model_forward(QWEN2_INPUTS_DOCSTRING)
     def forward(
         self,
         input_ids: torch.LongTensor = None,
@@ -1346,12 +1376,12 @@ class LlamaModel(LlamaPreTrainedModel):
         )
 
 
-class LlamaForCausalLM(LlamaPreTrainedModel):
+class Qwen2ForCausalLM(Qwen2PreTrainedModel):
     _tied_weights_keys = ["lm_head.weight"]
 
     def __init__(self, config):
         super().__init__(config)
-        self.model = LlamaModel(config)
+        self.model = Qwen2Model(config)
         self.vocab_size = config.vocab_size
         self.lm_head = nn.Linear(config.hidden_size, config.vocab_size, bias=False)
         # Initialize weights and apply final processing
@@ -1422,7 +1452,7 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
 
         # when we directly call _native_forward, the past_key_values would be None
         if past_key_values is None:
-            # NOTE: set beacon size to 0 to avoid using any beacon parameters, see LlamaAttention.forward
+            # NOTE: set beacon size to 0 to avoid using any beacon parameters, see Qwen2Attention.forward
             past_key_values = [(None, None, 0, None) for _ in range(self.config.num_hidden_layers)]
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
@@ -1543,7 +1573,7 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         """
         # only allow gradient when training
         with optional_grad_ctx(with_grad=self.training):
-            # we can disable beacon to use the original llama
+            # we can disable beacon to use the original mistral
             if hasattr(self, "_enable_beacon") and self._enable_beacon == False:
                 return self._native_forward(**kwargs)
             else:

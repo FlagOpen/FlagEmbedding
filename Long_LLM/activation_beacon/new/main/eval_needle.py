@@ -27,7 +27,7 @@ logger = logging.get_logger(__name__)
 @dataclass
 class Args(ModelArgs):
     haystack_path: str = field(
-        default="activation-beacon:needle/PaulGrahamEssays",
+        default="long-llm:needle/PaulGrahamEssays",
         metadata={'help': 'The context for evaluation.'}
     )
     output_dir: str = field(
@@ -38,7 +38,6 @@ class Args(ModelArgs):
         default=None,
         metadata={'help': 'The directory relative to output_dir for saving results.'}
     )
-
 
     min_length: int = field(
         default=8192,
@@ -87,10 +86,6 @@ class Args(ModelArgs):
         default=False,
         metadata={'help': 'Use GPT4 to evaluate accuracy.'}
     )
-    proxy: Optional[str] = field(
-        default=None,
-        metadata={'help': 'Proxy when using gpt evaluation.'}
-    )
 
     load_result: bool = field(
         default=False,
@@ -98,6 +93,7 @@ class Args(ModelArgs):
     )
 
     do_sample: bool = False
+    max_new_tokens: int = 50
 
     def __post_init__(self):
         super().__post_init__()
@@ -118,16 +114,15 @@ class OpenAIEvaluator:
                  model_name: str = "gpt-3.5-turbo-0125",
                  model_kwargs: dict = DEFAULT_MODEL_KWARGS,
                  true_answer: str = None,
-                 question_asked: str = None,
-                 proxy: str = None):
+                 question_asked: str = None):
         """
         :param model_name: The name of the model.
         :param model_kwargs: Model configuration. Default is {temperature: 0}
         :param true_answer: The true answer to the question asked.
         :param question_asked: The question asked to the model.
         """
-        # from langchain_openai import ChatOpenAI
-        from langchain_community.chat_models import ChatOpenAI
+        from langchain_openai import ChatOpenAI
+        # from langchain_community.chat_models import ChatOpenAI
 
         if (not true_answer) or (not question_asked):
             raise ValueError("true_answer and question_asked must be supplied with init.")
@@ -136,17 +131,17 @@ class OpenAIEvaluator:
         self.model_kwargs = model_kwargs
         self.true_answer = true_answer
         self.question_asked = question_asked
-        self.proxy = proxy
 
         api_key = os.getenv('OPENAI_API_KEY')
         if (not api_key):
             raise ValueError("OPENAI_API_KEY must be in env for using openai evaluator.")
+        proxy = os.getenv('http_proxy')
+        if proxy:
+            logger.info(f"Using proxy {proxy}...")
 
-        self.api_key = api_key
-        
         self.evaluator = ChatOpenAI(model=self.model_name,
-                                    openai_api_key=self.api_key,
-                                    openai_proxy=self.proxy,
+                                    openai_api_key=api_key,
+                                    openai_proxy=proxy,
                                     **self.model_kwargs)
 
     def evaluate_response(self, response: str) -> int:
@@ -278,12 +273,8 @@ def main():
             pin_memory=not args.cpu,
         )
 
-        if not args.enable_tp:
-            model, dataloader = accelerator.prepare(model, dataloader)
-            model = accelerator.unwrap_model(model)
-        else:
-            # NOTE: prepare dataloader so the data moves to GPU automatically
-            dataloader = accelerator.prepare(dataloader)
+        # NOTE: prepare dataloader so the data moves to GPU automatically
+        dataloader = accelerator.prepare(dataloader)
 
         accelerator.wait_for_everyone()
 
@@ -300,27 +291,23 @@ def main():
 
             inputs = tokenizer(inputs, return_tensors="pt").to(model.device)
 
-            outputs = model.generate(
-                **inputs,
-                max_new_tokens=50,
-                num_beams=1,
-                do_sample=False,
-                temperature=1.,
-                # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-                synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
-            )
-            outputs = outputs[:, inputs['input_ids'].shape[1]:].contiguous()
+            output = model.generate(**inputs)
+
+            if isinstance(output, torch.Tensor):
+                # 1, max_new_tokens
+                output = output[:, inputs['input_ids'].shape[1]:]
+                output = tokenizer.batch_decode(output, skip_special_tokens=True)
+            elif isinstance(output, list):
+                pass
 
             if accelerator.num_processes > 1:
-                outputs = accelerator.pad_across_processes(outputs, pad_index=tokenizer.pad_token_id, dim=1)
-                outputs = accelerator.gather_for_metrics(outputs)
+                output = accelerator.gather_for_metrics(output)
 
-            all_outputs.extend(outputs.tolist())
+            all_outputs.extend(output)
 
         if accelerator.process_index == 0:
             results = {l: {d: [] for d in test_depths} for l in test_lengths}
 
-            all_outputs = tokenizer.batch_decode(all_outputs, skip_special_tokens=True)
             all_lengths = dataset['length']
             all_depths = dataset['depth']
             all_needles = dataset['needle']
@@ -333,25 +320,33 @@ def main():
             # also save config
             args.save(os.path.join(result_dir, "config.json"))
 
-
     if accelerator.process_index == 0:
         rouge = Rouge()
         rouge_score = {l: {d: [] for d in v.keys()} for l, v in results.items()}
         if args.gpt_eval:
-            evaluator = OpenAIEvaluator(question_asked=args.prompt.strip(), true_answer=args.needle.strip(), proxy=args.proxy)
+            evaluator = OpenAIEvaluator(question_asked=args.prompt.strip(), true_answer=args.needle.strip())
             gpt_score = {l: {d: [] for d in v.keys()} for l, v in results.items()}
 
         for l, lv in results.items():
             for d, dv in lv.items():
                 for v in dv:
-                    prediction = v["prediction"]
-                    target = v["target"]
+                    prediction = v["prediction"].strip("\n").split("\n")[0]
+                    target = v["target"].strip("\n")
 
-                    score = rouge.get_scores([prediction], [target], avg=True)["rouge-l"]["r"]
+                    try:
+                        score = rouge.get_scores([prediction], [target], avg=True)["rouge-l"]["r"]
+                    except:
+                        score = 0
+
                     rouge_score[l][d].append(score)
 
                     if args.gpt_eval:
-                        gpt_score[l][d].append(evaluator.evaluate_response(prediction))
+                        while 1:
+                            try:
+                                gpt_score[l][d].append(evaluator.evaluate_response(prediction))
+                                break
+                            except ValueError:
+                                pass
 
                 rouge_score[l][d] = round(sum(rouge_score[l][d]) / len(dv), 2)
                 if args.gpt_eval:
@@ -372,34 +367,44 @@ def main():
             # Copied from https://github.com/gkamradt/LLMTest_NeedleInAHaystack/blob/main/viz/CreateVizFromLLMTesting.ipynb
             cmap = LinearSegmentedColormap.from_list("custom_cmap", ["#F0496E", "#EBB839", "#0CD79F"])
             # Create the heatmap with better aesthetics
-            plt.figure(figsize=(17.5, 8))  # Can adjust these dimensions as needed
+            sns.set(rc={"figure.figsize": (17.5, 8), "axes.titlesize":14, "axes.labelsize":12}, style="whitegrid", palette="colorblind")
             data = pd.DataFrame(metric_value)
 
             if metric_key == "rouge":
                 vmin = 0
-                vmax = 1
+                vmax = 1.0
+                label = "Rouge"
             elif metric_key == "gpt":
                 vmin = 1
-                vmax = 10
+                vmax = 10.0
+                label = "Accuracy"
 
-            sns.heatmap(
+            annot = data.copy().astype(str)
+            annot[annot == str(vmax)] = ""
+
+            ax = sns.heatmap(
                 data,
-                fmt="g",
                 cmap=cmap,
-                cbar_kws={'label': metric_key},
                 vmin=vmin,
                 vmax=vmax,
+                annot=annot,
+                fmt="",
+                linewidth=.5,
+                annot_kws={"fontsize":10},
             )
+            cbar = ax.collections[0].colorbar
+            cbar.set_label(label, size=14)
 
             # More aesthetics
             plt.title('Needle In A HayStack')  # Adds a title
-            plt.xlabel('Token Limit')  # X-axis label
-            plt.ylabel('Depth Percent')  # Y-axis label
-            plt.xticks(rotation=45)  # Rotates the x-axis labels to prevent overlap
-            plt.yticks(rotation=0)  # Ensures the y-axis labels are horizontal
+            plt.xlabel('Context Length', fontsize=14)  # X-axis label
+            plt.ylabel('Depth Percent', fontsize=14)  # Y-axis label
+            plt.xticks(rotation=45, fontsize=10)  # Rotates the x-axis labels to prevent overlap
+            plt.yticks(rotation=0, fontsize=10)  # Ensures the y-axis labels are horizontal
             plt.tight_layout()  # Fits everything neatly into the figure area
             # save to result_dir
-            plt.savefig(os.path.join(result_dir, f"{metric_key}.pdf"), format='pdf', dpi=1200, bbox_inches='tight')
+            plt.savefig(os.path.join(result_dir, f"{metric_key}.png"), format='png', bbox_inches='tight')
+            plt.close()
 
 
 if __name__ == "__main__":

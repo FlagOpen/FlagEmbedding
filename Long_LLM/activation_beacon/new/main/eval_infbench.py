@@ -22,7 +22,7 @@ logger = logging.get_logger(__name__)
 @dataclass
 class Args(ModelArgs):
     eval_data: str = field(
-        default="activation-beacon:infbench",
+        default="long-llm:infbench",
         metadata={'help': 'The directory of all infbench evaluation data.'}
     )
     output_dir: str = field(
@@ -85,9 +85,8 @@ def process_infbench(data, indices, tokenizer, chat_template, task:str, prompt_t
             add_generation_prompt=True,
         ).encoded
 
-        for k, v in encoded.items():
-            outputs[k].append(v)
-
+        outputs["input_ids"].append(encoded["input_ids"])
+        outputs["attention_mask"].append(encoded["attention_mask"])
         outputs["index"].append(index)
         outputs["answer"].append(answer)
 
@@ -102,10 +101,15 @@ def main():
     accelerator = Accelerator(cpu=args.cpu)
     model, tokenizer = get_model_and_tokenizer(args, device=accelerator.device)
 
+    if args.tasks == ["all"]:
+        tasks = list(TASK_TO_PATH.keys())
+    else:
+        tasks = args.tasks
+
     with accelerator.main_process_first():
         all_datasets = {}
 
-        for task in args.tasks:
+        for task in tasks:
             process_fn = partial(
                 process_infbench, 
                 tokenizer=tokenizer,
@@ -131,50 +135,12 @@ def main():
             logger.info(f"Evaluating {task} ({i + 1} / {len(all_datasets)})...")
 
         result_path = os.path.join(result_dir, f"{task}.json")
-        
-        if args.load_result and os.path.exists(result_path):
-            if accelerator.process_index == 0:
-                scores = []
-                preds = []
-                labels = []
-                indices = []
-                with open(result_path, encoding="utf-8") as f:
-                    # the first line is metric
-                    f.readline()
 
-                    for line in f:
-                        item = json.loads(line)
-                        pred = item["pred"]
-                        label = item["label"]
-                        index = item["index"]
-                        # NOTE: here we explicitly input model_name=None
-                        score = get_score_one(pred, label, task, None)
-                        scores.append(score)
+        # get answers in advance
+        labels = dataset["answer"]
+        dataset = dataset.remove_columns(["answer"])
 
-                        preds.append(pred)
-                        labels.append(label)
-                        indices.append(index)
-
-                    score = round(sum(scores) / len(scores), 4)
-
-                    logger.info(f"{task}: {score}")
-                    metrics[task] = score
-
-                with open(makedirs(result_path), "w", encoding="utf-8") as f:
-                    f.write(json.dumps(score, ensure_ascii=False) + "\n")
-                    for index, pred, label in zip(indices, preds, labels):
-                        item = {
-                            "index": index,
-                            "pred": pred,
-                            "label": label,
-                        }
-                        f.write(json.dumps(item, ensure_ascii=False) + "\n")
-
-        else:
-            # get answers in advance
-            labels = dataset["answer"]
-            dataset = dataset.remove_columns(["answer"])
-
+        if not (args.load_result and os.path.exists(result_path)):
             data_collator = DefaultDataCollator(tokenizer=tokenizer)
             dataloader = DataLoader(
                 dataset, 
@@ -184,23 +150,15 @@ def main():
                 pin_memory=not args.cpu,
             )
 
-            if not args.enable_tp:
-                # NOTE: prepare model only once
-                if len(accelerator._models) == 0:
-                    model, dataloader = accelerator.prepare(model, dataloader)
-                    model = accelerator.unwrap_model(model)
-                else:
-                    dataloader = accelerator.prepare(dataloader)
-            else:
-                # NOTE: prepare dataloader so the data moves to GPU automatically
-                dataloader = accelerator.prepare(dataloader)
+            # NOTE: prepare dataloader so the data moves to GPU automatically
+            dataloader = accelerator.prepare(dataloader)
 
             indices = []
             preds = []
             max_new_tokens = TASK_TO_MAX_NEW_TOKENS[task]
 
             for j, x in enumerate(tqdm(dataloader, desc="Generating")):
-                index = x.pop("index")[0]
+                index = x.pop("index").tolist()
                 input_length = x["input_ids"].shape[1]
 
                 # NOTE: important to reset memory for every batch
@@ -210,55 +168,56 @@ def main():
                 output = model.generate(
                     **x,
                     max_new_tokens=max_new_tokens,
-                    do_sample=args.do_sample,
-                    temperature=args.temperature,
-                    top_p=args.top_p,
-                    # FIXME: sometimes transformers cannot detect deepspeed zero3, dont know why
-                    synced_gpus=accelerator.state.deepspeed_plugin is not None and accelerator.state.deepspeed_plugin.zero_stage == 3,
                 )
 
-                # 1, max_new_tokens
-                output = output[:, input_length:]
+                if isinstance(output, torch.Tensor):
+                    # 1, max_new_tokens
+                    output = output[:, input_length:]
+                    output = tokenizer.batch_decode(output, skip_special_tokens=True)
+                elif isinstance(output, list):
+                    pass
+
                 if accelerator.num_processes > 1:
-                    # pad across device to the same length
-                    output = accelerator.pad_across_processes(output.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
-                    # num_device, max_new_tokens
                     output = accelerator.gather_for_metrics(output)
                     index = accelerator.gather_for_metrics(index)
-                
-                output = output.tolist()
-                index = index.tolist()
 
                 if accelerator.process_index == 0:
-                    pred = tokenizer.batch_decode(output, skip_special_tokens=True)
-                    preds.extend(pred)
-
-                    if isinstance(index, list):
-                        indices.extend(index)
-                    else:
-                        # single process
-                        indices.append(index)
-
+                    preds.extend(output)
+                    indices.extend(index)
+        else:
             if accelerator.process_index == 0:
-                scores = []
-                for label, pred in tqdm(zip(labels, preds)):
-                    # NOTE: here we explicitly input model_name=None
-                    score = get_score_one(pred, label, task, None)
-                    scores.append(score)
-                score = round(sum(scores) / len(scores), 4)
+                preds = []
+                indices = []
 
-                logger.info(f"{task}: {score}")
-                metrics[task] = score
+                with open(result_path, "r", encoding="utf-8") as f:
+                    # the first line is metric
+                    f.readline()
 
-                with open(makedirs(result_path), "w", encoding="utf-8") as f:
-                    f.write(json.dumps(score, ensure_ascii=False) + "\n")
-                    for index, pred, label in zip(indices, preds, labels):
-                        item = {
-                            "index": index,
-                            "pred": pred,
-                            "label": label,
-                        }
-                        f.write(json.dumps(item, ensure_ascii=False) + "\n")
+                    for line in f:
+                        item = json.loads(line)
+                        preds.append(item["pred"])
+                        indices.append(len(indices))
+
+        if accelerator.process_index == 0:
+            scores = []
+            for label, pred in tqdm(zip(labels, preds)):
+                # NOTE: here we explicitly input model_name=None
+                score = get_score_one(pred, label, task, None)
+                scores.append(score)
+            score = round(sum(scores) / len(scores), 4)
+
+            logger.info(f"{task}: {score}")
+            metrics[task] = score
+
+            with open(makedirs(result_path), "w", encoding="utf-8") as f:
+                f.write(json.dumps(score, ensure_ascii=False) + "\n")
+                for index, pred, label in zip(indices, preds, labels):
+                    item = {
+                        "index": index,
+                        "pred": pred,
+                        "label": label,
+                    }
+                    f.write(json.dumps(item, ensure_ascii=False) + "\n")
 
     if accelerator.process_index == 0:
         # save config
