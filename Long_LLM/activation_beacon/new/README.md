@@ -1,6 +1,6 @@
 # Activation-Beacon
 
-[Activation Beacon](https://arxiv.org/abs/2401.03462) compresses the original KV into fewer yet more compact states (a.k.a. beacons) and hence enabling the LLM to perceive longer context given its fixed context window. It is known for the following features:
+[Activation Beacon](https://arxiv.org/abs/2401.03462) compresses the original KV into fewer yet more compact states (a.k.a. beacons) and hence enables the LLM to perceive longer context given its fixed context window. It is known for the following features:
 - **Effective**
   - there is little information loss given a compression ratio of 2, 4, and 8;
 - **Efficient**

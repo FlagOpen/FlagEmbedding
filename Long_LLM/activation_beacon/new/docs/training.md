@@ -131,8 +131,8 @@ torchrun --nproc_per_node 8 $DDP -m main.train \
 --min_length 7200 \
 --group_by_stride strict \
 --enable_beacon \
---beacon_window 2048 \
---beacon_stride 2048 \
+--beacon_window 1024 \
+--beacon_stride 1024 \
 --beacon_attn full-coverage \
 --beacon_attend_prev True \
 --beacon_sink_size 1 \
