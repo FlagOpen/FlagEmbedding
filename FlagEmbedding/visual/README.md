@@ -26,8 +26,8 @@
 In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By incorporating image token embedding into the BGE Text Embedding framework, Visualized-BGE gains the flexibility to process multi-modal data that goes beyond just text. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
 
 - Multi-Modal Knowledge Retrieval (query: text; candidate: image-text pairs, text, or image)  e.g. [WebQA](https://github.com/WebQnA/WebQA)
-- Composed Image Retrieval (query: image-text pair; candidate: images) e.g. [CIRR](), [FashionIQ]()
-- Knowledge Retrieval with Multi-Modal Queries (query: image-text pair; candidate: texts) e.g. [ReMuQ]()
+- Composed Image Retrieval (query: image-text pair; candidate: images) e.g. [CIRR](https://github.com/Cuberick-Orion/CIRR), [FashionIQ](https://github.com/XiaoxiaoGuo/fashion-iq)
+- Knowledge Retrieval with Multi-Modal Queries (query: image-text pair; candidate: texts) e.g. [ReMuQ](https://github.com/luomancs/ReMuQ)
 
 Moreover, Visualized BGE fully preserves the strong text embedding capabilities of the original BGE model : )
 
