@@ -9,9 +9,15 @@
     </a>
     <a href="https://huggingface.co/BAAI/bge-visualized">
         <img alt="Build" src="https://img.shields.io/badge/🤗 Model-VISTA Model-yellow">
-    </a>
+</p>
+
+<p align="center">
+</a>
     <a href="https://huggingface.co/datasets/JUNJIE99/VISTA_S2">
-        <img alt="Build" src="https://img.shields.io/badge/🤗 Dataset-VISTA_S2 Dataset-yellow">
+        <img alt="Build" src="https://img.shields.io/badge/🤗 Dataset-VISTA S2 Training Dataset-yellow">
+    </a>
+    <a href="https://huggingface.co/datasets/JUNJIE99/VISTA_Evaluation">
+        <img alt="Build" src="https://img.shields.io/badge/🤗 Dataset-Zero_Shot Multimodal Retrieval Dataset-yellow">
     </a>
 </p>
 
