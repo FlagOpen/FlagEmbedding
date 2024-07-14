@@ -56,7 +56,7 @@ output_name=beacon-mistral-finetune
 torchrun --nproc_per_node 8 $DDP -m main.train \
 --output_dir data/outputs/$output_name \
 --model_name_or_path data/outputs/beacon-mistral-pretrain/* \
---train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
+--train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
 --max_length 20000 \
 --min_length 7200 \
 --group_by_stride strict \
@@ -126,7 +126,7 @@ output_name=beacon-llama3-finetune
 torchrun --nproc_per_node 8 $DDP -m main.train \
 --output_dir data/outputs/$output_name \
 --model_name_or_path data/outputs/beacon-llama3-pretrain/* \
---train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
+--train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
 --max_length 20000 \
 --min_length 7200 \
 --group_by_stride strict \
@@ -194,7 +194,7 @@ torchrun --nproc_per_node 8 $DDP -m main.train \
 torchrun --nproc_per_node 8 $DDP -m main.train \
 --output_dir data/outputs/$output_name \
 --model_name_or_path data/outputs/beacon-qwen2-pretrain/* \
---train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
+--train_data long-llm:gpt/one_detail_book.train.16K.json long-llm:gpt/one_detail_paper.train.16K.json long-llm:longalpaca/train.json long-llm:booksum/train.16K.json long-llm:needle/train.16K.json long-llm:redpajama/train.json[5000] \
 --max_length 20000 \
 --min_length 7200 \
 --group_by_stride strict \
