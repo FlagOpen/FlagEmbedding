@@ -8,7 +8,7 @@ import datasets
 from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding, PreTrainedTokenizer
 
-from .arguments import DataArguments
+from arguments import DataArguments
 
 
 class TrainDatasetForEmbedding(Dataset):

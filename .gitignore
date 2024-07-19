@@ -136,3 +136,6 @@ pic2.py
 
 # Pyre type checker
 .pyre/
+wandb/
+*.txt
+result/
