@@ -35,19 +35,21 @@ class Visualized_BGE(nn.Module):
                  ):
         super().__init__()
 
-        assert model_name_bge in ["BAAI/bge-base-en-v1.5", "BAAI/bge-m3"]
+        assert 'bge' in model_name_bge
         assert model_weight is not None
         
         self.model_name_bge = model_name_bge
         
-        if model_name_bge == 'BAAI/bge-base-en-v1.5':
+        if 'bge-base-en-v1.5' in model_name_bge:
             model_name_eva = "EVA02-CLIP-B-16"
             self.hidden_dim = 768
             self.depth = 12
-        elif model_name_bge == 'BAAI/bge-m3':
+        elif 'bge-m3' in model_name_bge:
             model_name_eva = "EVA02-CLIP-L-14"
             self.hidden_dim = 1024
             self.depth = 24
+        else:
+            raise Exception(f'Unavailable model_name {model_name_bge}')
         
         if not from_pretrained:
             bge_config = AutoConfig.from_pretrained(model_name_bge)
