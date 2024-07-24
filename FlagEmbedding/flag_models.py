@@ -106,7 +106,7 @@ class FlagModel:
         if convert_to_numpy:
             all_embeddings = np.concatenate(all_embeddings, axis=0)
         else:
-            all_embeddings = torch.stack(all_embeddings)
+            all_embeddings = torch.concatenate(all_embeddings)
 
         if input_was_string:
             return all_embeddings[0]
