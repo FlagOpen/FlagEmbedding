@@ -99,8 +99,8 @@ class MLVU(Dataset):
 def main():
     disable_torch_init()
     data_list = {
-    "subPlot": ("8_sub_scene.json", f"/LVBench_all/video/subPlot", "video"),
-    "summary": ("9_summary.json", f"/LVBench_all/video/summary", "video")
+    "subPlot": ("8_sub_scene.json", f"/MLVU_all/video/subPlot", "video"),
+    "summary": ("9_summary.json", f"/MLVU_all/video/summary", "video")
         }
 
     data_dir = f"/Evaluation_LVBench/LVBench_all/upload_json"
