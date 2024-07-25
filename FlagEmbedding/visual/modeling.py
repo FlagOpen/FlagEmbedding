@@ -1,16 +1,16 @@
-import os
 import logging
+import os
 from dataclasses import dataclass
 from typing import Optional, Tuple
+
 import torch
 import torch.distributed as dist
-from torch import nn, Tensor
-from transformers import AutoModel, AutoTokenizer, AutoConfig
+from PIL import Image
+from torch import Tensor, nn
+from transformers import AutoConfig, AutoModel, AutoTokenizer
 from transformers.file_utils import ModelOutput
 
-
 from FlagEmbedding.visual.eva_clip import create_eva_vision_and_transforms
-from PIL import Image
 
 logger = logging.getLogger(__name__)
 
@@ -200,6 +200,10 @@ class Visualized_BGE(nn.Module):
             inputs_embeds=None,
             past_key_values_length=0,
         )
+
+        # Ensure the attention mask has the same dtype as the query tensor
+        extended_attention_mask = extended_attention_mask.to(embedding_output.dtype)
+
         encoder_outputs = self.bge_encoder(
             embedding_output,
             attention_mask=extended_attention_mask,
