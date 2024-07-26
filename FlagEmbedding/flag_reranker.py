@@ -123,6 +123,55 @@ class collater():
             return_tensors='pt',
         )
 
+
+class collater_for_lightweight():
+    def __init__(self, tokenizer, max_len):
+        self.tokenizer = tokenizer
+        self.max_len = max_len
+        self.pad_to_multiple_of = 8
+        self.label_pad_token_id = -100
+        warnings.filterwarnings("ignore",
+                                message="`max_length` is ignored when `padding`=`True` and there is no truncation strategy.")
+
+    def __call__(self, data):
+        features = data[0]
+        query_lengths = data[1]
+        prompt_lengths = data[2]
+
+        labels = [feature["labels"] for feature in features] if "labels" in features[0].keys() else None
+        # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
+        # same length to return tensors.
+        if labels is not None:
+            max_label_length = max(len(l) for l in labels)
+            if self.pad_to_multiple_of is not None:
+                max_label_length = (
+                        (max_label_length + self.pad_to_multiple_of - 1)
+                        // self.pad_to_multiple_of
+                        * self.pad_to_multiple_of
+                )
+
+            padding_side = self.tokenizer.padding_side
+            for feature in features:
+                remainder = [self.label_pad_token_id] * (max_label_length - len(feature["labels"]))
+                if isinstance(feature["labels"], list):
+                    feature["labels"] = (
+                        feature["labels"] + remainder if padding_side == "right" else remainder + feature["labels"]
+                    )
+                elif padding_side == "right":
+                    feature["labels"] = np.concatenate([feature["labels"], remainder]).astype(np.int64)
+                else:
+                    feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
+
+        collected = self.tokenizer.pad(
+            features,
+            padding=True,
+            max_length=self.max_len,
+            pad_to_multiple_of=8,
+            return_tensors='pt',
+        )
+
+        return collected, query_lengths, prompt_lengths
+
 def last_logit_pool(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
     left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
@@ -142,6 +191,16 @@ def last_logit_pool_layerwise(logits: Tensor,
         sequence_lengths = attention_mask.sum(dim=1) - 1
         batch_size = logits.shape[0]
         return logits[torch.arange(batch_size, device=logits.device), sequence_lengths]
+
+def last_logit_pool_lightweight(logits: Tensor,
+                    attention_mask: Tensor) -> Tensor:
+    left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
+    if left_padding:
+        return logits[:, -1]
+    else:
+        sequence_lengths = attention_mask.sum(dim=1) - 1
+        batch_size = logits.shape[0]
+        return torch.stack([logits[i, sequence_lengths[i]] for i in range(batch_size)], dim=0)
 
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
@@ -593,6 +652,7 @@ class LightWeightFlagLLMReranker:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
                                                        cache_dir=cache_dir,
                                                        trust_remote_code=True)
+        self.tokenizer.padding_side = 'right'
 
         if use_bf16 is False and use_fp16 is False:
             warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
@@ -697,7 +757,7 @@ class LightWeightFlagLLMReranker:
                 query_lengths.append(len([self.tokenizer.bos_token_id] + query_inputs + sep_inputs))
                 prompt_lengths.append(len(sep_inputs + prompt_inputs))
 
-            collater_instance = collater(self.tokenizer, max_length)
+            collater_instance = collater_for_lightweight(self.tokenizer, max_length)
             batch_inputs = collater_instance(
                 [
                     [{'input_ids': item['input_ids'], 'attention_mask': item['attention_mask']} for item in
@@ -717,7 +777,7 @@ class LightWeightFlagLLMReranker:
                                  cutoff_layers=cutoff_layers)
             scores = []
             for i in range(len(outputs.logits)):
-                logits = last_logit_pool(outputs.logits[i], outputs.attention_masks[i])
+                logits = last_logit_pool_lightweight(outputs.logits[i], outputs.attention_masks[i])
                 scores.append(logits.cpu().float().tolist())
             if len(all_scores) == 0:
                 for i in range(len(scores)):
