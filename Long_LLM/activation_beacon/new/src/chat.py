@@ -46,8 +46,6 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
         prev_role = None
         conversation = ""
 
-        tokenization_kwargs["add_special_tokens"] = False
-        
         for i, message in enumerate(messages):
             role = message['role']
             content = message['content']
@@ -55,13 +53,11 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
                 raise ValueError(f"Current role (idx={i}) {role} and previous role {messages[i-1]['role']} are the same!")
             
             if i == 0:
-                content = tokenizer.decode(tokenizer.encode(content))
+                content = tokenizer.decode(tokenizer.encode(content), skip_special_tokens=True)
                 user_message = content
             elif i == 1:
                 # we use a space to separate user message and assistant response
-                if content.startswith(" "):
-                    content = content[1:]
-                content = content + tokenizer.eos_token
+                content = ' ' + content + tokenizer.eos_token
                 assistant_message = content
             else:
                 raise ValueError(f"Please use chat template when there are multi-turn conversations")
@@ -72,7 +68,7 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
 
         if return_labels:
             labels = encoded['input_ids'].copy()
-            assistant_message_len = len(tokenizer.encode(assistant_message, add_special_tokens=False))
+            assistant_message_len = len(tokenizer.encode(assistant_message.lstrip(), add_special_tokens=False))
             labels[:-assistant_message_len] = [-100 for _ in labels[:-assistant_message_len]]
             encoded["labels"] = labels
 
@@ -81,31 +77,63 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
                 assert id_ == label_ or label_ == -100, f"Found mismatch input_ids and labels!"
 
         return ChatTemplateOutput(raw=conversation, encoded=encoded)
-    
+
+    elif template == "hf":
+        assert return_labels == False, f"Returning labels with hf template is currently unsupported."
+        tokenization_kwargs["return_dict"] = True
+        raw = tokenizer.apply_chat_template(messages, add_generation_prompt=add_generation_prompt, tokenize=False)
+        encoded = tokenizer.apply_chat_template(messages, add_generation_prompt=add_generation_prompt,**tokenization_kwargs)
+        # for some tokenizer, the encoded input_ids are wrapped in a big list, while others are not
+        if isinstance(encoded['input_ids'][0], list):
+            for k, v in encoded.items():
+                encoded[k] = v[0]
+        return ChatTemplateOutput(raw=raw, encoded=encoded)
+
     conversation_template = get_conv_template(template)
     if system_message is not None:
         conversation_template.set_system_message(system_message)
     
     config = {
         'mistral': {
+            # separator for different conversation turns (one turn consists of an utterance from user and a response from assistant)
             "turn_sep": "</s>",
+            # separator for different roles within each turn
             "role_sep": " [/INST]",
+            # the number of tokens in the beginning of the entire sequence, usually the length of the bos string
             "begin_of_text_len": 1,
-            "role_sep_left_offset": 0,
+            # the number of tokens to offset in the beginning of each turn, these tokens should be masked
+            "turn_seq_left_offset": 0,
         },
         'llama-2': {
+            # separator for different conversation turns (one turn consists of an utterance from user and a response from assistant)
             "turn_sep": " </s><s>",
+            # separator for different roles within each turn
             "role_sep": " [/INST]",
+            # the number of tokens in the beginning of the entire sequence, usually the length of the bos string
             "begin_of_text_len": 1,
-            "role_sep_left_offset": -1,
+            # the number of tokens to offset in the beginning of each turn, these tokens should be masked
+            "turn_seq_left_offset": -1,
         },
         'llama-3': {
+            # separator for different conversation turns (one turn consists of an utterance from user and a response from assistant)
             "turn_sep": "<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n",
+            # separator for different roles within each turn
             "role_sep": "<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n",
-            # the bos of llama3 is added explicitly to the input string, instead of added by the tokenizer
-            "begin_of_text_len": 0,
-            "role_sep_left_offset": -4,
+            # the number of tokens in the beginning of the entire sequence, usually the length of the bos string
+            "begin_of_text_len": 1,
+            # the number of tokens to offset in the beginning of each turn, these tokens should be masked
+            "turn_seq_left_offset": -4,
         },
+        'qwen': {
+            # separator for different conversation turns (one turn consists of an utterance from user and a response from assistant)
+            "turn_sep": "<|im_start|>user\n",
+            # separator for different roles within each turn
+            "role_sep": "<|im_end|>\n<|im_start|>assistant\n",
+            # the number of tokens in the beginning of the entire sequence, usually the length of the bos string
+            "begin_of_text_len": 0,
+            # the number of tokens to offset in the beginning of each turn, these tokens should be masked
+            "turn_seq_left_offset": -4,
+        }
     }[template]
 
     role_map = {
@@ -137,7 +165,7 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
             turn_sep = config["turn_sep"]
             role_sep = config["role_sep"]
             begin_of_text_len = config["begin_of_text_len"]
-            role_sep_left_offset = config["role_sep_left_offset"]
+            turn_seq_left_offset = config["turn_seq_left_offset"]
             turn_sep_len = len(tokenizer.encode(turn_sep, add_special_tokens=False))
 
             # transform to array for fast value assignment
@@ -151,33 +179,34 @@ def apply_chat_template(template, messages, system_message=None, tokenizer:PreTr
             for i, turn in enumerate(turns):
                 if turn == "":
                     break
-                
+
                 turn_len = len(tokenizer(turn, add_special_tokens=False).input_ids)
 
                 parts = turn.split(role_sep)
 
-                if len(parts) != 2:
-                    break
+                if len(parts) == 2:
+                    user_message, assistant_message = parts
 
-                user_message, assistant_message = parts
+                    user_message += role_sep
+                    instruction_len = len(tokenizer(user_message, add_special_tokens=False).input_ids)
 
-                user_message += role_sep
-                instruction_len = len(tokenizer(user_message, add_special_tokens=False).input_ids)
+                    # for bos tokens
+                    if i == 0:
+                        turn_len += begin_of_text_len
+                        instruction_len += begin_of_text_len
 
-                # for bos tokens
-                if i == 0:
-                    turn_len += begin_of_text_len
-                    instruction_len += begin_of_text_len
-
-                # Ignore the user instructions
-                labels[max(cur_len + role_sep_left_offset, 0): cur_len + instruction_len] = -100
-
+                    # Ignore the user instructions
+                    labels[max(cur_len + turn_seq_left_offset, 0): cur_len + instruction_len] = -100
+                
+                else:
+                    labels[max(cur_len + turn_seq_left_offset, 0): cur_len + turn_len + turn_sep_len] = -100
+                    
                 cur_len = cur_len + turn_len + turn_sep_len
 
                 if cur_len > total_len:
                     break
 
-            labels[max(cur_len + role_sep_left_offset, 0):] = -100
+            labels[max(cur_len + turn_seq_left_offset, 0):] = -100
 
             encoded['labels'] = labels.tolist()
 
@@ -334,16 +363,17 @@ class Conversation:
                     ret += tag
             return ret
         elif self.sep_style == SeparatorStyle.LLAMA3:
+            # ret = "<|begin_of_text|>"
             if self.system_message:
                 ret = system_prompt
             else:
-                ret = "<|begin_of_text|>"
+                ret = ""
             for i, (role, message) in enumerate(self.messages):
-                tag = self.roles[i % 2]
                 if message:
-                    ret += tag + message + self.sep
+                    ret += f"<|start_header_id|>{role}<|end_header_id|>\n\n"
+                    ret += f"{message}<|eot_id|>"
                 else:
-                    ret += tag
+                    ret += f"<|start_header_id|>{role}<|end_header_id|>\n\n"
             return ret
         elif self.sep_style == SeparatorStyle.CHATGLM:
             # source: https://huggingface.co/THUDM/chatglm-6b/blob/1d240ba371910e9282298d4592532d7f0f3e9f3e/modeling_chatglm.py#L1302-L1308
@@ -1222,6 +1252,23 @@ register_conv_template(
     )
 )
 
+register_conv_template(
+    Conversation(
+        name="gemini-dev",
+        roles=("user", "model"),
+        sep_style=SeparatorStyle.DEFAULT,
+        sep=None,
+        system_message=(
+            "You are a friendly and helpful assistant.\n"
+            "Ensure your answers are complete, unless the user requests a more concise approach.\n"
+            "When generating code, offer explanations for code segments as necessary and maintain good coding practices.\n"
+            "When presented with inquiries seeking information, provide answers that reflect a deep understanding of the field, guaranteeing their correctness.\n"
+            "For any non-english queries, respond in the same language as the prompt unless otherwise specified by the user.\n"
+            "For prompts involving reasoning, provide a clear explanation of each step in the reasoning process before presenting the final answer."
+        ),
+    )
+)
+
 # BiLLa default template
 register_conv_template(
     Conversation(
@@ -1437,17 +1484,20 @@ register_conv_template(
     )
 )
 
-# Llama-3 Template
+# llama3 template
+# reference: https://huggingface.co/meta-llama/Meta-Llama-3-8B-Instruct/blob/main/tokenizer_config.json
+# reference: https://github.com/meta-llama/llama3/blob/0cee08ec68f4cfc0c89fe4a9366d82679aaa2a66/llama/tokenizer.py#L222
 register_conv_template(
-        Conversation(
-            name="llama-3",
-            system_template="<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",            
-            roles=["<|start_header_id|>user<|end_header_id|>\n\n", "<|start_header_id|>assistant<|end_header_id|>\n\n"],
-            sep_style=SeparatorStyle.LLAMA3,
-            sep="<|eot_id|>",
-            sep2="<|eot_id|>",
-        )
+    Conversation(
+        name="llama-3",
+        system_template="<|start_header_id|>system<|end_header_id|>\n\n{system_message}<|eot_id|>",
+        roles=("user", "assistant"),
+        sep_style=SeparatorStyle.LLAMA3,
+        sep="",
+        stop_str="<|eot_id|>",
+        stop_token_ids=[128001, 128009],
     )
+)
 
 register_conv_template(
     Conversation(
@@ -1559,7 +1609,7 @@ register_conv_template(
 # source: https://huggingface.co/Qwen/Qwen-7B-Chat/blob/main/qwen_generation_utils.py#L130
 register_conv_template(
     Conversation(
-        name="qwen-7b-chat",
+        name="qwen",
         system_template="<|im_start|>system\n{system_message}",
         system_message="You are a helpful assistant.",
         roles=("<|im_start|>user", "<|im_start|>assistant"),
@@ -1953,16 +2003,6 @@ register_conv_template(
 register_conv_template(
     Conversation(
         name="yandexgpt",
-        system_message="",
-        roles=("user", "assistant"),
-        sep_style=None,
-        sep=None,
-    )
-)
-
-register_conv_template(
-    Conversation(
-        name="reka",
         system_message="",
         roles=("user", "assistant"),
         sep_style=None,

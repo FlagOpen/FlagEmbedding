@@ -192,7 +192,11 @@ print("Sentence embeddings:", sentence_embeddings)
 ## Evaluation  
 
 `baai-general-embedding` models achieve **state-of-the-art performance on both MTEB and C-MTEB leaderboard!**
-For more details and evaluation tools see our [scripts](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/README.md)
+For more details and evaluation tools see our [scripts](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/README.md) 
+
+If you want to evaluate the model(or your model) on **your data**, you can refer to this [tool](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune#6-evaluate-model).
+
+
 - **MTEB**:   
 
 | Model Name |  Dimension | Sequence Length | Average (56) | Retrieval (15) |Clustering (11) | Pair Classification (3) | Reranking (4) |  STS (10) | Summarization (1) | Classification (12) |

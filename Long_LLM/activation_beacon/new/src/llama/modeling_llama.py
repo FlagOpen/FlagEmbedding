@@ -1,5 +1,5 @@
 # coding=utf-8
-# Copyright 2022 EleutherAI and the HuggingFace Inc. team. All rights reserved.
+# Copyright 2024 The Qwen team, Alibaba Group and the HuggingFace Inc. team. All rights reserved.
 #
 # This code is based on EleutherAI's GPT-NeoX library and the GPT-NeoX
 # and OPT implementations in this library. It has been modified from its
@@ -17,33 +17,23 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-""" PyTorch LLaMA model."""
-import time
+""" PyTorch Llama model."""
+import inspect
 import math
 import warnings
-from typing import List, Optional, Tuple, Union, Mapping
-from contextlib import nullcontext
-from dataclasses import dataclass
-from collections import defaultdict
-from tqdm import tqdm
-from accelerate import Accelerator
+from typing import List, Optional, Tuple, Union
 
 import torch
 import torch.nn.functional as F
 import torch.utils.checkpoint
 from torch import nn
+from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 
 from transformers.activations import ACT2FN
-from transformers.cache_utils import Cache
-from transformers.modeling_attn_mask_utils import (
-    AttentionMaskConverter,
-    _prepare_4d_attention_mask,
-    _prepare_4d_causal_attention_mask,
-    _prepare_4d_causal_attention_mask_for_sdpa,
-)
-from transformers.modeling_outputs import BaseModelOutputWithPast
+from transformers.cache_utils import Cache, DynamicCache
+from transformers.modeling_attn_mask_utils import _prepare_4d_causal_attention_mask, _prepare_4d_causal_attention_mask_for_sdpa
+from transformers.modeling_outputs import BaseModelOutputWithPast, CausalLMOutputWithPast, SequenceClassifierOutputWithPast
 from transformers.modeling_utils import PreTrainedModel
-from transformers.pytorch_utils import ALL_LAYERNORM_LAYERS, is_torch_greater_or_equal_than_1_13
 from transformers.utils import (
     add_start_docstrings,
     add_start_docstrings_to_model_forward,
@@ -53,17 +43,14 @@ from transformers.utils import (
     replace_return_docstrings,
 )
 from transformers.integrations import is_deepspeed_zero3_enabled
-from transformers.utils.import_utils import is_torch_fx_available
 from .configuration_llama import LlamaConfig
 
-# This makes `_prepare_4d_causal_attention_mask` a leaf function in the FX graph.
-# It means that the function will not be traced through and simply appear as a node in the graph.
-if is_torch_fx_available():
-    if not is_torch_greater_or_equal_than_1_13:
-        import torch.fx
 
-    _prepare_4d_causal_attention_mask = torch.fx.wrap(_prepare_4d_causal_attention_mask)
+if is_flash_attn_2_available():
+    from flash_attn import flash_attn_func, flash_attn_varlen_func
+    from flash_attn.bert_padding import index_first_axis, pad_input, unpad_input  # noqa
 
+    _flash_supports_window_size = "window_size" in list(inspect.signature(flash_attn_func).parameters)
 
 from ..modeling_beacon import Memory
 from ..modeling_utils import optional_grad_ctx, compute_loss, BeaconModelOutput
@@ -73,7 +60,20 @@ logger = logging.get_logger(__name__)
 
 _CONFIG_FOR_DOC = "LlamaConfig"
 
+# Copied from transformers.models.llama.modeling_llama._get_unpad_data
+def _get_unpad_data(attention_mask):
+    seqlens_in_batch = attention_mask.sum(dim=-1, dtype=torch.int32)
+    indices = torch.nonzero(attention_mask.flatten(), as_tuple=False).flatten()
+    max_seqlen_in_batch = seqlens_in_batch.max().item()
+    cu_seqlens = F.pad(torch.cumsum(seqlens_in_batch, dim=0, dtype=torch.int32), (1, 0))
+    return (
+        indices,
+        cu_seqlens,
+        max_seqlen_in_batch,
+    )
 
+
+# Copied from transformers.models.llama.modeling_llama.LlamaRMSNorm with Llama->Llama
 class LlamaRMSNorm(nn.Module):
     def __init__(self, hidden_size, eps=1e-6):
         """
@@ -91,17 +91,22 @@ class LlamaRMSNorm(nn.Module):
         return self.weight * hidden_states.to(input_dtype)
 
 
-ALL_LAYERNORM_LAYERS.append(LlamaRMSNorm)
+# Copied from transformers.models.llama.modeling_llama.rotate_half
+def rotate_half(x):
+    """Rotates half the hidden dims of the input."""
+    x1 = x[..., : x.shape[-1] // 2]
+    x2 = x[..., x.shape[-1] // 2 :]
+    return torch.cat((-x2, x1), dim=-1)
 
 
 class LlamaRotaryEmbedding(nn.Module):
-    def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None):
+    def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None):
         super().__init__()
 
         self.dim = dim
         self.max_position_embeddings = max_position_embeddings
         self.base = base
-        inv_freq = 1.0 / (self.base ** (torch.arange(0, self.dim, 2).float().to(device) / self.dim))
+        inv_freq = 1.0 / (self.base ** (torch.arange(0, self.dim, 2, dtype=torch.int64).float().to(device) / self.dim))
         self.register_buffer("inv_freq", inv_freq, persistent=False)
 
         # Build here to make `torch.jit.trace` work.
@@ -111,7 +116,7 @@ class LlamaRotaryEmbedding(nn.Module):
 
     def _set_cos_sin_cache(self, seq_len, device, dtype):
         self.max_seq_len_cached = seq_len
-        t = torch.arange(self.max_seq_len_cached, device=device, dtype=self.inv_freq.dtype)
+        t = torch.arange(self.max_seq_len_cached, device=device, dtype=torch.int64).type_as(self.inv_freq)
 
         freqs = torch.outer(t, self.inv_freq)
         # Different from paper, but it uses a different permutation in order to obtain the same calculation
@@ -119,21 +124,29 @@ class LlamaRotaryEmbedding(nn.Module):
         self.register_buffer("cos_cached", emb.cos().to(dtype), persistent=False)
         self.register_buffer("sin_cached", emb.sin().to(dtype), persistent=False)
 
-    def forward(self, x, seq_len=None):
+    def forward(self, q, k, position_ids):
+        seq_len = max(position_ids.max().item() + 1, k.shape[2])
+
         # x: [bs, num_attention_heads, seq_len, head_size]
         if seq_len > self.max_seq_len_cached:
-            self._set_cos_sin_cache(seq_len=seq_len, device=x.device, dtype=x.dtype)
+            self._set_cos_sin_cache(seq_len=seq_len, device=k.device, dtype=k.dtype)
 
-        return (
-            self.cos_cached[:seq_len].to(dtype=x.dtype),
-            self.sin_cached[:seq_len].to(dtype=x.dtype),
-        )
+        # batch_size, 1, key_len, head_dim
+        k_cos = self.cos_cached[position_ids].to(dtype=k.dtype).unsqueeze(1)
+        k_sin = self.sin_cached[position_ids].to(dtype=k.dtype).unsqueeze(1)
+
+        q_cos = k_cos[..., -q.shape[2]:, :]
+        q_sin = k_sin[..., -q.shape[2]:, :]
+
+        q_embed = (q * q_cos) + (rotate_half(q) * q_sin)
+        k_embed = (k * k_cos) + (rotate_half(k) * k_sin)
+        return q_embed, k_embed
 
 
 class LlamaLinearScalingRotaryEmbedding(LlamaRotaryEmbedding):
     """LlamaRotaryEmbedding extended with linear scaling. Credits to the Reddit user /u/kaiokendev"""
 
-    def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None, scaling_factor=1.0):
+    def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None, scaling_factor=1.0):
         self.scaling_factor = scaling_factor
         super().__init__(dim, max_position_embeddings, base, device)
 
@@ -152,7 +165,7 @@ class LlamaLinearScalingRotaryEmbedding(LlamaRotaryEmbedding):
 class LlamaDynamicNTKScalingRotaryEmbedding(LlamaRotaryEmbedding):
     """LlamaRotaryEmbedding extended with Dynamic NTK scaling. Credits to the Reddit users /u/bloc97 and /u/emozilla"""
 
-    def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None, scaling_factor=1.0):
+    def __init__(self, dim, max_position_embeddings=32768, base=10000, device=None, scaling_factor=1.0):
         self.scaling_factor = scaling_factor
         super().__init__(dim, max_position_embeddings, base, device)
 
@@ -175,49 +188,89 @@ class LlamaDynamicNTKScalingRotaryEmbedding(LlamaRotaryEmbedding):
         self.register_buffer("sin_cached", emb.sin().to(dtype), persistent=False)
 
 
-def rotate_half(x):
-    """Rotates half the hidden dims of the input."""
-    x1 = x[..., : x.shape[-1] // 2]
-    x2 = x[..., x.shape[-1] // 2 :]
-    return torch.cat((-x2, x1), dim=-1)
+class LlamaYarnRotaryEmbedding(nn.Module):
+    def __init__(self, dim, max_position_embeddings=2048, base=10000, device=None, scaling_factor=1.0, beta_slow=2, beta_fast=128):
+        super().__init__()
+
+        self.base = base
+        self.dim = dim
+        self.scaling_factor = scaling_factor
+        self.beta_slow = beta_slow
+        self.beta_fast = beta_fast
+        self.max_position_embeddings = max_position_embeddings
+
+        self._set_cos_sin_cache(
+            seq_len=max_position_embeddings, device=device, dtype=torch.get_default_dtype()
+        )
+
+    def _get_factor(self, device, dtype):
+        # the dimension whose index is smaller than fast_dim rotates more than beta_fast
+        fast_dim = self.dim / 2 * (math.log(self.max_position_embeddings / (2 * math.pi * self.beta_fast)) / math.log(self.base))
+        fast_dim = max(math.floor(fast_dim), 0)
+        # the dimension whose index is bigger than slow_dim rotates less than beta_slow
+        slow_dim = self.dim / 2 * (math.log(self.max_position_embeddings / (2 * math.pi * self.beta_slow)) / math.log(self.base))
+        slow_dim = min(math.ceil(slow_dim), self.dim - 1)
+
+        if fast_dim == slow_dim:
+            slow_dim += 0.001
+
+        # NOTE: very important to use full precision here so that the factor is correct
+        dim_arange = torch.arange(0, self.dim // 2, device=device, dtype=torch.float32)
+        dim_factor = (dim_arange - fast_dim) / (slow_dim - fast_dim)
+        dim_factor = torch.clamp(dim_factor, 0, 1)
+
+        # align with the paper notation
+        return (1 - dim_factor)
+
+    def _get_temperature(self):
+        if self.scaling_factor <= 1:
+            return 1.0
+        return 0.07 * math.log(self.scaling_factor) + 1.0
+    
+    def _set_cos_sin_cache(self, seq_len, device, dtype):
+        dim_arange = torch.arange(0, self.dim, 2, device=device) / self.dim
+        # dim / 2
+        freq = self.base ** dim_arange
+        theta = 1 / freq
+        interleave_theta = theta / self.scaling_factor
+
+        factor = self._get_factor(device, dtype)
+        yarn_theta = factor * theta + (1 - factor) * interleave_theta
+        self.register_buffer("inv_freq", yarn_theta, persistent=False)
+
+        # print(factor, self.inv_freq)
+
+        t = torch.arange(seq_len, device=device, dtype=self.inv_freq.dtype)
+        freqs = torch.outer(t, self.inv_freq)
+        emb = torch.cat((freqs, freqs), dim=-1)
+
+        # get attention temperature
+        temperature = self._get_temperature()
+
+        self.register_buffer("cos_cached", (emb.cos() * temperature).to(dtype), persistent=False)
+        self.register_buffer("sin_cached", (emb.sin() * temperature).to(dtype), persistent=False)
+        self.max_seq_len_cached = seq_len
+    
+    def forward(self, q, k, position_ids):
+        seq_len = max(position_ids.max().item() + 1, k.shape[2])
+
+        # x: [bs, num_attention_heads, seq_len, head_size]
+        if seq_len > self.max_seq_len_cached:
+            self.scaling_factor = seq_len / self.max_position_embeddings
+            self._set_cos_sin_cache(seq_len=seq_len, device=k.device, dtype=k.dtype)
+
+        k_cos = self.cos_cached[position_ids].to(dtype=k.dtype).unsqueeze(1)
+        k_sin = self.sin_cached[position_ids].to(dtype=k.dtype).unsqueeze(1)
+
+        q_cos = k_cos[..., -q.shape[2]:, :]
+        q_sin = k_sin[..., -q.shape[2]:, :]
+
+        q_embed = (q * q_cos) + (rotate_half(q) * q_sin)
+        k_embed = (k * k_cos) + (rotate_half(k) * k_sin)
+        return q_embed, k_embed
 
 
-def apply_rotary_pos_emb(q, k, cos, sin, position_ids, unsqueeze_dim=1):
-    """Applies Rotary Position Embedding to the query and key tensors.
-
-    Args:
-        q (`torch.Tensor`): The query tensor.
-        k (`torch.Tensor`): The key tensor.
-        cos (`torch.Tensor`): The cosine part of the rotary embedding.
-        sin (`torch.Tensor`): The sine part of the rotary embedding.
-        position_ids (`torch.Tensor`):
-            The position indices of the tokens corresponding to the query and key tensors. For example, this can be
-            used to pass offsetted position ids when working with a KV-cache.
-        unsqueeze_dim (`int`, *optional*, defaults to 1):
-            The 'unsqueeze_dim' argument specifies the dimension along which to unsqueeze cos[position_ids] and
-            sin[position_ids] so that they can be properly broadcasted to the dimensions of q and k. For example, note
-            that cos[position_ids] and sin[position_ids] have the shape [batch_size, seq_len, head_dim]. Then, if q and
-            k have the shape [batch_size, heads, seq_len, head_dim], then setting unsqueeze_dim=1 makes
-            cos[position_ids] and sin[position_ids] broadcastable to the shapes of q and k. Similarly, if q and k have
-            the shape [batch_size, seq_len, heads, head_dim], then set unsqueeze_dim=2.
-    Returns:
-        `tuple(torch.Tensor)` comprising of the query and key tensors rotated using the Rotary Position Embedding.
-    """
-    cos = cos[position_ids].unsqueeze(unsqueeze_dim)
-    sin = sin[position_ids].unsqueeze(unsqueeze_dim)
-    q_embed = (q * cos) + (rotate_half(q) * sin)
-    k_embed = (k * cos) + (rotate_half(k) * sin)
-    return q_embed, k_embed
-
-# Copied from streaming-llm
-def apply_rotary_pos_emb_single(x, cos, sin, position_ids):
-    # The first two dimensions of cos and sin are always 1, so we can `squeeze` them.
-    cos = cos[position_ids].unsqueeze(1)  # [bs, 1, seq_len, dim]
-    sin = sin[position_ids].unsqueeze(1)  # [bs, 1, seq_len, dim]
-    x_embed = (x * cos) + (rotate_half(x) * sin)
-    return x_embed
-
-
+# Copied from transformers.models.llama.modeling_llama.LlamaMLP with Llama->Llama
 class LlamaMLP(nn.Module):
     def __init__(self, config):
         super().__init__()
@@ -242,10 +295,14 @@ class LlamaMLP(nn.Module):
         """Initialize the beacon projection weight with that of the ordinal projection."""
         if "mlp" in self.config.beacon_param:
             if is_deepspeed_zero3_enabled():
+                # FIXME: after deepspeed initialization, some weights becomes non-zero
+                # For Llama, there are rows that are full of zeros
+                # For Llama, there are values bigger than 1e29...
+
                 import deepspeed
                 params = [self.up_proj.weight, self.down_proj.weight, self.beacon_up_proj.weight, self.beacon_down_proj.weight]
                 with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
-                    if (self.beacon_up_proj.weight.sum(-1) == 0).any():
+                    if (self.beacon_up_proj.weight.sum(-1) == 0).any() or (self.beacon_up_proj.weight > 1e29).any():
                         self.beacon_up_proj.weight.data[:] = self.up_proj.weight.data
                         self.beacon_down_proj.weight.data[:] = self.down_proj.weight.data
             else:
@@ -254,40 +311,24 @@ class LlamaMLP(nn.Module):
                     self.beacon_up_proj.weight.data[:] = self.up_proj.weight.data
                     self.beacon_down_proj.weight.data[:] = self.down_proj.weight.data
 
-    def forward(self, x, beacon_size):
-        if self.config.pretraining_tp > 1:
-            # TODO: support pretraining_tp
-            raise NotImplementedError
+    def forward(self, x, beacon_size, beacon_indices):
+        if "mlp" in self.config.beacon_param:
+            # NOTE: when beacon_pos == "interleave", the beacon_indices points to all beacon tokens in the current window (cached activations + input_ids), so we shall slice out the part corresponding to the input_ids
+            if beacon_size > 0:
+                cur_beacon_indices = beacon_indices[-x.shape[1]:]
+                ordinal_hidden_states = x[:, cur_beacon_indices == 0]
+                beacon_hidden_states = x[:, cur_beacon_indices == 1]
 
-            slice = self.intermediate_size // self.config.pretraining_tp
-            gate_proj_slices = self.gate_proj.weight.split(slice, dim=0)
-            up_proj_slices = self.up_proj.weight.split(slice, dim=0)
-            down_proj_slices = self.down_proj.weight.split(slice, dim=1)
+                ordinal_down_proj = self.down_proj(self.act_fn(self.gate_proj(ordinal_hidden_states)) * self.up_proj(ordinal_hidden_states))
+                beacon_down_proj = self.beacon_down_proj(self.act_fn(self.gate_proj(beacon_hidden_states)) * self.beacon_up_proj(beacon_hidden_states))
 
-            gate_proj = torch.cat(
-                [F.linear(x, gate_proj_slices[i]) for i in range(self.config.pretraining_tp)], dim=-1
-            )
-            up_proj = torch.cat([F.linear(x, up_proj_slices[i]) for i in range(self.config.pretraining_tp)], dim=-1)
-
-            intermediate_states = (self.act_fn(gate_proj) * up_proj).split(slice, dim=2)
-            down_proj = [
-                F.linear(intermediate_states[i], down_proj_slices[i]) for i in range(self.config.pretraining_tp)
-            ]
-            down_proj = sum(down_proj)
-
-        else:
-            if "mlp" in self.config.beacon_param:
-                if beacon_size > 0:
-                    ordinal_hidden_states = x[:, :-beacon_size]
-                    beacon_hidden_states = x[:, -beacon_size:]
-
-                    ordinal_down_proj = self.down_proj(self.act_fn(self.gate_proj(ordinal_hidden_states)) * self.up_proj(ordinal_hidden_states))
-                    beacon_down_proj = self.beacon_down_proj(self.act_fn(self.gate_proj(beacon_hidden_states)) * self.beacon_up_proj(beacon_hidden_states))
-                    down_proj = torch.cat([ordinal_down_proj, beacon_down_proj], dim=1)
-                else:
-                    down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+                down_proj = beacon_down_proj.new_ones(x.shape)
+                down_proj[:, beacon_indices == 0] = ordinal_down_proj
+                down_proj[:, beacon_indices == 1] = beacon_down_proj
             else:
                 down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
+        else:
+            down_proj = self.down_proj(self.act_fn(self.gate_proj(x)) * self.up_proj(x))
 
         return down_proj
 
@@ -343,20 +384,20 @@ class LlamaAttention(nn.Module):
         # NOTE: add extra parameters for beacon tokens
         # skip post initialization to speed up loading
         if "q" in config.beacon_param:
-            self.beacon_q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=config.attention_bias)
+            self.beacon_q_proj = nn.Linear(self.hidden_size, self.num_heads * self.head_dim, bias=self.q_proj.bias is not None)
             # NOTE: initialize the beacon parameters as zero
             self.beacon_q_proj.weight.data.zero_()
             self.beacon_q_proj._is_hf_initialized = True
         if "k" in config.beacon_param:
-            self.beacon_k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+            self.beacon_k_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=self.k_proj.bias is not None)
             self.beacon_k_proj.weight.data.zero_()
             self.beacon_k_proj._is_hf_initialized = True
         if "v" in config.beacon_param:
-            self.beacon_v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=config.attention_bias)
+            self.beacon_v_proj = nn.Linear(self.hidden_size, self.num_key_value_heads * self.head_dim, bias=self.v_proj.bias is not None)
             self.beacon_v_proj.weight.data.zero_()
             self.beacon_v_proj._is_hf_initialized = True
         if "o" in config.beacon_param:
-            self.beacon_o_proj = nn.Linear(self.num_heads * self.head_dim, self.hidden_size, bias=config.attention_bias)
+            self.beacon_o_proj = nn.Linear(self.num_heads * self.head_dim, self.hidden_size, bias=self.o_proj.bias is not None)
             self.beacon_o_proj.weight.data.zero_()
             self.beacon_o_proj._is_hf_initialized = True
 
@@ -384,6 +425,13 @@ class LlamaAttention(nn.Module):
                     scaling_factor=scaling_factor,
                     base=self.rope_theta,
                 )
+            elif scaling_type == "yarn":
+                self.rotary_emb = LlamaYarnRotaryEmbedding(
+                    self.head_dim,
+                    max_position_embeddings=self.max_position_embeddings,
+                    scaling_factor=scaling_factor,
+                    base=self.rope_theta,
+                )
             else:
                 raise ValueError(f"Unknown RoPE scaling type {scaling_type}")
 
@@ -392,65 +440,121 @@ class LlamaAttention(nn.Module):
         beacon_param = self.config.beacon_param
         
         if is_deepspeed_zero3_enabled():
+            # FIXME: after deepspeed initialization, some weights becomes non-zero
+            # For Llama, there are rows that are full of zeros
+            # For Llama, there are values bigger than 1e29...
+
             import deepspeed
             if "q" in beacon_param:
-                with deepspeed.zero.GatheredParameters([self.beacon_q_proj.weight, self.q_proj.weight], modifier_rank=0):
-                    # FIXME: after deepspeed initialization, some weights becomes non-zero, but there are rows taht are full of zeros
-                    if (self.beacon_q_proj.weight.sum(-1) == 0).any():
+                params = [self.beacon_q_proj.weight, self.q_proj.weight]
+                if self.q_proj.bias is not None:
+                    params.extend([self.beacon_q_proj.bias, self.q_proj.bias])
+                with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
+                    # FIXME: after deepspeed initialization, some weights becomes non-zero, but there are rows that are full of zeros
+                    if (self.beacon_q_proj.weight.sum(-1) == 0).any() or (self.beacon_q_proj.weight > 1e29).any():
                         self.beacon_q_proj.weight.data[:] = self.q_proj.weight.data
+                        if self.q_proj.bias is not None:
+                            self.beacon_q_proj.bias.data[:] = self.q_proj.bias.data
             if "k" in beacon_param:
-                with deepspeed.zero.GatheredParameters([self.beacon_k_proj.weight, self.k_proj.weight], modifier_rank=0):
-                    if (self.beacon_k_proj.weight.sum(-1) == 0).any():
+                params = [self.beacon_k_proj.weight, self.k_proj.weight]
+                if self.k_proj.bias is not None:
+                    params.extend([self.beacon_k_proj.bias, self.k_proj.bias])
+                with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
+                    # FIXME: after deepspeed initialization, some weights becomes non-zero, but there are rows that are full of zeros
+                    if (self.beacon_k_proj.weight.sum(-1) == 0).any() or (self.beacon_k_proj.weight > 1e29).any():
                         self.beacon_k_proj.weight.data[:] = self.k_proj.weight.data
+                        if self.k_proj.bias is not None:
+                            self.beacon_k_proj.bias.data[:] = self.k_proj.bias.data
             if "v" in beacon_param:
-                with deepspeed.zero.GatheredParameters([self.beacon_v_proj.weight, self.v_proj.weight], modifier_rank=0):
-                    if (self.beacon_v_proj.weight.sum(-1) == 0).any():
+                params = [self.beacon_v_proj.weight, self.v_proj.weight]
+                if self.v_proj.bias is not None:
+                    params.extend([self.beacon_v_proj.bias, self.v_proj.bias])
+                with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
+                    # FIXME: after deepspeed initialization, some weights becomes non-zero, but there are rows that are full of zeros
+                    if (self.beacon_v_proj.weight.sum(-1) == 0).any() or (self.beacon_v_proj.weight > 1e29).any():
                         self.beacon_v_proj.weight.data[:] = self.v_proj.weight.data
+                        if self.v_proj.bias is not None:
+                            self.beacon_v_proj.bias.data[:] = self.v_proj.bias.data
             if "o" in beacon_param:
-                with deepspeed.zero.GatheredParameters([self.beacon_o_proj.weight, self.o_proj.weight], modifier_rank=0):
-                    if (self.beacon_o_proj.weight.sum(-1) == 0).any():
+                params = [self.beacon_o_proj.weight, self.o_proj.weight]
+                if self.o_proj.bias is not None:
+                    params.extend([self.beacon_o_proj.bias, self.o_proj.bias])
+                with deepspeed.zero.GatheredParameters(params, modifier_rank=0):
+                    # FIXME: after deepspeed initialization, some weights becomes non-zero, but there are rows that are full of zeros
+                    if (self.beacon_o_proj.weight.sum(-1) == 0).any() or (self.beacon_o_proj.weight > 1e29).any():
                         self.beacon_o_proj.weight.data[:] = self.o_proj.weight.data
+                        if self.o_proj.bias is not None:
+                            self.beacon_o_proj.bias.data[:] = self.o_proj.bias.data
         else:
             # only copy the value in-place, without tieing the weight
             if "q" in beacon_param and any("beacon_q_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_q_proj.weight == 0).all():
+                # FIXME: some beacon weights are not initialized as zero for llama model, why? 
+                # if (self.beacon_q_proj.weight == 0).all():
                     self.beacon_q_proj.weight.data[:] = self.q_proj.weight.data
+                    if self.q_proj.bias is not None:
+                        self.beacon_q_proj.bias.data[:] = self.q_proj.bias.data
             if "k" in beacon_param and any("beacon_k_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_k_proj.weight == 0).all():
+                # if (self.beacon_k_proj.weight == 0).all():
                     self.beacon_k_proj.weight.data[:] = self.k_proj.weight.data
+                    if self.k_proj.bias is not None:
+                        self.beacon_k_proj.bias.data[:] = self.k_proj.bias.data
             if "v" in beacon_param and any("beacon_v_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_v_proj.weight == 0).all():
+                # if (self.beacon_v_proj.weight == 0).all():
                     self.beacon_v_proj.weight.data[:] = self.v_proj.weight.data
+                    if self.v_proj.bias is not None:
+                        self.beacon_v_proj.bias.data[:] = self.v_proj.bias.data
             if "o" in beacon_param and any("beacon_o_proj" in missing_key for missing_key in missing_keys):
-                if (self.beacon_o_proj.weight == 0).all():
+                # if (self.beacon_o_proj.weight == 0).all():
                     self.beacon_o_proj.weight.data[:] = self.o_proj.weight.data
+                    if self.o_proj.bias is not None:
+                        self.beacon_o_proj.bias.data[:] = self.o_proj.bias.data
 
     def _shape(self, tensor: torch.Tensor, seq_len: int, bsz: int):
         return tensor.view(bsz, seq_len, self.num_heads, self.head_dim).transpose(1, 2).contiguous()
     
-    def qkv_proj_with_beacon(self, hidden_states, beacon_size=0):
+    def qkv_proj_with_beacon(self, hidden_states, beacon_size, beacon_indices):
         if beacon_size > 0:
-            ordinal_hidden_states = hidden_states[:, :-beacon_size]
-            beacon_hidden_states = hidden_states[:, -beacon_size:]
-            
+            # NOTE: when beacon_pos == "interleave", the beacon_indices points to all beacon tokens in the current window (cached activations + input_ids), so we shall slice out the part corresponding to the input_ids
+            cur_beacon_indices = beacon_indices[-hidden_states.shape[1]:]
+
+            ordinal_hidden_states = hidden_states[:, cur_beacon_indices == 0]
+            beacon_hidden_states = hidden_states[:, cur_beacon_indices == 1]
+
             if "q" in self.config.beacon_param:
                 ordinal_query_states = self.q_proj(ordinal_hidden_states)
                 beacon_query_states = self.beacon_q_proj(beacon_hidden_states)
-                query_states = torch.cat([ordinal_query_states, beacon_query_states], dim=1)
+                query_states = beacon_query_states.new_zeros((ordinal_query_states.shape[0], cur_beacon_indices.shape[0], ordinal_query_states.shape[2]))
+                query_states[:, cur_beacon_indices == 0] = ordinal_query_states
+                query_states[:, cur_beacon_indices == 1] = beacon_query_states
+                # NOTE: replicate hidden states for beacon tokens in case of parallel windows
+                if (cur_beacon_indices == 2).any():
+                    query_states[:, cur_beacon_indices == 2] = beacon_query_states[:, :(cur_beacon_indices == 2).sum()]
+
             else:
                 query_states = self.q_proj(hidden_states)
 
             if "k" in self.config.beacon_param:
                 ordinal_key_states = self.k_proj(ordinal_hidden_states)
                 beacon_key_states = self.beacon_k_proj(beacon_hidden_states)
-                key_states = torch.cat([ordinal_key_states, beacon_key_states], dim=1)
+                key_states = beacon_key_states.new_zeros((ordinal_key_states.shape[0], cur_beacon_indices.shape[0], ordinal_key_states.shape[2]))
+                key_states[:, cur_beacon_indices == 0] = ordinal_key_states
+                key_states[:, cur_beacon_indices == 1] = beacon_key_states
+                # NOTE: replicate hidden states for beacon tokens in case of parallel windows
+                if (cur_beacon_indices == 2).any():
+                    key_states[:, cur_beacon_indices == 2] = beacon_key_states[:, :(cur_beacon_indices == 2).sum()]
+
             else:
                 key_states = self.k_proj(hidden_states)
             
             if "v" in self.config.beacon_param:
                 ordinal_value_states = self.v_proj(ordinal_hidden_states)
                 beacon_value_states = self.beacon_v_proj(beacon_hidden_states)
-                value_states = torch.cat([ordinal_value_states, beacon_value_states], dim=1)
+                value_states = beacon_value_states.new_zeros((ordinal_value_states.shape[0], cur_beacon_indices.shape[0], ordinal_value_states.shape[2]))
+                value_states[:, cur_beacon_indices == 0] = ordinal_value_states
+                value_states[:, cur_beacon_indices == 1] = beacon_value_states
+                # NOTE: replicate hidden states for beacon tokens in case of parallel windows
+                if (cur_beacon_indices == 2).any():
+                    value_states[:, cur_beacon_indices == 2] = beacon_value_states[:, :(cur_beacon_indices == 2).sum()]
             else:
                 value_states = self.v_proj(hidden_states)
 
@@ -461,12 +565,20 @@ class LlamaAttention(nn.Module):
 
         return query_states, key_states, value_states
     
-    def o_proj_with_beacon(self, attn_output, beacon_size=0):
+    def o_proj_with_beacon(self, attn_output, beacon_size, beacon_indices):
         if beacon_size > 0:
+            # NOTE: when beacon_pos == "interleave", the beacon_indices points to all beacon tokens in the current window (cached activations + input_ids), so we shall slice out the part corresponding to the input_ids
+            cur_beacon_indices = beacon_indices[-attn_output.shape[1]:]
+
             if "o" in self.config.beacon_param:
-                ordinal_attn_output = self.o_proj(attn_output[:, :-beacon_size])
-                beacon_attn_output = self.beacon_o_proj(attn_output[:, -beacon_size:])
-                attn_output = torch.cat([ordinal_attn_output, beacon_attn_output], dim=1)
+                ordinal_attn_output = self.o_proj(attn_output[:, cur_beacon_indices == 0])
+                beacon_attn_output = self.beacon_o_proj(attn_output[:, cur_beacon_indices == 1])
+                attn_output = beacon_attn_output.new_zeros(attn_output.shape)
+                attn_output[:, cur_beacon_indices == 0] = ordinal_attn_output
+                attn_output[:, cur_beacon_indices == 1] = beacon_attn_output
+                # NOTE: replicate hidden states for beacon tokens in case of parallel windows
+                # if (cur_beacon_indices == 2).any():
+                #     attn_output[:, cur_beacon_indices == 2] = beacon_attn_output[:, :(cur_beacon_indices == 2).sum()]
             else:
                 attn_output = self.o_proj(attn_output)
         else:
@@ -490,7 +602,7 @@ class LlamaAttention(nn.Module):
 
         bsz, q_len, _ = hidden_states.size()
         kv_seq_len = hidden_states.shape[-2]
-        past_key, past_value, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size = past_key_value
+        past_key, past_value, beacon_size, beacon_indices = past_key_value
 
         if past_key is not None:
             past_seq_len = past_key.shape[2]
@@ -498,51 +610,27 @@ class LlamaAttention(nn.Module):
         else:
             past_seq_len = 0
 
-        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, total_beacon_size)
+        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, beacon_size, beacon_indices)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
         value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
 
-        cos, sin = self.rotary_emb(value_states, seq_len=kv_seq_len)
-
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        if window_size > 0:
-            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        past_key_value = (key_states, value_states, beacon_size, beacon_indices)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
         
-        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
-        if window_size == 0:
-            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
-
-        key_position_ids = position_ids
-        # align query position_ids with key
-        query_position_ids = key_position_ids[:, -q_len:]
-
-        key_states = apply_rotary_pos_emb_single(key_states, cos, sin, key_position_ids)
-        query_states = apply_rotary_pos_emb_single(query_states, cos, sin, query_position_ids)
+        query_states, key_states = self.rotary_emb(query_states, key_states, position_ids)
 
         key_states = repeat_kv(key_states, self.num_key_value_groups)
         value_states = repeat_kv(value_states, self.num_key_value_groups)
 
         attn_weights = torch.matmul(query_states, key_states.transpose(2, 3)) / math.sqrt(self.head_dim)
-
-        # debug attention weights
-        # if q_len == 1:
-        #     with open(f"data/debug/{self.layer_idx}.txt", "w") as f:
-        #         torch.set_printoptions(profile="full",linewidth=10000000,precision=1,sci_mode=False)
-        #         a = attn_weights.mean(1)
-        #         f.write(f"past_length: {past_key.shape[2]}\nattn_weight: {a.shape}\n")
-        #         f.write(str(a))
-        #         torch.set_printoptions(profile="default")
-        #     if self.layer_idx == self.config.num_hidden_layers - 1:
-        #         print("this is time!!!")
-        #         input()
 
         if attn_weights.size() != (bsz, self.num_heads, q_len, kv_seq_len):
             raise ValueError(
@@ -568,23 +656,11 @@ class LlamaAttention(nn.Module):
                 f" {attn_output.size()}"
             )
 
-        # for debug
-        # if past_key.shape[2] == 128 and self.layer_idx == 0:
-        #     torch.save({
-        #         "hidden": hidden_states,
-        #         "query": query_states,
-        #         "key": key_states,
-        #         "value": value_states,
-        #         "output": attn_output,
-        #         "query_position_ids": query_position_ids,
-        #         "key_position_ids": key_position_ids,
-        #     }, "attn-output.pt")
-
         attn_output = attn_output.transpose(1, 2).contiguous()
 
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
 
-        attn_output = self.o_proj_with_beacon(attn_output, total_beacon_size)
+        attn_output = self.o_proj_with_beacon(attn_output, beacon_size, beacon_indices)
 
         if not output_attentions:
             attn_weights = None
@@ -625,41 +701,29 @@ class LlamaSdpaAttention(LlamaAttention):
             )
         bsz, q_len, _ = hidden_states.size()
         kv_seq_len = hidden_states.shape[-2]
-        past_key, past_value, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size = past_key_value
+        past_key, past_value, beacon_size, beacon_indices = past_key_value
         if past_key is not None:
             past_seq_len = past_key.shape[2]
             kv_seq_len += past_seq_len
         else:
             past_seq_len = 0
 
-        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, total_beacon_size)
+        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, beacon_size, beacon_indices)
 
         query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
         key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
         value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
 
-        cos, sin = self.rotary_emb(value_states, seq_len=kv_seq_len)
-
         # return keys and values before rope
         # NOTE: incrementally return keys and values for efficiency 
-        if window_size > 0:
-            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
+        past_key_value = (key_states, value_states, beacon_size, beacon_indices)
 
         if past_key is not None:
             # reuse k, v, self_attention
             key_states = torch.cat([past_key, key_states], dim=2)
             value_states = torch.cat([past_value, value_states], dim=2)
         
-        # NOTE: window_size == 0 indicates the beacon is disabled, the model works as is, so the new past_key_values should concatenate old ones
-        if window_size == 0:
-            past_key_value = (key_states, value_states, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size)
-
-        key_position_ids = position_ids
-        # align query position_ids with key
-        query_position_ids = key_position_ids[:, -q_len:]
-
-        key_states = apply_rotary_pos_emb_single(key_states, cos, sin, key_position_ids)
-        query_states = apply_rotary_pos_emb_single(query_states, cos, sin, query_position_ids)
+        query_states, key_states = self.rotary_emb(query_states, key_states, position_ids)
 
         key_states = repeat_kv(key_states, self.num_key_value_groups)
         value_states = repeat_kv(value_states, self.num_key_value_groups)
@@ -669,18 +733,6 @@ class LlamaSdpaAttention(LlamaAttention):
                 raise ValueError(
                     f"Attention mask should be of size {(bsz, 1, q_len, kv_seq_len)}, but is {attention_mask.size()}"
                 )
-
-        # if self.layer_idx == 0 and past_key is None:
-        #     with open(f"attention_mask.txt", "w") as f:
-        #         torch.set_printoptions(profile="full",linewidth=10000000,precision=1,sci_mode=False)
-        #         a = attention_mask
-        #         f.write(str(a))
-        #         torch.set_printoptions(profile="default")
-        #     with open(f"position_ids.txt", "w") as f:
-        #         torch.set_printoptions(profile="full",linewidth=10000000,precision=1,sci_mode=False)
-        #         a = position_ids
-        #         f.write(str(a))
-        #         torch.set_printoptions(profile="default")
 
         # SDPA with memory-efficient backend is currently (torch==2.1.2) bugged with non-contiguous inputs with custom attn_mask,
         # Reference: https://github.com/pytorch/pytorch/issues/112577.
@@ -699,28 +751,219 @@ class LlamaSdpaAttention(LlamaAttention):
             is_causal=self.is_causal and attention_mask is None and q_len > 1,
         )
 
-        # for debug
-        # if past_key is not None and past_key.shape[2] == 128 and self.layer_idx == 0:
-        #     torch.save({
-        #         "hidden": hidden_states,
-        #         "query": query_states,
-        #         "key": key_states,
-        #         "value": value_states,
-        #         "output": attn_output,
-        #         "query_position_ids": query_position_ids,
-        #         "key_position_ids": key_position_ids,
-        #     }, "attn-output.pt")
-
         attn_output = attn_output.transpose(1, 2).contiguous()
         attn_output = attn_output.reshape(bsz, q_len, self.hidden_size)
-        attn_output = self.o_proj_with_beacon(attn_output, total_beacon_size)
+        attn_output = self.o_proj_with_beacon(attn_output, beacon_size, beacon_indices)
 
         return attn_output, None, past_key_value
+
+
+class LlamaFlashAttention2(LlamaAttention):
+    """
+    Llama flash attention module. This module inherits from `LlamaAttention` as the weights of the module stays
+    untouched. The only required change would be on the forward pass where it needs to correctly call the public API of
+    flash attention and deal with padding tokens in case the input contains any of them.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # TODO: Should be removed once Flash Attention for RoCm is bumped to 2.1.
+        # flash_attn<2.1 generates top-left aligned causal mask, while what is needed here is bottom-right alignement, that was made default for flash_attn>=2.1. This attribute is used to handle this difference. Reference: https://github.com/Dao-AILab/flash-attention/releases/tag/v2.1.0.
+        # Beware that with flash_attn<2.1, using q_seqlen != k_seqlen (except for the case q_seqlen == 1) produces a wrong mask (top-left).
+        self._flash_attn_uses_top_left_mask = not is_flash_attn_greater_or_equal_2_10()
+
+    def forward(
+        self,
+        hidden_states: torch.Tensor,
+        attention_mask: Optional[torch.LongTensor] = None,
+        position_ids: Optional[torch.LongTensor] = None,
+        past_key_value: Optional[Cache] = None,
+        output_attentions: bool = False,
+        use_cache: bool = False,
+    ) -> Tuple[torch.Tensor, Optional[torch.Tensor], Optional[Tuple[torch.Tensor]]]:
+        output_attentions = False
+
+        bsz, q_len, _ = hidden_states.size()
+        kv_seq_len = hidden_states.shape[-2]
+
+        past_key, past_value, beacon_size, beacon_indices = past_key_value
+        if past_key is not None:
+            past_seq_len = past_key.shape[2]
+            kv_seq_len += past_seq_len
+        else:
+            past_seq_len = 0
+
+        query_states, key_states, value_states = self.qkv_proj_with_beacon(hidden_states, beacon_size, beacon_indices)
+
+        query_states = query_states.view(bsz, q_len, self.num_heads, self.head_dim).transpose(1, 2)
+        key_states = key_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+        value_states = value_states.view(bsz, q_len, self.num_key_value_heads, self.head_dim).transpose(1, 2)
+
+        # return keys and values before rope
+        # NOTE: incrementally return keys and values for efficiency 
+        past_key_value = (key_states, value_states, beacon_size, beacon_indices)
+
+        if past_key is not None:
+            # reuse k, v, self_attention
+            key_states = torch.cat([past_key, key_states], dim=2)
+            value_states = torch.cat([past_value, value_states], dim=2)
+
+        query_states, key_states = self.rotary_emb(query_states, key_states, position_ids)
+
+        # TODO: These transpose are quite inefficient but Flash Attention requires the layout [batch_size, sequence_length, num_heads, head_dim]. We would need to refactor the KV cache
+        # to be able to avoid many of these transpose/reshape/view.
+        query_states = query_states.transpose(1, 2)
+        key_states = key_states.transpose(1, 2)
+        value_states = value_states.transpose(1, 2)
+
+        dropout_rate = self.attention_dropout if self.training else 0.0
+
+        # In PEFT, usually we cast the layer norms in float32 for training stability reasons
+        # therefore the input hidden states gets silently casted in float32. Hence, we need
+        # cast them back in the correct dtype just to be sure everything works as expected.
+        # This might slowdown training & inference so it is recommended to not cast the LayerNorms
+        # in fp32. (LlamaRMSNorm handles it correctly)
+
+        input_dtype = query_states.dtype
+        if input_dtype == torch.float32:
+            if torch.is_autocast_enabled():
+                target_dtype = torch.get_autocast_gpu_dtype()
+            # Handle the case where the model is quantized
+            elif hasattr(self.config, "_pre_quantization_dtype"):
+                target_dtype = self.config._pre_quantization_dtype
+            else:
+                target_dtype = self.q_proj.weight.dtype
+
+            logger.warning_once(
+                f"The input hidden states seems to be silently casted in float32, this might be related to"
+                f" the fact you have upcasted embedding or layer norm layers in float32. We will cast back the input in"
+                f" {target_dtype}."
+            )
+
+            query_states = query_states.to(target_dtype)
+            key_states = key_states.to(target_dtype)
+            value_states = value_states.to(target_dtype)
+
+        attn_output = self._flash_attention_forward(
+            query_states, 
+            key_states, 
+            value_states, 
+            attention_mask, 
+            q_len, 
+            dropout=dropout_rate
+        )
+
+        attn_output = attn_output.reshape(bsz, q_len, self.hidden_size).contiguous()
+        attn_output = self.o_proj_with_beacon(attn_output, beacon_size, beacon_indices)
+
+        if not output_attentions:
+            attn_weights = None
+
+        return attn_output, attn_weights, past_key_value
+
+    def _flash_attention_forward(
+        self, query_states, key_states, value_states, attention_mask, query_length, dropout=0.0, softmax_scale=None
+    ):
+        """
+        Calls the forward method of Flash Attention - if the input hidden states contain at least one padding token
+        first unpad the input, then computes the attention scores and pad the final attention scores.
+
+        Args:
+            query_states (`torch.Tensor`):
+                Input query states to be passed to Flash Attention API
+            key_states (`torch.Tensor`):
+                Input key states to be passed to Flash Attention API
+            value_states (`torch.Tensor`):
+                Input value states to be passed to Flash Attention API
+            attention_mask (`torch.Tensor`):
+                The padding mask - corresponds to a tensor of size `(batch_size, seq_len)` where 0 stands for the
+                position of padding tokens and 1 for the position of non-padding tokens.
+            dropout (`float`):
+                Attention dropout
+            softmax_scale (`float`, *optional*):
+                The scaling of QK^T before applying softmax. Default to 1 / sqrt(head_dim)
+        """
+        if not self._flash_attn_uses_top_left_mask:
+            causal = self.is_causal
+        else:
+            # TODO: Remove the `query_length != 1` check once Flash Attention for RoCm is bumped to 2.1. For details, please see the comment in LlamaFlashAttention2 __init__.
+            causal = self.is_causal and query_length != 1
+
+        # Contains at least one padding token in the sequence
+        if attention_mask is not None:
+            batch_size = query_states.shape[0]
+            query_states, key_states, value_states, indices_q, cu_seq_lens, max_seq_lens = self._upad_input(
+                query_states, key_states, value_states, attention_mask, query_length
+            )
+
+            cu_seqlens_q, cu_seqlens_k = cu_seq_lens
+            max_seqlen_in_batch_q, max_seqlen_in_batch_k = max_seq_lens
+
+            attn_output_unpad = flash_attn_varlen_func(
+                query_states,
+                key_states,
+                value_states,
+                cu_seqlens_q=cu_seqlens_q,
+                cu_seqlens_k=cu_seqlens_k,
+                max_seqlen_q=max_seqlen_in_batch_q,
+                max_seqlen_k=max_seqlen_in_batch_k,
+                dropout_p=dropout,
+                softmax_scale=softmax_scale,
+                causal=causal,
+            )
+
+            attn_output = pad_input(attn_output_unpad, indices_q, batch_size, query_length)
+        else:
+            attn_output = flash_attn_func(
+                query_states, key_states, value_states, dropout, softmax_scale=softmax_scale, causal=causal
+            )
+
+        return attn_output
+
+    def _upad_input(self, query_layer, key_layer, value_layer, attention_mask, query_length):
+        indices_k, cu_seqlens_k, max_seqlen_in_batch_k = _get_unpad_data(attention_mask)
+        batch_size, kv_seq_len, num_key_value_heads, head_dim = key_layer.shape
+
+        key_layer = index_first_axis(
+            key_layer.reshape(batch_size * kv_seq_len, num_key_value_heads, head_dim), indices_k
+        )
+        value_layer = index_first_axis(
+            value_layer.reshape(batch_size * kv_seq_len, num_key_value_heads, head_dim), indices_k
+        )
+        if query_length == kv_seq_len:
+            query_layer = index_first_axis(
+                query_layer.reshape(batch_size * kv_seq_len, self.num_heads, head_dim), indices_k
+            )
+            cu_seqlens_q = cu_seqlens_k
+            max_seqlen_in_batch_q = max_seqlen_in_batch_k
+            indices_q = indices_k
+        elif query_length == 1:
+            max_seqlen_in_batch_q = 1
+            cu_seqlens_q = torch.arange(
+                batch_size + 1, dtype=torch.int32, device=query_layer.device
+            )  # There is a memcpy here, that is very bad.
+            indices_q = cu_seqlens_q[:-1]
+            query_layer = query_layer.squeeze(1)
+        else:
+            # The -q_len: slice assumes left padding.
+            attention_mask = attention_mask[:, -query_length:]
+            query_layer, indices_q, cu_seqlens_q, max_seqlen_in_batch_q = unpad_input(query_layer, attention_mask)
+
+        return (
+            query_layer,
+            key_layer,
+            value_layer,
+            indices_q,
+            (cu_seqlens_q, cu_seqlens_k),
+            (max_seqlen_in_batch_q, max_seqlen_in_batch_k),
+        )
 
 
 LLAMA_ATTENTION_CLASSES = {
     "eager": LlamaAttention,
     "sdpa": LlamaSdpaAttention,
+    "flash_attention_2": LlamaFlashAttention2,
 }
 
 
@@ -729,7 +972,7 @@ class LlamaDecoderLayer(nn.Module):
         super().__init__()
         self.hidden_size = config.hidden_size
 
-        self.self_attn = LLAMA_ATTENTION_CLASSES[config._attn_implementation](config=config, layer_idx=layer_idx)
+        self.self_attn = LLAMA_ATTENTION_CLASSES[config._attn_implementation](config, layer_idx)
 
         self.mlp = LlamaMLP(config)
         self.input_layernorm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
@@ -748,9 +991,8 @@ class LlamaDecoderLayer(nn.Module):
         """
         Args:
             hidden_states (`torch.FloatTensor`): input to the layer of shape `(batch, seq_len, embed_dim)`
-            attention_mask (`torch.FloatTensor`, *optional*):
-                attention mask of size `(batch_size, sequence_length)` if flash attention is used or `(batch_size, 1,
-                query_sequence_length, key_sequence_length)` if default attention is used.
+            attention_mask (`torch.FloatTensor`, *optional*): attention mask of size
+                `(batch, sequence_length)` where padding elements are indicated by 0.
             output_attentions (`bool`, *optional*):
                 Whether or not to return the attentions tensors of all attention layers. See `attentions` under
                 returned tensors for more detail.
@@ -765,7 +1007,7 @@ class LlamaDecoderLayer(nn.Module):
             )
 
         # NOTE: get beacon_size in case the mlp is included in beacon_param
-        past_key, past_value, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size = past_key_value
+        past_key, past_value, beacon_size, beacon_indices = past_key_value
 
         residual = hidden_states
 
@@ -786,7 +1028,7 @@ class LlamaDecoderLayer(nn.Module):
         # Fully Connected
         residual = hidden_states
         hidden_states = self.post_attention_layernorm(hidden_states)
-        hidden_states = self.mlp(hidden_states, total_beacon_size)
+        hidden_states = self.mlp(hidden_states, beacon_size, beacon_indices)
         hidden_states = residual + hidden_states
 
         outputs = (hidden_states,)
@@ -818,7 +1060,7 @@ LLAMA_START_DOCSTRING = r"""
 
 
 @add_start_docstrings(
-    "The bare LLaMA Model outputting raw hidden-states without any specific head on top.",
+    "The bare Llama Model outputting raw hidden-states without any specific head on top.",
     LLAMA_START_DOCSTRING,
 )
 class LlamaPreTrainedModel(PreTrainedModel):
@@ -827,6 +1069,7 @@ class LlamaPreTrainedModel(PreTrainedModel):
     supports_gradient_checkpointing = True
     _no_split_modules = ["LlamaDecoderLayer"]
     _skip_keys_device_placement = "past_key_values"
+    _supports_flash_attn_2 = True
     _supports_sdpa = True
     _supports_cache_class = True
 
@@ -863,7 +1106,7 @@ LLAMA_INPUTS_DOCSTRING = r"""
             Indices can be obtained using [`AutoTokenizer`]. See [`PreTrainedTokenizer.encode`] and
             [`PreTrainedTokenizer.__call__`] for details.
 
-            If `past_key_values` is used, optionally only the last `input_ids` have to be input (see
+            If `past_key_values` is used, optionally only the last `decoder_input_ids` have to be input (see
             `past_key_values`).
 
             If you want to change padding behavior, you should read [`modeling_opt._prepare_decoder_attention_mask`]
@@ -913,7 +1156,7 @@ LLAMA_INPUTS_DOCSTRING = r"""
 
 
 @add_start_docstrings(
-    "The bare LLaMA Model outputting raw hidden-states without any specific head on top.",
+    "The bare Llama Model outputting raw hidden-states without any specific head on top.",
     LLAMA_START_DOCSTRING,
 )
 class LlamaModel(LlamaPreTrainedModel):
@@ -938,7 +1181,7 @@ class LlamaModel(LlamaPreTrainedModel):
         self.layers = nn.ModuleList(
             [LlamaDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)]
         )
-        self._use_sdpa = config._attn_implementation == "sdpa"
+        self._attn_implementation = config._attn_implementation
         self.norm = LlamaRMSNorm(config.hidden_size, eps=config.rms_norm_eps)
 
         self.gradient_checkpointing = False
@@ -956,7 +1199,11 @@ class LlamaModel(LlamaPreTrainedModel):
                     if self.config.beacon_embed_init == "bos":
                         self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
                     elif self.config.beacon_embed_init == "eos":
-                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                        if isinstance(self.config.eos_token_id, list):
+                            eos_token_id = self.config.eos_token_id[0]
+                        else:
+                            eos_token_id = self.config.eos_token_id
+                        self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[eos_token_id]
                     else:
                         raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
         else:
@@ -964,7 +1211,11 @@ class LlamaModel(LlamaPreTrainedModel):
                 if self.config.beacon_embed_init == "bos":
                     self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.bos_token_id]
                 elif self.config.beacon_embed_init == "eos":
-                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[self.config.eos_token_id]
+                    if isinstance(self.config.eos_token_id, list):
+                        eos_token_id = self.config.eos_token_id[0]
+                    else:
+                        eos_token_id = self.config.eos_token_id
+                    self.beacon_embed_tokens.weight.data[:] = self.embed_tokens.weight.data[eos_token_id]
                 else:
                     raise NotImplementedError(f"Make sure beacon_embed_init is either eos or bos, found {self.config.beacon_embed_init}")
 
@@ -1006,151 +1257,35 @@ class LlamaModel(LlamaPreTrainedModel):
         else:
             raise ValueError("You have to specify either input_ids or inputs_embeds")
 
-        # BEACON: create position_ids for all keys including past_keys
-        device = input_ids.device if input_ids is not None else inputs_embeds.device
-        seq_length_with_past = seq_length
-        past_key_values_length = 0
-        past_key, past_value, beacon_sizes, total_beacon_size, raw_size_to_cache, window_size = past_key_values[0]
-
-        if past_key is not None:
-            past_key_values_length = past_key.shape[2]
-            seq_length_with_past = seq_length_with_past + past_key_values_length
+        past_key, past_value, beacon_size, beacon_indices = past_key_values[0]
 
         # BEACON: separately embed ordinal tokens and beacon tokens because ordinal tokens do not receive gradients
-        if total_beacon_size > 0:
-            ordinal_input_ids = input_ids[:, :-total_beacon_size]
-            beacon_input_ids = input_ids[:, -total_beacon_size:]
+        if beacon_size > 0:
+            # NOTE: when beacon_pos == "interleave", the beacon_indices points to all beacon tokens in the current window (cached activations + input_ids), so we shall slice out the part corresponding to the input_ids
+            cur_beacon_indices = beacon_indices[-input_ids.shape[1]:]
+
+            ordinal_input_ids = input_ids[:, cur_beacon_indices == 0]
+            beacon_input_ids = input_ids[:, cur_beacon_indices > 0]
             ordinal_inputs_embeds = self.embed_tokens(ordinal_input_ids)
-            # bias beacon_token_ids because they are newly initialized
             beacon_input_embeds = self.beacon_embed_tokens(beacon_input_ids - self.config.vocab_size)
-            inputs_embeds = torch.cat([ordinal_inputs_embeds, beacon_input_embeds], dim=1)
+            # create a new embedding tensor
+            inputs_embeds = beacon_input_embeds.new_zeros(*input_ids.shape, beacon_input_embeds.shape[-1])
+            inputs_embeds[:, cur_beacon_indices == 0] = ordinal_inputs_embeds
+            inputs_embeds[:, cur_beacon_indices > 0] = beacon_input_embeds
+
         else:
             inputs_embeds = self.embed_tokens(input_ids)
 
-        # when total_beacon_size > 0, we need to modify attention mask
-        if self._use_sdpa and not output_attentions and total_beacon_size == 0:
-            # output_attentions=True can not be supported when using SDPA, and we fall back on
-            # the manual implementation that requires a 4D causal mask in all cases.
-            attention_mask = _prepare_4d_causal_attention_mask_for_sdpa(
-                attention_mask,
-                (batch_size, seq_length),
-                inputs_embeds,
-                past_key_values_length,
-            )
-        else:
-            # 4d mask is passed through the layers
-            attention_mask = _prepare_4d_causal_attention_mask(
-                attention_mask, (batch_size, seq_length), inputs_embeds, past_key_values_length
-            )        
+        # embed positions
+        hidden_states = inputs_embeds
 
-        position_ids = torch.arange(seq_length_with_past, dtype=torch.long, device=device).repeat(batch_size, 1)
-
-        # prepare attention mask and position ids for beacons
-        # NOTE: we must modify the position_ids here instead of inside the self_attn forward, otherwise the version of position_ids is incompatible when enabling gradient checkpointing
-        if total_beacon_size > 0:
-            # number of tokens to condense by the beacons
-            condensing_size = window_size - raw_size_to_cache
-            # number of tokens in current window (containing cached raw activations)
-            window_size_with_beacon = window_size + total_beacon_size
-            # number of beacons in cache
-            memory_size = seq_length_with_past - window_size_with_beacon
-            min_value = torch.finfo(inputs_embeds.dtype).min
-
-            beacon_start_idx = -total_beacon_size
-
-            # batch_size, head_num, window_size
-            reference_attention_mask = attention_mask[..., -total_beacon_size - 1, -window_size_with_beacon: -total_beacon_size]
-
-            for beacon_size in beacon_sizes:
-                # in this case, the activations of ordinal tokens are used as beacon activations
-                if beacon_size < 0:
-                    continue
-
-                token_per_beacon = condensing_size // beacon_size
-
-                # the end_idx may be -0, in that case, use max instead
-                beacon_end_idx = beacon_start_idx + beacon_size
-                if beacon_end_idx == 0:
-                    beacon_end_idx = torch.iinfo(torch.long).max
-
-                if self.config.beacon_attn == "step-expansion":
-                    # each beacon can attend to one more sub-interval than its predecessor
-
-                    # token_per_beacon, 2 * token_per_beacon, ..., beacon_size * token_per_beacon
-                    beacon_arange = torch.arange(1, beacon_size + 1, device=device) * token_per_beacon
-                    # 0, 1, 2, ..., window_size - 1
-                    ordinal_arange = torch.arange(window_size, device=device)
-                    # beacon_size, window_size
-                    valid_pos = ordinal_arange.expand(beacon_size, window_size) < beacon_arange.unsqueeze(-1)
-                    # beacon_size, window_size
-                    ordinal_attention_mask = torch.where(valid_pos, 0, min_value)
-                    # NOTE: add reference attention_mask so that padding tokens are considered
-                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
-
-                    if self.config.beacon_attend_prev:
-                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
-                        # the beacon token is next to the last oridinal token it attends to
-                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
-                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
-                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
-                    else:
-                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
-                        # the beacon token is next to the last oridinal token it attends to
-                        beacon_position_ids = torch.arange(token_per_beacon, token_per_beacon * beacon_size + 1, token_per_beacon) + memory_size
-                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
-
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
-                    # beacons of different ratios are blind to others
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                elif self.config.beacon_attn == "segmentation":
-                    # each beacon can attend to its corresponding sub-interval
-
-                    # beacon_size, token_per_beacon
-                    indices = torch.arange(token_per_beacon * beacon_size, device=device).view(beacon_size, -1)
-                    # beacon_size, window_size
-                    ordinal_attention_mask = attention_mask.new_full((beacon_size, window_size), min_value)
-                    ordinal_attention_mask.scatter_(dim=-1, index=indices, value=0)
-
-                    # NOTE: add reference attention_mask so that padding tokens are considered
-                    ordinal_attention_mask = ordinal_attention_mask[None, None, ...] + reference_attention_mask.unsqueeze(-2)
-
-                    if self.config.beacon_attend_prev:
-                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).triu(1)
-                        # the beacon token is next to the last oridinal token it attends to
-                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
-                        beacon_position_ids = beacon_position_ids + torch.arange(beacon_size)
-                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
-                    else:
-                        beacon_attention_mask = attention_mask.new_full((beacon_size, beacon_size), min_value).fill_diagonal_(0)
-                        # the beacon token is next to the last oridinal token it attends to
-                        beacon_position_ids = position_ids.new_full(beacon_size, fill_value=token_per_beacon + memory_size)
-                        position_ids[:, beacon_start_idx: beacon_end_idx] = beacon_position_ids
-
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, -window_size_with_beacon: -total_beacon_size] = ordinal_attention_mask
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, beacon_start_idx: beacon_end_idx] = beacon_attention_mask
-                    # beacons of different ratios are blind to others
-                    attention_mask[..., beacon_start_idx: beacon_end_idx, -total_beacon_size: beacon_start_idx] = min_value
-
-                elif self.config.beacon_attn == "full-coverage":
-                    pass
-
-                else:
-                    raise NotImplementedError
-
-                beacon_start_idx = beacon_end_idx
-            
-        # print(f"total_beacon_size:  {total_beacon_size}")
-        # print(f"raw_size_to_cache:  {raw_size_to_cache}")
+        # print(f"input_ids:          {input_ids}")
+        # print(f"beacon_indices:     {beacon_indices}")
         # print(f"position_ids:       {position_ids}")
-        # print(f"attention_mask:\n{attention_mask}")
+        # print(f"attention_mask:\n{attention_mask == 0}")
         # x = input()
         # if x == "s":
         #     return
-
-        # embed positions
-        hidden_states = inputs_embeds
 
         # decoder layers
         all_hidden_states = () if output_hidden_states else None
@@ -1287,8 +1422,8 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
 
         # when we directly call _native_forward, the past_key_values would be None
         if past_key_values is None:
-            # NOTE: set window size to 0, so that new past_key_values are returned properly, see MistralAttention.forward
-            past_key_values = [(None, None, [0], 0, 0, 0) for _ in range(self.config.num_hidden_layers)]
+            # NOTE: set beacon size to 0 to avoid using any beacon parameters, see LlamaAttention.forward
+            past_key_values = [(None, None, 0, None) for _ in range(self.config.num_hidden_layers)]
 
         # decoder outputs consists of (dec_features, layer_state, dec_hidden, dec_attn)
         outputs = self.model(
@@ -1304,12 +1439,7 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         )
 
         hidden_states = outputs[0]
-        if self.config.pretraining_tp > 1:
-            lm_head_slices = self.lm_head.weight.split(self.vocab_size // self.config.pretraining_tp, dim=0)
-            logits = [F.linear(hidden_states, lm_head_slices[i]) for i in range(self.config.pretraining_tp)]
-            logits = torch.cat(logits, dim=-1)
-        else:
-            logits = self.lm_head(hidden_states)
+        logits = self.lm_head(hidden_states)
         logits = logits.float()
 
         loss = None
@@ -1346,25 +1476,23 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         return_dict: Optional[bool] = None,
     ):
         # t1 = time.time()
+
         # initialize cache
         self.memory.prepare(
             input_ids=input_ids, 
             attention_mask=attention_mask, 
             labels=labels
         )
+
         # t2 = time.time()
-        # print(f"{torch.distributed.get_rank()}: {input_ids.shape}")
 
         # after the first window, one token at a time
         while not self.memory.finish:
-        # for _ in range(2):
+
             # t3 = time.time()
 
-            input_ids, attention_mask, past_key_values, labels = self.memory.step()
+            input_ids, attention_mask, position_ids, past_key_values, labels = self.memory.step()
 
-            # NOTE: the first window is encoded without beacon parameters, we should skip it when computing loss
-            if self.training and self.memory._step_idx == 1:
-                labels[:] = -100
             # t4 = time.time()
 
             outputs = self._native_forward(
@@ -1381,6 +1509,7 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
                 # NOTE: the labels have been shifted so that all tokens in the window have the proper loss
                 shift_labels=False,
             )
+
             # t5 = time.time()
 
             # update past_key_values
@@ -1394,10 +1523,7 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
 
             # t7 = time.time()
 
-            # print(f"Loop step time:         {t4-t3}")
-            # print(f"Loop forward time:      {t5-t4}")
-            # print(f"Loop update time:       {t6-t5}")
-            # print(f"Loop loss time:         {t7-t6}")
+            # print(f"step time: {t4-t3}, forward time: {t5-t4}, update time: {t6-t5}, loss time: {t7-t6}")
             # input()
 
         # t8 = time.time()
@@ -1406,8 +1532,10 @@ class LlamaForCausalLM(LlamaPreTrainedModel):
         outputs = self.memory.output(outputs)
 
         # t9 = time.time()
-        # print(f"Prepare time:           {t2-t1}")
-        # print(f"Output time:            {t9-t8}")
+
+        # print(f"output time:            {t9-t8}")
+        # input()
+
         return outputs
     
     def forward(self, **kwargs):

@@ -26,6 +26,15 @@ class Args:
         default=False,
         metadata={'help': 'Add query-side instruction?'}
     )
+
+    corpus_data: str = field(
+        default="namespace-Pt/msmarco",
+        metadata={'help': 'candidate passages'}
+    )
+    query_data: str = field(
+        default="namespace-Pt/msmarco-corpus",
+        metadata={'help': 'queries and their positive passages for evaluation'}
+    )
     
     max_query_length: int = field(
         default=32,
@@ -143,7 +152,10 @@ def search(model: FlagModel, queries: datasets, faiss_index: faiss.Index, k:int 
     return all_scores, all_indices
     
     
-def evaluate(preds, labels, cutoffs=[1,10,100]):
+def evaluate(preds, 
+             preds_scores, 
+             labels, 
+             cutoffs=[1, 10, 100]):
     """
     Evaluate MRR and Recall at cutoffs.
     """
@@ -177,15 +189,37 @@ def evaluate(preds, labels, cutoffs=[1,10,100]):
         recall = recalls[i]
         metrics[f"Recall@{cutoff}"] = recall
 
-    return metrics
+    # AUC 
+    pred_hard_encodings = []
+    for pred, label in zip(preds, labels):
+        pred_hard_encoding = np.isin(pred, label).astype(int).tolist()
+        pred_hard_encodings.append(pred_hard_encoding)
+    
+    from sklearn.metrics import roc_auc_score, roc_curve, ndcg_score
+    pred_hard_encodings1d = np.asarray(pred_hard_encodings).flatten() 
+    preds_scores1d = preds_scores.flatten()
+    auc = roc_auc_score(pred_hard_encodings1d, preds_scores1d)
+    
+    metrics['AUC@100'] = auc
 
+    # nDCG
+    for k, cutoff in enumerate(cutoffs):
+        nDCG = ndcg_score(pred_hard_encodings, preds_scores, k=cutoff)
+        metrics[f"nDCG@{cutoff}"] = nDCG
+            
+    return metrics
 
 def main():
     parser = HfArgumentParser([Args])
     args: Args = parser.parse_args_into_dataclasses()[0]
-    
-    eval_data = datasets.load_dataset("namespace-Pt/msmarco", split="dev")
-    corpus = datasets.load_dataset("namespace-Pt/msmarco-corpus", split="train")
+
+    if args.query_data == 'namespace-Pt/msmarco-corpus':
+        assert args.corpus_data == 'namespace-Pt/msmarco'
+        eval_data = datasets.load_dataset("namespace-Pt/msmarco", split="dev")
+        corpus = datasets.load_dataset("namespace-Pt/msmarco-corpus", split="train")
+    else:
+        eval_data = datasets.load_dataset('json', data_files=args.query_data, split='train')
+        corpus = datasets.load_dataset('json', data_files=args.corpus_data, split='train')
 
     model = FlagModel(
         args.encoder, 
@@ -223,9 +257,7 @@ def main():
     for sample in eval_data:
         ground_truths.append(sample["positive"])
         
-    from FlagEmbedding.llm_embedder.src.utils import save_json
-
-    metrics = evaluate(retrieval_results, ground_truths)
+    metrics = evaluate(retrieval_results, scores, ground_truths)
 
     print(metrics)
 

@@ -15,7 +15,7 @@ from src import ModelArgs, DefaultDataCollator, FileLogger, get_model_and_tokeni
 @dataclass
 class Args(ModelArgs):
     eval_data: str = field(
-        default="activation-beacon:lm/pg19.json",
+        default="long-llm:lm/pg19.json",
         metadata={'help': 'The evaluation json data path.'}
     )
     output_dir: str = field(
@@ -148,13 +148,8 @@ def main():
     )
     accelerator.wait_for_everyone()
 
-    if not args.enable_tp:
-        # NOTE: if we use deepspeed in evaluation, we must prepare model and dataloader at the same time
-        model, dataloader = accelerator.prepare(model, dataloader)
-        model = accelerator.unwrap_model(model)
-    else:
-        # NOTE: prepare dataloader so the data moves to GPU automatically
-        dataloader = accelerator.prepare(dataloader)
+    # NOTE: prepare dataloader so the data moves to GPU automatically
+    dataloader = accelerator.prepare(dataloader)
 
     t1 = time.time()
     perplexity = evaluate_perplexity(model, dataloader, accelerator)

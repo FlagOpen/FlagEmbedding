@@ -12,6 +12,7 @@ from src import (
 )
 from src.args import TrainingArgs
 from src.metrics import Metric
+from src.trainer import ActivationBeaconTrainer
 
 logger = logging.getLogger(__name__)
 
@@ -69,11 +70,6 @@ def main():
             seed=training_args.seed,
             cache_dir=model_args.dataset_cache_dir,
         )
-
-    if training_args.use_colossal:
-        from src.colossal import ColossalActivationBeaconTrainer as ActivationBeaconTrainer
-    else:
-        from src.trainer import ActivationBeaconTrainer
 
     trainer = ActivationBeaconTrainer(
         model=model,

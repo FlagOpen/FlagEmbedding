@@ -16,7 +16,7 @@ class ModelArgs:
         metadata={'help': 'Default path to save huggingface datasets.'}
     )
     data_root: str = field(
-        default="/data/activation-beacon-new", 
+        default="/data/long-llm", 
         metadata={'help': 'The base directory storing all data used for training and evaluation. If specified, make sure all train_data, eval_data, and corpus are path relative to data_root!'},
     )
     train_data: Optional[List[str]] = field(
@@ -45,12 +45,8 @@ class ModelArgs:
         metadata={'help': 'Huggingface access token.'}
     )
     attn_impl: Optional[str] = field(
-        default="sdpa",
+        default="flash_attention_2",
         metadata={'help': 'The implementation of attention.'}
-    )
-    enable_flash: bool = field(
-        default=False,
-        metadata={'help': 'If True, use flash attention 2 in transformers models. This is only used for transformers<=4.36.'}
     )
 
     max_length: int = field(
@@ -58,7 +54,7 @@ class ModelArgs:
         metadata={'help': 'How many tokens at maximum for each input.'},
     )
     chat_template: str = field(
-        default="llama-2",
+        default="hf",
         metadata={'help': 'Instruction template name in fastchat.'}
     )
 
@@ -76,13 +72,13 @@ class ModelArgs:
     )
     rope_method: Optional[str] = field(
         default=None,
-        metadata={'help': 'How to scale RoPE?'},
+        metadata={'help': 'How to scale RoPE? {linear, dynamic, yarn}'},
     )
     rope_factor: float = field(
         default=1.,
         metadata={'help': 'RoPE scaling factor.'},
     )
-    
+
     lora: Optional[str] = field(
         default=None,
         metadata={'help': 'LoRA ID.'},
@@ -90,6 +86,10 @@ class ModelArgs:
     lora_unload: bool = field(
         default=True,
         metadata={'help': 'Merge and unload LoRA?'},
+    )
+    load_in_4_bit: bool = field(
+        default=False,
+        metadata={'help': 'Load model in 4 bits?'},
     )
 
     dtype: str = field(
@@ -112,6 +112,27 @@ class ModelArgs:
     enable_tp: bool = field(
         default=False,
         metadata={'help': 'Use tensor parallel to wrap the model?'}
+    )
+    
+    enable_vllm: bool = field(
+        default=False,
+        metadata={'help': 'Use vllm?'}
+    )
+    vllm_mem: float = field(
+        default=0.9,
+        metadata={'help': 'Vllm maximum GPU memory utilization.'}
+    )
+    vllm_tp: int = field(
+        default=1,
+        metadata={'help': 'Vllm tensor parallel degree.'}
+    )
+    vllm_len: Optional[int] = field(
+        default=None,
+        metadata={'help': 'Vllm maximum sequence length.'}
+    )
+    vllm_disable_ar: bool = field(
+        default=False,
+        metadata={'help': 'Disable custom all-reduce in vllm?'}
     )
 
     enable_beacon: bool = field(
@@ -154,6 +175,14 @@ class ModelArgs:
         default=None,
         metadata={'help': 'Can beacon tokens attend to previous beacon tokens?'}
     )
+    beacon_pos: Optional[str] = field(
+        default=None,
+        metadata={'help': 'Where to put beacon tokens? {append, interleave}'}
+    )
+    beacon_parallel_window: Optional[int] = field(
+        default=None,
+        metadata={'help': 'How many windows to run in parallel?'}
+    )
     retrieval_method: Optional[str] = field(
         default=None,
         metadata={'help': 'How to retrieve? {bm25}'}
@@ -185,8 +214,8 @@ class ModelArgs:
     )
 
     def resolve_path(self, path):
-        """Resolve any path starting with 'activation-beacon:' to relative path against data_root."""
-        pattern = "activation-beacon:"
+        """Resolve any path starting with 'long-llm:' to relative path against data_root."""
+        pattern = "long-llm:"
         # resolve relative data paths when necessary
         if isinstance(path, list):
             for i, x in enumerate(path):
@@ -229,30 +258,17 @@ class ModelArgs:
 
         if hasattr(self, "result_dir"):
             if self.result_dir is None: 
-                name_or_path_components = [x for x in self.model_name_or_path.split("/") if len(x)]
-                self.result_dir = os.path.join(*name_or_path_components[-2:])
+                if self.lora is not None:
+                    name_or_path_components = [x for x in self.lora.split("/") if len(x)][-2:]
+                else:
+                    name_or_path_components = [x for x in self.model_name_or_path.split("/") if len(x)][-2:]
+                self.result_dir = os.path.join(*name_or_path_components)
             else:
                 self.result_dir = self.resolve_path(self.result_dir)
 
 
 @dataclass
 class TrainingArgs(TrainingArguments):
-    # ==============================
-    # Colossal ai specific arguments
-    # ==============================
-    use_colossal: bool = field(
-        default=False,
-        metadata={'help': 'Use colossal trainer?'}
-    )
-    colossal_plugin: str = field(
-        default="gemini",
-        metadata={'help': 'The plugin name for colossalai.'}
-    )
-    colossal_mp: str = field(
-        default="bf16",
-        metadata={'help': 'The mixed precision for colossalai.'}
-    )
-    
     # ==============================
     # Common arguments
     # ==============================
@@ -277,8 +293,8 @@ class TrainingArgs(TrainingArguments):
         metadata={'help': 'Find unusuable parameters?'}
     )
     # NOTE: essential to keep comuputation graph because we need gradients for beacon tokens
-    use_reentrant: bool = field(
-        default=False,
+    use_reentrant: Optional[bool] = field(
+        default=None,
         metadata={'help': "Use reetrant in gradient checkpointing?"}
     )
     report_to: str = field(

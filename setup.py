@@ -5,7 +5,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme_file:
 
 setup(
     name='FlagEmbedding',
-    version='1.2.9',
+    version='1.2.10',
     description='FlagEmbedding',
     long_description=readme,
     long_description_content_type="text/markdown",

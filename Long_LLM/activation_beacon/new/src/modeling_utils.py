@@ -47,7 +47,9 @@ def compute_loss(logits, labels, shift=False):
         labels.reshape(-1), 
         reduction="none"
     ).reshape(batch_size, -1)   # batch_size, seq_len
-    
+
+    # print(token_loss)
+
     valid_token_num = (labels != -100).sum(-1)  # batch_size
     all_valid_token_num = valid_token_num.sum()
     
@@ -96,16 +98,21 @@ def evaluate_perplexity(model, dataloader, accelerator:Optional[Accelerator]=Non
             # output from other models does not
             loss, batch_loss, valid_token_num = compute_loss(output.logits, x["labels"], shift=True)
 
+        index = index.tolist()
+        batch_loss = batch_loss.tolist()
+        valid_token_num = valid_token_num.tolist()
+
         if accelerator is not None and accelerator.num_processes > 1:
             # num_device * batch_size
             index = accelerator.gather_for_metrics(index)
             batch_loss = accelerator.gather_for_metrics(batch_loss)
             valid_token_num = accelerator.gather_for_metrics(valid_token_num)
 
-        for _id, _loss, _num in zip(index.tolist(), batch_loss.tolist(), valid_token_num.tolist()):
+        for _id, _loss, _num in zip(index, batch_loss, valid_token_num):
             # loss times num is the total loss of all valid tokens
             all_loss[_id].append((_loss * _num, _num))
 
+    all_loss = dict(all_loss)
     for _id, loss_and_num in all_loss.items():
         # sum up the loss for all valid tokens in the entire sequence, and divide the number of valid tokens
         all_loss[_id] = sum([x[0] for x in loss_and_num]) / sum(x[1] for x in loss_and_num)
@@ -116,13 +123,15 @@ def evaluate_perplexity(model, dataloader, accelerator:Optional[Accelerator]=Non
 
 
 @torch.no_grad()
-def evaluate_generation(model, dataloader, accelerator:Optional[Accelerator]=None, tokenizer=None, return_new_tokens_only=True, return_decoded=True, **generation_config):
+def evaluate_generation(model, dataloader, accelerator:Optional[Accelerator]=None, tokenizer=None, return_new_tokens_only=True, **generation_config):
     if accelerator is not None and type(dataloader) == torch.utils.data.DataLoader:
         # if the dataloader has been prepared, we shall not prepare it twice, especially in case of deepspeed
         dataloader = accelerator.prepare(dataloader)
 
     all_indices = []
     all_outputs = []
+
+    index = 0
     
     for i, x in enumerate(tqdm(dataloader, desc="Computing Generation")):
         # if i > 3:
@@ -132,29 +141,80 @@ def evaluate_generation(model, dataloader, accelerator:Optional[Accelerator]=Non
         if hasattr(model, "memory"):
             model.memory.reset()
 
-        indices = x.pop("index")
         # length is used to group training data, no use here
         length = x.pop("length", None)
+
+        # if indices are None, we use batch size
+        indices = x.pop("index", None)
+        if indices is None:
+            indices = list(range(index, index + x['input_ids'].shape[0]))
+            index += x['input_ids'].shape[0]
+        else:
+            indices = indices.tolist()
 
         outputs = model.generate(**x, **generation_config)
         if return_new_tokens_only:
             start_idx = x["input_ids"].shape[1]
             outputs = outputs[:, start_idx:]
 
+        outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+
         if accelerator is not None and accelerator.num_processes > 1:
-            # must be contiguous
-            outputs = accelerator.pad_across_processes(outputs.contiguous(), pad_index=tokenizer.pad_token_id, dim=1)
             outputs = accelerator.gather_for_metrics(outputs)
             indices = accelerator.gather_for_metrics(indices)
 
-        outputs = outputs.tolist()
-        indices = indices.tolist()
-        if return_decoded:
-            outputs = tokenizer.batch_decode(outputs, skip_special_tokens=True)
+        outputs = outputs
+        indices = indices
         all_indices.extend(indices)
         all_outputs.extend(outputs)
 
     return all_indices, all_outputs
+
+
+@torch.no_grad()
+def evaluate_nll(model, dataloader, accelerator:Optional[Accelerator]=None):
+    if accelerator is not None and type(dataloader) == torch.utils.data.DataLoader:
+        # if the dataloader has been prepared, we shall not prepare it twice, especially in case of deepspeed
+        dataloader = accelerator.prepare(dataloader)
+
+    # if accelerator.process_index == 0:
+    #     for name, x in model.named_parameters():
+    #         print(f"{name: ^80} {x.dtype}")
+
+    all_loss = defaultdict(list)
+    for i, x in enumerate(tqdm(dataloader, desc="Computing Perplexity")):
+        # NOTE: important to reset memory for every batch
+        if hasattr(model, "memory"):
+            model.memory.reset()
+
+        # the seq id
+        index = x.pop("index")
+        # length is used to group training data, no use here
+        length = x.pop("length", None)
+
+        output = model(**x)
+
+        # NOTE: we need the loss for each element in the batch for accurate computation, because the number of valid tokens may differ among elements
+        if hasattr(output, "batch_loss"):
+            # output from our model has batch_loss by default
+            batch_loss = output.batch_loss
+            valid_token_num = output.valid_token_num
+        else:
+            # output from other models does not
+            loss, batch_loss, valid_token_num = compute_loss(output.logits, x["labels"], shift=True)
+
+        if accelerator is not None and accelerator.num_processes > 1:
+            # num_device * batch_size
+            index = accelerator.gather_for_metrics(index)
+            batch_loss = accelerator.gather_for_metrics(batch_loss)
+            valid_token_num = accelerator.gather_for_metrics(valid_token_num)
+
+        for _id, _loss in zip(index.tolist(), batch_loss.tolist()):
+            # loss times num is the total loss of all valid tokens
+            all_loss[_id].append(_loss)
+
+    return all_loss
+
 
 
 @dataclass

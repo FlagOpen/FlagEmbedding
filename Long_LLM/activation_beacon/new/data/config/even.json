@@ -1,0 +1,20 @@
+{
+    "mixture": {
+        "commoncrawl": 14.2,
+        "c4": 14.2,
+        "github": 14.2,
+        "book": 14.2,
+        "arxiv": 14.2,
+        "wiki": 14.2,
+        "stackexchange": 14.2
+    },
+    "num_tokens_avg": {
+        "commoncrawl": 1207,
+        "c4": 378,
+        "wiki": 393,
+        "stackexchange": 309,
+        "github": 436,
+        "book": 89373,
+        "arxiv": 7375
+    }
+}

@@ -285,11 +285,13 @@ def get_score_one_longbook_sum_eng(
     pred: str, label: str, model_name: str
 ) -> float:
     rouge = Rouge()
+    if pred == "":
+        pred = "THIS_IS_A_NULL_STRING"
     try:
         scores = rouge.get_scores([pred], label, avg=True)
         return scores["rouge-l"]["f"]
-    except RecursionError:
-        return 0.
+    except:
+        return 0
 
 
 def get_score_one_longbook_qa_chn(pred, label, model_name: str) -> float:

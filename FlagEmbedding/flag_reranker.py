@@ -6,7 +6,7 @@ from torch import Tensor
 from torch.utils.data import DataLoader
 from tqdm import tqdm, trange
 from transformers import AutoTokenizer, AutoModelForCausalLM, AutoModelForSequenceClassification, is_torch_npu_available
-
+from peft import PeftModel
 import warnings
 from torch.utils.data import Dataset
 import os
@@ -218,8 +218,6 @@ class FlagReranker:
         if normalize:
             all_scores = [sigmoid(score) for score in all_scores]
 
-        if len(all_scores) == 1:
-            return all_scores[0]
         return all_scores
 
 
@@ -227,6 +225,7 @@ class FlagLLMReranker:
     def __init__(
             self,
             model_name_or_path: str = None,
+            peft_path: str = None,
             use_fp16: bool = False,
             use_bf16: bool = False,
             cache_dir: str = None,
@@ -240,6 +239,9 @@ class FlagLLMReranker:
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+        if peft_path:
+            self.model = PeftModel.from_pretrained(self.model,peft_path)
+            self.model = self.model.merge_and_unload()
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
@@ -270,7 +272,7 @@ class FlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, prompt: str = None, normalize: bool = False,
-                      use_dataloader: bool = True, num_workers: int = None) -> List[float]:
+                      use_dataloader: bool = False, num_workers: int = None) -> List[float]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -365,8 +367,8 @@ class FlagLLMReranker:
         if normalize:
             all_scores = [sigmoid(score) for score in all_scores]
 
-        if len(all_scores) == 1:
-            return all_scores[0]
+        # if len(all_scores) == 1:
+        #     return all_scores[0]
 
         return all_scores
 
@@ -392,6 +394,7 @@ class LayerWiseFlagLLMReranker:
     def __init__(
             self,
             model_name_or_path: str = None,
+            peft_path: str = None,
             use_fp16: bool = False,
             use_bf16: bool = False,
             cache_dir: str = None,
@@ -410,7 +413,9 @@ class LayerWiseFlagLLMReranker:
                                                           trust_remote_code=True,
                                                           local_files_only=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
-
+        if peft_path:
+            self.model = PeftModel.from_pretrained(self.model,peft_path)
+            self.model = self.model.merge_and_unload()
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
 
@@ -444,7 +449,7 @@ class LayerWiseFlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
-                      normalize: bool = False, use_dataloader: bool = True,
+                      normalize: bool = False, use_dataloader: bool = False,
                       num_workers: int = None) -> Union[float, List[float], List[List[float]]]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
@@ -556,10 +561,10 @@ class LayerWiseFlagLLMReranker:
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
 
-        if len(all_scores) == 1:
-            if len(all_scores[0]) == 1:
-                return all_scores[0][0]
-            return all_scores[0]
+        # if len(all_scores) == 1:
+        #     if len(all_scores[0]) == 1:
+        #         return all_scores[0][0]
+        #     return all_scores[0]
 
         return all_scores
 

@@ -124,16 +124,15 @@ class MistralConfig(PretrainedConfig):
         attention_dropout=0.0,
         beacon_window=1024,
         beacon_stride=1024,
-        beacon_attn="step-expansion",
+        beacon_attn="full-coverage",
         beacon_ratio=[2,4,8,16,32],
         beacon_ratio_mix="step-random",
-        beacon_param=["q","k","v","o"],
+        beacon_param=[],
         beacon_embed_init="eos",
         beacon_sink_size=0,
         beacon_attend_prev=True,
-        retrieval_method=None,
-        retrieval_topk=None,
-        retrieval_key_length=None,
+        beacon_pos="interleave",
+        beacon_parallel_window=1,
         **kwargs,
     ):
         self.vocab_size = vocab_size
@@ -168,9 +167,8 @@ class MistralConfig(PretrainedConfig):
         self.beacon_embed_init = beacon_embed_init
         self.beacon_sink_size = beacon_sink_size
         self.beacon_attend_prev = beacon_attend_prev
-        self.retrieval_method = retrieval_method
-        self.retrieval_topk = retrieval_topk
-        self.retrieval_key_length = retrieval_key_length
+        self.beacon_pos = beacon_pos
+        self.beacon_parallel_window = beacon_parallel_window
 
         super().__init__(
             pad_token_id=pad_token_id,

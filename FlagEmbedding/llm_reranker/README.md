@@ -251,7 +251,11 @@ See [toy_finetune_data.jsonl](https://github.com/FlagOpen/FlagEmbedding/tree/mas
 
 You can fine-tune the reranker with the following code:
 
-**For llm-based reranker**
+**For normal reranker** (bge-reranker-base / bge-reranker-large / bge-reranker-v2-m3 )
+
+Refer to: https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker
+
+**For llm-based reranker** (bge-reranker-v2-gemma)
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
@@ -282,7 +286,7 @@ torchrun --nproc_per_node {number of gpus} \
 --target_modules q_proj k_proj v_proj o_proj
 ```
 
-**For llm-based layerwise reranker**
+**For llm-based layerwise reranker** (bge-reranker-v2-minicpm-layerwise) 
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
@@ -360,21 +364,21 @@ merge_layerwise_finetuned_llm('BAAI/bge-reranker-v2-minicpm-layerwise', 'lora_ll
 
 - BEIR.   
 
-rereank the top 100 results from bge-en-v1.5 large.
+rerank the top 100 results from bge-en-v1.5 large.
 
 ![image-20240319140555921](./evaluation/BEIR-bge-en-v1.5.png)
 
-rereank the top 100 results from e5 mistral 7b instruct.
+rerank the top 100 results from e5 mistral 7b instruct.
 
 ![image-20240317172949713](./evaluation/BEIR-e5-mistral.png)
 
 - CMTEB-retrieval.   
-It rereank the top 100 results from bge-zh-v1.5 large.
+It rerank the top 100 results from bge-zh-v1.5 large.
 
 ![image-20240317173026235](./evaluation/CMTEB-retrieval-bge-zh-v1.5.png)
 
 - miracl (multi-language).   
-It rereank the top 100 results from bge-m3.
+It rerank the top 100 results from bge-m3.
 
 ![image-20240317173117639](./evaluation/miracl-bge-m3.png)
 

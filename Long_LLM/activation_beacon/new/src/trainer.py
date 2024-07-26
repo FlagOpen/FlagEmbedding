@@ -60,8 +60,8 @@ class ActivationBeaconTrainer(Trainer):
             return StrideGroupedSampler(
                 # NOTE: multiply world size to get the total number of training instances across devices
                 batch_size=self.args.train_batch_size * self.args.world_size,
-                window=self.model.memory.beacon_window,
-                stride=self.model.memory.beacon_stride,
+                window=self.model.memory.config.beacon_window,
+                stride=self.model.memory.config.beacon_stride,
                 group=self.args.group_by_stride,
                 sort=self.args.sort_by_stride,
                 dataset=self.train_dataset,

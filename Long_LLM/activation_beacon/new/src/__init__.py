@@ -2,7 +2,7 @@ from .utils import FileLogger, DefaultDataCollator, makedirs, split_file_dir_nam
 from .chat import apply_chat_template
 from .args import ModelArgs
 from .data import Data
-from .modeling_utils import evaluate_perplexity, evaluate_generation, move_to_device
+from .modeling_utils import evaluate_perplexity, evaluate_generation, evaluate_nll, move_to_device
 
 import logging
 logging.basicConfig(
@@ -13,11 +13,10 @@ logging.basicConfig(
 
 
 def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, return_tokenizer_only=False, **kwargs):
-    """Load model and tokenizer."""
     import torch
     import transformers
     from dataclasses import asdict
-    from transformers import AutoTokenizer, AutoConfig, AutoModelForCausalLM
+    from transformers import AutoTokenizer, AutoConfig, AutoModelForCausalLM, BitsAndBytesConfig
     from transformers.utils import logging
     from transformers.integrations import is_deepspeed_zero3_enabled
     from packaging import version
@@ -115,13 +114,23 @@ def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, retu
         extra_kwargs["max_position_embeddings"] = model_args_dict["max_position_embeddings"]
     if architecture == "MistralForCausalLM" and model_args_dict["mistral_sliding_window"] is not None:
         extra_kwargs["sliding_window"] = model_args_dict["mistral_sliding_window"]
+    if model_args_dict["load_in_4_bit"]:
+        extra_kwargs["quantization_config"] = BitsAndBytesConfig(
+            load_in_4bit=True,
+            bnb_4bit_quant_type="nf4",
+            bnb_4bit_use_double_quant=True,
+            bnb_4bit_compute_dtype=dtype,
+        )
+        device_map = None
 
     if model_args_dict["enable_beacon"]:
         from .llama import LlamaForCausalLM, LlamaConfig
         from .mistral import MistralForCausalLM, MistralConfig
+        from .qwen2 import Qwen2ForCausalLM, Qwen2Config
         ARCHITECTURE_TO_CLASS = {
             'LlamaForCausalLM': (LlamaConfig, LlamaForCausalLM),
             'MistralForCausalLM': (MistralConfig, MistralForCausalLM),
+            'Qwen2ForCausalLM': (Qwen2Config, Qwen2ForCausalLM),
         }
 
         config_class, model_class = ARCHITECTURE_TO_CLASS[architecture]
@@ -130,6 +139,8 @@ def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, retu
             model_name_or_path, 
             cache_dir=cache_dir,
             token=access_token,
+            # NOTE: keep the torch_dtype in config consistent with that in model
+            torch_dtype=dtype,
             **beacon_kwargs,
             **rope_kwargs,
             **attn_kwargs,
@@ -145,47 +156,51 @@ def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, retu
         )
 
     else:
-        # NOTE: mistral models do not have Linear/NTK interpolation, we should replace the default RoPE with the proper one
-        # if architecture == "MistralForCausalLM":
-        #     if rope_method is not None:
-        #         import inspect
-        #         import transformers
-        #         logger.info(f"replacing RoPE module (type: {rope_method} factor: {rope_factor}) for mistral models...")
-        #         if rope_method == "linear":
-        #             from .mistral.modeling_mistral import MistralLinearScalingRotaryEmbedding as MistralRotaryEmbedding
-        #         elif rope_method == "dynamic":
-        #             from .mistral.modeling_mistral import MistralDynamicNTKScalingRotaryEmbedding as MistralRotaryEmbedding
-        #         else:
-        #             raise ValueError(f"Make sure the rope method is either linear or dynamic, found {rope_method}!")
-        #         default_args = inspect.getfullargspec(MistralRotaryEmbedding.__init__).args
-        #         assert default_args[-1] == "scaling_factor"
-        #         default_arg_values = list(MistralRotaryEmbedding.__init__.__defaults__)
-        #         default_arg_values[-1] = rope_factor
-        #         MistralRotaryEmbedding.__init__.__defaults__ = tuple(default_arg_values)
-        #         # override the original rope module
-        #         transformers.models.mistral.modeling_mistral.MistralRotaryEmbedding = MistralRotaryEmbedding
-        #         del rope_kwargs["rope_scaling"]
+        if model_args_dict["enable_vllm"]:
+            from .vllm_utils import HFStyleVllmModel
+            if model_args_dict["dtype"] == "fp32":
+                vllm_dtype = "float32"
+            elif model_args_dict["dtype"] == "fp16":
+                vllm_dtype = "float16"
+            elif model_args_dict["dtype"] == "bf16":
+                vllm_dtype = "bfloat16"
 
-        model = AutoModelForCausalLM.from_pretrained(
-            model_name_or_path, 
-            cache_dir=cache_dir, 
-            torch_dtype=dtype,
-            device_map=device_map, 
-            token=access_token,
-            trust_remote_code=True,
+            vllm_kwargs = {}
+            if model_args_dict["vllm_len"] is not None:
+                vllm_kwargs["max_model_len"] = model_args_dict["vllm_len"]
 
-            # NOTE: do not destroy the default rope_scaling of the model
-            **rope_kwargs,
-            **attn_kwargs,
-            **extra_kwargs,
-        )
+            model = HFStyleVllmModel(
+                model=model_name_or_path,
+                dtype=vllm_dtype,
+                gpu_memory_utilization=model_args_dict["vllm_mem"],
+                tensor_parallel_size=model_args_dict["vllm_tp"],
+                disable_custom_all_reduce=model_args_dict["vllm_disable_ar"],
+                enforce_eager=False,
+                trust_remote_code=True,
+                **rope_kwargs,
+                **vllm_kwargs,
+            )
 
-        logger.info(model.config)
+        else:
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name_or_path, 
+                cache_dir=cache_dir, 
+                torch_dtype=dtype,
+                device_map=device_map,
+                token=access_token,
+                trust_remote_code=True,
+
+                # NOTE: do not destroy the default rope_scaling of the model
+                **rope_kwargs,
+                **attn_kwargs,
+                **extra_kwargs,
+            )
 
     # load lora
     if model_args_dict["lora"] is not None:
-        from peft import PeftModel
         logger.info(f"loading lora from {model_args_dict['lora']}...")
+
+        from peft import PeftModel
         model = PeftModel.from_pretrained(
             model, 
             model_args_dict["lora"],
@@ -202,23 +217,20 @@ def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, retu
         # model = tp.tensor_parallel(model, device_ids=list(range(8)), distributed=False, sharded=False)
         model = tp.tensor_parallel(model, sharded=True)
 
-        # if distributed, return would be a tuple
-        if isinstance(model, tuple):
-            model = model[0]
+        if model.generation_config.eos_token_id == 128001:
+            model.generation_config.eos_token_id = [128001, 128009]
 
-    model = model.eval()
-
-    if evaluation_mode:
-        # NOTE: essential to disable all gradient in-place, so that when calling accelerator.prepare, the forward function will not be wrapped that may consume extra GPU memory
-        model.requires_grad_(False)
+    if isinstance(model, transformers.modeling_utils.PreTrainedModel):
+        model = model.eval()
+        if evaluation_mode:
+            # NOTE: essential to disable all gradient in-place, so that when calling accelerator.prepare, the forward function will not be wrapped that may consume extra GPU memory
+            model.requires_grad_(False)
+        logger.info(model.config)
 
     # override the default generation config
     generation_config = model_args.get_generation_config()
     if len(generation_config):
-        logger.info(f"Overriding the model's default generation config with {generation_config}.")
-        unused_config = model.generation_config.update(**generation_config)
-        if len(unused_config):
-            logger.warning(f"The following attributes are not used when overriding the generation configurations: {unused_config}")
+        model.generation_config.update(**generation_config)
+    logger.info(f"Specified generation config: {generation_config}")
 
     return model, tokenizer
-
