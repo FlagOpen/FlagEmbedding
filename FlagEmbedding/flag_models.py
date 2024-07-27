@@ -1,11 +1,9 @@
-from typing import cast, List, Union, Tuple
-
+from typing import cast, List, Union
 import numpy as np
-import torch
 from tqdm import tqdm
+from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
+import torch
 from torch import Tensor
-from transformers import AutoModel, AutoTokenizer, AutoModelForSequenceClassification, is_torch_npu_available
-
 import torch.nn.functional as F
 
 
@@ -22,6 +20,7 @@ def last_token_pool(last_hidden_states: Tensor,
 
 def get_detailed_instruct(task_description: str, query: str) -> str:
     return f'<instruct>{task_description}\n<query>{query}'
+
 
 def get_detailed_example(task_description: str, query: str, response: str) -> str:
     return f'<instruct>{task_description}\n<query>{query}\n<response>{response}'
@@ -97,7 +96,6 @@ class FlagICLModel:
                     )
                 )
             self.prefix = '\n\n'.join(eg_paris) + '\n\n'
-
 
     @torch.no_grad()
     def encode_queries(self, queries: Union[List[str], str],
@@ -217,11 +215,11 @@ class FlagICLModel:
 
 class FlagLLMModel:
     def __init__(
-            self,
-            model_name_or_path: str = None,
-            normalize_embeddings: bool = True,
-            query_instruction_for_retrieval: str = 'Given a query, retrieval relevant passages that answer the query.',
-            use_fp16: bool = True,
+        self,
+        model_name_or_path: str = None,
+        normalize_embeddings: bool = True,
+        query_instruction_for_retrieval: str = 'Given a query, retrieval relevant passages that answer the query.',
+        use_fp16: bool = True
     ) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
         self.model = AutoModel.from_pretrained(model_name_or_path)
@@ -298,7 +296,7 @@ class FlagLLMModel:
                 pad_to_multiple_of=8,
             ).to(self.device)
             last_hidden_state = self.model(**inputs, return_dict=True).last_hidden_state
-            embeddings = self.last_token_pool(last_hidden_state, inputs['attention_mask'])
+            embeddings = last_token_pool(last_hidden_state, inputs['attention_mask'])
             if self.normalize_embeddings:
                 embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
             embeddings = cast(torch.Tensor, embeddings)
@@ -316,31 +314,16 @@ class FlagLLMModel:
             return all_embeddings[0]
         return all_embeddings
 
-    def last_token_pool(self,
-                        last_hidden_state: torch.Tensor,
-                        attention_mask: torch.Tensor = None):
-        left_padding = attention_mask[:, -1].sum() == attention_mask.shape[0]
-        if left_padding:
-            return last_hidden_state[:, -1]
-        else:
-            sequence_lengths = attention_mask.sum(dim=1) - 1
-            batch_size = last_hidden_state.shape[0]
-            return last_hidden_state[
-                torch.arange(batch_size, device=last_hidden_state.device),
-                sequence_lengths,
-            ]
-
 
 class FlagModel:
     def __init__(
-            self,
-            model_name_or_path: str = None,
-            pooling_method: str = 'cls',
-            normalize_embeddings: bool = True,
-            query_instruction_for_retrieval: str = None,
-            use_fp16: bool = True
+        self,
+        model_name_or_path: str = None,
+        pooling_method: str = 'cls',
+        normalize_embeddings: bool = True,
+        query_instruction_for_retrieval: str = None,
+        use_fp16: bool = True
     ) -> None:
-
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
         self.model = AutoModel.from_pretrained(model_name_or_path)
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
@@ -476,11 +459,11 @@ class LLMEmbedder:
     }
 
     def __init__(
-            self,
-            model_name_or_path: str = None,
-            pooling_method: str = 'cls',
-            normalize_embeddings: bool = True,
-            use_fp16: bool = True
+        self,
+        model_name_or_path: str = None,
+        pooling_method: str = 'cls',
+        normalize_embeddings: bool = True,
+        use_fp16: bool = True
     ) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
         self.model = AutoModel.from_pretrained(model_name_or_path)
@@ -583,4 +566,3 @@ class LLMEmbedder:
             return s / d
         else:
             raise NotImplementedError(f"Pooling method {self.pooling_method} not implemented!")
-
