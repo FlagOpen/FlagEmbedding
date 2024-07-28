@@ -49,15 +49,6 @@ class FlagICLModel:
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
             self.device = torch.device("mps")
-        else:
-            self.device = torch.device("cpu")
-        self.model.half()
-        self.model = self.model.to(self.device)
-
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-        elif torch.backends.mps.is_available():
-            self.device = torch.device("mps")
         elif is_torch_npu_available():
             self.device = torch.device("npu")
         else:
