@@ -121,7 +121,7 @@ class FlagICLModel:
                 return_tensors=None,
                 add_special_tokens=False
             )
-            new_max_length = (len(prefix_ids) + len(suffix_ids) + max_length) // 8 * 8 + 8
+            new_max_length = (len(prefix_ids) + len(suffix_ids) + max_length + 8) // 8 * 8 + 8
             sentences_batch = self.tokenizer.batch_decode(inputs['input_ids'])
             for i in range(len(sentences_batch)):
                 sentences_batch[i] = self.prefix + sentences_batch[i] + self.suffix
