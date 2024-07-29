@@ -36,10 +36,10 @@ FlagEmbedding专注于检索增强llm领域，目前包括以下项目:
 - **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB), [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench), [MLVU](https://github.com/JUNJIE99/MLVU)
 
 ## 更新
-- 7/26/2024：发布[bge-en-icl](https://huggingface.co/BAAI/bge-en-icl)。这是一个结合了上下文学习能力的文本检索模型，通过提供与任务相关的查询-回答示例，可以编码语义更丰富的查询，进一步增强嵌入的语义表征能力。:fire:
-- 7/26/2024: 发布[bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2)。这是一个基于gemma-2-9b的多语言文本向量模型，同时支持多种语言和多样的下游任务，在多语言检索数据集 MIRACL, MTEB-fr, MTEB-pl 上取得了迄今最好的实验结果。:fire:
+- 7/26/2024：发布[bge-en-icl](https://huggingface.co/BAAI/bge-en-icl)。这是一个结合了上下文学习能力的文本检索模型，通过提供与任务相关的查询-回答示例，可以编码语义更丰富的查询，进一步增强嵌入的语义表征能力。 :fire:
+- 7/26/2024: 发布[bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2)。这是一个基于gemma-2-9b的多语言文本向量模型，同时支持多种语言和多样的下游任务，在多语言检索数据集 MIRACL, MTEB-fr, MTEB-pl 上取得了迄今最好的实验结果。 :fire:
 - 7/26/2024：发布新的轻量级重排器[bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight)。这是一个基于gemma-2-9b的轻量级重排器，支持令牌压缩和分层轻量操作，在节省大量资源的同时，仍能确保良好的性能。:fire:
-- 6/7/2024: 发布首个专为长视频理解设计的全面评测基准[MLVU](https://github.com/JUNJIE99/MLVU)。MLVU拥有丰富的视频时长范围，多样化的视频来源，以及多个专为长视频理解设计的评估任务。:fire:
+- 6/7/2024: 发布首个专为长视频理解设计的全面评测基准[MLVU](https://github.com/JUNJIE99/MLVU)。MLVU拥有丰富的视频时长范围，多样化的视频来源，以及多个专为长视频理解设计的评估任务。 :fire:
 - 5/21/2024：联合 Jina AI、Zilliz、HuggingFace 等机构发布评测基准 [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench)，针对检索任务和 RAG 场景设计。AIR-Bench 首次提出在检索任务中使用 LLMs 自动化生产评估数据，避免模型过拟合测试数据。AIR-Bench 不需要人工参与标注数据，因而可以更灵活覆盖更多垂直领域和不同语种。同时 AIR-Bench 会定期进行更新从而满足社区不断变化的评测需求。[Leaderboard](https://huggingface.co/spaces/AIR-Bench/leaderboard) :fire:
 - 4/30/2024: 发布[Llama-3-8B-Instruct-80K-QLoRA](https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA), 其通过在少量合成的长文本数据上的QLoRA训练，有效地将Llama-3-8B-Instruct的上下文长度从8K扩展到80K。详见[代码](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/longllm_qlora) :fire:
 - 3/18/2024: 发布新的[rerankers](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker), 拥有更好的性能同时支持多语言和长文本。 :fire:
@@ -144,6 +144,7 @@ BGE Embedding是一个通用向量模型。 我们使用[retromae](https://githu
 | Model                                                                     |      Language       | |              Description               | query instruction for retrieval [1] |
 |:--------------------------------------------------------------------------|:-------------------:| :--------:|:--------------------------------------:|:--------:|
 | [BAAI/bge-en-icl](https://huggingface.co/BAAI/bge-en-icl) | English | | 基于大型语言模型的向量模型，具有上下文学习能力，能够基于少量示例充分发挥模型的潜力。 |            根据给定的任务自由提供指示和少数示例。            |
+| [BAAI/bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2) | Multilingual | | 基于大型语言模型的多语言向量模型，在多种语言和任务上训练，适应多样化的下游场景。 |            根据给定的任务自由提供指示和少数示例。            |
 | [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3#usage) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3) | 多功能（向量检索，稀疏检索，多表征检索）、多语言、多粒度（最大长度8192） |  |
 | [LM-Cocktail](https://huggingface.co/Shitao)                              |       English       |  | 微调的Llama和BGE模型，可以用来复现LM-Cocktail论文的结果  |  |
 | [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |       English       | [推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) [微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |         专为大语言模型各种检索增强任务设计的向量模型         | 详见 [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
