@@ -154,7 +154,7 @@ Visualized BGE delivers outstanding zero-shot performance across multiple hybrid
 
 **Q1: Can Visualized BGE be used for cross-modal retrieval (text to image)?**
 
-A1: While it is technically possible, it's not the recommended use case. Our model focus on augmenting hybrid modal retrieval tasks with visual capabilities.
+A1: While it is technically possible, it's not the recommended use case. Our model focus on augmenting hybrid modal retrieval tasks with visual capabilities. [Here](https://github.com/internlm/huixiangdou) is a downstream application.
 
 ## Acknowledgement
 The image token embedding model in this project is built upon the foundations laid by [EVA-CLIP](https://github.com/baaivision/EVA/tree/master/EVA-CLIP).
