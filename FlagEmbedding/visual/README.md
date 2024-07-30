@@ -133,6 +133,8 @@ sim_1 = query_emb @ candi_emb_1.T
 sim_2 = query_emb @ candi_emb_2.T
 print(sim_1, sim_2) # tensor([[0.7026]]) tensor([[0.8075]])
 ```
+## Downstream Application Cases
+- [Huixiangdou](https://github.com/InternLM/HuixiangDou): Using Visualized BGE for the group chat assistant.
 
 ## Evaluation Result
 Visualized BGE delivers outstanding zero-shot performance across multiple hybrid modal retrieval tasks. It can also serve as a base model for downstream fine-tuning for hybrid modal retrieval tasks.
@@ -150,6 +152,9 @@ Visualized BGE delivers outstanding zero-shot performance across multiple hybrid
 ![image.png](./imgs/SFT-CIRR.png)
 - Supervised fine-tuning performance on the ReMuQ test set.
 ![image.png](./imgs/SFT-ReMuQ.png)
+
+
+
 ## FAQ
 
 **Q1: Can Visualized BGE be used for cross-modal retrieval (text to image)?**
