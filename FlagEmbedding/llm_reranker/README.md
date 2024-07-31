@@ -355,6 +355,21 @@ from FlagEmbedding.llm_reranker.merge import merge_layerwise_finetuned_llm
 merge_layerwise_finetuned_llm('BAAI/bge-reranker-v2-minicpm-layerwise', 'lora_llm_output_path', 'merged_model_output_paths')
 ```
 
+Then you can replace the `config.json` in `merged_model_output_paths` with the `config.json` from [BAAI/bge-reranker-v2-minicpm-layerwise.](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise/blob/main/config.json)
+
+### Load llm-based layerwise reranker in local
+
+If you download reranker-v2-minicpm-layerwise, you can load it with the following method:
+1. make sure `configuration_minicpm_reranker.py` and `modeling_minicpm_reranker.py` in `/path/bge-reranker-v2-minicpm-layerwise`.
+2. modify the following part of `config.json`:
+```
+"auto_map": {
+    "AutoConfig": "configuration_minicpm_reranker.LayerWiseMiniCPMConfig",
+    "AutoModel": "modeling_minicpm_reranker.LayerWiseMiniCPMModel",
+    "AutoModelForCausalLM": "modeling_minicpm_reranker.LayerWiseMiniCPMForCausalLM"
+  },
+```
+
 ## Evaluation
 
 - llama-index.
