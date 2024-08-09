@@ -3,6 +3,7 @@
 - [Model List](#model-list)
 - [Usage](#usage)
 - [Fine-tuning](#fine-tune)
+- [Evaluate Script](#evaluate-script)
 - [Evaluation](#evaluation)
 - [Citation](#citation)
 
