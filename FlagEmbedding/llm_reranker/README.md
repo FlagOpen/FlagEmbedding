@@ -375,7 +375,7 @@ If you download reranker-v2-minicpm-layerwise, you can load it with the followin
 
 ```shell
 python evaluate.py \
---input_path ../LLARA/data/finetune/toy_finetune_data.jsonl \
+--input_path ./toy_finetune_data.jsonl \
 --metrics mrr recall ndcg map precision \
 --k_values 1 10 100
 ```
