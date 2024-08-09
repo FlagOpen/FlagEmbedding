@@ -370,6 +370,17 @@ If you download reranker-v2-minicpm-layerwise, you can load it with the followin
   },
 ```
 
+## Evaluate Script
+
+```shell
+python evaluate.py \
+--input_path ../LLARA/data/finetune/toy_finetune_data.jsonl \
+--metrics mrr recall ndcg map precision \
+--k_values 1 10 100
+```
+
+If you want to use another reranker, please replace `reranker = FlagReranker('BAAI/bge-reranker-v2-m3', cache_dir=cache_dir, use_fp16=use_fp16)` with your own reranker.
+
 ## Evaluation
 
 - llama-index.
