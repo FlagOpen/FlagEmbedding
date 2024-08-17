@@ -1,0 +1,7 @@
+text,label
+"What is my money worth in other countries?",exchange_rate
+"What can I do if my card still hasn't arrived after 2 weeks?",card_arrival
+"Would I be able to open an account for my daughter?",age_limit
+"My address details have changed and I want to update them",edit_personal_details
+"If my cash withdrawal is still not showing, is something wrong?",pending_cash_withdrawal
+"How long do transfers typically take? Is there a way of speeding the process up? My friend needs the money I sent her desperately.",transfer_not_received_by_recipient
