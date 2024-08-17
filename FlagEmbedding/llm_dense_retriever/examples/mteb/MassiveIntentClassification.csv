@@ -1,0 +1,9 @@
+text,label
+"remind me to pay rent every month",calendar_set
+"please play yesterday from beatles",play_music
+"what will the temperatures be for the next week",weather_query
+"give me the detailed schedule for next week",calendar_query
+"what's happening in my day",general_quirky
+"dolores how was your day",general_quirky
+"who was appointed as deputy centimeter of uttar pradesh",qa_factoid
+"find me news about trumps speech",news_query

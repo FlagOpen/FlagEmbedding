@@ -1,0 +1,8 @@
+text,label	
+"When will my next alarm start",GET_ALARM
+"I need you to message Zachary Fletcher",SEND_MESSAGE
+"show me video messages from Atlas",GET_MESSAGE
+"I want to listen to AC/DC please",PLAY_MUSIC
+"Make an alarm for the next 7 weeks for Thursday at 6pm",CREATE_ALARM
+"fairs happening in ann arbor next week",GET_EVENT
+"Will we get a frost this week?",GET_WEATHER
