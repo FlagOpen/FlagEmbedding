@@ -2,7 +2,7 @@ from .utils import FileLogger, DefaultDataCollator, makedirs, split_file_dir_nam
 from .chat import apply_chat_template
 from .args import ModelArgs
 from .data import Data
-from .modeling_utils import evaluate_perplexity, evaluate_generation, evaluate_nll, move_to_device
+from .modeling_utils import evaluate_perplexity, evaluate_generation, evaluate_nll, move_to_device, get_shifted_labels
 
 import logging
 logging.basicConfig(
@@ -12,7 +12,7 @@ logging.basicConfig(
 )
 
 
-def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, return_tokenizer_only=False, **kwargs):
+def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, return_tokenizer_only=False, **kwargs):    
     import torch
     import transformers
     from dataclasses import asdict
@@ -96,8 +96,6 @@ def get_model_and_tokenizer(model_args, device="cpu", evaluation_mode=True, retu
     beacon_kwargs = {}
     for k, v in model_args_dict.items():
         if k.startswith("beacon") and v is not None:
-            beacon_kwargs[k] = v
-        elif k.startswith("retrieval") and v is not None:
             beacon_kwargs[k] = v
 
     # use architecture attribute to distinguish different models

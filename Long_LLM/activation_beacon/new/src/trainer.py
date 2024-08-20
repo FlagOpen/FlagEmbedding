@@ -26,26 +26,23 @@ class ActivationBeaconTrainer(Trainer):
             self.model.memory._retrieval_span = inputs['retrieval_span'][0]
             inputs.pop("retrieval_span")
 
+        inputs.pop("length", None)
+        inputs.pop("index", None)
+
+        # NOTE: produce labels on the fly to save disk space
+        if inputs["labels"][0] is None:
+            inputs["labels"] = inputs["input_ids"].clone()
+
+        # NOTE: reset memory for each individual input
+        if hasattr(self.model, "memory"):
+            self.model.memory.reset()
+
         outputs = super().compute_loss(model, inputs, return_outputs)
 
         if hasattr(self.model, "memory") and hasattr(self.model.memory, "_retrieval_span"):
             del self.model.memory._retrieval_span
             del self.model.memory._retrieval_condensing_ratios
         return outputs
-
-    def _prepare_inputs(self, inputs: Dict[str, Union[torch.Tensor, Any]]) -> Dict[str, Union[torch.Tensor, Any]]:
-        """
-        Prepare `inputs` before feeding them to the model, converting them to tensors if they are not already and
-        handling potential state.
-        """
-        inputs.pop("length", None)
-        inputs.pop("index", None)
-        # move to GPU
-        inputs = self._prepare_input(inputs)
-        # NOTE: reset memory for each individual input
-        if hasattr(self.model, "memory"):
-            self.model.memory.reset()
-        return inputs
     
     def _get_train_sampler(self) -> Optional[torch.utils.data.Sampler]:
         # Build the sampler.

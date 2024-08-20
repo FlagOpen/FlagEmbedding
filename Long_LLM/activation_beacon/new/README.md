@@ -20,7 +20,7 @@ conda activate beacon
 
 # You may need to adjust the cuda version
 conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
-pip install transformers==4.39.3 deepspeed accelerate datasets peft pandas seaborn rouge fuzzywuzzy jieba python-Levenshtein
+pip install transformers deepspeed accelerate datasets peft pandas seaborn rouge fuzzywuzzy jieba python-Levenshtein
 pip install flash-attn --no-build-isolation
 ```
 

@@ -14,13 +14,19 @@ from src import apply_chat_template, add_eos, split_file_dir_name_ext
 logger = logging.get_logger(__name__)
 
 
-# RETRIEVAL_CAND = [(1024,1), (512,2), (256,4), (128,8), (512,1), (256,2), (128,4)]
-RETRIEVAL_CAND = [(1024,1)]
-
 
 class Data:
+    def _process_pretrain_data(data, indices):
+        outputs = {"labels": [], "index": [], "length": []}
+        for input_ids, index in zip(data['input_ids'], indices):
+            outputs["index"].append(index)
+            outputs["length"].append(len(input_ids))
+            # NOTE: the labels will be automatically generated in Trainer._prepare_inputs
+            outputs["labels"].append(None)
+        return outputs
+
     def _process_language_modeling(data, indices, tokenizer, min_length, max_length):
-        outputs = {'input_ids': [], 'attention_mask': [], "labels": [], "length": [], "index": []}
+        outputs = {'input_ids': [], "labels": [], "length": [], "index": []}
 
         for i, text in enumerate(data['text']):
             # truncate text for faster processing
@@ -33,10 +39,12 @@ class Data:
                 for k, v in encoded.items():
                     encoded[k] = v[:max_length]
 
-            encoded["labels"] = encoded["input_ids"].copy()
+            # NOTE: the labels will be automatically generated in Trainer._prepare_inputs
+            encoded["labels"] = None
 
             for k, v in encoded.items():
-                outputs[k].append(v)
+                if k in outputs:
+                    outputs[k].append(v)
             # length is required for grouping
             outputs["length"].append(len(encoded['input_ids']))
             outputs["index"].append(indices[i])
@@ -44,7 +52,7 @@ class Data:
         return outputs
 
     def _process_instruction_tuning(data, indices, tokenizer, chat_template, min_length, max_length, eval_mode=False):
-        outputs = {'input_ids': [], 'attention_mask': [], "labels": [], "length": [], "index": []}
+        outputs = {'input_ids': [], "labels": [], "length": [], "index": []}
 
         for i, source in enumerate(data['conversations']):
             if source[0]["role"] != 'user':
@@ -69,6 +77,11 @@ class Data:
                 add_generation_prompt=eval_mode, 
             ).encoded
 
+            # NOTE: shift the labels in advance
+            # labels = encoded["labels"][1:]
+            # labels.append(-100)
+            # encoded["labels"] = labels
+
             # skip data that not fall in between min_length and max_length
             if min_length is not None and len(encoded["input_ids"]) < min_length:
                 continue
@@ -79,13 +92,14 @@ class Data:
                 encoded["labels"] = labels
 
             for k, v in encoded.items():
-                outputs[k].append(v)
+                if k in outputs:
+                    outputs[k].append(v)
             outputs['length'].append(len(encoded['input_ids']))
             outputs['index'].append(indices[i])
 
         return outputs
 
-    def prepare_train_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", seed=42, cache_dir=None, load_from_cache_file=None):
+    def prepare_train_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", seed=42, cache_dir=None, load_from_cache_file=None, ignore_index=False, ignore_length=False):
         if data_files is None:
             return None
 
@@ -115,6 +129,7 @@ class Data:
             if os.path.isdir(data_file) and os.path.exists(os.path.join(data_file, "dataset_info.json")):
                 # the dataset may be save_to_disk in advance
                 dataset = datasets.load_from_disk(data_file)
+                dataset = dataset.map(Data._process_pretrain_data, batched=True, num_proc=32, batch_size=32, with_indices=True)
 
             else:
                 # the dataset is a json file
@@ -145,8 +160,10 @@ class Data:
                 dataset = dataset.train_test_split(max_sample_num, seed=seed)["test"]
 
             # index column is useless in training
-            if "index" in dataset.column_names:
+            if "index" in dataset.column_names and ignore_index:
                 dataset = dataset.remove_columns(["index"])
+            if "length" in dataset.column_names and ignore_length:
+                dataset = dataset.remove_columns(["length"])
 
             train_datasets.append(dataset)
 
@@ -154,7 +171,7 @@ class Data:
 
         return dataset
 
-    def prepare_eval_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", max_eval_num=None, cache_dir=None, seed=42, load_from_cache_file=None):
+    def prepare_eval_data(data_files=None, tokenizer=None, max_length=4096, min_length=512, chat_template="vicuna", max_eval_num=None, cache_dir=None, seed=42, load_from_cache_file=None, ignore_index=False, ignore_length=False):
         if data_files is None:
             return None
 
@@ -186,4 +203,9 @@ class Data:
             raise ValueError(f"Found neither 'text' nor 'conversations' in the training data!")
 
         dataset = dataset.map(process_fn, batched=True, num_proc=32, remove_columns=dataset.column_names, with_indices=True, load_from_cache_file=load_from_cache_file)
+        if "index" in dataset.column_names and ignore_index:
+            dataset = dataset.remove_columns(["index"])
+        if "length" in dataset.column_names and ignore_length:
+            dataset = dataset.remove_columns(["length"])
+
         return dataset

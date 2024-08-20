@@ -90,6 +90,10 @@ class Memory(torch.nn.Module):
         self.all_attention_mask = None
         self.all_labels = None
 
+        # NOTE: will be reset in prepare()
+        self.beacon_skip_first = None
+        self.beacon_skip_last = None
+
         # the raw activations of recent tokens
         self.raw_activations = [(None, None) for _ in range(self.config.num_hidden_layers)]
         # the attention sink activations
@@ -147,7 +151,7 @@ class Memory(torch.nn.Module):
             raw_memory_size += self.raw_activations[0][0].shape[self.k_seq_dim]
         return sink_memory_size, beacon_memory_size, raw_memory_size
 
-    def prepare(self, input_ids, attention_mask, labels):
+    def prepare(self, input_ids, attention_mask, labels, skip_first=None, skip_last=None):
         """
         Prepare inputs for the model. These inputs belong to the same sequence.
         """
@@ -179,6 +183,19 @@ class Memory(torch.nn.Module):
             else:
                 self.all_labels = torch.cat([self.all_labels, labels], dim=1)
             assert self.all_input_ids.shape[1] == self.all_labels.shape[1], f"Found inconsistent all_input_ids {self.all_input_ids.shape} and all_labels {self.all_labels.shape}!"
+        
+        # how many tokens to skip at the beginning of the sequence? (They will be packed in a single chunk and processed by the model, after which their activations will be cached in sink_activations.)
+        if skip_first is not None:
+            assert self.config.beacon_parallel_window == 1, f"Make sure the parallel window is set to 1 when using beacon_skip!"
+            assert self.config.beacon_window == self.config.beacon_stride, f"Make sure the beacon_window equals to beacon_stride when using beacon_skip."
+            assert self.config.beacon_sink_size == 0, f"Make sure the beacon_sink_size is set to 0 when using beacon_skip!"
+        # stop compression after how many tokens
+        if skip_last is not None:
+            skip_first = skip_first if skip_first is not None else 0
+            assert (skip_last - skip_first) % self.config.beacon_window == 0, f"skip_last ({skip_last}) - skip_first ({skip_first}) = {skip_last - skip_first} is not divisible by window size {self.config.beacon_window}"
+            assert self.config.beacon_sink_size == 0, "Make sure the beacon_sink_size is zero when using skip_last!"
+        self.beacon_skip_first = skip_first
+        self.beacon_skip_last = skip_last
 
     def set_compression_ratio(self, start_idx, end_idx):
         """Choose a condensing ratio from self.config.beacon_ratio"""
@@ -399,10 +416,27 @@ class Memory(torch.nn.Module):
         # In the last window, we do not need to append beacons because they will not be used at all
         if self.training and end_idx == self.all_sequence_length:
             next_start_idx = start_idx
+            is_full_window = False
             raw_size_to_cache = -1
             beacon_size = 0
-            compression_ratio = 1
+            compression_ratio = -1
+        
+        elif self._step_idx == 0 and self.beacon_skip_first is not None:
+            end_idx = start_idx + self.beacon_skip_first
+            assert end_idx < self.all_sequence_length
+            next_start_idx = end_idx
+            is_full_window = True
+            raw_size_to_cache = -1
+            beacon_size = 0
+            compression_ratio = -1
+        
+        elif self.beacon_skip_last is not None and start_idx >= self.beacon_skip_last:
+            end_idx = min(start_idx + self.config.beacon_window, self.all_sequence_length)
+            next_start_idx = end_idx
             is_full_window = False
+            raw_size_to_cache = -1
+            beacon_size = 0
+            compression_ratio = -1
 
         else:
             #============================================#
@@ -511,9 +545,9 @@ class Memory(torch.nn.Module):
                 # update the reminder
                 self._interleave_remainder = (input_len + self._interleave_remainder) % compression_ratio
 
-            # NOTE: skip computing loss in the very first window because the beacon tokens will be used in the next window
-            if self.training and self._step_idx == 0 and not (self.config.beacon_pos == 'interleave' and self.config.beacon_attn == 'full-coverage'):
-                labels[:] = -100
+        # NOTE: skip computing loss in the very first window because the beacon tokens will be used in the next window
+        if self.training and self._step_idx == 0 and not (self.config.beacon_pos == 'interleave' and self.config.beacon_attn == 'full-coverage'):
+            labels[:] = -100
 
         # t2 = time.time()
 
@@ -607,12 +641,15 @@ class Memory(torch.nn.Module):
         self._end_idx = end_idx
         self._step_idx += 1
 
+        # print(f"start_idx:          {start_idx}")
+        # print(f"next_start_idx:     {next_start_idx}")
         # print(f"beacon_size:        {beacon_size}")
         # print(f"raw_size_to_cache:  {raw_size_to_cache}")
+        # print(f"interleave_remainder:{self._interleave_remainder}")
         # print(f"input_ids:          {input_ids}")
         # print(f"beacon_indices:     {beacon_indices}")
         # print(f"position_ids:       {position_ids}")
-        # print(f"attention_mask:\n{attention_mask}")
+        # print(f"attention_mask:\n{attention_mask == 0}")
         # x = input()
         # if x == "s":
         #     return
@@ -626,6 +663,16 @@ class Memory(torch.nn.Module):
         for layer_idx, (key, value, beacon_size, beacon_indices) in enumerate(past_key_values):
             # NOTE: the past_key_values are incrementally returned (only the new keys and values are returned)
             previous_raw_key, previous_raw_value = self.raw_activations[layer_idx]
+
+            if self.beacon_skip_first is not None and self.sink_activations[layer_idx][0] is None:
+                assert key.shape[self.k_seq_dim] == self.beacon_skip_first
+                assert value.shape[self.k_seq_dim] == self.beacon_skip_first
+                self.sink_activations[layer_idx] = [
+                    key,
+                    value,
+                ]
+                # NOTE: no need to update raw activations and beacon activations as all activations are kept as sink activations
+                continue
 
             if self.beacon_activations[layer_idx][0] is None and self.config.beacon_sink_size > 0:
                 # save the sink activations
@@ -696,7 +743,6 @@ class Memory(torch.nn.Module):
             # NOTE: we must use dict to override values, otherwise trainer cannot find loss
             model_outputs["loss"] = loss
             model_outputs["batch_loss"] = batch_loss
-            model_outputs["valid_token_num"] = self._valid_token_num
 
         # override last_hidden_states (used in generation)
         beacon_size = self._all_beacon_sizes[-1]

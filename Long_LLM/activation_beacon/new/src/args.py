@@ -29,7 +29,7 @@ class ModelArgs:
     )
     
     model_name_or_path: str = field(
-        default='meta-llama/Llama-2-7b-chat-hf',
+        default='Qwen/Qwen2-7B-Instruct',
         metadata={'help': 'Path to pretrained model or model identifier from huggingface.co/models'}
     )
     padding_side: str = field(
@@ -161,7 +161,7 @@ class ModelArgs:
     )
     beacon_param: Optional[List[str]] = field(
         default=None,
-        metadata={'help': 'The introduced parameters for beacon.'}
+        metadata={'help': 'The introduced parameters for beacon. {q, k, v, o}'}
     )
     beacon_embed_init: str = field(
         default="eos",
@@ -182,18 +182,6 @@ class ModelArgs:
     beacon_parallel_window: Optional[int] = field(
         default=None,
         metadata={'help': 'How many windows to run in parallel?'}
-    )
-    retrieval_method: Optional[str] = field(
-        default=None,
-        metadata={'help': 'How to retrieve? {bm25}'}
-    )
-    retrieval_topk: Optional[int] = field(
-        default=None,
-        metadata={'help': 'How many windows to retrieve?'}
-    )
-    retrieval_key_length: Optional[int] = field(
-        default=None,
-        metadata={'help': 'The key sequence length in retrieval.'}
     )
 
     max_new_tokens: Optional[int] = field(

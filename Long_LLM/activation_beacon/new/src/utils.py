@@ -244,43 +244,6 @@ def remove_eos(inputs: Mapping, eos_token_ids: Union[List,int]):
         inputs[k].pop(eos_idx)
     return inputs
 
-def mix_parameters(models: List[torch.nn.Module], weights: Optional[List[float]]=None):
-    """Mix parameters of different models according to given weights.
-    
-    Returns:
-        the model with mixed parameters.
-    """
-    new_state_dict = OrderedDict()
-    if weights is None:
-        weights = [1 / len(models) for _ in range(len(models))]
-    else:
-        assert len(weights) == len(models), f"Make sure the size of mix weights equals to the number of models!"
-
-    for name_param_pairs in zip(*[model.state_dict().items() for model in models]):
-        names = [name_param_pair[0] for name_param_pair in name_param_pairs]
-        params = [name_param_pair[1] for name_param_pair in name_param_pairs]
-
-        assert all(name == names[0] for name in names), f"Found incompatible key in {names}!"
-        name = names[0]
-        mixed_param = None
-
-        # there may be non-float parameters stored, which should not be mixed
-        if params[0].dtype not in [torch.float16, torch.bfloat16, torch.float32]:
-            assert all((param == params[0]).all() for param in params), f"Found incompatible value in non-float tensor {params}!"
-            new_state_dict[name] = params[0]
-            continue
-
-        for weight, param in zip(weights, params):
-            if mixed_param is None:
-                mixed_param = weight * param
-            else:
-                mixed_param += weight * param
-            new_state_dict[name] = mixed_param
-            
-    model = models[0]
-    info = model.load_state_dict(new_state_dict)
-    print(info)
-    return model
 
 
 class FileLogger:
@@ -340,7 +303,7 @@ class DefaultDataCollator:
                 max_length = get_max_length_in_nested_lists(batch_value)
                 batch_value, _ = pad_nested_lists(batch_value, max_length, pad_token_id, self.tokenizer.padding_side)
 
-            if key in self.keys_to_tensorize:
+            if key in self.keys_to_tensorize and None not in batch_value:
                 return_batch[key] = torch.tensor(batch_value)
             else:
                 # handle strings and None
