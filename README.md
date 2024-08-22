@@ -17,6 +17,8 @@
 <h4 align="center">
     <p>
         <a href=#news>News</a> |
+        <a href=#installation>Installation</a> |
+        <a href=#quick-start>Quick Start</a> |
         <a href="#projects">Projects</a> |
         <a href=#model-list>Model List</a> |
         <a href="#contributor">Contributor</a> |
@@ -40,6 +42,13 @@ FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following p
 - 7/26/2024: Release a new embedding model [bge-en-icl](https://huggingface.co/BAAI/bge-en-icl), an embedding model that incorporates in-context learning capabilities, which, by providing task-relevant query-response examples, can encode semantically richer queries, further enhancing the semantic representation ability of the embeddings. :fire:
 - 7/26/2024: Release a new embedding model [bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2), a multilingual embedding model based on gemma-2-9b, which supports multiple languages and diverse downstream tasks, achieving new SOTA on multilingual benchmarks (MIRACL, MTEB-fr, and MTEB-pl). :fire:
 - 7/26/2024: Release a new lightweight reranker [bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight), a lightweight reranker based on gemma-2-9b, which supports token compression and layerwise lightweight operations, can still ensure good performance while saving a significant amount of resources. :fire:
+
+
+
+<details>
+  <summary>More</summary>
+<!-- ### More -->
+
 - 6/7/2024: Release a new benchmark [MLVU](https://github.com/JUNJIE99/MLVU), the first comprehensive benchmark specifically designed for long video understanding. MLVU features an extensive range of video durations, a diverse collection of video sources, and a set of evaluation tasks uniquely tailored for long-form video understanding. :fire:
 - 5/21/2024: Release a new benchmark [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench) together with Jina AI, Zilliz, HuggingFace, and other partners. AIR-Bench focuses on a fair out-of-distribution evaluation for Neural IR & RAG. It generates the synthetic data for benchmarking w.r.t. diverse domains and languages. It is dynamic and will be updated on regular basis. [Leaderboard](https://huggingface.co/spaces/AIR-Bench/leaderboard) :fire:
 - 4/30/2024: Release [Llama-3-8B-Instruct-80K-QLoRA](https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA), extending the context length of Llama-3-8B-Instruct from 8K to 80K via QLoRA training on a few synthesized long-context data. The model achieves remarkable performance on various long-context benchmarks. [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/Long_LLM/longllm_qlora) :fire:
@@ -57,12 +66,6 @@ It is the first embedding model which supports all three retrieval methods, achi
 - 09/12/2023: New models: 
     - **New reranker model**: release cross-encoder models `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`, which are more powerful than embedding model. We recommend to use/fine-tune them to re-rank top-k documents returned by embedding models. 
     - **update embedding model**: release `bge-*-v1.5` embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
-
-
-<details>
-  <summary>More</summary>
-<!-- ### More -->
-
 - 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/baai_general_embedding/README.md): Add script to mine hard negatives and support adding instruction during fine-tuning. 
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**  
@@ -72,7 +75,44 @@ It is the first embedding model which supports all three retrieval methods, achi
 
 </details>
 
+## Installation
+- Using pip:
+```
+pip install -U FlagEmbedding
+```
+- Install from sources:
+Clone the repository
+```
+git clone https://github.com/FlagOpen/FlagEmbedding.git
+cd FlagEmbedding
+pip install  .
+```
+For development in editable mode:
+```
+pip install -e .
+```
 
+## Quick Start
+First, load one of the BGE embedding model:
+```
+from FlagEmbedding import FlagModel
+
+model = FlagModel('BAAI/bge-base-en-v1.5',
+                  query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
+                  use_fp16=True)
+```
+Then, feed some sentences to the model and get their embeddings:
+```
+sentences_1 = ["I love NLP", "I love machine learning"]
+sentences_2 = ["I love BGE", "I love text retrieval"]
+embeddings_1 = model.encode(sentences_1)
+embeddings_2 = model.encode(sentences_2)
+```
+Once we get the embeddings, we can compute similarity.
+```
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
+```
 
 ## Projects
 
