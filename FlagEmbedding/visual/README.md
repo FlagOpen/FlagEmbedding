@@ -22,11 +22,16 @@
 </p>
 
 ## 🔔 News
-**[2024.3.18] We have released our code and model.**
+**[2024.8.27] The core code for the evaluation and fine-tuning of VISTA can be obtained from [this link](https://github.com/JUNJIE99/VISTA_Evaluation_FineTuning). This includes Stage2 training, downstream task fine-tuning, as well as the datasets we used for evaluation.**
+
+**[2024.6.13] We have released [VISTA-S2 dataset](https://huggingface.co/datasets/JUNJIE99/VISTA_S2), a hybrid multi-modal dataset consisting of over 500,000 instances for multi-modal training (Stage-2 training in our paper).**
 
 **[2024.6.7] We have released our paper. [Arxiv Link](https://arxiv.org/abs/2406.04292)**
 
-**[2024.6.13] We have released [VISTA-S2 dataset](https://huggingface.co/datasets/JUNJIE99/VISTA_S2), a hybrid multi-modal dataset consisting of over 500,000 instances for multi-modal training (Stage-2 training in our paper).**
+**[2024.3.18] We have released our code and model.**
+
+
+
 
 ## Introduction
 In this project, we introduce Visualized-BGE, a universal multi-modal embedding model. By incorporating image token embedding into the BGE Text Embedding framework, Visualized-BGE gains the flexibility to process multi-modal data that goes beyond just text. Visualized-BGE is mainly used for hybrid modal retrieval tasks, including but not limited to:
