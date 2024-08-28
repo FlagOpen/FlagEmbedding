@@ -1,0 +1,8 @@
+# Include the entire directory and its contents
+recursive-include FlagEmbedding/FlagEmbedding/visual/eva_clip *
+
+# Include the specific file at the root level
+include bpe_simple_vocab_16e6.txt.gz
+
+# Include all JSON files inside the specified directory
+recursive-include FlagEmbedding/visual/eva_clip/model_configs *.json
