@@ -46,8 +46,6 @@ FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following p
 - 7/26/2024: Release a new embedding model [bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2), a multilingual embedding model based on gemma-2-9b, which supports multiple languages and diverse downstream tasks, achieving new SOTA on multilingual benchmarks (MIRACL, MTEB-fr, and MTEB-pl). :fire:
 - 7/26/2024: Release a new lightweight reranker [bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight), a lightweight reranker based on gemma-2-9b, which supports token compression and layerwise lightweight operations, can still ensure good performance while saving a significant amount of resources. :fire:
 
-
-
 <details>
   <summary>More</summary>
 <!-- ### More -->
@@ -79,12 +77,13 @@ It is the first embedding model which supports all three retrieval methods, achi
 </details>
 
 ## Installation
-- Using pip:
+### Using pip:
 ```
 pip install -U FlagEmbedding
 ```
-- Install from sources:
-Clone the repository
+### Install from sources:
+
+Clone the repository and install
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
@@ -111,7 +110,7 @@ sentences_2 = ["I love BGE", "I love text retrieval"]
 embeddings_1 = model.encode(sentences_1)
 embeddings_2 = model.encode(sentences_2)
 ```
-Once we get the embeddings, we can compute similarity.
+Once we get the embeddings, we can compute similarity by inner product:
 ```
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
