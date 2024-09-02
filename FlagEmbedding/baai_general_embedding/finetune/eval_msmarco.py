@@ -183,7 +183,7 @@ def evaluate(preds,
     for pred, label in zip(preds, labels):
         for k, cutoff in enumerate(cutoffs):
             recall = np.intersect1d(label, pred[:cutoff])
-            recalls[k] += len(recall) / len(label)
+            recalls[k] += len(recall) / max(min(len(recall), len(label)), 1)
     recalls /= len(preds)
     for i, cutoff in enumerate(cutoffs):
         recall = recalls[i]
