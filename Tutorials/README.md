@@ -1,6 +1,11 @@
-# Tutorials
+# FlagEmbedding_tutorial
 
 If you are new to here, check out the 5 minute [quick start](./quick_start.ipynb)!
+
+<details>
+  <summary>Tutorial roadmap</summary>
+    <img src="./tutorial_map.png"/>
+</details>
 
 ## [Embedding](./1_Embedding)
 
@@ -18,4 +23,6 @@ Although not included in the quick start, indexing is a very important part in p
 
 In this module, we'll show the full pipeline of evaluating an embedding model, as well as popular benchmarks like MTEB and C-MTEB.
 
-## Reranking
+## [Reranking](./5_Reranking/)
+
+To balance accuracy and efficiency tradeoff, many retrieval system use a more efficient retriever to quickly narrow down the candidates. Then use more accurate models do reranking for the final results.

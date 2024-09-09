@@ -22,6 +22,7 @@
         <a href=#更新>更新</a> |
         <a href=#安装>安装</a> |
         <a href=#快速开始>快速开始</a> |
+        <a href=#社区>社区</a> |
         <a href="#项目">项目</a> |
         <a href="#模型列表">模型列表</a> |
         <a href=#贡献者>贡献者</a> |
@@ -112,6 +113,22 @@ embeddings_2 = model.encode(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
+
+## 社区
+
+我们将持续维护BGE及FlagEmbedding社区，有任何想法建议都欢迎告诉我们！
+
+近期会持续更新[教学](./Tutorials/)中的内容，希望为文本检索以及RAG打造出完整且详细的教学，欢迎持续关注！
+
+在未来两周左右将会更新以下内容：
+
+- BGE模型介绍
+- 在MTEB的任务中的评测
+
+<details>
+  <summary>教程规划</summary>
+    <img src="./Tutorials/tutorial_map.png"/>
+</details>
 
 
 ## 项目

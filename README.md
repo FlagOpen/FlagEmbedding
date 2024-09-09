@@ -22,6 +22,7 @@
         <a href=#news>News</a> |
         <a href=#installation>Installation</a> |
         <a href=#quick-start>Quick Start</a> |
+        <a href=#community>Community</a> |
         <a href="#projects">Projects</a> |
         <a href=#model-list>Model List</a> |
         <a href="#contributor">Contributor</a> |
@@ -116,6 +117,24 @@ Once we get the embeddings, we can compute similarity by inner product:
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
+
+
+## Community
+
+We are actively maintaining the community of BGE and FlagEmbedding. Let us know if you have any suggessions or ideas!
+
+Currently we are updating the [tutorials](./Tutorials/), we aim to create a comprehensive and detailed tutorial for beginners on text retrieval and RAG. Stay tuned!
+
+The following contents are releasing in the upcoming weeks:
+
+- BGE Intro
+- Evaluation on MTEB tasks
+
+<details>
+  <summary>The whole tutorial roadmap</summary>
+    <img src="./Tutorials/tutorial_map.png"/>
+</details>
+
 
 ## Projects
 
