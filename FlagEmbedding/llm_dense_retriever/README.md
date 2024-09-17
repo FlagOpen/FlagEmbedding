@@ -39,7 +39,7 @@ pip install flash-attn --no-build-isolation
 
 | Data                                                        | Introduction                                                 |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| [e5-data](https://huggingface.co/datasets/cfli/bge-e5data) | Public data identical to [e5-mistral](BGE-ICL trained on the) |
+| [e5-data](https://huggingface.co/datasets/cfli/bge-e5data) | Public data identical to [e5-mistral](https://huggingface.co/intfloat/e5-mistral-7b-instruct) |
 | [full-data](https://huggingface.co/datasets/cfli/bge-full-data) | The full dataset we used for training |
 
 ## Usage 
