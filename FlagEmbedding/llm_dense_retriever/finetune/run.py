@@ -14,7 +14,7 @@ from arguments import ModelArguments, DataArguments, \
 from data import SameDatasetTrainDataset, SameEmbedCollator
 from modeling import BiEncoderModel
 from trainer import BiTrainer
-from load_model import get_model
+from load_model import get_model, save_merged_model
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +143,16 @@ def main():
         # os.makedirs(os.path.join(training_args.output_dir, 'embedding'), exist_ok=True)
         # torch.save(base_model.model.model.embed_tokens, os.path.join(training_args.output_dir, 'embedding', 'emb.pth'))
 
+def save_model():
+    parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
+    model_args, data_args, training_args = parser.parse_args_into_dataclasses()
+    model_args: ModelArguments
+    data_args: DataArguments
+    training_args: TrainingArguments
+
+    if model_args.save_merged_lora_model and training_args.process_index == 0:
+        save_merged_model(model_args, training_args.output_dir)
 
 if __name__ == "__main__":
     main()
+    save_model()

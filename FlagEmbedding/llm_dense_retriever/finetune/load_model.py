@@ -1,8 +1,25 @@
 import os
+import re
+
 import torch
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 from peft import LoraConfig, TaskType, get_peft_model, PeftModel
 
+def find_largest_checkpoint(checkpoint_dir):
+    checkpoint_pattern = re.compile(r'checkpoint-(\d+)')
+    max_number = -1
+    max_checkpoint_file = None
+    for file in os.listdir(checkpoint_dir):
+        match = checkpoint_pattern.search(file)
+        if match:
+            number = int(match.group(1))
+            if number > max_number:
+                max_number = number
+                max_checkpoint_file = file
+    if max_checkpoint_file:
+        return os.path.join(checkpoint_dir, max_checkpoint_file)
+    else:
+        return None
 
 def get_model(model_args, output_dir, resize, resize_tokens):
 
@@ -112,8 +129,12 @@ def save_merged_model(model_args, output_dir):
     if os.path.exists(os.path.join(output_dir, 'embedding', 'emb.pth')):
         model.set_input_embeddings(torch.load(os.path.join(output_dir, 'embedding', 'emb.pth')))
 
-    model = PeftModel.from_pretrained(model, output_dir)
-    model = model.merge_and_unload()
+    try:
+        model = PeftModel.from_pretrained(model, output_dir)
+        model = model.merge_and_unload()
+    except:
+        model = PeftModel.from_pretrained(model, find_largest_checkpoint(output_dir))
+        model = model.merge_and_unload()
 
     model.save_pretrained(os.path.join(output_dir, 'full_model'))
 
