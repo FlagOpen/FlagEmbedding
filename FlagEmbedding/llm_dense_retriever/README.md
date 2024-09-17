@@ -6,6 +6,16 @@
 - In-context learning ability: By providing few-shot examples in the query, it can significantly enhance the model's ability to handle new tasks.
 - Outstanding performance: The model has achieved state-of-the-art (SOTA) performance on both BEIR and AIR-Bench.
 
+## 📑 Open-source Plan
+
+- [x] Checkpoint
+- [x] Training Data
+- [x] Training Code
+- [ ] Evaluation Pipeline
+- [ ] Technical Report
+
+We will release the technical report for **BGE-EN-ICL** in the future.
+
 ## Environment
 ```bash
 conda create icl python=3.10
