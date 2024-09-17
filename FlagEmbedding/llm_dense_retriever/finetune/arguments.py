@@ -55,10 +55,10 @@ class ModelArguments:
         metadata={"help": "If passed, will use flash attention to train the model."}
     )
     token: str = field(
-        default="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"
+        default=".."
     )
     cache_dir: str = field(
-        default="/share/LMs"
+        default="../LMs"
     )
     from_peft: str = field(
         default=None

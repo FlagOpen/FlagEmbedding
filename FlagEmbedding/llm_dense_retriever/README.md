@@ -208,7 +208,8 @@ run.py \
 --use_special_tokens \
 --symmetric_batch_size 256 \
 --symmetric_train_group_size 8 \
---max_class_neg 7
+--max_class_neg 7 \
+--save_merged_lora_model True
 ```
 
 ## Citation
