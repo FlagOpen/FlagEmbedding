@@ -1,4 +1,4 @@
-from ._base import BaseLLMEmbedder as FlagLLMModel
+from .base import BaseLLMEmbedder as FlagLLMModel
 from .icl import ICLLLMEmbedder as FlagICLModel
 
 __all__ = [
