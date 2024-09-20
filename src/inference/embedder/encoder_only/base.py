@@ -1,4 +1,5 @@
 # BGE-v1, BGE-v1.5, etc.
+# LLM-Embedeer 只需要给不同任务设置不同的query_instruction_for_retrieval和passage_instruction_for_retrieval即可
 import torch
 import numpy as np
 from tqdm import tqdm
