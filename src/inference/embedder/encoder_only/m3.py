@@ -6,7 +6,7 @@ from collections import defaultdict
 from typing import cast, Any, List, Union, Dict
 from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
-from src.inference.embedder.AbsEmbedder import AbsEmbedder
+from src.abc.inference import AbsEmbedder
 from src.finetune.embedder.encoder_only.m3 import BGEM3ForInference
 
 

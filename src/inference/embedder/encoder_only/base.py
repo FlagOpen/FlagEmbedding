@@ -6,7 +6,7 @@ from tqdm import tqdm
 from typing import cast, Any, List, Union
 from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
-from src.inference.embedder.AbsEmbedder import AbsEmbedder
+from src.abc.inference import AbsEmbedder
 
 
 class BaseEmbedder(AbsEmbedder):
