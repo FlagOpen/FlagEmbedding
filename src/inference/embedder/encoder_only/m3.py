@@ -7,7 +7,7 @@ from typing import cast, Any, List, Union, Dict
 from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
 from src.abc.inference import AbsEmbedder
-from src.finetune.embedder.encoder_only.m3 import BGEM3ForInference
+from src.finetune.embedder.encoder_only.m3 import M3ModelForInference, EncoderOnlyM3Runner
 
 
 class M3Embedder(AbsEmbedder):
@@ -34,10 +34,14 @@ class M3Embedder(AbsEmbedder):
             model_name_or_path,
             trust_remote_code=trust_remote_code
         )
-        self.model = BGEM3ForInference(
-            model_name=model_name_or_path,
-            normlized=normalize_embeddings,
+        self.model = M3ModelForInference(
+            EncoderOnlyM3Runner.get_model(
+                model_name_or_path,
+                trust_remote_code=trust_remote_code,
+                colbert_dim=kwargs.get("colbert_dim", -1)
+            ),
             sentence_pooling_method=pooling_method,
+            normalize_embeddings=normalize_embeddings
         )
         
         self.model = AutoModel.from_pretrained(
