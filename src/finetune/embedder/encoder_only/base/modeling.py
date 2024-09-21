@@ -12,7 +12,7 @@ class BiEncoderModel(AbsEmbedderModel):
     
     def __init__(
         self,
-        base_model: AutoModel = None,
+        base_model: AutoModel,
         tokenizer: AutoTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
@@ -21,7 +21,7 @@ class BiEncoderModel(AbsEmbedderModel):
         normalize_embeddings: bool = False,
     ):
         super().__init__(
-            base_model=base_model,
+            base_model,
             tokenizer=tokenizer,
             negatives_cross_device=negatives_cross_device,
             temperature=temperature,
