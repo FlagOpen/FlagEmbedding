@@ -89,6 +89,10 @@ class AbsDataArguments:
         default="{}{}", metadata={"help": "format for passage instruction"}
     )
     
+    shuffle_ratio: float = field(
+        default=0.0, metadata={"help": "The ratio of shuffling the text"}
+    )
+    
     # Parameters for SameDatasetDataArguments
     same_dataset_within_batch: bool = field(
         default=False, metadata={"help": "All samples in the same batch comes from the same dataset."}

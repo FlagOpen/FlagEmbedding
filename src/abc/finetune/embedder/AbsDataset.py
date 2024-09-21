@@ -7,9 +7,15 @@ import numpy as np
 import torch.distributed as dist
 from dataclasses import dataclass
 from torch.utils.data import Dataset
-from transformers import PreTrainedTokenizer, DataCollatorWithPadding
+from transformers import (
+    PreTrainedTokenizer, 
+    DataCollatorWithPadding,
+    TrainerCallback,
+    TrainerState,
+    TrainerControl
+)
 
-from src.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsSameDatasetDataArguments
+from src.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsTrainingArguments
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +61,17 @@ class AbsTrainDataset(Dataset):
                 raise ValueError(f"`pos_scores` and `neg_scores` not found in the features of training data in {file_path}, which is necessary when using knowledge distillation.")
         return temp_dataset
     
+    def _shuffle_text(self, text):
+        if self.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.shuffle_ratio:
+            split_text = []
+            chunk_size = len(text)//3 + 1
+            for i in range(0, len(text), chunk_size):
+                split_text.append(text[i:i+chunk_size])
+            random.shuffle(split_text)
+            return " ".join(split_text)
+        else:
+            return text
+    
     def __len__(self):
         return len(self.dataset)
     
@@ -75,7 +92,7 @@ class AbsTrainDataset(Dataset):
         assert isinstance(data['pos'], list) and isinstance(data['neg'], list)
         
         pos_idx = random.choice(list(range(len(data['pos']))))
-        passages.append(data['pos'][pos_idx])
+        passages.append(self._shuffle_text(data['pos'][pos_idx]))
         
         neg_all_idx = list(range(len(data['neg'])))
         if len(data['neg']) < train_group_size - 1:
@@ -118,6 +135,8 @@ class AbsEmbedCollator(DataCollatorWithPadding):
         teacher_scores = [f[2] for f in features]
         if teacher_scores[0] is None:
             teacher_scores = None
+        elif isinstance(teacher_scores[0], list):
+            teacher_scores = sum(teacher_scores, [])
         
         if isinstance(queries[0], list):
             queries = sum(queries, [])
@@ -196,14 +215,15 @@ class AbsEmbedCollator(DataCollatorWithPadding):
 class AbsSameDatasetTrainDataset(AbsTrainDataset):
     def __init__(
         self,
-        args: AbsSameDatasetDataArguments,
+        args: AbsDataArguments,
         default_batch_size: int,
         seed: int,
         tokenizer: PreTrainedTokenizer,
-        process_index: int=0, 
+        process_index: int=0,
         num_processes: int=1
     ):
         self.args = args
+        self.shuffle_ratio = args.shuffle_ratio
         self.defaut_batch_size = default_batch_size
         self.deterministic_generator = np.random.default_rng(seed)
         self.tokenizer = tokenizer
@@ -223,9 +243,19 @@ class AbsSameDatasetTrainDataset(AbsTrainDataset):
         
         for data_dir in args.train_data:
             if not os.path.isdir(data_dir):
+                # Add `no_in_batch_neg` **suffix** to `data_dir` to indicate that this dataset does not use in-batch negatives
+                no_in_batch_neg_flag = data_dir.split('.')[-2].endswith('no_in_batch_neg')
                 if not (data_dir.endswith('.json') or data_dir.endswith('.jsonl')): continue
                 temp_dataset = self._load_dataset(data_dir)
-                if len(temp_dataset) == 0: continue
+                
+                if len(temp_dataset) == 0 or len(temp_dataset) < small_threshold: continue
+                else:
+                    train_datasets.append(temp_dataset)
+                    each_data_idxs.append(np.arange(len(temp_dataset)) + cur_all_num)
+                    cur_all_num += len(temp_dataset)
+                    batch_size_idxs.append(self._get_file_batch_size(temp_dataset, default_batch_size))
+                    no_in_batch_neg_flags.append(no_in_batch_neg_flag)
+                    
             else:
                 small_datasets = []
                 small_batch_size = math.inf
@@ -266,6 +296,8 @@ class AbsSameDatasetTrainDataset(AbsTrainDataset):
 
     @staticmethod
     def _get_file_batch_size(temp_dataset: datasets.Dataset, default_batch_size: int):
+        if 'batch_size' in temp_dataset.column_names:
+            return temp_dataset['batch_size'][0]
         if 'type' in temp_dataset.column_names:
             data_type = temp_dataset['type'][0]
             if 'symmetric' in data_type:
@@ -328,7 +360,7 @@ class AbsSameDatasetTrainDataset(AbsTrainDataset):
             )
             tmp_passages = []
             pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
-            tmp_passages.append(batch_raw_data['pos'][i][pos_idx])
+            tmp_passages.append(self._shuffle_text(batch_raw_data['pos'][i][pos_idx]))
             
             neg_all_idx = list(range(len(batch_raw_data['neg'][i])))
             if len(batch_raw_data['neg'][i]) < train_group_size - 1:
@@ -461,3 +493,20 @@ class AbsSameDatasetEmbedCollator(DataCollatorWithPadding):
             "teacher_scores": teacher_scores,
             "no_in_batch_neg_flag": no_in_batch_neg_flag
         }
+
+
+class TrainerCallbackForDataRefresh(TrainerCallback):
+    def __init__(self, train_dataset: AbsSameDatasetTrainDataset):
+        self.train_dataset = train_dataset
+        
+    def on_epoch_end(
+        self,
+        args: AbsTrainingArguments,
+        state: TrainerState,
+        control: TrainerControl,
+        **kwargs
+    ):
+        """
+        Event called at the end of an epoch.
+        """
+        self.train_dataset.refresh_epoch()

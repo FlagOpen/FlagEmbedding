@@ -24,7 +24,7 @@ class EncoderOutput(ModelOutput):
 class AbsEmbedderModel(ABC, nn.Module):
     def __init__(
         self,
-        base_model = None,
+        base_model,
         tokenizer: AutoTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
@@ -64,7 +64,7 @@ class AbsEmbedderModel(ABC, nn.Module):
         self, 
         queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
         passages: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None,
-        teacher_scores: Union[float, List[float]] = None,
+        teacher_scores: Union[None, List[float]] = None,
         no_in_batch_neg_flag: bool = False,
     ):
         q_reps = self.encode(queries) # (batch_size, dim)
