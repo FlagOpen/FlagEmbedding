@@ -1,8 +1,7 @@
-import os
-from dataclasses import dataclass, field
 from typing import Optional, List
+from dataclasses import dataclass, field
 
-from src.abc.finetune.embedder import AbsModelArguments, AbsTrainingArguments
+from src.abc.finetune.embedder import AbsModelArguments
 
 
 def default_target_modules() -> List[int]:

@@ -1,10 +1,11 @@
+import os
 import logging
 from typing import Tuple
 from pathlib import Path
 from src.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsModelArguments, AbsTrainingArguments
 from transformers import AutoConfig, AutoTokenizer, PreTrainedTokenizer
 
-from src.abc.finetune.embedder import AbsRunner, AbsEmbedderModel
+from src.abc.finetune.embedder import AbsRunner, AbsEmbedderModel, TrainerCallbackForDataRefresh
 from src.finetune.embedder.decoder_only.base.modeling import BiEncoderModel
 from src.finetune.embedder.decoder_only.base.arguments import ModelArguments
 from src.finetune.embedder.decoder_only.base.trainer import DecoderOnlyTrainer
@@ -53,12 +54,12 @@ class DecoderOnlyRunner(AbsRunner):
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
             num_labels=num_labels,
             cache_dir=self.model_args.cache_dir,
-            token=self.model_args.token,
+            token=os.getenv('HF_TOKEN', None),
         )
         logger.info('Config: %s', config)
         
         model = BiEncoderModel(
-            base_model=base_model,
+            base_model,
             tokenizer=tokenizer,
             negatives_cross_device=self.training_args.negatives_cross_device,
             temperature=self.training_args.temperature,
@@ -81,6 +82,8 @@ class DecoderOnlyRunner(AbsRunner):
             data_collator=self.data_collator,
             tokenizer=self.tokenizer
         )
+        if self.data_args.same_dataset_within_batch:
+            trainer.add_callback(TrainerCallbackForDataRefresh(self.train_dataset))
         return trainer
 
     def run(self):
