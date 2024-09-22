@@ -292,6 +292,8 @@ class M3Embedder(AbsEmbedder):
             all_dense_embeddings = None
 
         if return_sparse:
+            # adjust the order of lexical weights
+            all_lexical_weights = [all_lexical_weights[i] for i in np.argsort(length_sorted_idx)]
             if input_was_string:
                 all_lexical_weights = all_lexical_weights[0]
         else:
