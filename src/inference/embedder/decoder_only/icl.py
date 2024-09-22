@@ -153,8 +153,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         
         # tokenize without padding to get the correct length
         all_inputs = []
-        for start_index in range(0, len(queries), batch_size):
-            sentences_batch = queries[start_index:start_index + batch_size]
+        for start_index in range(0, len(input_texts), batch_size):
+            sentences_batch = input_texts[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer(
                 sentences_batch,
                 truncation=True,
@@ -166,7 +166,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        sentences_sorted = [queries[i] for i in length_sorted_idx]
+        sentences_sorted = [input_texts[i] for i in length_sorted_idx]
         
         # adjust batch size
         flag = False
