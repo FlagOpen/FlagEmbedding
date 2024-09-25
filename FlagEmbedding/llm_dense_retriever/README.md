@@ -14,7 +14,7 @@
 - [x] Technical Report
 - [ ] Evaluation Pipeline
 
-The technical report for **BGE-EN-ICL** can be found in [https://arxiv.org/abs/2409.15700](https://arxiv.org/abs/2409.15700)
+The technical report for **BGE-EN-ICL** can be found in [Making Text Embedders Few-Shot Learners](https://arxiv.org/abs/2409.15700)
 
 ## Environment
 ```bash
