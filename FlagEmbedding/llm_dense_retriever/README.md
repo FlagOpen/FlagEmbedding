@@ -11,10 +11,10 @@
 - [x] Checkpoint
 - [x] Training Data
 - [x] Training Code
+- [x] Technical Report
 - [ ] Evaluation Pipeline
-- [ ] Technical Report
 
-We will release the technical report for **BGE-EN-ICL** in the future.
+The technical report for **BGE-EN-ICL** can be found in [https://arxiv.org/abs/2409.15700](https://arxiv.org/abs/2409.15700)
 
 ## Environment
 ```bash
@@ -219,13 +219,13 @@ If you find this repository useful, please give us a star ⭐.
 To cite our work:
 
 ```
-@misc{li2023makinglargelanguagemodels,
-      title={Making Large Language Models A Better Foundation For Dense Retrieval}, 
-      author={Chaofan Li and Zheng Liu and Shitao Xiao and Yingxia Shao},
-      year={2023},
-      eprint={2312.15503},
+@misc{li2024makingtextembeddersfewshot,
+      title={Making Text Embedders Few-Shot Learners}, 
+      author={Chaofan Li and MingHao Qin and Shitao Xiao and Jianlyu Chen and Kun Luo and Yingxia Shao and Defu Lian and Zheng Liu},
+      year={2024},
+      eprint={2409.15700},
       archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2312.15503}, 
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2409.15700}, 
 }
 ```
