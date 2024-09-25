@@ -100,6 +100,7 @@ class Visualized_BGE(nn.Module):
             self.to(self.device)
         else:
             self.device = torch.device('cpu')
+        self.dtype = next(bge.parameters()).dtype
     
     def load_model(self, model_weight):
         self.load_state_dict(torch.load(model_weight, map_location='cpu'))
@@ -191,7 +192,7 @@ class Visualized_BGE(nn.Module):
         token_type_ids = torch.zeros(input_shape, dtype=torch.long, device=device)
 
         head_mask = [None] * self.depth
-        extended_attention_mask: torch.Tensor = self.get_extended_attention_mask(attention_mask, input_shape)
+        extended_attention_mask: torch.Tensor = self.get_extended_attention_mask(attention_mask, input_shape).to(self.dtype)
         
         embedding_output = self.bge_embeddings(
             input_ids=input_ids,
@@ -270,7 +271,7 @@ class Visualized_BGE(nn.Module):
         prom_img_input_shape = prompt_img_embedding.size()
 
         head_mask = [None] * self.depth
-        extended_attention_mask: torch.Tensor = self.get_extended_attention_mask(prom_img_attention_mask, prom_img_input_shape).to(prompt_img_embedding.dtype)
+        extended_attention_mask: torch.Tensor = self.get_extended_attention_mask(prom_img_attention_mask, prom_img_input_shape).to(self.dtype)
         
         
         encoder_outputs = self.bge_encoder(
