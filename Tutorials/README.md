@@ -18,14 +18,14 @@ This module includes tutorials and demos showing how to use BGE and Sentence Tra
 - [x] Usage of BGE
 - [x] BGE-M3
 - [ ] BGE-ICL
-- ...
+- [ ] ...
 
 ## [Similarity](./2_Similarity)
 
 In this part, we show popular similarity functions and techniques about searching.
 
 - [x] Similarity metrics
-- ...
+- [ ] ...
 
 ## [Indexing](./3_Indexing)
 
@@ -33,9 +33,10 @@ Although not included in the quick start, indexing is a very important part in p
 
 - [x] Intro to Faiss
 - [x] Using GPU in Faiss
-- [ ] Index and Quantizer
+- [x] Indexes
+- [x] Quantizers
 - [ ] Milvus
-- ...
+- [ ] ...
 
 ## [Evaluation](./4_Evaluation)
 
@@ -45,11 +46,11 @@ In this module, we'll show the full pipeline of evaluating an embedding model, a
 - [x] Intro to MTEB
 - [x] MTEB Leaderboard Eval
 - [ ] C-MTEB
-- ...
+- [ ] ...
 
 ## [Reranking](./5_Reranking/)
 
 To balance accuracy and efficiency tradeoff, many retrieval system use a more efficient retriever to quickly narrow down the candidates. Then use more accurate models do reranking for the final results.
 
 - [x] Intro to reranker
-- ...
+- [ ] ...
