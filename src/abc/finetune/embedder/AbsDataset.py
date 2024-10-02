@@ -324,7 +324,10 @@ class AbsSameDatasetTrainDataset(AbsTrainDataset):
         self.deterministic_generator.shuffle(batch_datas)
         self.batch_datas = batch_datas
         self.step = 0
-    
+
+    def __len__(self):
+        return len(self.batch_datas) * self.num_processes
+
     def __getitem__(self, _):
         batch_indices, no_in_batch_neg_flag = self.batch_datas[self.step]    # extend here
         cur_batch_size = int(len(batch_indices) / self.num_processes)
