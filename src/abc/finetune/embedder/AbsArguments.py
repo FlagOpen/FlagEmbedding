@@ -67,7 +67,7 @@ class AbsDataArguments:
     )
 
     max_example_num_per_dataset: int = field(
-        default=None, metadata={"help": "the max number of examples for each dataset"}
+        default=100000000, metadata={"help": "the max number of examples for each dataset"}
     )
 
     query_instruction_for_retrieval: str= field(
