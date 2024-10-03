@@ -170,7 +170,6 @@ class BaseLLMEmbedder(AbsEmbedder):
         max_length_inputs = self.tokenizer.pad(
             all_inputs_sorted[:1],
             padding=True,
-            truncation=True,
             max_length=max_length,
             return_tensors='pt',
             **kwargs
@@ -195,7 +194,6 @@ class BaseLLMEmbedder(AbsEmbedder):
                 inputs_batch,
                 padding=True,
                 truncation=True,
-                max_length=max_length,
                 return_tensors='pt',
                 **kwargs
             ).to(self.device)

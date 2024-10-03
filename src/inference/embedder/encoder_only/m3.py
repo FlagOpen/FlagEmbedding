@@ -225,7 +225,6 @@ class M3Embedder(AbsEmbedder):
         max_length_inputs = self.tokenizer.pad(
             all_inputs_sorted[:1],
             padding=True,
-            truncation=True,
             max_length=max_length,
             return_tensors='pt',
             **kwargs
@@ -253,7 +252,6 @@ class M3Embedder(AbsEmbedder):
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
                 padding=True,
-                truncation=True,
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
