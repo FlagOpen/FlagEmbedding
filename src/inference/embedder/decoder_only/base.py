@@ -156,10 +156,13 @@ class BaseLLMEmbedder(AbsEmbedder):
                 max_length=max_length,
                 **kwargs
             )
+            inputs_batch = [{
+                k: inputs_batch[k][i] for k in inputs_batch.keys()
+            } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
         
         # sort by length for less padding
-        length_sorted_idx = np.argsort([-len(x) for x in all_inputs['input_ids']])
+        length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
         
         # adjust batch size
