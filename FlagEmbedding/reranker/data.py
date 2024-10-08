@@ -10,7 +10,7 @@ from torch.utils.data import Dataset
 from transformers import DataCollatorWithPadding
 from transformers import PreTrainedTokenizer, BatchEncoding
 
-from .arguments import DataArguments
+from arguments import DataArguments
 
 
 class TrainDatasetForCE(Dataset):
@@ -62,6 +62,29 @@ class TrainDatasetForCE(Dataset):
 
         return batch_data
 
+class TrainDatasetForCL(TrainDatasetForCE):
+    def create_one_example(self, input):
+        item = self.tokenizer(
+            input,
+            truncation=True,
+            max_length=self.args.max_len,
+            padding=False,
+        )
+        return item
+
+    def __getitem__(self, item) -> List[BatchEncoding]:
+        query = self.dataset[item]['query']
+        pos = random.choice(self.dataset[item]['pos'])
+        if len(self.dataset[item]['neg']) < self.args.train_group_size - 1:
+            num = math.ceil((self.args.train_group_size - 1) / len(self.dataset[item]['neg']))
+            negs = random.sample(self.dataset[item]['neg'] * num, self.args.train_group_size - 1)
+        else:
+            negs = random.sample(self.dataset[item]['neg'], self.args.train_group_size - 1)
+        batch_data = []
+        batch_data.append(self.create_one_example(query))
+        batch_data.append(self.create_one_example(pos))
+        for neg in negs: batch_data.append(self.create_one_example(neg))
+        return batch_data
 
 
 @dataclass
