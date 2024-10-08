@@ -237,7 +237,7 @@ class FlagLLMModel:
     def encode_queries(self, queries: Union[List[str], str],
                        batch_size: int = 256,
                        max_length: int = 512,
-                       convert_to_numpy: bool = True) -> np.ndarray:
+                       convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]: 
         '''
         This function will be used for retrieval task
         if there is a instruction for queries, we will add it to the query text
@@ -252,7 +252,7 @@ class FlagLLMModel:
                       corpus: Union[List[str], str],
                       batch_size: int = 256,
                       max_length: int = 512,
-                      convert_to_numpy: bool = True) -> np.ndarray:
+                      convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]:
         '''
         This function will be used for retrieval task
         encode corpus for retrieval task
@@ -264,7 +264,7 @@ class FlagLLMModel:
                sentences: Union[List[str], str],
                batch_size: int = 256,
                max_length: int = 512,
-               convert_to_numpy: bool = True) -> np.ndarray:
+               convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
@@ -341,7 +341,7 @@ class FlagModel:
     def encode_queries(self, queries: Union[List[str], str],
                        batch_size: int = 256,
                        max_length: int = 512,
-                       convert_to_numpy: bool = True) -> np.ndarray:
+                       convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]:
         '''
         This function will be used for retrieval task
         if there is a instruction for queries, we will add it to the query text
@@ -350,7 +350,7 @@ class FlagModel:
             if isinstance(queries, str):
                 input_texts = self.query_instruction_for_retrieval + queries
             else:
-                input_texts = ['{}{}'.format(self.query_instruction_for_retrieval, q) for q in queries]
+                input_texts = [(self.query_instruction_for_retrieval + q) for q in queries]
         else:
             input_texts = queries
         return self.encode(input_texts, batch_size=batch_size, max_length=max_length, convert_to_numpy=convert_to_numpy)
@@ -359,7 +359,7 @@ class FlagModel:
                       corpus: Union[List[str], str],
                       batch_size: int = 256,
                       max_length: int = 512,
-                      convert_to_numpy: bool = True) -> np.ndarray:
+                      convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]:
         '''
         This function will be used for retrieval task
         encode corpus for retrieval task
@@ -371,7 +371,7 @@ class FlagModel:
                sentences: Union[List[str], str],
                batch_size: int = 256,
                max_length: int = 512,
-               convert_to_numpy: bool = True) -> np.ndarray:
+               convert_to_numpy: bool = True) -> Union[np.ndarray, torch.Tensor]:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
