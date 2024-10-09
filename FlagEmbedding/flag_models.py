@@ -36,7 +36,14 @@ class FlagICLModel:
         use_fp16: bool = True
     ) -> None:
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-        self.model = AutoModel.from_pretrained(model_name_or_path)
+
+        # Use device_map="auto" to offload to CPU when necessary
+        self.model = AutoModel.from_pretrained(
+            model_name_or_path,
+            device_map="auto",  # Automatically offload model components between GPU and CPU
+            offload_folder="offload"  # Directory to temporarily store offloaded weights (useful if offloading is needed)
+        )
+
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.examples_for_task = examples_for_task
 
@@ -45,6 +52,7 @@ class FlagICLModel:
 
         self.normalize_embeddings = normalize_embeddings
 
+        # Determine device for setting up other components, but no need to manually move the model
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
         elif torch.backends.mps.is_available():
@@ -54,14 +62,17 @@ class FlagICLModel:
         else:
             self.device = torch.device("cpu")
             use_fp16 = False
-        if use_fp16: self.model.half()
-        self.model = self.model.to(self.device)
 
+        # Do not move the model explicitly if it is already being managed by Accelerate
+        if use_fp16 and isinstance(self.model, torch.nn.Module) and not hasattr(self.model, "hf_device_map"):
+            self.model.half()
+
+        # Handle multiple GPUs if available
         self.num_gpus = torch.cuda.device_count()
         if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
+            print(f"----------using {self.num_gpus} GPUs----------")
             self.model = torch.nn.DataParallel(self.model)
-
+          
     def set_examples(self, examples_for_task: List[dict] = None):
         if examples_for_task is None and self.examples_for_task is None:
             self.prefix = ''
