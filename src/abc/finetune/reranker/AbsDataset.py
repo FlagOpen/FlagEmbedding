@@ -28,6 +28,7 @@ class AbsTrainDataset(Dataset):
     ):
         self.args = args
         self.tokenizer = tokenizer
+        self.shuff_ratio = args.shuffle_ratio
         
         train_datasets = []
         for data_dir in args.train_data:
