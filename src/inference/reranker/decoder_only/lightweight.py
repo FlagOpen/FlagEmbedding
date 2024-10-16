@@ -147,12 +147,7 @@ class LightweightLLMReranker(AbsReranker):
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
 
-        sentence_pairs_length = []
-        for i in range(0, len(sentence_pairs), 1024):
-            start, end = i, min(i + 1024, len(sentence_pairs))
-            tmp_inputs = self.tokenizer(sentence_pairs[start: end])['input_ids']
-            sentence_pairs_length.extend(-len(s) for s in tmp_inputs)
-        length_sorted_idx = np.argsort(sentence_pairs_length)
+        length_sorted_idx = np.argsort([-len(q) - len(p) for q, p in sentence_pairs])
         sentences_pairs_sorted = [sentence_pairs[idx] for idx in length_sorted_idx]
 
         if prompt is None:
