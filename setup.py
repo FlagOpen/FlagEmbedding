@@ -13,16 +13,10 @@ setup(
     url='https://github.com/FlagOpen/FlagEmbedding',
     packages=find_packages(),
     include_package_data=True,
-    package_data={
-        'FlagEmbedding': [
-            'visual/eva_clip/bpe_simple_vocab_16e6.txt.gz',
-            'visual/eva_clip/model_configs/*.json'
-        ],
-    },
     install_requires=[
         'torch>=1.6.0',
         'transformers>=4.33.0',
-        'datasets',
+        'datasets>=2.19.0',
         'accelerate>=0.20.1',
         'sentence_transformers',
         'peft',
