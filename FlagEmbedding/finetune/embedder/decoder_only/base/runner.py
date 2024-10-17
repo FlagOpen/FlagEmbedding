@@ -55,7 +55,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
             num_labels=num_labels,
             cache_dir=self.model_args.cache_dir,
-            token=os.getenv('HF_TOKEN', None),
+            token=self.model_args.token,
         )
         logger.info('Config: %s', config)
         

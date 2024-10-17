@@ -1,4 +1,3 @@
-# bge-multilingual-gemmma2, e5-mistral-7b-instruct, etc.
 import torch
 import numpy as np
 from tqdm import tqdm

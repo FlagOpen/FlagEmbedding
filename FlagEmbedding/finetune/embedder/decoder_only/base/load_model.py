@@ -30,13 +30,13 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir
         )
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
             model_args.model_name_or_path,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir
         )
     else:
@@ -50,7 +50,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
             model_args.model_name_or_path,
             # torch_dtype=torch.bfloat16,
             use_flash_attention_2=True if model_args.use_flash_attn else False,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
             config=config,

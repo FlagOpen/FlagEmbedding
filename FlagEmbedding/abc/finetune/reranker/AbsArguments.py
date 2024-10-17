@@ -34,6 +34,10 @@ class AbsRerankerModelArguments:
         default='encoder',
         metadata={"help": "Type of finetune, ['encoder', 'decoder']"}
     )
+    token: str = field(
+        default_factory=lambda: os.getenv('HF_TOKEN', None),
+        metadata={"help": "The token to use when accessing the model."}
+    )
     # finetune_type: str = field(
     #     default='sratch',
     #     metadata={"help": "Type of finetune, ['sratch', 'finetune']"}

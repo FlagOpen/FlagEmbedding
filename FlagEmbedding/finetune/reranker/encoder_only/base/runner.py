@@ -18,7 +18,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
             cache_dir=self.model_args.cache_dir,
-            token=os.getenv('HF_TOKEN', None),
+            token=self.model_args.token,
             trust_remote_code=self.model_args.trust_remote_code
         )
 
@@ -27,7 +27,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
             num_labels=num_labels,
             cache_dir=self.model_args.cache_dir,
-            token=os.getenv('HF_TOKEN', None),
+            token=self.model_args.token,
         )
         logger.info('Config: %s', config)
 
@@ -35,7 +35,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
             self.model_args.model_name_or_path,
             config=config,
             cache_dir=self.model_args.cache_dir,
-            token=os.getenv('HF_TOKEN', None),
+            token=self.model_args.token,
             from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
             trust_remote_code=self.model_args.trust_remote_code
         )

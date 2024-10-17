@@ -6,8 +6,10 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer, is_t
 
 from FlagEmbedding.abc.inference import AbsReranker
 
+
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
+
 
 class BaseReranker(AbsReranker):
     def __init__(
@@ -95,13 +97,6 @@ class BaseReranker(AbsReranker):
         
         # adjust batch size
         flag = False
-        max_length_inputs = self.tokenizer.pad(
-            all_inputs_sorted[:1],
-            padding=True,
-            max_length=max_length,
-            return_tensors='pt',
-            **kwargs
-        ).to(self.device)
         while flag is False:
             try:
                 test_inputs_batch = self.tokenizer.pad(

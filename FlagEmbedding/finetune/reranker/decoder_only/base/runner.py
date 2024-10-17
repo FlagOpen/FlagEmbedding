@@ -28,7 +28,7 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.tokenizer_name if self.model_args.tokenizer_name else self.model_args.model_name_or_path,
-            token=os.getenv('HF_TOKEN', None),
+            token=self.model_args.token,
             cache_dir=self.model_args.cache_dir,
             use_fast=False,
             add_eos_token=False,

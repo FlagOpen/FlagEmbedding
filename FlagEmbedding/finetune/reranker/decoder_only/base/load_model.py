@@ -1,6 +1,5 @@
 import os
 import re
-import torch
 import logging
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
 from peft import LoraConfig, TaskType, get_peft_model, PeftModel
@@ -31,14 +30,14 @@ def get_model(model_args: RerankerModelArguments):
         config = AutoConfig.from_pretrained(
             model_args.config_name,
             trust_remote_code=model_args.trust_remote_code,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir
         )
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
             model_args.model_name_or_path,
             trust_remote_code=model_args.trust_remote_code,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir
         )
     else:
@@ -52,7 +51,7 @@ def get_model(model_args: RerankerModelArguments):
             model_args.model_name_or_path,
             # torch_dtype=torch.bfloat16,
             use_flash_attention_2=True if model_args.use_flash_attn else False,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
             config=config,
@@ -90,14 +89,14 @@ def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             trust_remote_code=model_args.trust_remote_code,
             cache_dir=model_args.cache_dir
         )
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
             model_args.model_name_or_path,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             trust_remote_code=model_args.trust_remote_code,
             cache_dir=model_args.cache_dir
         )
@@ -112,7 +111,7 @@ def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
             model_args.model_name_or_path,
             # torch_dtype=torch.bfloat16,
             use_flash_attention_2=True if model_args.use_flash_attn else False,
-            token=os.getenv('HF_TOKEN', None),
+            token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
             trust_remote_code=model_args.trust_remote_code,

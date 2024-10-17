@@ -1,4 +1,3 @@
-# bge-multilingual-gemmma2, e5-mistral-7b-instruct, etc.
 import torch
 import warnings
 import numpy as np
@@ -11,6 +10,7 @@ from torch.utils.data import Dataset, DataLoader
 
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
+
 
 def last_logit_pool(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
