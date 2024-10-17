@@ -1,1 +1,0 @@
-This dictionary is used for saving raw data.
