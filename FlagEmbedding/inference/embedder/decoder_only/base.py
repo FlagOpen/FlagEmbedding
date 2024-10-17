@@ -27,7 +27,7 @@ class BaseLLMEmbedder(AbsEmbedder):
         use_fp16: bool = False,
         trust_remote_code: bool = False,
         query_instruction_for_retrieval: str = None,
-        query_instruction_format: str = "<instruct>{}\n<query>{}", # specify the format of query_instruction_for_retrieval
+        query_instruction_format: str = "Instruct: {}\nQuery: {}", # specify the format of query_instruction_for_retrieval
         device: str = None, # specify device, such as "cuda:0"
         **kwargs: Any,
     ):
@@ -48,6 +48,9 @@ class BaseLLMEmbedder(AbsEmbedder):
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format
         self.kwargs = kwargs
+        
+        if self.kwargs.get("pooling_method", "last_token") != "last_token":
+            raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
         
         if device is not None:
             self.device = torch.device(device)

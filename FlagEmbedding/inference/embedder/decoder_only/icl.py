@@ -53,6 +53,9 @@ class ICLLLMEmbedder(AbsEmbedder):
         self.examples_instruction_format = examples_instruction_format
         self.kwargs = kwargs
         
+        if self.kwargs.get("pooling_method", "last_token") != "last_token":
+            raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
+        
         self.set_examples()
         self.suffix = '\n<response>'
         
