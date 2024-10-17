@@ -23,7 +23,11 @@ class FlagAutoModel:
         
         if model_name not in MODEL_MAPPING:
             raise ValueError(
-                f"Model name '{model_name}' not found in the model mapping. You can pull request to add the model to `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/model_mapping.py`. If need, you need to create a new `<model>.py` file in `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/encoder_only` or `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/decoder_only`. Welcome to contribute! You can also directly use the corresponding model class to instantiate the model."
+                f"Model name '{model_name}' not found in the model mapping. You can pull request to add the model to "
+                "`https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/model_mapping.py`. " 
+                "If need, you can create a new `<model>.py` file in `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/encoder_only` "
+                "or `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/decoder_only`. "
+                "Welcome to contribute! You can also directly use the corresponding model class to instantiate the model."
             )
         
         model_config = MODEL_MAPPING[model_name]
