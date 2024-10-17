@@ -6,7 +6,6 @@ from abc import ABC, abstractmethod
 from transformers import set_seed, PreTrainedTokenizer, AutoTokenizer
 
 
-<<<<<<< HEAD:src/abc/finetune/reranker/AbsRunner.py
 from .AbsArguments import (
     AbsRerankerModelArguments,
     AbsRerankerDataArguments,
@@ -17,18 +16,6 @@ from .AbsModeling import AbsRerankerModel
 from .AbsDataset import (
     AbsRerankerTrainDataset, AbsRerankerCollator,
     AbsLLMRerankerTrainDataset, AbsLLMRerankerCollator
-=======
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import (
-    AbsModelArguments,
-    AbsDataArguments,
-    AbsTrainingArguments
-)
-from FlagEmbedding.abc.finetune.embedder.AbsTrainer import AbsTrainer
-from FlagEmbedding.abc.finetune.embedder.AbsModeling import AbsEmbedderModel
-from FlagEmbedding.abc.finetune.embedder.AbsDataset import (
-    AbsTrainDataset, AbsEmbedCollator,
-    AbsSameDatasetTrainDataset, AbsSameDatasetEmbedCollator
->>>>>>> 36af3d8aff0cf26d1258698111198fb149728785:FlagEmbedding/abc/finetune/reranker/AbsRunner.py
 )
 
 logger = logging.getLogger(__name__)

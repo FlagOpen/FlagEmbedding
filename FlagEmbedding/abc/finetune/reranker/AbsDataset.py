@@ -18,11 +18,7 @@ from transformers import (
 )
 from typing import Optional, Union, List
 
-<<<<<<< HEAD:src/abc/finetune/reranker/AbsDataset.py
 from .AbsArguments import AbsRerankerDataArguments
-=======
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsTrainingArguments
->>>>>>> 36af3d8aff0cf26d1258698111198fb149728785:FlagEmbedding/abc/finetune/reranker/AbsDataset.py
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +31,6 @@ class AbsRerankerTrainDataset(Dataset):
     ):
         self.args = args
         self.tokenizer = tokenizer
-        self.shuff_ratio = args.shuffle_ratio
         
         train_datasets = []
         for data_dir in args.train_data:
