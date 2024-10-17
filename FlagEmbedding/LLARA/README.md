@@ -15,7 +15,7 @@ It is known for the following features:
 
 ## Environment
 ```bash
-conda create llara python=3.10
+conda create -n llara python=3.10
 
 conda activate llara
 
@@ -23,6 +23,8 @@ conda activate llara
 conda install pytorch pytorch-cuda=12.1 -c pytorch -c nvidia
 pip install transformers==4.41.0 deepspeed accelerate datasets peft pandas
 pip install flash-attn --no-build-isolation
+pip install protobuf==4.25.1
+pip install sentencepiece==0.1.99
 ```
 
 ## Model List
