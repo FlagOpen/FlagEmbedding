@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EncoderOutput(ModelOutput):
+class EmbedderOutput(ModelOutput):
     q_reps: Optional[Tensor] = None
     p_reps: Optional[Tensor] = None
     loss: Optional[Tensor] = None
@@ -108,7 +108,7 @@ class AbsEmbedderModel(ABC, nn.Module):
         else:
             loss = None
 
-        return EncoderOutput(
+        return EmbedderOutput(
             loss=loss,
         )
 

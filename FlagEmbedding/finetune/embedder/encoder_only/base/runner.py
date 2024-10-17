@@ -6,14 +6,14 @@ from transformers import (
     AutoTokenizer, PreTrainedTokenizer
 )
 
-from FlagEmbedding.abc.finetune.embedder import AbsRunner, AbsEmbedderModel, TrainerCallbackForDataRefresh
-from FlagEmbedding.finetune.embedder.encoder_only.base.modeling import BiEncoderModel
-from FlagEmbedding.finetune.embedder.encoder_only.base.trainer import EncoderOnlyTrainer
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderRunner, AbsEmbedderModel, EmbedderTrainerCallbackForDataRefresh
+from .modeling import BiEncoderOnlyEmbedderModel
+from .trainer import EncoderOnlyEmbedderTrainer
 
 logger = logging.getLogger(__name__)
 
 
-class EncoderOnlyRunner(AbsRunner):
+class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
@@ -33,7 +33,7 @@ class EncoderOnlyRunner(AbsRunner):
         )
         logger.info('Config: %s', config)
         
-        model = BiEncoderModel(
+        model = BiEncoderOnlyEmbedderModel(
             base_model,
             tokenizer=tokenizer,
             negatives_cross_device=self.training_args.negatives_cross_device,
@@ -49,8 +49,8 @@ class EncoderOnlyRunner(AbsRunner):
                     v.requires_grad = False
         return tokenizer, model
 
-    def load_trainer(self) -> EncoderOnlyTrainer:
-        trainer = EncoderOnlyTrainer(
+    def load_trainer(self) -> EncoderOnlyEmbedderTrainer:
+        trainer = EncoderOnlyEmbedderTrainer(
             model=self.model,
             args=self.training_args,
             train_dataset=self.train_dataset,
@@ -58,5 +58,5 @@ class EncoderOnlyRunner(AbsRunner):
             tokenizer=self.tokenizer
         )
         if self.data_args.same_dataset_within_batch:
-            trainer.add_callback(TrainerCallbackForDataRefresh(self.train_dataset))
+            trainer.add_callback(EmbedderTrainerCallbackForDataRefresh(self.train_dataset))
         return trainer

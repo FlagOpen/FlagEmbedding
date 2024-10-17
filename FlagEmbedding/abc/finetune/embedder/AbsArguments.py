@@ -6,7 +6,7 @@ from transformers import TrainingArguments
 
 
 @dataclass
-class AbsModelArguments:
+class AbsEmbedderModelArguments:
     """
     Abstract class for model arguments.
     """
@@ -30,10 +30,14 @@ class AbsModelArguments:
         default=False,
         metadata={"help": "Trust remote code"}
     )
+    token: str = field(
+        default_factory=lambda: os.getenv('HF_TOKEN', None),
+        metadata={"help": "The token to use when accessing the model."}
+    )
 
 
 @dataclass
-class AbsDataArguments:
+class AbsEmbedderDataArguments:
     train_data: str = field(
         default=None, metadata={
             "help": "One or more paths to training data. `query: str`, `pos: List[str]`, `neg: List[str]` are required in the training data.",
@@ -113,7 +117,7 @@ class AbsDataArguments:
 
 
 @dataclass
-class AbsTrainingArguments(TrainingArguments):
+class AbsEmbedderTrainingArguments(TrainingArguments):
     negatives_cross_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
     temperature: Optional[float] = field(default=0.02, metadata={"help": "temperature used for similarity score"})
     fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})

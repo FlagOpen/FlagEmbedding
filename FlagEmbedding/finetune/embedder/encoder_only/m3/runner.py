@@ -8,22 +8,22 @@ from transformers import (
 )
 
 from FlagEmbedding.abc.finetune.embedder import (
-    AbsRunner, AbsEmbedderModel,
-    AbsDataArguments, TrainerCallbackForDataRefresh
+    AbsEmbedderRunner, AbsEmbedderModel,
+    AbsEmbedderDataArguments, EmbedderTrainerCallbackForDataRefresh
 )
-from FlagEmbedding.finetune.embedder.encoder_only.m3.modeling import M3Model
-from FlagEmbedding.finetune.embedder.encoder_only.m3.trainer import EncoderOnlyM3Trainer
-from FlagEmbedding.finetune.embedder.encoder_only.m3.arguments import M3ModelArguments, M3TrainingArguments
+from .modeling import EncoderOnlyEmbedderM3Model
+from .trainer import EncoderOnlyM3Trainer
+from .arguments import EncoderOnlyEmbedderM3ModelArguments, EncoderOnlyEmbedderM3TrainingArguments
 
 logger = logging.getLogger(__name__)
 
 
-class EncoderOnlyM3Runner(AbsRunner):
+class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
     def __init__(
         self,
-        model_args: M3ModelArguments,
-        data_args: AbsDataArguments,
-        training_args: M3TrainingArguments
+        model_args: EncoderOnlyEmbedderM3ModelArguments,
+        data_args: AbsEmbedderDataArguments,
+        training_args: EncoderOnlyEmbedderM3TrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
     
@@ -78,7 +78,7 @@ class EncoderOnlyM3Runner(AbsRunner):
         )
         logger.info('Config: %s', config)
         
-        model = M3Model(
+        model = EncoderOnlyEmbedderM3Model(
             self.get_model(self.model_args.model_name_or_path, self.model_args.trust_remote_code, self.model_args.colbert_dim),
             tokenizer=tokenizer,
             negatives_cross_device=self.training_args.negatives_cross_device,
@@ -106,5 +106,5 @@ class EncoderOnlyM3Runner(AbsRunner):
             tokenizer=self.tokenizer
         )
         if self.data_args.same_dataset_within_batch:
-            trainer.add_callback(TrainerCallbackForDataRefresh(self.train_dataset))
+            trainer.add_callback(EmbedderTrainerCallbackForDataRefresh(self.train_dataset))
         return trainer

@@ -2,24 +2,25 @@ import os
 import logging
 from typing import Tuple
 from pathlib import Path
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsModelArguments, AbsTrainingArguments
 from transformers import AutoConfig, AutoTokenizer, PreTrainedTokenizer
 
-from FlagEmbedding.abc.finetune.embedder import AbsRunner, AbsEmbedderModel, TrainerCallbackForDataRefresh
-from FlagEmbedding.finetune.embedder.decoder_only.base.modeling import BiEncoderModel
-from FlagEmbedding.finetune.embedder.decoder_only.base.arguments import ModelArguments
-from FlagEmbedding.finetune.embedder.decoder_only.base.trainer import DecoderOnlyTrainer
-from FlagEmbedding.finetune.embedder.decoder_only.base.load_model import get_model, save_merged_model
+from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsEmbedderDataArguments, AbsEmbedderTrainingArguments
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderRunner, AbsEmbedderModel, EmbedderTrainerCallbackForDataRefresh
+
+from .arguments import DecoderOnlyEmbedderModelArguments
+from .trainer import DecoderOnlyEmbedderTrainer
+from .modeling import BiDecoderOnlyEmbedderModel
+from .load_model import get_model, save_merged_model
 
 logger = logging.getLogger(__name__)
 
 
-class DecoderOnlyRunner(AbsRunner):
+class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
     def __init__(
         self,
-        model_args: ModelArguments,
-        data_args: AbsDataArguments,
-        training_args: AbsTrainingArguments
+        model_args: DecoderOnlyEmbedderModelArguments,
+        data_args: AbsEmbedderDataArguments,
+        training_args: AbsEmbedderTrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
     
@@ -58,7 +59,7 @@ class DecoderOnlyRunner(AbsRunner):
         )
         logger.info('Config: %s', config)
         
-        model = BiEncoderModel(
+        model = BiDecoderOnlyEmbedderModel(
             base_model,
             tokenizer=tokenizer,
             negatives_cross_device=self.training_args.negatives_cross_device,
@@ -74,8 +75,8 @@ class DecoderOnlyRunner(AbsRunner):
                     v.requires_grad = False
         return tokenizer, model
 
-    def load_trainer(self) -> DecoderOnlyTrainer:
-        trainer = DecoderOnlyTrainer(
+    def load_trainer(self) -> DecoderOnlyEmbedderTrainer:
+        trainer = DecoderOnlyEmbedderTrainer(
             model=self.model,
             args=self.training_args,
             train_dataset=self.train_dataset,
@@ -83,7 +84,7 @@ class DecoderOnlyRunner(AbsRunner):
             tokenizer=self.tokenizer
         )
         if self.data_args.same_dataset_within_batch:
-            trainer.add_callback(TrainerCallbackForDataRefresh(self.train_dataset))
+            trainer.add_callback(EmbedderTrainerCallbackForDataRefresh(self.train_dataset))
         return trainer
 
     def run(self):

@@ -1,17 +1,20 @@
 from transformers import HfArgumentParser
 
-from FlagEmbedding.abc.finetune.embedder import AbsDataArguments
-from FlagEmbedding.finetune.embedder.encoder_only.m3.runner import EncoderOnlyM3Runner
-from FlagEmbedding.finetune.embedder.encoder_only.m3.arguments import M3ModelArguments, M3TrainingArguments
+from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
+    EncoderOnlyEmbedderM3DataArguments,
+    EncoderOnlyEmbedderM3TrainingArguments,
+    EncoderOnlyEmbedderM3ModelArguments,
+    EncoderOnlyEmbedderM3Runner,
+)
 
 
-parser = HfArgumentParser((M3ModelArguments, AbsDataArguments, M3TrainingArguments))
+parser = HfArgumentParser((EncoderOnlyEmbedderM3ModelArguments, EncoderOnlyEmbedderM3DataArguments, EncoderOnlyEmbedderM3TrainingArguments))
 model_args, data_args, training_args = parser.parse_args_into_dataclasses()
-model_args: M3ModelArguments
-data_args: AbsDataArguments
-training_args: M3TrainingArguments
+model_args: EncoderOnlyEmbedderM3ModelArguments
+data_args: EncoderOnlyEmbedderM3DataArguments
+training_args: EncoderOnlyEmbedderM3TrainingArguments
 
-runner = EncoderOnlyM3Runner(
+runner = EncoderOnlyEmbedderM3Runner(
     model_args=model_args,
     data_args=data_args,
     training_args=training_args

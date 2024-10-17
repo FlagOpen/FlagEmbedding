@@ -1,8 +1,17 @@
-from .modeling import M3Model, M3ModelForInference
-from .runner import EncoderOnlyM3Runner
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderDataArguments as EncoderOnlyEmbedderM3DataArguments
+
+from .arguments import EncoderOnlyEmbedderM3ModelArguments, EncoderOnlyEmbedderM3TrainingArguments
+from .modeling import EncoderOnlyEmbedderM3Model, EncoderOnlyEmbedderM3ModelForInference
+from .trainer import EncoderOnlyM3Trainer
+from .runner import EncoderOnlyEmbedderM3Runner
+
 
 __all__ = [
-    'M3Model',
-    'M3ModelForInference',
-    'EncoderOnlyM3Runner'
+    'EncoderOnlyEmbedderM3ModelArguments',
+    'EncoderOnlyEmbedderM3DataArguments',
+    'EncoderOnlyEmbedderM3TrainingArguments',
+    'EncoderOnlyEmbedderM3Model',
+    'EncoderOnlyEmbedderM3ModelForInference',
+    'EncoderOnlyM3Trainer',
+    'EncoderOnlyEmbedderM3Runner',
 ]

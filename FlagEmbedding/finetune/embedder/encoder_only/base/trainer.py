@@ -8,7 +8,7 @@ from FlagEmbedding.abc.finetune.embedder import AbsTrainer
 logger = logging.getLogger(__name__)
 
 
-class EncoderOnlyTrainer(AbsTrainer):
+class EncoderOnlyEmbedderTrainer(AbsTrainer):
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)

@@ -7,12 +7,12 @@ from torch import Tensor
 import torch.nn.functional as F
 from transformers import AutoTokenizer
 
-from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EncoderOutput
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EmbedderOutput
 
 logger = logging.getLogger(__name__)
 
 
-class M3Model(AbsEmbedderModel):
+class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def __init__(
         self,
         base_model: Dict[str, Any],
@@ -280,7 +280,7 @@ class M3Model(AbsEmbedderModel):
             self.step += 1
         else:
             loss = None
-        return EncoderOutput(
+        return EmbedderOutput(
             loss=loss,
         )
 
@@ -310,7 +310,7 @@ class M3Model(AbsEmbedderModel):
                        os.path.join(output_dir, 'sparse_linear.pt'))
 
 
-class M3ModelForInference(M3Model):
+class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
     def forward(self,
                 text_input: Dict[str, Tensor] = None,
                 return_dense: bool = True,

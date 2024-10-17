@@ -7,7 +7,7 @@ from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel
 logger = logging.getLogger(__name__)
 
 
-class BiEncoderModel(AbsEmbedderModel):
+class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
     TRANSFORMER_CLS = AutoModel
     
     def __init__(

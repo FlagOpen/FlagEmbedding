@@ -1,7 +1,7 @@
 from typing import Optional, List
 from dataclasses import dataclass, field
 
-from FlagEmbedding.abc.finetune.embedder import AbsModelArguments
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModelArguments
 
 
 def default_target_modules() -> List[int]:
@@ -9,7 +9,7 @@ def default_target_modules() -> List[int]:
 
 
 @dataclass
-class ModelArguments(AbsModelArguments):
+class DecoderOnlyEmbedderModelArguments(AbsEmbedderModelArguments):
     peft_model_path: str = field(
         default='', metadata={"help": "The peft model checkpoint for initialization."}
     )

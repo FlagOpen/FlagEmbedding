@@ -15,15 +15,15 @@ from transformers import (
     TrainerControl
 )
 
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsTrainingArguments
+from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsEmbedderDataArguments, AbsEmbedderTrainingArguments
 
 logger = logging.getLogger(__name__)
 
 
-class AbsTrainDataset(Dataset):
+class AbsEmbedderTrainDataset(Dataset):
     def __init__(
         self,
-        args: AbsDataArguments,
+        args: AbsEmbedderDataArguments,
         tokenizer: PreTrainedTokenizer
     ):
         self.args = args
@@ -125,7 +125,7 @@ class AbsTrainDataset(Dataset):
         return query, passages, teacher_scores
 
 
-class AbsEmbedCollator(DataCollatorWithPadding):
+class AbsEmbedderCollator(DataCollatorWithPadding):
     query_max_len: int = 32
     passage_max_len: int = 128
     sub_batch_size: int = -1
@@ -213,10 +213,10 @@ class AbsEmbedCollator(DataCollatorWithPadding):
         }
 
 
-class AbsSameDatasetTrainDataset(AbsTrainDataset):
+class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
     def __init__(
         self,
-        args: AbsDataArguments,
+        args: AbsEmbedderDataArguments,
         default_batch_size: int,
         seed: int,
         tokenizer: PreTrainedTokenizer,
@@ -408,7 +408,7 @@ class AbsSameDatasetTrainDataset(AbsTrainDataset):
 
 
 @dataclass
-class AbsSameDatasetEmbedCollator(DataCollatorWithPadding):
+class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
     """
     EmbedCollator for SameDataset
     Note that after using this collator, the training_args should be set as:
@@ -499,13 +499,13 @@ class AbsSameDatasetEmbedCollator(DataCollatorWithPadding):
         }
 
 
-class TrainerCallbackForDataRefresh(TrainerCallback):
-    def __init__(self, train_dataset: AbsSameDatasetTrainDataset):
+class EmbedderTrainerCallbackForDataRefresh(TrainerCallback):
+    def __init__(self, train_dataset: AbsEmbedderSameDatasetTrainDataset):
         self.train_dataset = train_dataset
         
     def on_epoch_end(
         self,
-        args: AbsTrainingArguments,
+        args: AbsEmbedderTrainingArguments,
         state: TrainerState,
         control: TrainerControl,
         **kwargs

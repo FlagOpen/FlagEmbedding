@@ -3,11 +3,13 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from collections import defaultdict
-from typing import cast, Any, List, Union, Dict
+from typing import Any, List, Union, Dict
 from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
 
 from FlagEmbedding.abc.inference import AbsEmbedder
-from FlagEmbedding.finetune.embedder.encoder_only.m3 import M3ModelForInference, EncoderOnlyM3Runner
+from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
+    EncoderOnlyEmbedderM3ModelForInference, EncoderOnlyEmbedderM3Runner
+)
 
 
 class M3Embedder(AbsEmbedder):
@@ -34,8 +36,8 @@ class M3Embedder(AbsEmbedder):
             model_name_or_path,
             trust_remote_code=trust_remote_code
         )
-        self.model = M3ModelForInference(
-            EncoderOnlyM3Runner.get_model(
+        self.model = EncoderOnlyEmbedderM3ModelForInference(
+            EncoderOnlyEmbedderM3Runner.get_model(
                 model_name_or_path,
                 trust_remote_code=trust_remote_code,
                 colbert_dim=kwargs.get("colbert_dim", -1)

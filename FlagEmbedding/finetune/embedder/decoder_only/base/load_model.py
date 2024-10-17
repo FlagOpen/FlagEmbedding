@@ -5,7 +5,7 @@ import logging
 from transformers import AutoConfig, AutoModel, AutoTokenizer
 from peft import LoraConfig, TaskType, get_peft_model, PeftModel
 
-from FlagEmbedding.finetune.embedder.decoder_only.base.arguments import ModelArguments
+from .arguments import DecoderOnlyEmbedderModelArguments
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def find_largest_checkpoint(checkpoint_dir):
     else:
         return None
 
-def get_model(model_args: ModelArguments, output_dir: str, resize: bool, resize_tokens: int):
+def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, resize: bool, resize_tokens: int):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,
@@ -96,7 +96,7 @@ def get_model(model_args: ModelArguments, output_dir: str, resize: bool, resize_
 
     return model
 
-def save_merged_model(model_args: ModelArguments, output_dir: str):
+def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,

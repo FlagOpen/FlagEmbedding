@@ -3,30 +3,30 @@ import logging
 from pathlib import Path
 from typing import Tuple
 from abc import ABC, abstractmethod
-from transformers import set_seed, PreTrainedTokenizer, AutoTokenizer
+from transformers import set_seed, PreTrainedTokenizer
 
 
 from FlagEmbedding.abc.finetune.embedder.AbsArguments import (
-    AbsModelArguments,
-    AbsDataArguments,
-    AbsTrainingArguments
+    AbsEmbedderModelArguments,
+    AbsEmbedderDataArguments,
+    AbsEmbedderTrainingArguments
 )
-from FlagEmbedding.abc.finetune.embedder.AbsTrainer import AbsTrainer
+from FlagEmbedding.abc.finetune.embedder.AbsTrainer import AbsEmbedderTrainer
 from FlagEmbedding.abc.finetune.embedder.AbsModeling import AbsEmbedderModel
 from FlagEmbedding.abc.finetune.embedder.AbsDataset import (
-    AbsTrainDataset, AbsEmbedCollator,
-    AbsSameDatasetTrainDataset, AbsSameDatasetEmbedCollator
+    AbsEmbedderTrainDataset, AbsEmbedderCollator,
+    AbsEmbedderSameDatasetTrainDataset, AbsEmbedderSameDatasetCollator
 )
 
 logger = logging.getLogger(__name__)
 
 
-class AbsRunner(ABC):
+class AbsEmbedderRunner(ABC):
     def __init__(
         self,
-        model_args: AbsModelArguments,
-        data_args: AbsDataArguments,
-        training_args: AbsTrainingArguments
+        model_args: AbsEmbedderModelArguments,
+        data_args: AbsEmbedderDataArguments,
+        training_args: AbsEmbedderTrainingArguments
     ):
         self.model_args = model_args
         self.data_args = data_args
@@ -73,12 +73,12 @@ class AbsRunner(ABC):
         pass
     
     @abstractmethod
-    def load_trainer(self) -> AbsTrainer:
+    def load_trainer(self) -> AbsEmbedderTrainer:
         pass
     
-    def load_train_dataset(self) -> AbsTrainDataset:
+    def load_train_dataset(self) -> AbsEmbedderTrainDataset:
         if self.data_args.same_dataset_within_batch:
-            train_dataset = AbsSameDatasetTrainDataset(
+            train_dataset = AbsEmbedderSameDatasetTrainDataset(
                 args=self.data_args,
                 default_batch_size=self.training_args.per_device_train_batch_size,
                 seed=self.training_args.seed,
@@ -89,17 +89,17 @@ class AbsRunner(ABC):
             self.training_args.per_device_train_batch_size = 1
             self.training_args.dataloader_num_workers = 0   # avoid multi-processing
         else:
-            train_dataset = AbsTrainDataset(
+            train_dataset = AbsEmbedderTrainDataset(
                 args=self.data_args,
                 tokenizer=self.tokenizer
             )
         return train_dataset
     
-    def load_data_collator(self) -> AbsEmbedCollator:
+    def load_data_collator(self) -> AbsEmbedderCollator:
         if self.data_args.same_dataset_within_batch:
-            EmbedCollator = AbsSameDatasetEmbedCollator
+            EmbedCollator = AbsEmbedderSameDatasetCollator
         else:
-            EmbedCollator = AbsEmbedCollator
+            EmbedCollator = AbsEmbedderCollator
         
         data_collator = EmbedCollator(
             tokenizer=self.tokenizer,
