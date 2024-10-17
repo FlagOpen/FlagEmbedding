@@ -14,128 +14,74 @@ logger = logging.getLogger(__name__)
 
 
 @dataclass
-class EncoderOutput(ModelOutput):
-    q_reps: Optional[Tensor] = None
-    p_reps: Optional[Tensor] = None
+class RerankerOutput(ModelOutput):
     loss: Optional[Tensor] = None
     scores: Optional[Tensor] = None
 
 
-class AbsEmbedderModel(ABC, nn.Module):
+class AbsRerankerModel(ABC, nn.Module):
     def __init__(
         self,
-        base_model,
+        base_model: None,
         tokenizer: AutoTokenizer = None,
-        negatives_cross_device: bool = False,
-        temperature: float = 1.0,
-        sub_batch_size: int = -1
+        train_batch_size: int = 4,
     ):
         super().__init__()
         self.model = base_model
         self.tokenizer = tokenizer
+        self.cross_entropy = nn.CrossEntropyLoss(reduction='mean')
 
-        self.temperature = temperature
-        self.negatives_cross_device = negatives_cross_device
-        if self.negatives_cross_device:
-            if not dist.is_initialized():
-                raise ValueError('Distributed training has not been initialized for representation all gather.')
-            self.process_rank = dist.get_rank()
-            self.world_size = dist.get_world_size()
+        if self.model.config.pad_token_id is None:
+            self.model.config.pad_token_id = self.tokenizer.pad_token_id
+        self.config = self.model.config
 
-        self.sub_batch_size = sub_batch_size
+        self.train_batch_size = train_batch_size
+
+        self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][-1]
+
+    def gradient_checkpointing_enable(self, **kwargs):
+        self.model.gradient_checkpointing_enable(**kwargs)
+
+    def enable_input_require_grads(self, **kwargs):
+        self.model.enable_input_require_grads(**kwargs)
     
     @abstractmethod
     def encode(self, features):
         pass
     
-    @abstractmethod
-    def compute_loss(self, scores, target):
-        pass
-    
-    @abstractmethod
-    def compute_score(self, q_reps, p_reps):
-        pass
-    
-    @abstractmethod
-    def save(self, output_dir: str):
-        pass
-    
-    def forward(
-        self, 
-        queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
-        passages: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None,
-        teacher_scores: Union[None, List[float]] = None,
-        no_in_batch_neg_flag: bool = False,
-    ):
-        q_reps = self.encode(queries) # (batch_size, dim)
-        p_reps = self.encode(passages) # (batch_size * num, dim)
+    def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
+        ranker_logits = self.encode(pair) # (batch_size * num, dim)
+        if teacher_scores is not None:
+            teacher_targets = teacher_scores.view(self.train_batch_size, -1)
+            teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1)
 
         if self.training:
+            grouped_logits = ranker_logits.view(self.train_batch_size, -1)
+            target = torch.zeros(self.train_batch_size, device=grouped_logits.device, dtype=torch.long)
+            loss = self.compute_loss(grouped_logits, target)
             if teacher_scores is not None:
-                teacher_scores = torch.tensor(teacher_scores, device=q_reps.device)
-                teacher_scores = teacher_scores.view(q_reps.size(0), -1).detach()
-
-                teacher_targets = F.softmax(teacher_scores, dim=-1)  # B N
-                group_size = p_reps.size(0) // q_reps.size(0)
-
-                if self.negatives_cross_device and not no_in_batch_neg_flag:
-                    cross_q_reps = self._dist_gather_tensor(q_reps)
-                    cross_p_reps = self._dist_gather_tensor(p_reps)
-                    cross_teacher_targets = self._dist_gather_tensor(teacher_targets)
-                    cross_scores = self.compute_score(cross_q_reps, cross_p_reps)
-
-                    loss = self.distill_loss(cross_teacher_targets, cross_scores, group_size=group_size)
-                else:
-                    scores = self.compute_score(q_reps, p_reps)  # B, B * N
-                    loss = self.distill_loss(teacher_targets, scores, group_size=group_size)
-            else:
-                if self.negatives_cross_device and not no_in_batch_neg_flag:
-                    cross_q_reps = self._dist_gather_tensor(q_reps)
-                    cross_p_reps = self._dist_gather_tensor(p_reps)
-
-                    cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
-
-                    cross_targets = cross_idxs * (cross_p_reps.size(0) // cross_q_reps.size(0))
-                    cross_scores = self.compute_score(cross_q_reps, cross_p_reps)
-
-                    loss = self.compute_loss(cross_scores, cross_targets)
-                else:
-                    idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
-                    targets = idxs * (p_reps.size(0) // q_reps.size(0))
-
-                    scores = self.compute_score(q_reps, p_reps)  # B, B * N
-                    loss = self.compute_loss(scores, targets)
+                loss += torch.mean(torch.sum(torch.log_softmax(grouped_logits, dim=-1) * teacher_targets, dim=-1))
         else:
             loss = None
 
-        return EncoderOutput(
+        # print(loss)
+        return RerankerOutput(
             loss=loss,
+            scores=ranker_logits,
         )
 
-    def distill_loss(self, teacher_targets, student_scores, group_size):
-        labels = torch.arange(student_scores.size(0), device=student_scores.device, dtype=torch.long)
-        labels = labels * group_size
+    def compute_loss(self, scores, target):
+        return self.cross_entropy(scores, target)
 
-        loss = 0
-        mask = torch.zeros_like(student_scores)
-        for i in range(group_size):
-            temp_target = labels + i
-            temp_scores = student_scores + mask
-            temp_loss = F.cross_entropy(temp_scores, temp_target, reduction="none")  # B
-            loss += torch.mean(teacher_targets[:, i] * temp_loss)
-            mask = torch.scatter(mask, dim=-1, index=temp_target.unsqueeze(-1),
-                                 value=torch.finfo(student_scores.dtype).min)
-        return loss
+    def save(self, output_dir: str):
+        # self.model.save_pretrained(output_dir)
+        state_dict = self.model.state_dict()
+        state_dict = type(state_dict)(
+            {k: v.clone().cpu()
+             for k,
+             v in state_dict.items()})
+        self.model.save_pretrained(output_dir, state_dict=state_dict)
 
-    def _dist_gather_tensor(self, t: Optional[torch.Tensor]):
-        if t is None:
-            return None
-        t = t.contiguous()
-
-        all_tensors = [torch.empty_like(t) for _ in range(self.world_size)]
-        dist.all_gather(all_tensors, t)
-
-        all_tensors[self.process_rank] = t
-        all_tensors = torch.cat(all_tensors, dim=0)
-
-        return all_tensors
+    def save_pretrained(self, *args, **kwargs):
+        self.tokenizer.save_pretrained(*args, **kwargs)
+        return self.model.save_pretrained(*args, **kwargs)

@@ -6,27 +6,27 @@ from abc import ABC, abstractmethod
 from transformers import set_seed, PreTrainedTokenizer, AutoTokenizer
 
 
-from src.abc.finetune.embedder.AbsArguments import (
-    AbsModelArguments,
-    AbsDataArguments,
-    AbsTrainingArguments
+from .AbsArguments import (
+    AbsRerankerModelArguments,
+    AbsRerankerDataArguments,
+    AbsRerankerTrainingArguments
 )
-from src.abc.finetune.embedder.AbsTrainer import AbsTrainer
-from src.abc.finetune.embedder.AbsModeling import AbsEmbedderModel
-from src.abc.finetune.embedder.AbsDataset import (
-    AbsTrainDataset, AbsEmbedCollator,
-    AbsSameDatasetTrainDataset, AbsSameDatasetEmbedCollator
+from .AbsTrainer import AbsRerankerTrainer
+from .AbsModeling import AbsRerankerModel
+from .AbsDataset import (
+    AbsRerankerTrainDataset, AbsRerankerCollator,
+    AbsLLMRerankerTrainDataset, AbsLLMRerankerCollator
 )
 
 logger = logging.getLogger(__name__)
 
 
-class AbsRunner(ABC):
+class AbsRerankerRunner(ABC):
     def __init__(
         self,
-        model_args: AbsModelArguments,
-        data_args: AbsDataArguments,
-        training_args: AbsTrainingArguments
+        model_args: AbsRerankerModelArguments,
+        data_args: AbsRerankerDataArguments,
+        training_args: AbsRerankerTrainingArguments
     ):
         self.model_args = model_args
         self.data_args = data_args
@@ -69,43 +69,36 @@ class AbsRunner(ABC):
         self.trainer = self.load_trainer()
     
     @abstractmethod
-    def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
+    def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
         pass
     
     @abstractmethod
-    def load_trainer(self) -> AbsTrainer:
+    def load_trainer(self) -> AbsRerankerTrainer:
         pass
     
-    def load_train_dataset(self) -> AbsTrainDataset:
-        if self.data_args.same_dataset_within_batch:
-            train_dataset = AbsSameDatasetTrainDataset(
+    def load_train_dataset(self) -> AbsRerankerTrainDataset:
+        if self.model_args.model_type == 'encoder':
+            train_dataset = AbsRerankerTrainDataset(
                 args=self.data_args,
-                default_batch_size=self.training_args.per_device_train_batch_size,
-                seed=self.training_args.seed,
-                tokenizer=self.tokenizer,
-                process_index=self.training_args.process_index,
-                num_processes=self.training_args.world_size
+                tokenizer=self.tokenizer
             )
-            self.training_args.per_device_train_batch_size = 1
-            self.training_args.dataloader_num_workers = 0   # avoid multi-processing
         else:
-            train_dataset = AbsTrainDataset(
+            train_dataset = AbsLLMRerankerTrainDataset(
                 args=self.data_args,
                 tokenizer=self.tokenizer
             )
         return train_dataset
     
-    def load_data_collator(self) -> AbsEmbedCollator:
-        if self.data_args.same_dataset_within_batch:
-            EmbedCollator = AbsSameDatasetEmbedCollator
+    def load_data_collator(self) -> AbsRerankerCollator:
+        if self.model_args.model_type == 'encoder':
+            RerankerCollator = AbsRerankerCollator
         else:
-            EmbedCollator = AbsEmbedCollator
+            RerankerCollator = AbsLLMRerankerCollator
         
-        data_collator = EmbedCollator(
+        data_collator = RerankerCollator(
             tokenizer=self.tokenizer,
             query_max_len=self.data_args.query_max_len,
             passage_max_len=self.data_args.passage_max_len,
-            sub_batch_size=self.training_args.sub_batch_size,
             pad_to_multiple_of=self.data_args.pad_to_multiple_of,
             padding=True,
             return_tensors="pt"

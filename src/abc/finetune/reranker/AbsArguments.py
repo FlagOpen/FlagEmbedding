@@ -6,7 +6,7 @@ from transformers import TrainingArguments
 
 
 @dataclass
-class AbsModelArguments:
+class AbsRerankerModelArguments:
     """
     Abstract class for model arguments.
     """
@@ -30,10 +30,18 @@ class AbsModelArguments:
         default=False,
         metadata={"help": "Trust remote code"}
     )
+    model_type: str = field(
+        default='encoder',
+        metadata={"help": "Type of finetune, ['encoder', 'decoder']"}
+    )
+    # finetune_type: str = field(
+    #     default='sratch',
+    #     metadata={"help": "Type of finetune, ['sratch', 'finetune']"}
+    # )
 
 
 @dataclass
-class AbsDataArguments:
+class AbsRerankerDataArguments:
     train_data: str = field(
         default=None, metadata={
             "help": "One or more paths to training data. `query: str`, `pos: List[str]`, `neg: List[str]` are required in the training data.",
@@ -56,6 +64,13 @@ class AbsDataArguments:
         default=128,
         metadata={
             "help": "The maximum total input sequence length after tokenization for passage. Sequences longer than this will be truncated."
+        },
+    )
+
+    max_len: int = field(
+        default=512,
+        metadata={
+            "help": "The maximum total input sequence length after tokenization. Sequences longer than this will be truncated."
         },
     )
     
@@ -92,28 +107,19 @@ class AbsDataArguments:
     shuffle_ratio: float = field(
         default=0.0, metadata={"help": "The ratio of shuffling the text"}
     )
-    
-    # Parameters for SameDatasetDataArguments
-    same_dataset_within_batch: bool = field(
-        default=False, metadata={"help": "All samples in the same batch comes from the same dataset."}
-    )
-    small_threshold: int = field(
-        default=0,
-        metadata={"help": "The threshold of small dataset. All small dataset in the same directory will be merged into one dataset."}
-    )
-    drop_threshold: int = field(
-        default=0,
-        metadata={"help": "The threshold for dropping merged small dataset. If the number of examples in the merged small dataset is less than this threshold, it will be dropped."}
+
+    sep_token: str = field(
+        default='\n', metadata={"help": "The sep token for LLM reranker to discriminate between query and passage"}
     )
 
-    def __post_init__(self):
-        for train_dir in self.train_data:
-            if not os.path.exists(train_dir):
-                raise FileNotFoundError(f"cannot find file: {train_dir}, please set a true path")
+    # def __post_init__(self):
+    #     for train_dir in self.train_data:
+    #         if not os.path.exists(train_dir):
+    #             raise FileNotFoundError(f"cannot find file: {train_dir}, please set a true path")
 
 
 @dataclass
-class AbsTrainingArguments(TrainingArguments):
+class AbsRerankerTrainingArguments(TrainingArguments):
     negatives_cross_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
     temperature: Optional[float] = field(default=0.02, metadata={"help": "temperature used for similarity score"})
     fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})

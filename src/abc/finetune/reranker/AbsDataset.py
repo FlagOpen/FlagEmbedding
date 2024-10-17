@@ -12,18 +12,21 @@ from transformers import (
     DataCollatorWithPadding,
     TrainerCallback,
     TrainerState,
-    TrainerControl
+    TrainerControl,
+    BatchEncoding,
+    DataCollatorForSeq2Seq
 )
+from typing import Optional, Union, List
 
-from src.abc.finetune.embedder.AbsArguments import AbsDataArguments, AbsTrainingArguments
+from .AbsArguments import AbsRerankerDataArguments
 
 logger = logging.getLogger(__name__)
 
 
-class AbsTrainDataset(Dataset):
+class AbsRerankerTrainDataset(Dataset):
     def __init__(
         self,
-        args: AbsDataArguments,
+        args: AbsRerankerDataArguments,
         tokenizer: PreTrainedTokenizer
     ):
         self.args = args
@@ -43,6 +46,8 @@ class AbsTrainDataset(Dataset):
                     if len(temp_dataset) == 0: continue
                     train_datasets.append(temp_dataset)
         self.dataset = datasets.concatenate_datasets(train_datasets)
+
+        self.max_length = self.args.query_max_len + self.args.passage_max_len
     
     def _load_dataset(self, file_path: str):
         if dist.get_rank() == 0:
@@ -62,7 +67,7 @@ class AbsTrainDataset(Dataset):
         return temp_dataset
     
     def _shuffle_text(self, text):
-        if self.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.shuffle_ratio:
+        if self.args.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.args.shuffle_ratio:
             split_text = []
             chunk_size = len(text)//3 + 1
             for i in range(0, len(text), chunk_size):
@@ -75,6 +80,18 @@ class AbsTrainDataset(Dataset):
     def __len__(self):
         return len(self.dataset)
     
+    def create_one_example(self, qry_encoding: str, doc_encoding: str):
+        qry_inputs = self.tokenizer.encode(qry_encoding, truncation=True, max_length=self.args.query_max_len + self.args.passage_max_len // 4, add_special_tokens=False)
+        doc_inputs = self.tokenizer.encode(doc_encoding, truncation=True, max_length=self.args.passage_max_len + self.args.query_max_len // 2, add_special_tokens=False)
+        item = self.tokenizer.prepare_for_model(
+            qry_inputs,
+            doc_inputs,
+            truncation='only_second',
+            max_length=self.args.query_max_len + self.args.passage_max_len,
+            padding=False,
+        )
+        return item
+    
     def __getitem__(self, item):
         data = self.dataset[item]
         train_group_size = self.args.train_group_size
@@ -82,7 +99,7 @@ class AbsTrainDataset(Dataset):
         query = data['query']
         if self.args.query_instruction_for_retrieval is not None:
             query = self.args.query_instruction_format.format(
-                data['prompt'] if 'prompt' in data else self.args.query_instruction_for_retrieval,
+                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_retrieval,
                 query
             )
 
@@ -116,400 +133,219 @@ class AbsTrainDataset(Dataset):
         if self.args.passage_instruction_for_retrieval is not None:
             passages = [
                 self.args.passage_instruction_format.format(
-                    self.args.passage_instruction_for_retrieval, p
+                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_retrieval, p
                 )
                 for p in passages
             ]
         
-        return query, passages, teacher_scores
+        batch_data = []
+        for passage in passages:
+            batch_data.append(self.create_one_example(query, passage))
+        
+        return batch_data, teacher_scores
 
-
-class AbsEmbedCollator(DataCollatorWithPadding):
+@dataclass
+class AbsRerankerCollator(DataCollatorWithPadding):
     query_max_len: int = 32
     passage_max_len: int = 128
-    sub_batch_size: int = -1
-    
-    def __call__(self, features):
-        queries = [f[0] for f in features]
-        passages = [f[1] for f in features]
-        teacher_scores = [f[2] for f in features]
+
+    def __call__(self, features) -> list[BatchEncoding]:
+        teacher_scores = [f[1] for f in features]
+        if teacher_scores[0] is None:
+            teacher_scores = None
+        elif isinstance(teacher_scores[0], list):
+            teacher_scores = sum(teacher_scores, [])
+
+        features = [f[0] for f in features]
+        if isinstance(features[0], list):
+            features = sum(features, [])
+            
+        collated = self.tokenizer.pad(
+            features,
+            padding=self.padding,
+            max_length=self.query_max_len + self.passage_max_len,
+            pad_to_multiple_of=self.pad_to_multiple_of,
+            return_tensors=self.return_tensors,
+        )
+
+        return {
+            "pair": collated,
+            "teacher_scores": teacher_scores,
+        }
+
+class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
+    def __init__(
+        self,
+        args: AbsRerankerDataArguments,
+        tokenizer: PreTrainedTokenizer
+    ):
+        super().__init__(args, tokenizer)
+        sep = self.args.sep_token
+        self.sep_inputs = self.tokenizer(sep,
+                                         return_tensors=None,
+                                         add_special_tokens=False)['input_ids']
+
+    def __getitem__(self, item) -> List[BatchEncoding]:
+        data = self.dataset[item]
+        train_group_size = self.args.train_group_size
+        
+        query = data['query']
+        if self.args.query_instruction_for_retrieval is not None:
+            query = self.args.query_instruction_format.format(
+                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_retrieval,
+                query
+            )
+
+        passages = []
+        teacher_scores = []
+
+        assert isinstance(data['pos'], list) and isinstance(data['neg'], list)
+        
+        pos_idx = random.choice(list(range(len(data['pos']))))
+        passages.append(self._shuffle_text(data['pos'][pos_idx]))
+        
+        neg_all_idx = list(range(len(data['neg'])))
+        if len(data['neg']) < train_group_size - 1:
+            num = math.ceil((train_group_size - 1) / len(data['neg']))
+            neg_idxs = random.sample(neg_all_idx * num, train_group_size - 1)
+        else:
+            neg_idxs = random.sample(neg_all_idx, self.args.train_group_size - 1)
+        for neg_idx in neg_idxs:
+            passages.append(data['neg'][neg_idx])
+        
+        if self.args.knowledge_distillation:
+            assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores', list])
+            teacher_scores.append(data['pos_scores'][pos_idx])
+            for neg_idx in neg_idxs:
+                teacher_scores.append(data['neg_scores'][neg_idx])
+            if not all(isinstance(score, (int, float)) for score in teacher_scores):
+                raise ValueError(f"pos_score or neg_score must be digit")
+        else:
+            teacher_scores = None
+
+        if self.args.passage_instruction_for_retrieval is not None:
+            passages = [
+                self.args.passage_instruction_format.format(
+                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_retrieval, p
+                )
+                for p in passages
+            ]
+
+        prompt = self.dataset[item].get('prompt', "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'.")
+
+        query_inputs = self.tokenizer(query,
+                                      return_tensors=None,
+                                      max_length=self.args.query_max_len + self.args.passage_max_len // 4,
+                                      truncation=True,
+                                      add_special_tokens=False)
+
+        prompt_inputs = self.tokenizer(prompt,
+                                         return_tensors=None,
+                                         add_special_tokens=False)['input_ids']
+
+        max_length = self.max_length - len(prompt_inputs) - len(self.sep_inputs)
+
+        passages_inputs = []
+        for i, passage in enumerate(passages):
+            passage_inputs = self.tokenizer(passage,
+                                            return_tensors=None,
+                                            max_length=self.args.passage_max_len + self.args.query_max_len // 2,
+                                            truncation=True,
+                                            add_special_tokens=False)
+            if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
+                item = self.tokenizer.prepare_for_model(
+                    [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
+                    self.sep_inputs + passage_inputs['input_ids'],
+                    truncation='only_second',
+                    max_length=max_length,
+                    padding=False,
+                    return_attention_mask=False,
+                    return_token_type_ids=False,
+                    add_special_tokens=False
+                )
+            else:
+                item = self.tokenizer.prepare_for_model(
+                    query_inputs['input_ids'],
+                    self.sep_inputs + passage_inputs['input_ids'],
+                    truncation='only_second',
+                    max_length=max_length,
+                    padding=False,
+                    return_attention_mask=False,
+                    return_token_type_ids=False,
+                    add_special_tokens=False
+                )
+
+            passage_inputs['input_ids'] = item['input_ids'] + self.sep_inputs + prompt_inputs
+
+            passage_inputs['attention_mask'] = [1] * len(passage_inputs['input_ids'])
+            # passage_inputs['labels'] = passage_inputs['input_ids'].copy()
+            # passage_inputs['labels'] = [-100] * (len(passage_inputs['input_ids']) - 1) + passage_inputs['labels'][(len(passage_inputs['input_ids']) - 1):]
+            passage_inputs.pop('token_type_ids') if 'token_type_ids' in passage_inputs.keys() else None
+            if 'position_ids' in passage_inputs.keys():
+                passage_inputs['position_ids'] = list(range(len(passage_inputs['input_ids'])))
+            passages_inputs.append(passage_inputs)
+
+        return passages_inputs, teacher_scores
+
+
+@dataclass
+class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
+    """
+    Wrapper that does conversion from List[Tuple[encode_qry, encode_psg]] to List[qry], List[psg]
+    and pass batch separately to the actual collator.
+    Abstract out data detail for the model.
+    """
+    query_max_len: int = 32
+    passage_max_len: int = 128
+
+    def __call__(self, features, return_tensors='pt'):
+        if return_tensors is None:
+            return_tensors = self.return_tensors
+
+        teacher_scores = [f[1] for f in features]
         if teacher_scores[0] is None:
             teacher_scores = None
         elif isinstance(teacher_scores[0], list):
             teacher_scores = sum(teacher_scores, [])
         
-        if isinstance(queries[0], list):
-            queries = sum(queries, [])
-        if isinstance(passages[0], list):
-            passages = sum(passages, [])
-        
-        queries_inputs = self.tokenizer(
-            queries,
-            truncation=True,
-            max_length=self.query_max_len,
-            return_tensors=None
-        )
-        passages_inputs = self.tokenizer(
-            passages,
-            truncation=True,
-            max_length=self.passage_max_len,
-            return_tensors=None
-        )
-        
-        if self.sub_batch_size is None or self.sub_batch_size <= 0:
-            q_collated = self.tokenizer.pad(
-                queries_inputs,
-                padding=self.padding,
-                max_length=self.query_max_len,
-                pad_to_multiple_of=self.pad_to_multiple_of,
-                return_tensors=self.return_tensors
-            )
-            d_collated = self.tokenizer.pad(
-                passages_inputs,
-                padding=self.padding,
-                max_length=self.query_max_len,
-                pad_to_multiple_of=self.pad_to_multiple_of,
-                return_tensors=self.return_tensors
-            )
-        else:
-            batch_size = self.sub_batch_size
-            
-            q_collated = []
-            for i in range(0, len(queries_inputs['attention_mask']), batch_size):
-                start = i
-                end = min(len(queries_inputs['attention_mask']), i + batch_size)
-                sub_features = {}
-                for k, v in queries_inputs.items():
-                    sub_features[k] = v[start:end]
-                q_collated.append(self.tokenizer.pad(
-                    sub_features,
-                    padding=self.padding,
-                    max_length=self.passage_max_len,
-                    pad_to_multiple_of=self.pad_to_multiple_of,
-                    return_tensors=self.return_tensors
-                ))
-                
-            d_collated = []
-            for i in range(0, len(passages_inputs['attention_mask']), batch_size):
-                start = i
-                end = min(len(passages_inputs['attention_mask']), i + batch_size)
-                sub_features = {}
+        features = [f[0] for f in features]
+        if isinstance(features[0], list):
+            features = sum(features, [])
 
-                for k, v in passages_inputs.items():
-                    sub_features[k] = v[start:end]
-                d_collated.append(self.tokenizer.pad(
-                    sub_features,
-                    padding=self.padding,
-                    max_length=self.passage_max_len,
-                    pad_to_multiple_of=self.pad_to_multiple_of,
-                    return_tensors=self.return_tensors
-                ))
-        return {
-            "queries": q_collated,
-            "passages": d_collated,
-            "teacher_scores": teacher_scores,
-            "no_in_batch_neg_flag": False
-        }
-
-
-class AbsSameDatasetTrainDataset(AbsTrainDataset):
-    def __init__(
-        self,
-        args: AbsDataArguments,
-        default_batch_size: int,
-        seed: int,
-        tokenizer: PreTrainedTokenizer,
-        process_index: int=0,
-        num_processes: int=1
-    ):
-        self.args = args
-        self.shuffle_ratio = args.shuffle_ratio
-        self.defaut_batch_size = default_batch_size
-        self.deterministic_generator = np.random.default_rng(seed)
-        self.tokenizer = tokenizer
-        self.process_index = process_index
-        self.num_processes = num_processes
-        
-        self.step = 0
-        
-        train_datasets = []
-        each_data_idxs = []
-        batch_size_idxs = []
-        no_in_batch_neg_flags = []
-        cur_all_num = 0
-        
-        small_threshold = args.small_threshold
-        drop_threshold = args.drop_threshold
-        
-        for data_dir in args.train_data:
-            if not os.path.isdir(data_dir):
-                # Add `no_in_batch_neg` **suffix** to `data_dir` to indicate that this dataset does not use in-batch negatives
-                no_in_batch_neg_flag = data_dir.split('.')[-2].endswith('no_in_batch_neg')
-                if not (data_dir.endswith('.json') or data_dir.endswith('.jsonl')): continue
-                temp_dataset = self._load_dataset(data_dir)
-                
-                if len(temp_dataset) == 0 or len(temp_dataset) < small_threshold: continue
-                else:
-                    train_datasets.append(temp_dataset)
-                    each_data_idxs.append(np.arange(len(temp_dataset)) + cur_all_num)
-                    cur_all_num += len(temp_dataset)
-                    batch_size_idxs.append(self._get_file_batch_size(temp_dataset, default_batch_size))
-                    no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-                    
-            else:
-                small_datasets = []
-                small_batch_size = math.inf
-
-                # Add `no_in_batch_neg` **suffix** to `data_dir` to indicate that this dataset does not use in-batch negatives
-                no_in_batch_neg_flag = data_dir.endswith('no_in_batch_neg')
-                for file in os.listdir(data_dir):
-                    if not (file.endswith('.json') or file.endswith('.jsonl')): continue
-                    temp_dataset = self._load_dataset(os.path.join(data_dir, file))
-                    
-                    if len(temp_dataset) == 0: continue
-                    elif len(temp_dataset) < small_threshold:
-                        small_datasets.append(temp_dataset)
-                        small_batch_size = min(small_batch_size, self._get_file_batch_size(temp_dataset, default_batch_size))
-                    else:
-                        train_datasets.append(temp_dataset)
-                        each_data_idxs.append(np.arange(len(temp_dataset)) + cur_all_num)
-                        cur_all_num += len(temp_dataset)
-                        batch_size_idxs.append(self._get_file_batch_size(temp_dataset, default_batch_size))
-                        no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-                
-                if len(small_datasets) > 0:
-                    small_dataset = datasets.concatenate_datasets(small_datasets)
-                    if len(small_dataset) >= drop_threshold:
-                        train_datasets.append(small_dataset)
-                        each_data_idxs.append(np.arange(len(small_dataset)) + cur_all_num)
-                        cur_all_num += len(small_dataset)
-                        batch_size_idxs.append(small_batch_size)
-                        no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-        
-        self.dataset = datasets.concatenate_datasets(train_datasets)
-        self.each_data_idxs = each_data_idxs
-        self.datasets_inxs = np.arange(len(each_data_idxs))
-        self.batch_size_idxs = batch_size_idxs
-        self.no_in_batch_neg_flags = no_in_batch_neg_flags
-        
-        self.refresh_epoch()
-
-    @staticmethod
-    def _get_file_batch_size(temp_dataset: datasets.Dataset, default_batch_size: int):
-        if 'batch_size' in temp_dataset.column_names:
-            return temp_dataset['batch_size'][0]
-        if 'type' in temp_dataset.column_names:
-            data_type = temp_dataset['type'][0]
-            if 'symmetric' in data_type:
-                return default_batch_size // 2  # make the symmetric data have smaller batch size
-        return default_batch_size
-    
-    def refresh_epoch(self):
-        logger.info(f'---------------------------*Rank {self.process_index}: refresh data---------------------------')
-        self.deterministic_generator.shuffle(self.datasets_inxs)
-        
-        batch_datas = []
-        for dataset_inx in self.datasets_inxs:
-            self.deterministic_generator.shuffle(self.each_data_idxs[dataset_inx])
-            cur_batch_size = self.batch_size_idxs[dataset_inx]*self.num_processes
-            no_in_batch_neg_flag = self.no_in_batch_neg_flags[dataset_inx]
-            for start_index in range(0, len(self.each_data_idxs[dataset_inx]), cur_batch_size):
-                # judge the last batch's length
-                if len(self.each_data_idxs[dataset_inx]) - start_index < 2 * self.num_processes:
-                    break
-                batch_datas.append((
-                    self.each_data_idxs[dataset_inx][start_index:start_index+cur_batch_size],
-                    no_in_batch_neg_flag
-                ))
-        self.deterministic_generator.shuffle(batch_datas)
-        self.batch_datas = batch_datas
-        self.step = 0
-
-    def __len__(self):
-        return len(self.batch_datas) * self.num_processes
-
-    def __getitem__(self, _):
-        batch_indices, no_in_batch_neg_flag = self.batch_datas[self.step]    # extend here
-        cur_batch_size = int(len(batch_indices) / self.num_processes)
-        batch_indices = batch_indices[self.process_index * cur_batch_size: (self.process_index + 1) * cur_batch_size]
-        batch_data = self.dataset[batch_indices]
-        self.step += 1
-        queries, passages, teacher_scores = self._create_batch_data(batch_raw_data=batch_data)
-        return queries, passages, teacher_scores, no_in_batch_neg_flag
-    
-    def _get_train_group_size(self, batch_raw_data):
-        if 'type' in batch_raw_data:
-            data_type = batch_raw_data['type'][0]
-            if data_type in ['only_1neg']:
-                return 2, data_type
-            elif data_type in ['symmetric_class']:
-                return min(len(batch_raw_data['neg'][0]) + 1, self.args.train_group_size), data_type
-        return self.args.train_group_size, None
-    
-    def _create_batch_data(self, batch_raw_data):
-        queries, passages, teacher_scores = [], [], []
-        
-        train_group_size, data_type = self._get_train_group_size(batch_raw_data)
-        
-        for i in range(len(batch_raw_data['query'])):
-            if data_type is not None:
-                assert batch_raw_data['type'][i] == data_type, f"Data type is not consistent in the same batch"
-            
-            queries.append(
-                self.args.query_instruction_format.format(
-                    batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
-                    batch_raw_data['query'][i]
+        labels = [feature["labels"] for feature in features] if "labels" in features[0].keys() else None
+        # We have to pad the labels before calling `tokenizer.pad` as this method won't pad them and needs them of the
+        # same length to return tensors.
+        if labels is not None:
+            max_label_length = max(len(l) for l in labels)
+            # print(max_label_length)
+            if self.pad_to_multiple_of is not None:
+                max_label_length = (
+                        (max_label_length + self.pad_to_multiple_of - 1)
+                        // self.pad_to_multiple_of
+                        * self.pad_to_multiple_of
                 )
-            )
-            tmp_passages = []
-            pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
-            tmp_passages.append(self._shuffle_text(batch_raw_data['pos'][i][pos_idx]))
-            
-            neg_all_idx = list(range(len(batch_raw_data['neg'][i])))
-            if len(batch_raw_data['neg'][i]) < train_group_size - 1:
-                num = math.ceil((train_group_size - 1) / len(batch_raw_data['neg'][i]))
-                neg_idxs = random.sample(neg_all_idx * num, train_group_size - 1)
-            else:
-                neg_idxs = random.sample(neg_all_idx, train_group_size - 1)
-            for neg_idx in neg_idxs:
-                tmp_passages.append(batch_raw_data['neg'][i][neg_idx])
-            
-            if self.args.knowledge_distillation:
-                if 'pos_scores' in batch_raw_data and batch_raw_data['pos_scores'][i] is not None:
-                    teacher_scores.append(batch_raw_data['pos_scores'][i][pos_idx])
-                for neg_idx in neg_idxs:
-                    if 'neg_scores' in batch_raw_data and batch_raw_data['neg_scores'][i] is not None:
-                        teacher_scores.append(batch_raw_data['neg_scores'][i][neg_idx])
-            else:
-                teacher_scores = None
-            
-            if data_type is not None and data_type in ['symmetric_sts', 'symmetric_clustering']:
-                tmp_passages = [
-                    self.args.query_instruction_format.format(
-                        batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
-                        p
-                    ) for p in tmp_passages
-                ]
-            else:
-                if self.args.passage_instruction_for_retrieval is not None:
-                    tmp_passages = [
-                        self.args.passage_instruction_format.format(
-                            self.args.passage_instruction_for_retrieval, p
-                        ) for p in tmp_passages
-                    ]
-            
-            passages.extend(tmp_passages)
-            
-            if len(teacher_scores) > 0 and len(passages) > 0:
-                assert len(teacher_scores) == len(passages)
 
-        return queries, passages, teacher_scores
+            padding_side = self.tokenizer.padding_side
+            for feature in features:
+                remainder = [self.label_pad_token_id] * (max_label_length - len(feature["labels"]))
+                if isinstance(feature["labels"], list):
+                    feature["labels"] = (
+                        feature["labels"] + remainder if padding_side == "right" else remainder + feature["labels"]
+                    )
+                elif padding_side == "right":
+                    feature["labels"] = np.concatenate([feature["labels"], remainder]).astype(np.int64)
+                else:
+                    feature["labels"] = np.concatenate([remainder, feature["labels"]]).astype(np.int64)
 
-
-@dataclass
-class AbsSameDatasetEmbedCollator(DataCollatorWithPadding):
-    """
-    EmbedCollator for SameDataset
-    Note that after using this collator, the training_args should be set as:
-        training_args.per_device_train_batch_size = 1
-        training_args.dataloader_num_workers = 0    # avoid multi-processing
-    """
-    query_max_len: int = 32
-    passage_max_len: int = 128
-    sub_batch_size: int = -1
-
-    def __call__(self, features):
-        queries = features[0][0]
-        passages = features[0][1]
-        teacher_scores = features[0][2]
-        no_in_batch_neg_flag = features[0][3]
-        
-        queries_inputs = self.tokenizer(
-            queries,
-            truncation=True,
-            max_length=self.query_max_len,
-            return_tensors=None
+        collated = self.tokenizer.pad(
+            features,
+            padding=self.padding,
+            max_length=self.query_max_len + self.passage_max_len,
+            return_tensors=return_tensors,
+            pad_to_multiple_of=self.pad_to_multiple_of,
         )
-        passages_inputs = self.tokenizer(
-            passages,
-            truncation=True,
-            max_length=self.passage_max_len,
-            return_tensors=None
-        )
-
-        if self.sub_batch_size is None or self.sub_batch_size <= 0:
-            q_collated = self.tokenizer.pad(
-                queries_inputs,
-                padding=self.padding,
-                max_length=self.query_max_len,
-                pad_to_multiple_of=self.pad_to_multiple_of,
-                return_tensors=self.return_tensors,
-            )
-
-            d_collated = self.tokenizer.pad(
-                passages_inputs,
-                padding=self.padding,
-                max_length=self.passage_max_len,
-                pad_to_multiple_of=self.pad_to_multiple_of,
-                return_tensors=self.return_tensors,
-            )
-        else:
-            batch_size = self.sub_batch_size
-
-            q_collated = []
-            for i in range(0, len(queries_inputs['attention_mask']), batch_size):
-                start = i
-                end = min(len(queries_inputs['attention_mask']), i + batch_size)
-                sub_features = {}
-                for k, v in queries_inputs.items():
-                    sub_features[k] = v[start:end]
-                q_collated.append(self.tokenizer.pad(
-                    sub_features,
-                    padding=self.padding,
-                    max_length=self.passage_max_len,
-                    pad_to_multiple_of=self.pad_to_multiple_of,
-                    return_tensors=self.return_tensors,
-                ))
-
-            d_collated = []
-            for i in range(0, len(passages_inputs['attention_mask']), batch_size):
-                start = i
-                end = min(len(passages_inputs['attention_mask']), i + batch_size)
-                sub_features = {}
-
-                for k, v in passages_inputs.items():
-                    sub_features[k] = v[start:end]
-                d_collated.append(self.tokenizer.pad(
-                    sub_features,
-                    padding=self.padding,
-                    max_length=self.passage_max_len,
-                    pad_to_multiple_of=self.pad_to_multiple_of,
-                    return_tensors=self.return_tensors,
-                ))
-
-        if isinstance(teacher_scores, list) and len(teacher_scores) == 0:
-            teacher_scores = None
 
         return {
-            "queries": q_collated,
-            "passages": d_collated,
+            "pair": collated,
             "teacher_scores": teacher_scores,
-            "no_in_batch_neg_flag": no_in_batch_neg_flag
         }
-
-
-class TrainerCallbackForDataRefresh(TrainerCallback):
-    def __init__(self, train_dataset: AbsSameDatasetTrainDataset):
-        self.train_dataset = train_dataset
-        
-    def on_epoch_end(
-        self,
-        args: AbsTrainingArguments,
-        state: TrainerState,
-        control: TrainerControl,
-        **kwargs
-    ):
-        """
-        Event called at the end of an epoch.
-        """
-        self.train_dataset.refresh_epoch()

@@ -6,7 +6,7 @@ from transformers.trainer import Trainer
 logger = logging.getLogger(__name__)
 
 
-class AbsTrainer(ABC, Trainer):
+class AbsRerankerTrainer(ABC, Trainer):
     @abstractmethod
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
         pass
