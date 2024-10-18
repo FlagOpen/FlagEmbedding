@@ -2,7 +2,7 @@ from FlagEmbedding.abc.finetune.embedder import AbsEmbedderDataArguments as Enco
 
 from .arguments import EncoderOnlyEmbedderM3ModelArguments, EncoderOnlyEmbedderM3TrainingArguments
 from .modeling import EncoderOnlyEmbedderM3Model, EncoderOnlyEmbedderM3ModelForInference
-from .trainer import EncoderOnlyM3Trainer
+from .trainer import EncoderOnlyEmbedderM3Trainer
 from .runner import EncoderOnlyEmbedderM3Runner
 
 
@@ -12,6 +12,6 @@ __all__ = [
     'EncoderOnlyEmbedderM3TrainingArguments',
     'EncoderOnlyEmbedderM3Model',
     'EncoderOnlyEmbedderM3ModelForInference',
-    'EncoderOnlyM3Trainer',
+    'EncoderOnlyEmbedderM3Trainer',
     'EncoderOnlyEmbedderM3Runner',
 ]

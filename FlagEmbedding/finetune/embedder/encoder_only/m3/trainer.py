@@ -3,12 +3,12 @@ import torch
 import logging
 from typing import Optional
 
-from FlagEmbedding.abc.finetune.embedder import AbsTrainer
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderTrainer
 
 logger = logging.getLogger(__name__)
 
 
-class EncoderOnlyM3Trainer(AbsTrainer):
+class EncoderOnlyEmbedderM3Trainer(AbsEmbedderTrainer):
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)

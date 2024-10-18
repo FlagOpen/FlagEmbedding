@@ -12,7 +12,7 @@ from FlagEmbedding.abc.finetune.embedder import (
     AbsEmbedderDataArguments, EmbedderTrainerCallbackForDataRefresh
 )
 from .modeling import EncoderOnlyEmbedderM3Model
-from .trainer import EncoderOnlyM3Trainer
+from .trainer import EncoderOnlyEmbedderM3Trainer
 from .arguments import EncoderOnlyEmbedderM3ModelArguments, EncoderOnlyEmbedderM3TrainingArguments
 
 logger = logging.getLogger(__name__)
@@ -97,8 +97,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
                     v.requires_grad = False
         return tokenizer, model
 
-    def load_trainer(self) -> EncoderOnlyM3Trainer:
-        trainer = EncoderOnlyM3Trainer(
+    def load_trainer(self) -> EncoderOnlyEmbedderM3Trainer:
+        trainer = EncoderOnlyEmbedderM3Trainer(
             model=self.model,
             args=self.training_args,
             train_dataset=self.train_dataset,
