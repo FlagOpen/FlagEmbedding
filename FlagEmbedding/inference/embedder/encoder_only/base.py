@@ -64,15 +64,16 @@ class BaseEmbedder(AbsEmbedder):
         if self.use_fp16: self.model.half()
         self.model = self.model.to(self.device)
 
-        if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
-            self.model = torch.nn.DataParallel(self.model)
+        self.num_gpus = 1
+        # if self.num_gpus > 1:
+        #     print(f"----------using {self.num_gpus}*GPUs----------")
+        #     self.model = torch.nn.DataParallel(self.model)
     
     @staticmethod
     def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
         return instruction_format.format(instruction, query)
     
-    def encode_queries(
+    def encode_queries_single_gpu(
         self,
         queries: Union[List[str], str],
         batch_size: int = 256,
@@ -95,7 +96,7 @@ class BaseEmbedder(AbsEmbedder):
             **kwargs
         )
     
-    def encode_corpus(
+    def encode_corpus_single_gpu(
         self,
         corpus: Union[List[str], str],
         batch_size: int = 256,
@@ -127,11 +128,17 @@ class BaseEmbedder(AbsEmbedder):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
+        device: str = None,
         **kwargs: Any
     ):
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
+
+        if device is None:
+            device = self.device
+
+        self.model.to(device)
         
         input_was_string = False
         if isinstance(sentences, str):
@@ -165,7 +172,7 @@ class BaseEmbedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(self.device)
+        ).to(device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -188,7 +195,7 @@ class BaseEmbedder(AbsEmbedder):
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
-            ).to(self.device)
+            ).to(device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = self.pooling(last_hidden_state, inputs_batch['attention_mask'])
             if self.normalize_embeddings:

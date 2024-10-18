@@ -40,8 +40,8 @@ class AbsReranker(ABC):
 
         pool = self.start_multi_process_pool()
         scores = self.encode_multi_process(sentence_pairs,
-                                               pool,
-                                               **kwargs)
+                                           pool,
+                                           **kwargs)
         self.stop_multi_process_pool(pool)
         return scores
 

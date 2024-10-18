@@ -64,13 +64,15 @@ class BaseReranker(AbsReranker):
         #     self.model = torch.nn.DataParallel(self.model)
     
     @torch.no_grad()
-    def compute_score_single_gpu(self,
-                      sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-                      batch_size: int = 256,
-                      max_length: int = 512,
-                      normalize: bool = False,
-                      device: str = None,
-                      **kwargs: Any) -> List[float]:
+    def compute_score_single_gpu(
+        self,
+        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+        batch_size: int = 256,
+        max_length: int = 512,
+        normalize: bool = False,
+        device: str = None,
+        **kwargs: Any
+    ) -> List[float]:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         

@@ -131,17 +131,19 @@ class LightweightLLMReranker(AbsReranker):
         self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][0]
 
     @torch.no_grad()
-    def compute_score_single_gpu(self,
-                      sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-                      batch_size: int = 256,
-                      max_length: int = 512,
-                      cutoff_layers: List[int] = None,
-                      compress_layer: List[int] = [8],
-                      compress_ratio: int = 1,
-                      prompt: str = None,
-                      normalize: bool = False,
-                      device: str = None,
-                      **kwargs: Any) -> List[float]:
+    def compute_score_single_gpu(
+        self,
+        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+        batch_size: int = 256,
+        max_length: int = 512,
+        cutoff_layers: List[int] = None,
+        compress_layer: List[int] = [8],
+        compress_ratio: int = 1,
+        prompt: str = None,
+        normalize: bool = False,
+        device: str = None,
+        **kwargs: Any
+    ) -> List[float]:
         
         self.model.eval()
         if device is None:
