@@ -1,6 +1,6 @@
 import os
 
-from .model_mapping import MODEL_MAPPING
+from FlagEmbedding.inference.embedder.model_mapping import MODEL_MAPPING
 
 
 class FlagAutoModel:
