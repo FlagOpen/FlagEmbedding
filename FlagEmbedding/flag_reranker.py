@@ -251,7 +251,7 @@ class FlagReranker:
 
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 256,
-                      max_length: int = 512, normalize: bool = False) -> List[float]:
+                      max_length: int = 512, normalize: bool = False, progress: bool = None) -> List[float]:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
 
@@ -260,8 +260,8 @@ class FlagReranker:
             sentence_pairs = [sentence_pairs]
 
         all_scores = []
-        for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
-                                disable=len(sentence_pairs) < 128):
+        disable = not progress if isinstance(progress, bool) else len(sentence_pairs) <= batch_size
+        for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores", disable=disable):
             sentences_batch = sentence_pairs[start_index:start_index + batch_size]
             inputs = self.tokenizer(
                 sentences_batch,
@@ -331,7 +331,7 @@ class FlagLLMReranker:
     @torch.no_grad()
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, prompt: str = None, normalize: bool = False,
-                      use_dataloader: bool = False, num_workers: int = None) -> List[float]:
+                      use_dataloader: bool = False, num_workers: int = None, progress: bool = None) -> List[float]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -373,7 +373,8 @@ class FlagLLMReranker:
                                              return_tensors=None,
                                              add_special_tokens=False)['input_ids']
             encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
-            for batch_start in trange(0, len(sentences_sorted), batch_size):
+            disable = not progress if isinstance(progress, bool) else len(sentence_pairs) <= batch_size
+            for batch_start in trange(0, len(sentences_sorted), batch_size, disable=disable):
                 batch_sentences = sentences_sorted[batch_start:batch_start + batch_size]
                 batch_sentences = [(f'A: {q}', f'B: {p}') for q,p in batch_sentences]
                 queries = [s[0] for s in batch_sentences]
@@ -469,7 +470,6 @@ class LayerWiseFlagLLMReranker:
         self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
-                                                          local_files_only=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
@@ -508,7 +508,7 @@ class LayerWiseFlagLLMReranker:
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512, cutoff_layers: List[int] = None, prompt: str = None,
                       normalize: bool = False, use_dataloader: bool = False,
-                      num_workers: int = None) -> Union[float, List[float], List[List[float]]]:
+                      num_workers: int = None, progress: bool = None) -> Union[float, List[float], List[List[float]]]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -558,7 +558,8 @@ class LayerWiseFlagLLMReranker:
                                              return_tensors=None,
                                              add_special_tokens=False)['input_ids']
             encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
-            for batch_start in trange(0, len(sentences_sorted), batch_size):
+            disable = not progress if isinstance(progress, bool) else len(sentence_pairs) <= batch_size
+            for batch_start in trange(0, len(sentences_sorted), batch_size, disable=disable):
                 batch_sentences = sentences_sorted[batch_start:batch_start + batch_size]
                 batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
                 queries = [s[0] for s in batch_sentences]
@@ -661,7 +662,6 @@ class LightWeightFlagLLMReranker:
         self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                           cache_dir=cache_dir,
                                                           trust_remote_code=True,
-                                                          local_files_only=True,
                                                           torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
@@ -700,7 +700,7 @@ class LightWeightFlagLLMReranker:
     def compute_score(self, sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]], batch_size: int = 16,
                       max_length: int = 512,
                       cutoff_layers: List[int] = None, compress_layer: List[int] = [8], compress_ratio: int = 1,
-                      prompt: str = None, normalize: bool = False) -> Union[float, List[float], List[List[float]]]:
+                      prompt: str = None, normalize: bool = False, progress: bool = None) -> Union[float, List[float], List[List[float]]]:
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -719,7 +719,8 @@ class LightWeightFlagLLMReranker:
                                     add_special_tokens=False)['input_ids']
         encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
         all_scores = []
-        for batch_start in trange(0, len(sentences_sorted), batch_size):
+        disable = not progress if isinstance(progress, bool) else len(sentence_pairs) <= batch_size
+        for batch_start in trange(0, len(sentences_sorted), batch_size, disable=disable):
             batch_sentences = sentences_sorted[batch_start:batch_start + batch_size]
             batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
             queries = [s[0] for s in batch_sentences]
