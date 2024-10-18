@@ -58,19 +58,27 @@ class BaseReranker(AbsReranker):
         self.model = self.model.to(self.device)
         self.model.eval()
 
-        if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
-            self.model = torch.nn.DataParallel(self.model)
+        self.num_gpus = 1
+        # if self.num_gpus > 1:
+        #     print(f"----------using {self.num_gpus}*GPUs----------")
+        #     self.model = torch.nn.DataParallel(self.model)
     
     @torch.no_grad()
-    def compute_score(self,
+    def compute_score_single_gpu(self,
                       sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
                       batch_size: int = 256,
                       max_length: int = 512,
                       normalize: bool = False,
+                      device: str = None,
                       **kwargs: Any) -> List[float]:
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
+        
+        self.model.eval()
+        if device is None:
+            device = self.device
+
+        self.model.to(device)
 
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
@@ -105,7 +113,7 @@ class BaseReranker(AbsReranker):
                     max_length=max_length,
                     return_tensors='pt',
                     **kwargs
-                ).to(self.device)
+                ).to(device)
                 scores = self.model(**test_inputs_batch, return_dict=True).logits.view(-1, ).float()
                 flag = True
             except RuntimeError as e:
@@ -121,7 +129,7 @@ class BaseReranker(AbsReranker):
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
-            ).to(self.device)
+            ).to(device)
 
             scores = self.model(**inputs, return_dict=True).logits.view(-1, ).float()
             all_scores.extend(scores.cpu().numpy().tolist())

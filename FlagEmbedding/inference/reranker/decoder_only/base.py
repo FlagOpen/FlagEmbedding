@@ -193,7 +193,7 @@ class BaseLLMReranker(AbsReranker):
         self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][0]
 
     @torch.no_grad()
-    def compute_score(self,
+    def compute_score_single_gpu(self,
                       sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
                       batch_size: int = 256,
                       max_length: int = 512,
@@ -201,7 +201,14 @@ class BaseLLMReranker(AbsReranker):
                       normalize: bool = False,
                       use_dataloader: bool = False,
                       num_workers: int = None,
+                      device: str = None,
                       **kwargs: Any) -> List[float]:
+        
+        self.model.eval()
+        if device is None:
+            device = self.device
+
+        self.model.to(device)
     
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
@@ -227,7 +234,7 @@ class BaseLLMReranker(AbsReranker):
         all_scores = []
         if dataloader is not None:
             for inputs in tqdm(dataloader):
-                inputs = inputs.to(self.device)
+                inputs = inputs.to(device)
 
                 outputs = self.model(**inputs, output_hidden_states=True)
                 logits = outputs.logits
@@ -287,7 +294,7 @@ class BaseLLMReranker(AbsReranker):
                     [{'input_ids': item['input_ids'], 'attention_mask': item['attention_mask']} for item in
                      batch_inputs])
 
-                batch_inputs = {key: val.to(self.device) for key, val in batch_inputs.items()}
+                batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
 
                 outputs = self.model(**batch_inputs, output_hidden_states=True)
                 logits = outputs.logits
