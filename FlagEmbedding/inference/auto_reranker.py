@@ -1,9 +1,9 @@
 import os
 
-from .model_mapping import MODEL_MAPPING
+from FlagEmbedding.inference.reranker.model_mapping import MODEL_MAPPING
 
 
-class FlagAutoReranker():
+class FlagAutoReranker:
     def __init__(self):
         raise EnvironmentError(
             "FlagAutoReranker is designed to be instantiated using the `FlagAutoReranker.from_finetuned(model_name_or_path)` method."
@@ -13,7 +13,6 @@ class FlagAutoReranker():
     def from_finetuned(
         cls,
         model_name_or_path: str,
-        model_type: bool = False,
         use_fp16: bool = False,
         **kwargs,
     ):

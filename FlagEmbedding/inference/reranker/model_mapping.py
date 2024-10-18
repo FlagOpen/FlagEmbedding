@@ -1,4 +1,3 @@
-from enum import Enum
 from typing import Type
 from dataclasses import dataclass
 from collections import OrderedDict
@@ -9,7 +8,7 @@ from FlagEmbedding.inference.reranker import FlagReranker, FlagLLMReranker, Laye
 
 @dataclass
 class RerankerConfig:
-    model_class: Type[AbsEmbedder]
+    model_class: Type[AbsReranker]
     trust_remote_code: bool = False
 
 
