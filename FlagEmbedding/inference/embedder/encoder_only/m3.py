@@ -21,6 +21,7 @@ class M3Embedder(AbsEmbedder):
         trust_remote_code: bool = False,
         query_instruction_for_retrieval: str = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
+        cache_dir: str = None,
         device: str = None, # specify device, such as "cuda:0"
         **kwargs: Any,
     ):
@@ -33,13 +34,15 @@ class M3Embedder(AbsEmbedder):
         
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         self.model = EncoderOnlyEmbedderM3ModelForInference(
             EncoderOnlyEmbedderM3Runner.get_model(
                 model_name_or_path,
                 trust_remote_code=trust_remote_code,
-                colbert_dim=kwargs.get("colbert_dim", -1)
+                colbert_dim=kwargs.get("colbert_dim", -1),
+                cache_dir=cache_dir
             ),
             sentence_pooling_method=pooling_method,
             normalize_embeddings=normalize_embeddings

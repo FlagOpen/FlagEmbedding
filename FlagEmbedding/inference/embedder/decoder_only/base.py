@@ -28,6 +28,7 @@ class BaseLLMEmbedder(AbsEmbedder):
         trust_remote_code: bool = False,
         query_instruction_for_retrieval: str = None,
         query_instruction_format: str = "Instruct: {}\nQuery: {}", # specify the format of query_instruction_for_retrieval
+        cache_dir: str = None,
         device: str = None, # specify device, such as "cuda:0"
         **kwargs: Any,
     ):
@@ -39,11 +40,13 @@ class BaseLLMEmbedder(AbsEmbedder):
         
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         self.model = AutoModel.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format

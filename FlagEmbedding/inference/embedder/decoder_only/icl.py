@@ -30,6 +30,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         query_instruction_format: str = "<instruct>{}\n<query>{}", # specify the format of query_instruction_for_retrieval
         examples_for_task: List[dict] = None,
         examples_instruction_format: str = "<instruct>{}\n<query>{}\n<response>{}", # specify the format of examples_for_task
+        cache_dir: str = None,
         device: str = None, # specify device, such as "cuda:0"
         **kwargs: Any,
     ):
@@ -41,11 +42,13 @@ class ICLLLMEmbedder(AbsEmbedder):
         
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         self.model = AutoModel.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format

@@ -31,11 +31,13 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
     def get_model(
         model_name_or_path: str,
         trust_remote_code: bool = False,
-        colbert_dim: int = -1
+        colbert_dim: int = -1,
+        cache_dir: str = None
     ):
         model = AutoModel.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir
         )
         colbert_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
