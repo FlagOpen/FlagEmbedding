@@ -21,6 +21,8 @@ class AbsEmbedder(ABC):
     def encode_queries(
         self,
         queries: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
         **kwargs: Any,
     ):
         """
@@ -32,6 +34,8 @@ class AbsEmbedder(ABC):
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
         **kwargs: Any,
     ):
         """
