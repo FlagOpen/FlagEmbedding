@@ -15,6 +15,7 @@ def get_args():
     parser.add_argument('--candidate_pool', default=None, type=str)
     parser.add_argument('--output_file', default=None, type=str)
     parser.add_argument('--range_for_sampling', default="10-210", type=str, help="range to sample negatives")
+    parser.add_argument('--similarity_range', default="0.0-1.0", type=str, help="similarity range to sample negatives")
     parser.add_argument('--use_gpu_for_searching', action='store_true', help='use faiss-gpu')
     parser.add_argument('--negative_number', default=15, type=int, help='the number of negatives')
     parser.add_argument('--query_instruction_for_retrieval', default="")
@@ -55,7 +56,7 @@ def get_corpus(candidate_pool):
     return corpus
 
 
-def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
+def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, similarity_range, negative_number, use_gpu):
     corpus = []
     queries = []
     train_data = []
@@ -81,16 +82,21 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
 
     print('create index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
-    _, all_inxs = batch_search(index, q_vecs, topk=sample_range[-1])
+    all_scores, all_inxs = batch_search(index, q_vecs, topk=sample_range[-1])
     assert len(all_inxs) == len(train_data)
 
+    min_sim, max_sim = similarity_range
     for i, data in enumerate(train_data):
         query = data['query']
-        inxs = all_inxs[i][sample_range[0]:sample_range[1]]
+        scores = all_scores[i]
+        inxs = all_inxs[i]
+
+        inxs = inxs[sample_range[0]:sample_range[1]]
+        scores = scores[sample_range[0]:sample_range[1]]
+
         filtered_inx = []
-        for inx in inxs:
-            if inx == -1: break
-            if corpus[inx] not in data['pos'] and corpus[inx] != query:
+        for score, inx in zip(scores, inxs):
+            if min_sim <= score <= max_sim and corpus[inx] not in data['pos'] and corpus[inx] != query:
                 filtered_inx.append(inx)
 
         if len(filtered_inx) > negative_number:
@@ -108,8 +114,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
 
 if __name__ == '__main__':
     args = get_args()
-    sample_range = args.range_for_sampling.split('-')
-    sample_range = [int(x) for x in sample_range]
+
+    sample_range = list(map(int, args.range_for_sampling.split('-')))
+    similarity_range = list(map(float, args.similarity_range.split('-')))
 
     model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
 
@@ -118,5 +125,6 @@ if __name__ == '__main__':
                  candidate_pool=args.candidate_pool,
                  output_file=args.output_file,
                  sample_range=sample_range,
+                 similarity_range=similarity_range,
                  negative_number=args.negative_number,
                  use_gpu=args.use_gpu_for_searching)
