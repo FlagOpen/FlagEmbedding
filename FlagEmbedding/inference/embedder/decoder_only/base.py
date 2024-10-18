@@ -85,7 +85,7 @@ class BaseLLMEmbedder(AbsEmbedder):
     def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
         return instruction_format.format(instruction, query)
     
-    def encode_queries_single_gpu(
+    def encode_queries(
         self,
         queries: Union[List[str], str],
         batch_size: int = 256,
@@ -108,7 +108,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             **kwargs
         )
     
-    def encode_corpus_single_gpu(
+    def encode_corpus(
         self,
         corpus: Union[List[str], str],
         batch_size: int = 256,
@@ -140,17 +140,11 @@ class BaseLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
-        decive: str = None,
         **kwargs: Any   # add `pad_to_multiple_of=8` for bge-multilingual-gemmma2
     ):
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
-
-        if device is None:
-            device = self.device
-
-        self.model.to(device)
         
         input_was_string = False
         if isinstance(sentences, str):
@@ -184,7 +178,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(device)
+        ).to(self.device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -207,7 +201,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 truncation=True,
                 return_tensors='pt',
                 **kwargs
-            ).to(device)
+            ).to(self.device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
             if self.normalize_embeddings:

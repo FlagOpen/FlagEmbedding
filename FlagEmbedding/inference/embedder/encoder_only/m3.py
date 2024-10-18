@@ -77,17 +77,16 @@ class M3Embedder(AbsEmbedder):
         
         if self.use_fp16: self.model.half()
         self.model = self.model.to(self.device)
-        
-        self.num_gpus = 1
-        # if self.num_gpus > 1:
-        #     print(f"----------using {self.num_gpus}*GPUs----------")
-        #     self.model.model = torch.nn.DataParallel(self.model.model)
+
+        if self.num_gpus > 1:
+            print(f"----------using {self.num_gpus}*GPUs----------")
+            self.model.model = torch.nn.DataParallel(self.model.model)
     
     @staticmethod
     def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
         return instruction_format.format(instruction, query)
     
-    def encode_queries_single_gpu(
+    def encode_queries(
         self,
         queries: Union[List[str], str],
         batch_size: int = 256,
@@ -110,7 +109,7 @@ class M3Embedder(AbsEmbedder):
             **kwargs
         )
     
-    def encode_corpus_single_gpu(
+    def encode_corpus(
         self,
         corpus: Union[List[str], str],
         batch_size: int = 256,
@@ -173,17 +172,11 @@ class M3Embedder(AbsEmbedder):
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
-        device: str = None,
         **kwargs: Any
     ):
         if self.num_gpus > 0:
             batch_size = batch_size * self.num_gpus
         self.model.eval()
-
-        if device is None:
-            device = self.device
-
-        self.model.to(device)
         
         input_was_string = False
         if isinstance(sentences, str):
@@ -239,7 +232,7 @@ class M3Embedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(device)
+        ).to(self.device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -266,7 +259,7 @@ class M3Embedder(AbsEmbedder):
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
-            ).to(device)
+            ).to(self.device)
             outputs = self.model(
                 inputs_batch,
                 return_dense=return_dense,
