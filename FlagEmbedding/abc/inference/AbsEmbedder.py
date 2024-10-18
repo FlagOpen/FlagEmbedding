@@ -244,7 +244,7 @@ class AbsEmbedder(ABC):
                 )
                 # print(chunk_id, sentences, kwargs)
                 # print('====', target_device)
-                embeddings = model.encode_corpus_single_gpu(
+                embeddings = model.encode_queries_single_gpu(
                     sentences,
                     device=target_device,
                     **kwargs
