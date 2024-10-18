@@ -1,7 +1,8 @@
 import logging
 import os
 from pathlib import Path
-
+import wandb
+import random
 from transformers import AutoConfig, AutoTokenizer
 from transformers import (
     HfArgumentParser,
@@ -16,6 +17,17 @@ from .trainer import BiTrainer
 
 logger = logging.getLogger(__name__)
 
+def try_init_wandb():
+    try:
+        import wandb
+        # 检查环境变量是否有WANDB_API_KEY，这是可选的，根据你的需求决定是否需要
+        if os.getenv("WANDB_API_KEY"):
+            wandb.init()
+            logger.info("W&B initialized.")
+        else:
+            logger.info("WANDB_API_KEY not found. Skipping W&B initialization.")
+    except ImportError:
+        logger.info("wandb library not found. Skipping W&B initialization.")
 
 def main():
     parser = HfArgumentParser((ModelArguments, DataArguments, TrainingArguments))
@@ -23,6 +35,7 @@ def main():
     model_args: ModelArguments
     data_args: DataArguments
     training_args: TrainingArguments
+    try_init_wandb()
 
     if (
             os.path.exists(training_args.output_dir)
