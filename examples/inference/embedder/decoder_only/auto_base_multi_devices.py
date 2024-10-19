@@ -1,13 +1,12 @@
 import os
-from FlagEmbedding import FlagLLMModel
+from FlagEmbedding import FlagAutoModel
 
 
-def test_base_single_device():
-    model = FlagLLMModel(
+def test_base_multi_devices():
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-multilingual-gemma2',
         query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
-        query_instruction_format="<instruct>{}\n<query>{}",
-        devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
+        devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
@@ -28,8 +27,8 @@ def test_base_single_device():
 
 
 if __name__ == '__main__':
-    test_base_single_device()
+    test_base_multi_devices()
 
     print("--------------------------------")
     print("Expected Output:")
-    print("[[0.558   0.0212 ]\n [0.01651 0.526  ]]")
+    print("[[0.558   0.02113 ]\n [0.01643 0.526  ]]")

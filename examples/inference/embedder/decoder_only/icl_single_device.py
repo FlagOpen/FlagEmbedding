@@ -17,8 +17,6 @@ def test_icl_single_device():
     ]
     model = FlagICLModel(
         'BAAI/bge-en-icl',
-        normalize_embeddings=True,
-        use_fp16=True,
         query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
         query_instruction_format="<instruct>{}\n<query>{}",
         examples_for_task=examples,

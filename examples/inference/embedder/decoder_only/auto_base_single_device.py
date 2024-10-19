@@ -1,12 +1,11 @@
 import os
-from FlagEmbedding import FlagLLMModel
+from FlagEmbedding import FlagAutoModel
 
 
 def test_base_single_device():
-    model = FlagLLMModel(
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-multilingual-gemma2',
         query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
-        query_instruction_format="<instruct>{}\n<query>{}",
         devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )

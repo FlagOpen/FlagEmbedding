@@ -5,8 +5,6 @@ from FlagEmbedding import FlagLLMModel
 def test_base_multi_devices():
     model = FlagLLMModel(
         'BAAI/bge-multilingual-gemma2',
-        normalize_embeddings=True,
-        use_fp16=True,
         query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
         query_instruction_format="<instruct>{}\n<query>{}",
         devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]

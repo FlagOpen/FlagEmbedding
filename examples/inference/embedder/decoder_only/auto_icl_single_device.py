@@ -1,8 +1,8 @@
 import os
-from FlagEmbedding import FlagICLModel
+from FlagEmbedding import FlagAutoModel
 
 
-def test_icl_multi_devices():
+def test_icl_single_device():
     examples = [
         {
             'instruct': 'Given a web search query, retrieve relevant passages that answer the query.',
@@ -15,13 +15,12 @@ def test_icl_multi_devices():
             'response': "Back pain in females lasting a week can stem from various factors. Common causes include muscle strain due to lifting heavy objects or improper posture, spinal issues like herniated discs or osteoporosis, menstrual cramps causing referred pain, urinary tract infections, or pelvic inflammatory disease. Pregnancy-related changes can also contribute. Stress and lack of physical activity may exacerbate symptoms. Proper diagnosis by a healthcare professional is crucial for effective treatment and management."
         }
     ]
-    model = FlagICLModel(
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-en-icl',
         query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
-        query_instruction_format="<instruct>{}\n<query>{}",
         examples_for_task=examples,
         examples_instruction_format="<instruct>{}\n<query>{}\n<response>{}",
-        devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
+        devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
 
@@ -42,7 +41,7 @@ def test_icl_multi_devices():
 
 
 if __name__ == '__main__':
-    test_icl_multi_devices()
+    test_icl_single_device()
 
     print("--------------------------------")
     print("Expected Output:")
