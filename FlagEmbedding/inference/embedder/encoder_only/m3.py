@@ -69,12 +69,23 @@ class M3Embedder(AbsEmbedder):
             new_lexical_weights = new_lexical_weights[0]
         return new_lexical_weights
 
-    def compute_lexical_matching_score(self, lexical_weights_1: Dict[str, float], lexical_weights_2: Dict[str, float]):
-        scores = 0
-        for token, weight in lexical_weights_1.items():
-            if token in lexical_weights_2:
-                scores += weight * lexical_weights_2[token]
-        return scores
+    def compute_lexical_matching_score(self, lexical_weights_1: Union[Dict[str, float], List[Dict[str, float]]], lexical_weights_2: Union[Dict[str, float], List[Dict[str, float]]]):
+        def _compute_single_lexical_matching_score(lexical_weights_1: Dict[str, float], lexical_weights_2: Dict[str, float]):
+            scores = 0
+            for token, weight in lexical_weights_1.items():
+                if token in lexical_weights_2:
+                    scores += weight * lexical_weights_2[token]
+            return scores
+        
+        if isinstance(lexical_weights_1, dict) and isinstance(lexical_weights_2, dict):
+            return _compute_single_lexical_matching_score(lexical_weights_1, lexical_weights_2)
+        elif isinstance(lexical_weights_1, list) and isinstance(lexical_weights_2, list):
+            return [
+                _compute_single_lexical_matching_score(lw1, lw2)
+                for lw1, lw2 in zip(lexical_weights_1, lexical_weights_2)
+            ]
+        else:
+            raise ValueError("The input format of lexical_weights is not correct.")
 
     def colbert_score(self, q_reps, p_reps):
         q_reps, p_reps = torch.from_numpy(q_reps), torch.from_numpy(p_reps)
