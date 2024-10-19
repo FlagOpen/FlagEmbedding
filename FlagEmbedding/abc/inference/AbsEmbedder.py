@@ -116,7 +116,7 @@ class AbsEmbedder(ABC):
         max_length: int = 512,
         **kwargs: Any
     ):
-        if len(self.target_devices) == 1:
+        if isinstance(sentences, str) or len(self.target_devices) == 1:
             return self.encode_single_device(
                 sentences,
                 batch_size=batch_size,

@@ -106,7 +106,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         convert_to_numpy: bool = True,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
-        if len(self.target_devices) == 1:
+        if isinstance(queries, str) or len(self.target_devices) == 1:
             return self.encode_queries_single_device(
                 queries,
                 batch_size=batch_size,
