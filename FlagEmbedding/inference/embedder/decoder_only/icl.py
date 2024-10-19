@@ -196,6 +196,9 @@ class ICLLLMEmbedder(AbsEmbedder):
         if device is None:
             device = self.target_devices[0]
 
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
+
         self.model.to(device)
         self.model.eval()
         
@@ -318,6 +321,9 @@ class ICLLLMEmbedder(AbsEmbedder):
     ):
         if device is None:
             device = self.target_devices[0]
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
 
         self.model.to(device)
         self.model.eval()
