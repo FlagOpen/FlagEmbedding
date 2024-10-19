@@ -112,7 +112,6 @@ class BaseReranker(AbsReranker):
                 test_inputs_batch = self.tokenizer.pad(
                     all_inputs_sorted[:min(len(all_inputs_sorted), batch_size)],
                     padding=True,
-                    max_length=max_length,
                     return_tensors='pt',
                     **kwargs
                 ).to(device)

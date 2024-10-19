@@ -137,7 +137,6 @@ class BaseEmbedder(AbsEmbedder):
         max_length_inputs = self.tokenizer.pad(
             all_inputs_sorted[:1],
             padding=True,
-            max_length=max_length,
             return_tensors='pt',
             **kwargs
         ).to(device)
