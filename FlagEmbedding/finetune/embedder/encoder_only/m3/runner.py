@@ -63,8 +63,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         sparse_model_path = os.path.join(model_name_or_path, 'sparse_linear.pt')
         if os.path.exists(colbert_model_path) and os.path.exists(sparse_model_path):
             logger.info('loading existing colbert_linear and sparse_linear---------')
-            colbert_state_dict = torch.load(colbert_model_path, map_location='cpu')
-            sparse_state_dict = torch.load(sparse_model_path, map_location='cpu')
+            colbert_state_dict = torch.load(colbert_model_path, map_location='cpu', weights_only=True)
+            sparse_state_dict = torch.load(sparse_model_path, map_location='cpu', weights_only=True)
             colbert_linear.load_state_dict(colbert_state_dict)
             sparse_linear.load_state_dict(sparse_state_dict)
         else:
