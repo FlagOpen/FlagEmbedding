@@ -69,7 +69,11 @@ class M3Embedder(AbsEmbedder):
             new_lexical_weights = new_lexical_weights[0]
         return new_lexical_weights
 
-    def compute_lexical_matching_score(self, lexical_weights_1: Union[Dict[str, float], List[Dict[str, float]]], lexical_weights_2: Union[Dict[str, float], List[Dict[str, float]]]):
+    def compute_lexical_matching_score(
+        self,
+        lexical_weights_1: Union[Dict[str, float], List[Dict[str, float]]],
+        lexical_weights_2: Union[Dict[str, float], List[Dict[str, float]]]
+    ) -> Union[np.ndarray, float]:
         def _compute_single_lexical_matching_score(lexical_weights_1: Dict[str, float], lexical_weights_2: Dict[str, float]):
             scores = 0
             for token, weight in lexical_weights_1.items():
@@ -80,10 +84,13 @@ class M3Embedder(AbsEmbedder):
         if isinstance(lexical_weights_1, dict) and isinstance(lexical_weights_2, dict):
             return _compute_single_lexical_matching_score(lexical_weights_1, lexical_weights_2)
         elif isinstance(lexical_weights_1, list) and isinstance(lexical_weights_2, list):
-            return [
-                _compute_single_lexical_matching_score(lw1, lw2)
-                for lw1, lw2 in zip(lexical_weights_1, lexical_weights_2)
-            ]
+            scores_array = []
+            for lw1 in lexical_weights_1:
+                scores_array.append([
+                    _compute_single_lexical_matching_score(lw1, lw2)
+                    for lw2 in lexical_weights_2
+                ])
+            return np.array(scores_array)
         else:
             raise ValueError("The input format of lexical_weights is not correct.")
 
