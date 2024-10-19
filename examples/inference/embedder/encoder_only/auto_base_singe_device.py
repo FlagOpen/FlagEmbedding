@@ -1,14 +1,12 @@
 import os
-from FlagEmbedding import FlagModel
+from FlagEmbedding import FlagAutoModel
 
 
 def test_base_single_device():
-    model = FlagModel(
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-small-en-v1.5',
         query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ",
-        query_instruction_format="{}{}",
         devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
-        pooling_method='cls',
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     

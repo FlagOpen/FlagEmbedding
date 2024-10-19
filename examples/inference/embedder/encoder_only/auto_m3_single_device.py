@@ -1,12 +1,11 @@
 import os
-from FlagEmbedding import BGEM3FlagModel
+from FlagEmbedding import FlagAutoModel
 
 
-def test_m3_multi_devices():
-    model = BGEM3FlagModel(
+def test_m3_single_device():
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-m3',
-        devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
-        pooling_method='cls',
+        devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
@@ -43,11 +42,11 @@ def test_m3_multi_devices():
 
 
 if __name__ == '__main__':
-    test_m3_multi_devices()
+    test_m3_single_device()
 
     print("--------------------------------")
     print("Expected Output:")
     print("Dense score:")
-    print(" [[0.626  0.3477]\n [0.3499 0.678 ]]")
+    print(" [[0.626  0.3477]\n [0.3496 0.678 ]]")
     print("Sparse score:")
-    print(" [[0.19561768 0.00878906]\n [0.         0.18030453]]")
+    print(" [[0.19554901 0.00880432]\n [0.         0.18036556]]")

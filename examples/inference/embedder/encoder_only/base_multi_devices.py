@@ -5,8 +5,6 @@ from FlagEmbedding import FlagModel
 def test_base_multi_devices():
     model = FlagModel(
         'BAAI/bge-small-en-v1.5',
-        normalize_embeddings=True,
-        use_fp16=True,
         query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ",
         query_instruction_format="{}{}",
         devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]

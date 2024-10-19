@@ -1,12 +1,11 @@
 import os
-from FlagEmbedding import BGEM3FlagModel
+from FlagEmbedding import FlagAutoModel
 
 
 def test_m3_multi_devices():
-    model = BGEM3FlagModel(
+    model = FlagAutoModel.from_finetuned(
         'BAAI/bge-m3',
         devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
-        pooling_method='cls',
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
