@@ -125,7 +125,7 @@ class AbsEmbedder(ABC):
                 **kwargs
             )
         
-        pool = self.start_multi_process_pool()
+        pool = self.start_multi_process_pool(AbsEmbedder._encode_multi_process_worker)
         embeddings = self.encode_multi_process(
             sentences,
             pool,
@@ -151,7 +151,10 @@ class AbsEmbedder(ABC):
         pass
 
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L807
-    def start_multi_process_pool(self) -> Dict[Literal["input", "output", "processes"], Any]:
+    def start_multi_process_pool(
+        self,
+        process_target_func: Any,
+    ) -> Dict[Literal["input", "output", "processes"], Any]:
         """
         Starts a multi-process pool to process the encoding with several independent processes
         via :meth:`SentenceTransformer.encode_multi_process <sentence_transformers.SentenceTransformer.encode_multi_process>`.
@@ -177,7 +180,7 @@ class AbsEmbedder(ABC):
 
         for device_id in tqdm(self.target_devices, desc='initial target device'):
             p = ctx.Process(
-                target=AbsEmbedder._encode_multi_process_worker,
+                target=process_target_func,
                 args=(device_id, self, input_queue, output_queue),
                 daemon=True,
             )

@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from typing import cast, Any, List, Union
-from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
+from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 
@@ -25,17 +25,22 @@ class BaseLLMEmbedder(AbsEmbedder):
         model_name_or_path: str,
         normalize_embeddings: bool = False,
         use_fp16: bool = False,
-        trust_remote_code: bool = False,
         query_instruction_for_retrieval: str = None,
         query_instruction_format: str = "Instruct: {}\nQuery: {}", # specify the format of query_instruction_for_retrieval
+        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        # Additional parameters for BaseLLMEmbedder
+        trust_remote_code: bool = False,
         cache_dir: str = None,
-        device: str = None, # specify device, such as "cuda:0"
         **kwargs: Any,
     ):
         super().__init__(
             model_name_or_path,
-            normalize_embeddings,
-            use_fp16
+            normalize_embeddings=normalize_embeddings,
+            use_fp16=use_fp16,
+            query_instruction_for_retrieval=query_instruction_for_retrieval,
+            query_instruction_format=query_instruction_format,
+            devices=devices,
+            **kwargs
         )
         
         self.tokenizer = AutoTokenizer.from_pretrained(
@@ -48,43 +53,10 @@ class BaseLLMEmbedder(AbsEmbedder):
             trust_remote_code=trust_remote_code,
             cache_dir=cache_dir
         )
-        self.query_instruction_for_retrieval = query_instruction_for_retrieval
-        self.query_instruction_format = query_instruction_format
-        self.kwargs = kwargs
         
         if self.kwargs.get("pooling_method", "last_token") != "last_token":
             raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
-        
-        if device is not None:
-            self.device = torch.device(device)
-            self.num_gpus = 1
-        else:
-            if torch.cuda.is_available():
-                self.device = torch.device("cuda")
-                self.num_gpus = torch.cuda.device_count()
-            else:
-                self.num_gpus = -1  # TODO: DataParallel for other devices
-                if torch.backends.mps.is_available():
-                    self.device = torch.device("mps")
-                elif is_torch_npu_available():
-                    self.device = torch.device("npu")
-                else:
-                    self.device = torch.device("cpu")
-        
-        if self.device.type == "cpu":
-            self.use_fp16 = False
-        
-        if self.use_fp16: self.model.half()
-        self.model = self.model.to(self.device)
 
-        if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
-            self.model = torch.nn.DataParallel(self.model)
-    
-    @staticmethod
-    def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
-        return instruction_format.format(instruction, query)
-    
     def encode_queries(
         self,
         queries: Union[List[str], str],
@@ -92,16 +64,9 @@ class BaseLLMEmbedder(AbsEmbedder):
         max_length: int = 512,
         convert_to_numpy: bool = True,
         **kwargs: Any
-    ):
-        if self.query_instruction_for_retrieval is not None:
-            if isinstance(queries, str):
-                input_texts = self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, queries)
-            else:
-                input_texts = [self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, query) for query in queries]
-        else:
-            input_texts = queries
-        return self.encode(
-            input_texts,
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode_queries(
+            queries,
             batch_size=batch_size,
             max_length=max_length,
             convert_to_numpy=convert_to_numpy,
@@ -115,35 +80,45 @@ class BaseLLMEmbedder(AbsEmbedder):
         max_length: int = 512,
         convert_to_numpy: bool = True,
         **kwargs: Any
-    ):
-        passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
-        passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
-        if passage_instruction_for_retrieval is not None:
-            if isinstance(corpus, str):
-                input_texts = self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, corpus)
-            else:
-                input_texts = [self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, passage) for passage in corpus]
-        else:
-            input_texts = corpus
-        return self.encode(
-            input_texts,
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode_corpus(
+            corpus,
             batch_size=batch_size,
             max_length=max_length,
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
     
-    @torch.no_grad()
     def encode(
         self,
         sentences: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
+        **kwargs: Any
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode(
+            sentences,
+            batch_size=batch_size,
+            max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
+            **kwargs
+        )
+
+    @torch.no_grad()
+    def encode_single_device(
+        self,
+        sentences: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        convert_to_numpy: bool = True,
+        device: str = None,
         **kwargs: Any   # add `pad_to_multiple_of=8` for bge-multilingual-gemmma2
     ):
-        if self.num_gpus > 0:
-            batch_size = batch_size * self.num_gpus
+        if device is None:
+            device = self.target_devices[0]
+
+        self.model.to(device)
         self.model.eval()
         
         input_was_string = False
@@ -178,7 +153,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(self.device)
+        ).to(device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -201,7 +176,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 truncation=True,
                 return_tensors='pt',
                 **kwargs
-            ).to(self.device)
+            ).to(device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
             if self.normalize_embeddings:
