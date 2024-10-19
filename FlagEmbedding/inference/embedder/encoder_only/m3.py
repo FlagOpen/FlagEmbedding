@@ -231,7 +231,7 @@ class M3Embedder(AbsEmbedder):
                 for k, v in max_length_inputs.items():
                     test_inputs_batch[k] = v.repeat(batch_size, 1)
                 outputs = self.model(
-                    inputs_batch,
+                    test_inputs_batch,
                     return_dense=return_dense,
                     return_sparse=return_sparse,
                     return_colbert_vecs=return_colbert_vecs
