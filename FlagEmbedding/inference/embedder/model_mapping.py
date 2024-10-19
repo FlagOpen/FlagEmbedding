@@ -18,17 +18,18 @@ class EmbedderConfig:
     model_class: Type[AbsEmbedder]
     pooling_method: PoolingMethod
     trust_remote_code: bool = False
+    query_instruction_format: str = "{}{}"
 
 
 MODEL_MAPPING = OrderedDict([
     # ============================== BGE ==============================
     (
         "bge-en-icl", 
-        EmbedderConfig(FlagICLModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagICLModel, PoolingMethod.LAST_TOKEN, query_instruction_format="<instruct>{}\n<query>{}")
     ),
     (
         "bge-multilingual-gemma2",
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="<instruct>{}\n<query>{}")
     ),
     (
         "bge-m3",
@@ -85,7 +86,7 @@ MODEL_MAPPING = OrderedDict([
     # ============================== E5 ==============================
     (
         "e5-mistral-7b-instruct",
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         "e5-large-v2",
@@ -101,7 +102,7 @@ MODEL_MAPPING = OrderedDict([
     ),
     (
         "multilingual-e5-large-instruct",
-        EmbedderConfig(FlagModel, PoolingMethod.MEAN)
+        EmbedderConfig(FlagModel, PoolingMethod.MEAN, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         "multilingual-e5-large",
@@ -130,23 +131,23 @@ MODEL_MAPPING = OrderedDict([
     # ============================== GTE ==============================
     (
         "gte-Qwen2-7B-instruct",
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, True)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, trust_remote_code=True, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         "gte-Qwen2-1.5B-instruct",
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, True)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, trust_remote_code=True, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         "gte-Qwen1.5-7B-instruct",
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, True)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, trust_remote_code=True, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         "gte-multilingual-base",
-        EmbedderConfig(FlagModel, PoolingMethod.CLS, True)
+        EmbedderConfig(FlagModel, PoolingMethod.CLS, trust_remote_code=True)
     ),
     (
         "gte-large-en-v1.5",
-        EmbedderConfig(FlagModel, PoolingMethod.CLS, True)
+        EmbedderConfig(FlagModel, PoolingMethod.CLS, trust_remote_code=True)
     ),
     (
         "gte-base-en-v1.5",
@@ -179,16 +180,16 @@ MODEL_MAPPING = OrderedDict([
     # ============================== SFR ==============================
     (
         'SFR-Embedding-2_R',
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     (
         'SFR-Embedding-Mistral',
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
     ),
     # ============================== Linq ==============================
     (
         'Linq-Embed-Mistral',
-        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN)
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
     )
     # TODO: Add more models, such as Jina, Stella_v5, NV-Embed, etc.
 ])

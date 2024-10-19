@@ -1,4 +1,5 @@
 import os
+from typing import List, Union
 
 from FlagEmbedding.inference.embedder.model_mapping import MODEL_MAPPING
 
@@ -13,8 +14,10 @@ class FlagAutoModel:
     def from_finetuned(
         cls,
         model_name_or_path: str,
-        normalize_embeddings: bool = False,
-        use_fp16: bool = False,
+        normalize_embeddings: bool = True,
+        use_fp16: bool = True,
+        query_instruction_for_retrieval: str = None,
+        devices: Union[str, List[str]] = None,
         **kwargs,
     ):
         model_name = os.path.basename(model_name_or_path)
@@ -35,11 +38,15 @@ class FlagAutoModel:
         model_class = model_config.model_class
         pooling_method = kwargs.pop("pooling_method", model_config.pooling_method.value)
         trust_remote_code = kwargs.pop("trust_remote_code", model_config.trust_remote_code)
+        query_instruction_format = kwargs.pop("query_instruction_format", model_config.query_instruction_format)
         
         return model_class(
             model_name_or_path,
             normalize_embeddings=normalize_embeddings,
             use_fp16=use_fp16,
+            query_instruction_for_retrieval=query_instruction_for_retrieval,
+            query_instruction_format=query_instruction_format,
+            devices=devices,
             pooling_method=pooling_method,
             trust_remote_code=trust_remote_code,
             **kwargs,
