@@ -375,7 +375,6 @@ class ICLLLMEmbedder(AbsEmbedder):
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
                 padding=True,
-                max_length=max_length,
                 return_tensors='pt',
                 **kwargs
             ).to(self.device)

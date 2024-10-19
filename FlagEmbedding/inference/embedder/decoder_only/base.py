@@ -173,7 +173,6 @@ class BaseLLMEmbedder(AbsEmbedder):
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
                 padding=True,
-                truncation=True,
                 return_tensors='pt',
                 **kwargs
             ).to(device)
