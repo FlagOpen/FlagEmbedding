@@ -74,11 +74,11 @@ class M3Embedder(AbsEmbedder):
         lexical_weights_1: Union[Dict[str, float], List[Dict[str, float]]],
         lexical_weights_2: Union[Dict[str, float], List[Dict[str, float]]]
     ) -> Union[np.ndarray, float]:
-        def _compute_single_lexical_matching_score(lexical_weights_1: Dict[str, float], lexical_weights_2: Dict[str, float]):
+        def _compute_single_lexical_matching_score(lw1: Dict[str, float], lw2: Dict[str, float]):
             scores = 0
-            for token, weight in lexical_weights_1.items():
-                if token in lexical_weights_2:
-                    scores += weight * lexical_weights_2[token]
+            for token, weight in lw1.items():
+                if token in lw2:
+                    scores += weight * lw2[token]
             return scores
         
         if isinstance(lexical_weights_1, dict) and isinstance(lexical_weights_2, dict):
