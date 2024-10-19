@@ -344,7 +344,10 @@ class M3Embedder(AbsEmbedder):
         max_passage_length: int = 512,
         weights_for_different_modes: List[float] = None,
         **kwargs: Any
-    ) -> Dict[str, List[float]]:
+    ) -> Dict[
+        Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
+        List[float]
+    ]:
         if len(self.target_devices) == 1:
             return self.compute_score_single_device(
                 sentence_pairs,
