@@ -203,8 +203,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         self.model.eval()
         
         input_was_string = False
-        if isinstance(sentences, str):
-            sentences = [sentences]
+        if isinstance(queries, str):
+            queries = [queries]
             input_was_string = True
         
         if self.query_instruction_for_retrieval is not None:
