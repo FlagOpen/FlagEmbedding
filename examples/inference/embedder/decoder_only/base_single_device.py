@@ -25,9 +25,6 @@ def test_base_single_device():
     queries_embeddings = model.encode_queries(queries)
     passages_embeddings = model.encode_corpus(passages)
     
-    print(queries_embeddings)
-    print(passages_embeddings)
-    
     cos_scores = queries_embeddings @ passages_embeddings.T
     print(cos_scores[:2, :2])
 
