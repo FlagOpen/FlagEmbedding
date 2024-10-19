@@ -68,7 +68,6 @@ class AbsEmbedder(ABC):
         queries: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
-        convert_to_numpy: bool = True,
         **kwargs: Any
     ):
         if self.query_instruction_for_retrieval is not None:
@@ -83,7 +82,6 @@ class AbsEmbedder(ABC):
             input_texts,
             batch_size=batch_size,
             max_length=max_length,
-            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
     
@@ -92,7 +90,6 @@ class AbsEmbedder(ABC):
         corpus: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
-        convert_to_numpy: bool = True,
         **kwargs: Any
     ):
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
@@ -109,7 +106,6 @@ class AbsEmbedder(ABC):
             input_texts,
             batch_size=batch_size,
             max_length=max_length,
-            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
     
@@ -118,7 +114,6 @@ class AbsEmbedder(ABC):
         sentences: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
-        convert_to_numpy: bool = True,
         **kwargs: Any
     ):
         if len(self.target_devices) == 1:
@@ -126,7 +121,6 @@ class AbsEmbedder(ABC):
                 sentences,
                 batch_size=batch_size,
                 max_length=max_length,
-                convert_to_numpy=convert_to_numpy,
                 device=self.target_devices[0],
                 **kwargs
             )
@@ -137,7 +131,6 @@ class AbsEmbedder(ABC):
             pool,
             batch_size=batch_size,
             max_length=max_length,
-            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
         self.stop_multi_process_pool(pool)

@@ -163,10 +163,7 @@ class M3Embedder(AbsEmbedder):
         return_colbert_vecs: bool = False,
         device: str = None,
         **kwargs: Any
-    ):
-        # remove the conver_to_numpy parameter for the model
-        kwargs.pop('conver_to_numpy', None)
-        
+    ):        
         if device is None:
             device = self.target_devices[0]
         
