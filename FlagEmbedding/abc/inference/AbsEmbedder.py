@@ -278,4 +278,4 @@ class AbsEmbedder(ABC):
         elif isinstance(results_list[0], np.ndarray):
             return np.concatenate(results_list, axis=0)
         else:
-            raise ValueError("Unsupported type for results_list")
+            raise NotImplementedError("Unsupported type for results_list")

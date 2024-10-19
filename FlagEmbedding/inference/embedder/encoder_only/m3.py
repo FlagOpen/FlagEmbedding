@@ -2,8 +2,8 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from collections import defaultdict
-from typing import Any, List, Union, Dict
-from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
+from transformers import AutoTokenizer
+from typing import Any, List, Union, Dict, Literal
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
@@ -17,18 +17,24 @@ class M3Embedder(AbsEmbedder):
         model_name_or_path: str,
         normalize_embeddings: bool = False,
         use_fp16: bool = False,
-        pooling_method: str = "cls",
-        trust_remote_code: bool = False,
         query_instruction_for_retrieval: str = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
+        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        # Additional parameters for M3Embedder
+        pooling_method: str = "cls",
+        trust_remote_code: bool = False,
         cache_dir: str = None,
-        device: str = None, # specify device, such as "cuda:0"
+        colbert_dim: int = -1,
         **kwargs: Any,
     ):
         super().__init__(
             model_name_or_path,
-            normalize_embeddings,
-            use_fp16
+            normalize_embeddings=normalize_embeddings,
+            use_fp16=use_fp16,
+            query_instruction_for_retrieval=query_instruction_for_retrieval,
+            query_instruction_format=query_instruction_format,
+            devices=devices,
+            **kwargs
         )
         self.pooling_method = pooling_method
         
@@ -41,97 +47,11 @@ class M3Embedder(AbsEmbedder):
             EncoderOnlyEmbedderM3Runner.get_model(
                 model_name_or_path,
                 trust_remote_code=trust_remote_code,
-                colbert_dim=kwargs.get("colbert_dim", -1),
+                colbert_dim=colbert_dim,
                 cache_dir=cache_dir
             ),
             sentence_pooling_method=pooling_method,
             normalize_embeddings=normalize_embeddings
-        )
-        
-        self.model = AutoModel.from_pretrained(
-            model_name_or_path,
-            trust_remote_code=trust_remote_code
-        )
-        self.query_instruction_for_retrieval = query_instruction_for_retrieval
-        self.query_instruction_format = query_instruction_format
-        self.kwargs = kwargs
-        
-        if device is not None:
-            self.device = torch.device(device)
-            self.num_gpus = 1
-        else:
-            if torch.cuda.is_available():
-                self.device = torch.device("cuda")
-                self.num_gpus = torch.cuda.device_count()
-            else:
-                self.num_gpus = -1  # TODO: DataParallel for other devices
-                if torch.backends.mps.is_available():
-                    self.device = torch.device("mps")
-                elif is_torch_npu_available():
-                    self.device = torch.device("npu")
-                else:
-                    self.device = torch.device("cpu")
-        
-        if self.device.type == "cpu":
-            self.use_fp16 = False
-        
-        if self.use_fp16: self.model.half()
-        self.model = self.model.to(self.device)
-
-        if self.num_gpus > 1:
-            print(f"----------using {self.num_gpus}*GPUs----------")
-            self.model.model = torch.nn.DataParallel(self.model.model)
-    
-    @staticmethod
-    def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
-        return instruction_format.format(instruction, query)
-    
-    def encode_queries(
-        self,
-        queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
-        **kwargs: Any
-    ):
-        if self.query_instruction_for_retrieval is not None:
-            if isinstance(queries, str):
-                input_texts = self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, queries)
-            else:
-                input_texts = [self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, query) for query in queries]
-        else:
-            input_texts = queries
-        return self.encode(
-            input_texts,
-            batch_size=batch_size,
-            max_length=max_length,
-            convert_to_numpy=convert_to_numpy,
-            **kwargs
-        )
-    
-    def encode_corpus(
-        self,
-        corpus: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
-        **kwargs: Any
-    ):
-        passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
-        passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
-        if passage_instruction_for_retrieval is not None:
-            if isinstance(corpus, str):
-                input_texts = self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, corpus)
-            else:
-                input_texts = [self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, passage) for passage in corpus]
-        else:
-            input_texts = corpus
-        return self.encode(
-            input_texts,
-            batch_size=batch_size,
-            max_length=max_length,
-            convert_to_numpy=convert_to_numpy,
-            **kwargs
         )
     
     def convert_id_to_token(self, lexical_weights: List[Dict]):
@@ -149,7 +69,7 @@ class M3Embedder(AbsEmbedder):
             new_lexical_weights = new_lexical_weights[0]
         return new_lexical_weights
 
-    def compute_lexical_matching_score(self, lexical_weights_1: Dict, lexical_weights_2: Dict):
+    def compute_lexical_matching_score(self, lexical_weights_1: Dict[str, float], lexical_weights_2: Dict[str, float]):
         scores = 0
         for token, weight in lexical_weights_1.items():
             if token in lexical_weights_2:
@@ -163,8 +83,77 @@ class M3Embedder(AbsEmbedder):
         scores = torch.sum(scores) / q_reps.size(0)
         return scores
     
-    @torch.no_grad()
+    def encode_queries(
+        self,
+        queries: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        return_dense: bool = True,
+        return_sparse: bool = False,
+        return_colbert_vecs: bool = False,
+        **kwargs: Any
+    ) -> Dict[
+        Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
+        Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+    ]:
+        return super().encode_queries(
+            queries,
+            batch_size=batch_size,
+            max_length=max_length,
+            return_dense=return_dense,
+            return_sparse=return_sparse,
+            return_colbert_vecs=return_colbert_vecs,
+            **kwargs
+        )
+    
+    def encode_corpus(
+        self,
+        queries: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        return_dense: bool = True,
+        return_sparse: bool = False,
+        return_colbert_vecs: bool = False,
+        **kwargs: Any
+    ) -> Dict[
+        Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
+        Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+    ]:
+        return super().encode_corpus(
+            queries,
+            batch_size=batch_size,
+            max_length=max_length,
+            return_dense=return_dense,
+            return_sparse=return_sparse,
+            return_colbert_vecs=return_colbert_vecs,
+            **kwargs
+        )
+    
     def encode(
+        self,
+        queries: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        return_dense: bool = True,
+        return_sparse: bool = False,
+        return_colbert_vecs: bool = False,
+        **kwargs: Any
+    ) -> Dict[
+        Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
+        Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+    ]:
+        return super().encode(
+            queries,
+            batch_size=batch_size,
+            max_length=max_length,
+            return_dense=return_dense,
+            return_sparse=return_sparse,
+            return_colbert_vecs=return_colbert_vecs,
+            **kwargs
+        )
+    
+    @torch.no_grad()
+    def encode_single_device(
         self,
         sentences: Union[List[str], str],
         batch_size: int = 256,
@@ -172,10 +161,13 @@ class M3Embedder(AbsEmbedder):
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
+        device: str = None,
         **kwargs: Any
     ):
-        if self.num_gpus > 0:
-            batch_size = batch_size * self.num_gpus
+        if device is None:
+            device = self.target_devices[0]
+        
+        self.model.to(device)
         self.model.eval()
         
         input_was_string = False
@@ -232,7 +224,7 @@ class M3Embedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(self.device)
+        ).to(device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -259,7 +251,7 @@ class M3Embedder(AbsEmbedder):
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
-            ).to(self.device)
+            ).to(device)
             outputs = self.model(
                 inputs_batch,
                 return_dense=return_dense,
@@ -318,3 +310,28 @@ class M3Embedder(AbsEmbedder):
             "lexical_weights": all_lexical_weights,
             "colbert_vecs": all_colbert_vecs
         }
+
+    def _concatenate_results_from_multi_process(
+        self,
+        results_list: List[Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Any]]
+    ):
+        merged_results = {
+            "dense_vecs": [],
+            "lexical_weights": [],
+            "colbert_vecs": []
+        }
+        for key in merged_results.keys():
+            for results in results_list:
+                if results[key] is None:
+                    merged_results[key] = None
+                    break
+                else:
+                    if key == "dense_vecs":
+                        merged_results[key].append(results[key])
+                    else:
+                        merged_results[key].extend(results[key])
+        
+        if merged_results["dense_vecs"] is not None:
+            merged_results["dense_vecs"] = np.concatenate(merged_results["dense_vecs"], axis=0)
+        
+        return merged_results

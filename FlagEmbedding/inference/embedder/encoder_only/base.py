@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from typing import cast, Any, List, Union
-from transformers import AutoModel, AutoTokenizer, is_torch_npu_available
+from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 
@@ -42,6 +42,54 @@ class BaseEmbedder(AbsEmbedder):
             model_name_or_path,
             trust_remote_code=trust_remote_code,
             cache_dir=cache_dir
+        )
+
+    def encode_queries(
+        self,
+        queries: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        convert_to_numpy: bool = True,
+        **kwargs: Any
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode_queries(
+            queries,
+            batch_size=batch_size,
+            max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
+            **kwargs
+        )
+    
+    def encode_corpus(
+        self,
+        corpus: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        convert_to_numpy: bool = True,
+        **kwargs: Any
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode_corpus(
+            corpus,
+            batch_size=batch_size,
+            max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
+            **kwargs
+        )
+    
+    def encode(
+        self,
+        sentences: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        convert_to_numpy: bool = True,
+        **kwargs: Any
+    ) -> Union[np.ndarray, torch.Tensor]:
+        return super().encode(
+            sentences,
+            batch_size=batch_size,
+            max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
+            **kwargs
         )
 
     @torch.no_grad()
