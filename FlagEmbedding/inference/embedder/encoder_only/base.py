@@ -92,7 +92,7 @@ class BaseEmbedder(AbsEmbedder):
             max_length=max_length,
             return_tensors='pt',
             **kwargs
-        ).to(self.device)
+        ).to(device)
         while flag is False:
             try:
                 test_inputs_batch = {}
@@ -115,7 +115,7 @@ class BaseEmbedder(AbsEmbedder):
                 max_length=max_length,
                 return_tensors='pt',
                 **kwargs
-            ).to(self.device)
+            ).to(device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = self.pooling(last_hidden_state, inputs_batch['attention_mask'])
             if self.normalize_embeddings:
