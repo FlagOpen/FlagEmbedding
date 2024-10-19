@@ -489,9 +489,9 @@ class M3Embedder(AbsEmbedder):
             queries_inputs = _tokenize(queries_batch, max_length=max_query_length).to(device)
             corpus_inputs = _tokenize(corpus_batch, max_length=max_passage_length).to(device)
 
-            queries_output = self.model(queries_inputs, return_dense=True, return_sparse=True, return_colbert=True,
+            queries_output = self.model(queries_inputs, return_dense=True, return_sparse=True, return_colbert_vecs=True,
                                         return_sparse_embedding=True)
-            corpus_output = self.model(corpus_inputs, return_dense=True, return_sparse=True, return_colbert=True,
+            corpus_output = self.model(corpus_inputs, return_dense=True, return_sparse=True, return_colbert_vecs=True,
                                        return_sparse_embedding=True)
 
             q_dense_vecs, q_sparse_vecs, q_colbert_vecs = queries_output['dense_vecs'], queries_output['sparse_vecs'], \
