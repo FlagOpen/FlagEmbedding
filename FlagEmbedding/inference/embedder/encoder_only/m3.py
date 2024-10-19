@@ -56,6 +56,7 @@ class M3Embedder(AbsEmbedder):
                 colbert_dim=colbert_dim,
                 cache_dir=cache_dir
             ),
+            tokenizer=self.tokenizer,
             sentence_pooling_method=pooling_method,
             normalize_embeddings=normalize_embeddings
         )
