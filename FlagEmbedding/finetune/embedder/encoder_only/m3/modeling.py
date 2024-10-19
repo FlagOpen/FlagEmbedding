@@ -324,9 +324,9 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
                 text_input: Dict[str, Tensor] = None,
                 return_dense: bool = True,
                 return_sparse: bool = False,
-                return_colbert: bool = False,
+                return_colbert_vecs: bool = False,
                 return_sparse_embedding: bool = False):
-        assert return_dense or return_sparse or return_colbert, 'Must choose one or more from `return_colbert`, `return_sparse`, `return_dense` to set `True`!'
+        assert return_dense or return_sparse or return_colbert_vecs, 'Must choose one or more from `return_colbert_vecs`, `return_sparse`, `return_dense` to set `True`!'
 
         last_hidden_state = self.model(**text_input, return_dict=True).last_hidden_state
 
@@ -338,7 +338,7 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             sparse_vecs = self._sparse_embedding(last_hidden_state, text_input['input_ids'],
                                                 return_embedding=return_sparse_embedding)
             output['sparse_vecs'] = sparse_vecs
-        if return_colbert:
+        if return_colbert_vecs:
             colbert_vecs = self._colbert_embedding(last_hidden_state, text_input['attention_mask'])
             output['colbert_vecs'] = colbert_vecs
 
