@@ -13,12 +13,12 @@ def test_m3_single_devices():
     )
     
     queries = [
-        "What is the capital of France?",
-        "What is the population of China?",
+        "What is BGE M3?",
+        "Defination of BM25"
     ] * 100
     passages = [
-        "Paris is the capital of France.",
-        "The population of China is over 1.4 billion people."
+        "BGE M3 is an embedding model supporting dense retrieval, lexical matching and multi-vector interaction.", 
+        "BM25 is a bag-of-words retrieval function that ranks a set of documents based on the query terms appearing in each document"
     ] * 100
     
     queries_embeddings = model.encode_queries(
