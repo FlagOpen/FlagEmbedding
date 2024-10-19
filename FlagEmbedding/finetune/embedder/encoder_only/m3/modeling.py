@@ -94,6 +94,15 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         colbert_vecs = colbert_vecs * mask[:, 1:][:, :, None].float()
         return colbert_vecs
 
+    def compute_score(
+        self, q_reps, p_reps, q_mask: torch.Tensor,
+        dense_weight: float = 1.0, sparse_weight: float = 0.3, colbert_weight: float = 1.0
+    ):
+        dense_score = self.dense_score(q_reps, p_reps)
+        sparse_score = self.sparse_score(q_reps, p_reps)
+        colbert_score = self.colbert_score(q_reps, p_reps, q_mask=q_mask)
+        return dense_score * dense_weight + sparse_score * sparse_weight + colbert_score * colbert_weight
+
     def dense_score(self, q_reps, p_reps):
         scores = self.compute_similarity(q_reps, p_reps) / self.temperature
         scores = scores.view(q_reps.size(0), -1)
