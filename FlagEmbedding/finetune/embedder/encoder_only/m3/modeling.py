@@ -33,7 +33,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             temperature,
             sub_batch_size
         )
-        self.vocab_size = base_model['model'].config.vocab_size
         self.sentence_pooling_method = sentence_pooling_method
         self.normalize_embeddings = normalize_embeddings
         self.cross_entropy = torch.nn.CrossEntropyLoss(reduction='mean')
@@ -48,6 +47,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             self.colbert_linear = base_model['colbert_linear']
             self.sparse_linear = base_model['sparse_linear']
         
+        self.vocab_size = self.model.config.vocab_size
         self.use_self_distill = use_self_distill
         self.self_distill_start_step = self_distill_start_step
         self.step = 0
