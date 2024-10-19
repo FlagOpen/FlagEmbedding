@@ -40,8 +40,8 @@ def test_m3_multi_devices():
         passages_embeddings["lexical_weights"],
     )
 
-    print("Dense score:", dense_scores[:2, :2])
-    print("Sparse score:", sparse_scores[:2, :2])
+    print("Dense score:\n", dense_scores[:2, :2])
+    print("Sparse score:\n", sparse_scores[:2, :2])
 
 
 if __name__ == '__main__':
