@@ -45,3 +45,7 @@ def test_icl_multi_devices():
 
 if __name__ == '__main__':
     test_icl_multi_devices()
+
+    print("--------------------------------")
+    print("Expected Output:")
+    print("[[0.579  0.2776]\n [0.2249 0.5146]]")

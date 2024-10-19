@@ -32,3 +32,7 @@ def test_base_multi_devices():
 
 if __name__ == '__main__':
     test_base_multi_devices()
+    
+    print("--------------------------------")
+    print("Expected Output:")
+    print("[[0.7944 0.4492]\n [0.5806 0.801 ]]")

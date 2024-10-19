@@ -46,3 +46,10 @@ def test_m3_single_devices():
 
 if __name__ == '__main__':
     test_m3_single_devices()
+
+    print("--------------------------------")
+    print("Expected Output:")
+    print("Dense score:")
+    print(" [[0.626  0.3477]\n [0.3496 0.678 ]]")
+    print("Sparse score:")
+    print(" [[0.19554901 0.00880432]\n [0.         0.18036556]]")
