@@ -164,6 +164,9 @@ class M3Embedder(AbsEmbedder):
         device: str = None,
         **kwargs: Any
     ):
+        # remove the conver_to_numpy parameter for the model
+        kwargs.pop('conver_to_numpy', None)
+        
         if device is None:
             device = self.target_devices[0]
         
