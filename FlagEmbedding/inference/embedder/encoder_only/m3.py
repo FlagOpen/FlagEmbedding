@@ -1,14 +1,20 @@
+import math
 import torch
+import queue
+import logging
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm, trange
+from multiprocessing import Queue
 from collections import defaultdict
 from transformers import AutoTokenizer
-from typing import Any, List, Union, Dict, Literal
+from typing import Any, List, Union, Dict, Literal, Tuple
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
     EncoderOnlyEmbedderM3ModelForInference, EncoderOnlyEmbedderM3Runner
 )
+
+logger = logging.getLogger(__name__)
 
 
 class M3Embedder(AbsEmbedder):
@@ -330,6 +336,203 @@ class M3Embedder(AbsEmbedder):
             "colbert_vecs": all_colbert_vecs
         }
 
+    def compute_score(
+        self,
+        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+        batch_size: int = 256,
+        max_query_length: int = 512,
+        max_passage_length: int = 512,
+        weights_for_different_modes: List[float] = None,
+        **kwargs: Any
+    ) -> Dict[str, List[float]]:
+        if len(self.target_devices) == 1:
+            return self.compute_score_single_device(
+                sentence_pairs,
+                batch_size=batch_size,
+                max_query_length=max_query_length,
+                max_passage_length=max_passage_length,
+                weights_for_different_modes=weights_for_different_modes,
+                device=self.target_devices[0],
+                **kwargs
+            )
+        
+        pool = self.start_multi_process_pool(M3Embedder._compute_score_multi_process_worker)
+        embeddings = self.compute_score_multi_process(
+            sentence_pairs,
+            pool,
+            batch_size=batch_size,
+            max_query_length=max_query_length,
+            max_passage_length=max_passage_length,
+            weights_for_different_modes=weights_for_different_modes,
+            **kwargs
+        )
+        self.stop_multi_process_pool(pool)
+        return embeddings
+    
+    # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L877
+    def compute_score_multi_process(
+        self,
+        sentence_pairs: List[Tuple[str, str]],
+        pool: Dict[Literal["input", "output", "processes"], Any],
+        **kwargs
+    ):
+        chunk_size = math.ceil(len(sentence_pairs) / len(pool["processes"]))
+
+        input_queue = pool["input"]
+        last_chunk_id = 0
+        chunk = []
+
+        for sentence_pair in sentence_pairs:
+            chunk.append(sentence_pair)
+            if len(chunk) >= chunk_size:
+                input_queue.put(
+                    [last_chunk_id, chunk, kwargs]
+                )
+                last_chunk_id += 1
+                chunk = []
+
+        if len(chunk) > 0:
+            input_queue.put([last_chunk_id, chunk, kwargs])
+            last_chunk_id += 1
+
+        output_queue = pool["output"]
+        results_list = sorted(
+            [output_queue.get() for _ in trange(last_chunk_id, desc="Chunks")],
+            key=lambda x: x[0],
+        )
+        
+        scores_dict = self._concatenate_compute_score_results_from_multi_process([result[1] for result in results_list])
+        return scores_dict
+    
+    # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L976
+    @staticmethod
+    def _compute_score_multi_process_worker(
+        target_device: str, model: 'M3Embedder', input_queue: Queue, results_queue: Queue
+    ) -> None:
+        """
+        Internal working process to encode sentences in multi-process setup
+        """
+        while True:
+            try:
+                chunk_id, sentences, kwargs = (
+                    input_queue.get()
+                )
+                embeddings = model.compute_score_single_device(
+                    sentences,
+                    device=target_device,
+                    **kwargs
+                )
+
+                results_queue.put([chunk_id, embeddings])
+            except queue.Empty:
+                break
+
+    @torch.no_grad()
+    def compute_score_single_device(
+        self,
+        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+        batch_size: int = 256,
+        max_query_length: int = 512,
+        max_passage_length: int = 512,
+        weights_for_different_modes: List[float] = None,
+        device: str = None,
+        **kwargs: Any
+    ) -> Dict[
+        Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
+        List[float]
+    ]:
+        def _tokenize(texts: list, max_length: int):
+            return self.tokenizer(
+                texts,
+                max_length=max_length,
+                padding=True,
+                return_token_type_ids=False,
+                truncation=True,
+                return_tensors='pt',
+                **kwargs
+            )
+
+        if device is None:
+            device = self.target_devices[0]
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
+
+        self.model.to(device)
+        self.model.eval()
+        
+        if isinstance(sentence_pairs, list) and len(sentence_pairs) == 0:
+            return []
+        if isinstance(sentence_pairs[0], str):
+            one_input_pair = True
+            sentence_pairs = [sentence_pairs]
+        else:
+            one_input_pair = False
+
+        all_scores = {
+            'colbert': [],
+            'sparse': [],
+            'dense': [],
+            'sparse+dense': [],
+            'colbert+sparse+dense': []
+        }
+        for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
+                                disable=len(sentence_pairs) < 128):
+            sentences_batch = sentence_pairs[start_index:start_index + batch_size]
+
+            queries_batch = [pair[0] for pair in sentences_batch]
+            corpus_batch = [pair[1] for pair in sentences_batch]
+
+            queries_inputs = _tokenize(queries_batch, max_length=max_query_length).to(device)
+            corpus_inputs = _tokenize(corpus_batch, max_length=max_passage_length).to(device)
+
+            queries_output = self.model(queries_inputs, return_dense=True, return_sparse=True, return_colbert=True,
+                                        return_sparse_embedding=True)
+            corpus_output = self.model(corpus_inputs, return_dense=True, return_sparse=True, return_colbert=True,
+                                       return_sparse_embedding=True)
+
+            q_dense_vecs, q_sparse_vecs, q_colbert_vecs = queries_output['dense_vecs'], queries_output['sparse_vecs'], \
+            queries_output['colbert_vecs']
+            p_dense_vecs, p_sparse_vecs, p_colbert_vecs = corpus_output['dense_vecs'], corpus_output['sparse_vecs'], \
+            corpus_output['colbert_vecs']
+
+            dense_scores = self.model.dense_score(q_dense_vecs, p_dense_vecs)
+            sparse_scores = self.model.sparse_score(q_sparse_vecs, p_sparse_vecs)
+            colbert_scores = self.model.colbert_score(q_colbert_vecs, p_colbert_vecs,
+                                                      q_mask=queries_inputs['attention_mask'])
+
+            if weights_for_different_modes is None:
+                weights_for_different_modes = [1., 1., 1.]
+                weight_sum = 3
+                logger.info("default weights for dense, sparse, colbert are [1.0, 1.0, 1.0] ")
+            else:
+                assert len(weights_for_different_modes) == 3
+                weight_sum = sum(weights_for_different_modes)
+
+            inx = torch.arange(0, len(sentences_batch))
+            dense_scores, sparse_scores, colbert_scores = dense_scores[inx, inx].float(), sparse_scores[
+                inx, inx].float(), colbert_scores[inx, inx].float()
+
+            all_scores['colbert'].extend(
+                colbert_scores.cpu().numpy().tolist()
+            )
+            all_scores['sparse'].extend(
+                sparse_scores.cpu().numpy().tolist()
+            )
+            all_scores['dense'].extend(
+                dense_scores.cpu().numpy().tolist()
+            )
+            all_scores['sparse+dense'].extend(
+                ((sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/(weights_for_different_modes[1]+weights_for_different_modes[0])).cpu().numpy().tolist()
+            )
+            all_scores['colbert+sparse+dense'].extend(
+                ((colbert_scores * weights_for_different_modes[2] + sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/weight_sum).cpu().numpy().tolist()
+            )
+
+        if one_input_pair:
+            return {k: v[0] for k, v in all_scores.items()}
+        return all_scores
+
     def _concatenate_results_from_multi_process(
         self,
         results_list: List[Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Any]]
@@ -352,5 +555,22 @@ class M3Embedder(AbsEmbedder):
         
         if merged_results["dense_vecs"] is not None:
             merged_results["dense_vecs"] = np.concatenate(merged_results["dense_vecs"], axis=0)
+        
+        return merged_results
+
+    def _concatenate_compute_score_results_from_multi_process(
+        self,
+        results_list: List[Dict[Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"], List[float]]]
+    ):
+        merged_results = {
+            "colbert": [],
+            "sparse": [],
+            "dense": [],
+            "sparse+dense": [],
+            "colbert+sparse+dense": []
+        }
+        for key in merged_results.keys():
+            for results in results_list:
+                merged_results[key].extend(results[key])
         
         return merged_results
