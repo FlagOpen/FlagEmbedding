@@ -14,11 +14,11 @@ def test_m3_single_devices():
     
     queries = [
         "What is the capital of France?",
-        "What is the population of China?",
+        # "What is the population of China?",
     ] * 100
     passages = [
         "Paris is the capital of France.",
-        "The population of China is over 1.4 billion people."
+        # "The population of China is over 1.4 billion people."
     ] * 100
     
     queries_embeddings = model.encode_queries(
