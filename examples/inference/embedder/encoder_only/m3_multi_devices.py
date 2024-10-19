@@ -1,9 +1,9 @@
 import os
-from FlagEmbedding import BGEM3Model
+from FlagEmbedding import BGEM3FlagModel
 
 
 def test_m3_multi_devices():
-    model = BGEM3Model(
+    model = BGEM3FlagModel(
         'BAAI/bge-m3',
         normalize_embeddings=True,
         use_fp16=True,

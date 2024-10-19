@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from collections import OrderedDict
 
 from FlagEmbedding.abc.inference import AbsEmbedder
-from FlagEmbedding.inference.embedder import FlagModel, BGEM3Model, FlagLLMModel, FlagICLModel
+from FlagEmbedding.inference.embedder import FlagModel, BGEM3FlagModel, FlagLLMModel, FlagICLModel
 
 
 class PoolingMethod(Enum):
@@ -32,7 +32,7 @@ MODEL_MAPPING = OrderedDict([
     ),
     (
         "bge-m3",
-        EmbedderConfig(BGEM3Model, PoolingMethod.CLS)
+        EmbedderConfig(BGEM3FlagModel, PoolingMethod.CLS)
     ),
     (
         "bge-large-en-v1.5",

@@ -1,7 +1,7 @@
 from .auto_embedder import FlagAutoModel
 from .auto_reranker import FlagAutoReranker
 from .embedder import (
-    FlagModel, BGEM3Model,
+    FlagModel, BGEM3FlagModel,
     FlagICLModel, FlagLLMModel
 )
 from .reranker import (
@@ -14,7 +14,7 @@ __all__ = [
     "FlagAutoModel",
     "FlagAutoReranker",
     "FlagModel",
-    "BGEM3Model",
+    "BGEM3FlagModel",
     "FlagICLModel",
     "FlagLLMModel",
     "FlagReranker",

@@ -1,9 +1,9 @@
-from .encoder_only import FlagModel, BGEM3Model
+from .encoder_only import FlagModel, BGEM3FlagModel
 from .decoder_only import FlagICLModel, FlagLLMModel
 
 __all__ = [
     "FlagModel",
-    "BGEM3Model",
+    "BGEM3FlagModel",
     "FlagICLModel",
     "FlagLLMModel",
 ]
