@@ -6,6 +6,7 @@ from transformers import (
     AutoModel, AutoConfig,
     AutoTokenizer, PreTrainedTokenizer
 )
+from huggingface_hub import snapshot_download
 
 from FlagEmbedding.abc.finetune.embedder import (
     AbsEmbedderRunner, AbsEmbedderModel,
@@ -26,6 +27,9 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         training_args: EncoderOnlyEmbedderM3TrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
+        self.model_args: EncoderOnlyEmbedderM3ModelArguments
+        self.data_args: AbsEmbedderDataArguments
+        self.training_args: EncoderOnlyEmbedderM3TrainingArguments
     
     @staticmethod
     def get_model(
@@ -34,10 +38,17 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         colbert_dim: int = -1,
         cache_dir: str = None
     ):
+        if not os.path.exists(model_name_or_path):
+            cache_folder = os.getenv('HF_HUB_CACHE', None) if cache_dir is None else cache_dir
+            model_name_or_path = snapshot_download(
+                repo_id=model_name_or_path,
+                cache_dir=cache_folder,
+                ignore_patterns=['flax_model.msgpack', 'rust_model.ot', 'tf_model.h5']
+            )
+        
         model = AutoModel.from_pretrained(
             model_name_or_path,
-            trust_remote_code=trust_remote_code,
-            cache_dir=cache_dir
+            trust_remote_code=trust_remote_code
         )
         colbert_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
