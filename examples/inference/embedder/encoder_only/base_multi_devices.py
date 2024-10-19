@@ -11,7 +11,7 @@ def test_base_multi_devices():
         query_instruction_format="{}{}",
         devices=["cuda:0", "cuda:1"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
         pooling_method='cls',
-        cache_dir=os.getenv('HF_HOME', None),
+        cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
     queries = [

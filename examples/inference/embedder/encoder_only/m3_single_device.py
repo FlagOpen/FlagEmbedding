@@ -9,7 +9,7 @@ def test_m3_single_devices():
         use_fp16=True,
         devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
         pooling_method='cls',
-        cache_dir=os.getenv('HF_HOME', None),
+        cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
     queries = [

@@ -11,7 +11,7 @@ def test_base_single_device():
         query_instruction_format="{}{}",
         devices="cuda:0",   # if you don't have a GPU, you can use "cpu"
         pooling_method='cls',
-        cache_dir=os.getenv('HF_HOME', None),
+        cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
     queries = [
