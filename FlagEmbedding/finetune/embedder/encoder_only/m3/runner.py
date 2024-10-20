@@ -97,6 +97,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             negatives_cross_device=self.training_args.negatives_cross_device,
             temperature=self.training_args.temperature,
             sub_batch_size=self.training_args.sub_batch_size,
+            kd_loss_type=self.training_args.kd_loss_type,
+            kd_loss_plus_normal_loss=self.training_args.kd_loss_plus_normal_loss,
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings,
             unified_finetuning=self.training_args.unified_finetuning,

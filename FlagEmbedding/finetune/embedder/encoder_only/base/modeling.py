@@ -17,6 +17,8 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
         sub_batch_size: int = -1,
+        kd_loss_type: str = 'kl_div',
+        kd_loss_plus_normal_loss: bool = True,
         sentence_pooling_method: str = 'cls',
         normalize_embeddings: bool = False,
     ):
@@ -25,7 +27,9 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
             tokenizer=tokenizer,
             negatives_cross_device=negatives_cross_device,
             temperature=temperature,
-            sub_batch_size=sub_batch_size
+            sub_batch_size=sub_batch_size,
+            kd_loss_type=kd_loss_type,
+            kd_loss_plus_normal_loss=kd_loss_plus_normal_loss,
         )
         self.sentence_pooling_method = sentence_pooling_method
         self.normalize_embeddings = normalize_embeddings
@@ -75,7 +79,7 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
             )
             d = attention_mask.sum(dim=1, keepdim=True).float()
             return s / d
-        elif self.sentence_pooling_method == "last":
+        elif self.sentence_pooling_method == "last_token":
             left_padding = attention_mask[:, -1].sum() == attention_mask.shape[0]
             if left_padding:
                 return last_hidden_state[:, -1]
