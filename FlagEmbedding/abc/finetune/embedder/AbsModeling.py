@@ -28,7 +28,9 @@ class AbsEmbedderModel(ABC, nn.Module):
         tokenizer: AutoTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
-        sub_batch_size: int = -1
+        sub_batch_size: int = -1,
+        kd_loss_type: str = 'kl_div',
+        kd_loss_plus_normal_loss: bool = True,
     ):
         super().__init__()
         self.model = base_model
@@ -43,6 +45,8 @@ class AbsEmbedderModel(ABC, nn.Module):
             self.world_size = dist.get_world_size()
 
         self.sub_batch_size = sub_batch_size
+        self.kd_loss_plus_normal_loss = kd_loss_plus_normal_loss
+        self.kd_loss_type = kd_loss_type
     
     @abstractmethod
     def encode(self, features):
@@ -60,6 +64,21 @@ class AbsEmbedderModel(ABC, nn.Module):
     def save(self, output_dir: str):
         pass
     
+    def get_local_score(self, q_reps, p_reps, all_scores):
+        group_size = p_reps.size(0) // q_reps.size(0)
+        indices = torch.arange(0, q_reps.size(0), device=q_reps.device) * group_size
+        specific_scores = []
+        for i in range(group_size):
+            specific_scores.append(
+                all_scores[torch.arange(q_reps.size(0), device=q_reps.device), indices + i]
+            )
+        return torch.stack(specific_scores, dim=1).view(q_reps.size(0), -1)
+
+    def compute_local_score(self, q_reps, p_reps):
+        all_scores = self.compute_score(q_reps, p_reps)
+        loacl_scores = self.get_local_score(q_reps, p_reps, all_scores)
+        return loacl_scores
+    
     def forward(
         self, 
         queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
@@ -68,43 +87,90 @@ class AbsEmbedderModel(ABC, nn.Module):
         no_in_batch_neg_flag: bool = False,
     ):
         q_reps = self.encode(queries) # (batch_size, dim)
-        p_reps = self.encode(passages) # (batch_size * num, dim)
+        p_reps = self.encode(passages) # (batch_size * group_size, dim)
+        group_size = p_reps.size(0) // q_reps.size(0)
 
         if self.training:
             if teacher_scores is not None:
                 teacher_scores = torch.tensor(teacher_scores, device=q_reps.device)
-                teacher_scores = teacher_scores.view(q_reps.size(0), -1).detach()
+                teacher_scores = teacher_scores.view(q_reps.size(0), -1).detach()   # (batch_size, group_size)
 
-                teacher_targets = F.softmax(teacher_scores, dim=-1)  # B N
-                group_size = p_reps.size(0) // q_reps.size(0)
-
-                if self.negatives_cross_device and not no_in_batch_neg_flag:
-                    cross_q_reps = self._dist_gather_tensor(q_reps)
-                    cross_p_reps = self._dist_gather_tensor(p_reps)
-                    cross_teacher_targets = self._dist_gather_tensor(teacher_targets)
-                    cross_scores = self.compute_score(cross_q_reps, cross_p_reps)
-
-                    loss = self.distill_loss(cross_teacher_targets, cross_scores, group_size=group_size)
+                teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
+                
+                if no_in_batch_neg_flag:
+                    local_scores = self.compute_local_score(q_reps, p_reps) # (batch_size, group_size)
+                    
+                    # compute kd loss
+                    loss = self.distill_loss(self.kd_loss_type, teacher_targets, local_scores, group_size=group_size)
+                    
+                    # add normal loss if needed
+                    if self.kd_loss_plus_normal_loss:
+                        local_targets = torch.zeros(local_scores.size(0), device=local_scores.device, dtype=torch.long) # (batch_size)
+                        loss += self.compute_loss(local_scores, local_targets)
                 else:
-                    scores = self.compute_score(q_reps, p_reps)  # B, B * N
-                    loss = self.distill_loss(teacher_targets, scores, group_size=group_size)
+                    if self.negatives_cross_device:
+                        cross_q_reps = self._dist_gather_tensor(q_reps) # (world_size * batch_size, dim)
+                        cross_p_reps = self._dist_gather_tensor(p_reps) # (world_size * batch_size * group_size, dim)
+                        cross_scores = self.compute_score(cross_q_reps, cross_p_reps)   # (world_size * batch_size, world_size * batch_size * group_size)
+                        
+                        # compute kd loss
+                        if self.kd_loss_type == "kl_div":
+                            student_scores = self.get_local_score(cross_q_reps, cross_p_reps, cross_scores) # (world_size * batch_size, group_size)
+                            student_scores = student_scores[
+                                q_reps.size(0)*self.process_rank : q_reps.size(0)*(self.process_rank+1)
+                            ]   # (batch_size, group_size)
+                            
+                            loss = self.distill_loss(self.kd_loss_type, teacher_targets, student_scores, group_size)
+                        elif self.kd_loss_type == "m3_kd_loss":
+                            cross_teacher_targets = self._dist_gather_tensor(teacher_targets)   # (world_size * batch_size, group_size)
+                            
+                            loss = self.distill_loss(self.kd_loss_type, cross_teacher_targets, cross_scores, group_size)
+                        else:
+                            raise ValueError(f"Invalid kd_loss_type: {self.kd_loss_type}")
+
+                        # add normal loss if needed
+                        if self.kd_loss_plus_normal_loss:
+                            cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
+                            cross_targets = cross_idxs * group_size # (world_size * batch_size)
+                            loss += self.compute_loss(cross_scores, cross_targets)
+                    else:
+                        scores = self.compute_score(q_reps, p_reps) # (batch_size, batch_size * group_size)
+                        
+                        # compute kd loss
+                        if self.kd_loss_type == "kl_div":
+                            student_scores = self.get_local_score(q_reps, p_reps, scores) # (batch_size, group_size)
+                            
+                            loss = self.distill_loss(self.kd_loss_type, teacher_targets, student_scores, group_size)
+                        elif self.kd_loss_type == "m3_kd_loss":
+                            loss = self.distill_loss(self.kd_loss_type, teacher_targets, scores, group_size)
+                        else:
+                            raise ValueError(f"Invalid kd_loss_type: {self.kd_loss_type}")
+                        
+                        # add normal loss if needed
+                        if self.kd_loss_plus_normal_loss:
+                            idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
+                            targets = idxs * (p_reps.size(0) // q_reps.size(0)) # (batch_size)
+                            loss += self.compute_loss(scores, targets)
             else:
-                if self.negatives_cross_device and not no_in_batch_neg_flag:
-                    cross_q_reps = self._dist_gather_tensor(q_reps)
-                    cross_p_reps = self._dist_gather_tensor(p_reps)
-
-                    cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
-
-                    cross_targets = cross_idxs * (cross_p_reps.size(0) // cross_q_reps.size(0))
-                    cross_scores = self.compute_score(cross_q_reps, cross_p_reps)
-
-                    loss = self.compute_loss(cross_scores, cross_targets)
+                if no_in_batch_neg_flag:
+                    local_scores = self.compute_local_score(q_reps, p_reps) # (batch_size, group_size)
+                    local_targets = torch.zeros(local_scores.size(0), device=local_scores.device, dtype=torch.long) # (batch_size)
+                    loss = self.compute_loss(local_scores, local_targets)
                 else:
-                    idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
-                    targets = idxs * (p_reps.size(0) // q_reps.size(0))
+                    if self.negatives_cross_device:
+                        cross_q_reps = self._dist_gather_tensor(q_reps) # (world_size * batch_size, dim)
+                        cross_p_reps = self._dist_gather_tensor(p_reps) # (world_size * batch_size * group_size, dim)
+                        cross_scores = self.compute_score(cross_q_reps, cross_p_reps)   # (world_size * batch_size, world_size * batch_size * group_size)
 
-                    scores = self.compute_score(q_reps, p_reps)  # B, B * N
-                    loss = self.compute_loss(scores, targets)
+                        cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
+                        cross_targets = cross_idxs * group_size # (world_size * batch_size)
+                        loss = self.compute_loss(cross_scores, cross_targets)
+                    else:
+                        scores = self.compute_score(q_reps, p_reps) # (batch_size, batch_size * group_size)
+                        
+                        idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
+                        targets = idxs * group_size # (batch_size)
+                        loss = self.compute_loss(scores, targets)
         else:
             loss = None
 
@@ -112,20 +178,30 @@ class AbsEmbedderModel(ABC, nn.Module):
             loss=loss,
         )
 
-    def distill_loss(self, teacher_targets, student_scores, group_size):
-        labels = torch.arange(student_scores.size(0), device=student_scores.device, dtype=torch.long)
-        labels = labels * group_size
+    @staticmethod
+    def distill_loss(kd_loss_type, teacher_targets, student_scores, group_size):
+        if kd_loss_type == 'kl_div':
+            # teacher_targets: (batch_size, group_size) / (world_size * batch_size, group_size)
+            # student_scores: (batch_size, group_size) / (world_size * batch_size, group_size)
+            return -torch.mean(torch.sum(teacher_targets * torch.log_softmax(student_scores, dim=-1), dim=-1))
+        elif kd_loss_type == 'm3_kd_loss':
+            # teacher_targets: (batch_size, group_size) / (world_size * batch_size, group_size)
+            # student_scores: (batch_size, batch_size * group_size) / (world_size * batch_size, world_size * batch_size * group_size)
+            labels = torch.arange(student_scores.size(0), device=student_scores.device, dtype=torch.long)
+            labels = labels * group_size
 
-        loss = 0
-        mask = torch.zeros_like(student_scores)
-        for i in range(group_size):
-            temp_target = labels + i
-            temp_scores = student_scores + mask
-            temp_loss = F.cross_entropy(temp_scores, temp_target, reduction="none")  # B
-            loss += torch.mean(teacher_targets[:, i] * temp_loss)
-            mask = torch.scatter(mask, dim=-1, index=temp_target.unsqueeze(-1),
-                                 value=torch.finfo(student_scores.dtype).min)
-        return loss
+            loss = 0
+            mask = torch.zeros_like(student_scores)
+            for i in range(group_size):
+                temp_target = labels + i
+                temp_scores = student_scores + mask
+                temp_loss = F.cross_entropy(temp_scores, temp_target, reduction="none")  # B
+                loss += torch.mean(teacher_targets[:, i] * temp_loss)
+                mask = torch.scatter(mask, dim=-1, index=temp_target.unsqueeze(-1),
+                                    value=torch.finfo(student_scores.dtype).min)
+            return loss
+        else:
+            raise ValueError(f"Invalid kd_loss_type: {kd_loss_type}")
 
     def _dist_gather_tensor(self, t: Optional[torch.Tensor]):
         if t is None:

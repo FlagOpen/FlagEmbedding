@@ -316,7 +316,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             no_in_batch_neg_flag = self.no_in_batch_neg_flags[dataset_inx]
             for start_index in range(0, len(self.each_data_idxs[dataset_inx]), cur_batch_size):
                 # judge the last batch's length
-                if len(self.each_data_idxs[dataset_inx]) - start_index < 2 * self.num_processes:
+                if len(self.each_data_idxs[dataset_inx]) - start_index < cur_batch_size:
                     break
                 batch_datas.append((
                     self.each_data_idxs[dataset_inx][start_index:start_index+cur_batch_size],
@@ -364,7 +364,8 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             )
             tmp_passages = []
             pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
-            tmp_passages.append(self._shuffle_text(batch_raw_data['pos'][i][pos_idx]))
+            pos = self._shuffle_text(batch_raw_data['pos'][i][pos_idx])
+            tmp_passages.append(pos)
             
             neg_all_idx = list(range(len(batch_raw_data['neg'][i])))
             if len(batch_raw_data['neg'][i]) < train_group_size - 1:
