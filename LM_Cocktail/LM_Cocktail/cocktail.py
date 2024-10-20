@@ -81,7 +81,7 @@ def mix_models_with_data(model_names_or_paths: List[str],
     mix model based on given a few examples
     Args:
         model_names_or_paths (List[str]):  a list of names or paths to models
-        model_type (str): type of model to mix, should be in ["decoder", "encoder"]
+        model_type (str): type of model to mix, should be in ["decoder", "encoder", "encoder-decoder", "reranker"]
         example_data (List[Any]): a list of examples
         temperature (float, optional): temperature can impact the distribution of weights . Defaults to 3.0.
         batch_size (int, optional): batch size to compute loss. Defaults to 2.
@@ -93,7 +93,7 @@ def mix_models_with_data(model_names_or_paths: List[str],
         new model
     """
     
-    assert model_type in ['decoder', 'encoder', 'encoder-decoder']
+    assert model_type in ['decoder', 'encoder', 'encoder-decoder', 'reranker']
     
     model = load_model(model_names_or_paths[0], model_type=model_type)
     tokenizer = AutoTokenizer.from_pretrained(model_names_or_paths[0], trust_remote_code=True)
