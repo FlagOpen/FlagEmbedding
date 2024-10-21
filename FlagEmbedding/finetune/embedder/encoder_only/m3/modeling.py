@@ -5,7 +5,6 @@ from typing import Dict, List, Union, Any
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-import torch.distributed as dist
 from transformers import AutoTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EmbedderOutput
