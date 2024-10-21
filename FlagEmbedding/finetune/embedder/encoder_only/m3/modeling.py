@@ -190,6 +190,45 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             return torch.matmul(q_reps, p_reps.transpose(0, 1))
         return torch.matmul(q_reps, p_reps.transpose(-2, -1))
 
+    def _get_queries_attention_mask(self, queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]]):
+        # padding attention mask for colbert
+        if not isinstance(queries, list):
+            q_mask = queries['attention_mask']
+        else:
+            q_mask_list = [sub_features['attention_mask'] for sub_features in queries]
+            _length = max([mask.shape[1] for mask in q_mask_list])
+            if self.tokenizer.padding_side == 'right':
+                q_mask = torch.cat([
+                    F.pad(mask, (0, _length - mask.shape[1]), value=0)
+                    for mask in q_mask_list
+                ], dim=0)
+            else:
+                q_mask = torch.cat([
+                    F.pad(mask, (_length - mask.shape[1], 0), value=0)
+                    for mask in q_mask_list
+                ], dim=0)
+        if self.negatives_cross_device:
+            # gather all q_mask
+            q_mask = q_mask.contiguous()
+            all_q_masks = [torch.empty_like(q_mask) for _ in range(self.world_size)]
+            dist.all_gather(all_q_masks, q_mask)
+            
+            all_q_masks[self.process_rank] = q_mask
+            
+            _length = max([mask.shape[1] for mask in all_q_masks])
+            
+            if self.tokenizer.padding_side == 'right':
+                q_mask = torch.cat([
+                    F.pad(mask, (0, _length - mask.shape[1]), value=0)
+                    for mask in all_q_masks
+                ], dim=0)
+            else:
+                q_mask = torch.cat([
+                    F.pad(mask, (_length - mask.shape[1], 0), value=0)
+                    for mask in all_q_masks
+                ], dim=0)
+        return q_mask
+    
     def forward(
         self, 
         queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
@@ -229,36 +268,11 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     compute_score_func=self.compute_sparse_score
                 )
                 
-                # padding attention mask for colbert
-                if not isinstance(queries, list):
-                    q_mask = queries['attention_mask']
-                else:
-                    q_mask_list = [sub_features['attention_mask'] for sub_features in queries]
-                    _length = max([mask.shape[1] for mask in q_mask_list])
-                    q_mask = torch.cat([
-                        F.pad(mask, _length - mask.shape[1], value=0)
-                        for mask in q_mask_list
-                    ], dim=0)
-                
-                if self.negatives_cross_device:
-                    # gather all q_mask
-                    q_mask = q_mask.contiguous()
-                    all_q_masks = [torch.empty_like(q_mask) for _ in range(self.world_size)]
-                    dist.all_gather(all_q_masks, q_mask)
-                    
-                    all_q_masks[self.process_rank] = q_mask
-                    
-                    _length = max([mask.shape[1] for mask in all_q_masks])
-                    q_mask = torch.cat([
-                        F.pad(mask, _length - mask.shape[1], value=0)
-                        for mask in all_q_masks
-                    ], dim=0)
-                
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
                     q_colbert_vecs, p_colbert_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_colbert_score,
-                    q_mask=q_mask
+                    q_mask=self._get_queries_attention_mask(queries)
                 )
                 
                 # ensemble loss
