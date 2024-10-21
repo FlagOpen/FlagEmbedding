@@ -29,10 +29,7 @@ data_args="\
     --query_max_len 512 \
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
-    --knowledge_distillation True \
-    --same_dataset_within_batch True \
-    --small_threshold 0 \
-    --drop_threshold 0 \
+    --knowledge_distillation False \
 "
 
 training_args="\

@@ -31,10 +31,7 @@ data_args="\
     --pad_to_multiple_of 8 \
     --query_instruction_for_retrieval 'Represent this sentence for searching relevant passages: ' \
     --query_instruction_format '{}{}' \
-    --knowledge_distillation True \
-    --same_dataset_within_batch True \
-    --small_threshold 0 \
-    --drop_threshold 0 \
+    --knowledge_distillation False \
 "
 
 training_args="\

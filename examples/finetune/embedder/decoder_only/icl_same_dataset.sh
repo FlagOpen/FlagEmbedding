@@ -48,7 +48,7 @@ data_args="\
 "
 
 training_args="\
-    --output_dir ./test_decoder_only_base_bge-en-icl \
+    --output_dir ./test_decoder_only_base_bge-en-icl_sd \
     --overwrite_output_dir \
     --learning_rate 1e-4 \
     --fp16 \

@@ -111,7 +111,7 @@ class DecoderOnlyEmbedderICLRunner(AbsEmbedderRunner):
             self.training_args.per_device_train_batch_size = 1
             self.training_args.dataloader_num_workers = 0   # avoid multi-processing
         else:
-            raise NotImplementedError("Only support `same_dataset_within_batch` for now.")
+            raise NotImplementedError("Only support `same_dataset_within_batch` for `DecoderOnlyEmbedderICLRunner`.")
         return train_dataset
 
     def run(self):

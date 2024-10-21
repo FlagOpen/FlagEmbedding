@@ -37,11 +37,14 @@ data_args="\
     --pad_to_multiple_of 8 \
     --query_instruction_for_retrieval 'Given a query, retrieve passages that are relevant to the query.' \
     --query_instruction_format '<instruct>{}\n<query>{}' \
-    --knowledge_distillation False \
+    --knowledge_distillation True \
+    --same_dataset_within_batch True \
+    --small_threshold 0 \
+    --drop_threshold 0 \
 "
 
 training_args="\
-    --output_dir ./test_decoder_only_base_bge-multilingual-gemma2 \
+    --output_dir ./test_decoder_only_base_bge-multilingual-gemma2_sd \
     --overwrite_output_dir \
     --learning_rate 1e-4 \
     --fp16 \
