@@ -1,9 +1,11 @@
-import torch
-import queue
-import numpy as np
 from tqdm import tqdm
-from multiprocessing import Queue
 from typing import cast, Any, List, Union
+
+import queue
+from multiprocessing import Queue
+
+import torch
+import numpy as np
 from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
@@ -46,7 +48,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             devices=devices,
             kwargs=kwargs
         )
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
@@ -59,13 +61,13 @@ class ICLLLMEmbedder(AbsEmbedder):
         )
         self.examples_for_task = examples_for_task
         self.examples_instruction_format = examples_instruction_format
-        
+
         if self.kwargs.get("pooling_method", "last_token") != "last_token":
             raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
-        
+
         self.set_examples()
         self.suffix = '\n<response>'
-    
+
     def set_examples(self, examples_for_task: List[dict] = None):
         if examples_for_task is None and self.examples_for_task is None:
             self.prefix = ''
@@ -97,7 +99,7 @@ class ICLLLMEmbedder(AbsEmbedder):
     @staticmethod
     def get_detailed_example(instruction_format: str, instruction: str, query: str, response: str):
         return instruction_format.format(instruction, query, response)
-    
+
     def encode_queries(
         self,
         queries: Union[List[str], str],
@@ -115,7 +117,7 @@ class ICLLLMEmbedder(AbsEmbedder):
                 device=self.target_devices[0],
                 **kwargs
             )
-        
+
         pool = self.start_multi_process_pool(ICLLLMEmbedder._encode_queries_multi_process_worker)
         embeddings = self.encode_multi_process(
             queries,
@@ -127,7 +129,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         )
         self.stop_multi_process_pool(pool)
         return embeddings
-    
+
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
@@ -143,7 +145,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     def encode(
         self,
         sentences: Union[List[str], str],
@@ -159,7 +161,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L976
     @staticmethod
     def _encode_queries_multi_process_worker(
@@ -182,7 +184,7 @@ class ICLLLMEmbedder(AbsEmbedder):
                 results_queue.put([chunk_id, embeddings])
             except queue.Empty:
                 break
-    
+
     @torch.no_grad()
     def encode_queries_single_device(
         self,
@@ -201,12 +203,12 @@ class ICLLLMEmbedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         input_was_string = False
         if isinstance(queries, str):
             queries = [queries]
             input_was_string = True
-        
+
         if self.query_instruction_for_retrieval is not None:
             if isinstance(queries, str):
                 input_texts = self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, queries)
@@ -214,13 +216,13 @@ class ICLLLMEmbedder(AbsEmbedder):
                 input_texts = [self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, query) for query in queries]
         else:
             input_texts = queries
-        
+
         prefix_ids = self.tokenizer(self.prefix, add_special_tokens=False)['input_ids']
         suffix_ids = self.tokenizer(self.suffix, add_special_tokens=False)['input_ids']
-        
+
         _len_1 = len(self.tokenizer('<s>', add_special_tokens=False)['input_ids'])
         _len_2 = len(self.tokenizer('\n<response></s>', add_special_tokens=False)['input_ids'])
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(input_texts), batch_size):
@@ -235,12 +237,12 @@ class ICLLLMEmbedder(AbsEmbedder):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
         sentences_sorted = [input_texts[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         max_length_inputs = self.tokenizer.pad(
@@ -259,7 +261,7 @@ class ICLLLMEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+
         # encode
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences_sorted), batch_size), desc="Inference Embeddings",
@@ -295,7 +297,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             if convert_to_numpy:
                 embeddings = embeddings.cpu().numpy()
             all_embeddings.append(embeddings)
-        
+
         if convert_to_numpy:
             all_embeddings = np.concatenate(all_embeddings, axis=0)
         else:
@@ -303,12 +305,12 @@ class ICLLLMEmbedder(AbsEmbedder):
 
         # adjust the order of embeddings
         all_embeddings = all_embeddings[np.argsort(length_sorted_idx)]
-        
+
         # return the embeddings
         if input_was_string:
             return all_embeddings[0]
         return all_embeddings
-    
+
     @torch.no_grad()
     def encode_single_device(
         self,
@@ -327,12 +329,12 @@ class ICLLLMEmbedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         input_was_string = False
         if isinstance(sentences, str):
             sentences = [sentences]
             input_was_string = True
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(sentences), batch_size):
@@ -347,11 +349,11 @@ class ICLLLMEmbedder(AbsEmbedder):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         max_length_inputs = self.tokenizer.pad(
@@ -370,7 +372,7 @@ class ICLLLMEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+
         # encode
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",

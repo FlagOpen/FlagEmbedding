@@ -1,7 +1,6 @@
 from transformers import HfArgumentParser
 
 from FlagEmbedding.abc.finetune.reranker import (
-    AbsRerankerModelArguments,
     AbsRerankerDataArguments,
     AbsRerankerTrainingArguments
 )

@@ -1,6 +1,7 @@
+import logging
+
 import torch
 from transformers import AutoModel, AutoTokenizer
-import logging
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel
 
@@ -9,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 class BiDecoderOnlyEmbedderICLModel(AbsEmbedderModel):
     TRANSFORMER_CLS = AutoModel
-    
+
     def __init__(
         self,
         base_model: AutoModel,
@@ -95,12 +96,12 @@ class BiDecoderOnlyEmbedderICLModel(AbsEmbedderModel):
         scores = self._compute_similarity(q_reps, p_reps) / self.temperature
         scores = scores.view(q_reps.size(0), -1)
         return scores
-    
+
     def _compute_similarity(self, q_reps, p_reps):
         if len(p_reps.size()) == 2:
             return torch.matmul(q_reps, p_reps.transpose(0, 1))
         return torch.matmul(q_reps, p_reps.transpose(-2, -1))
-    
+
     def compute_loss(self, scores, target):
         return self.cross_entropy(scores, target)
 

@@ -1,4 +1,3 @@
-import os
 import logging
 from typing import Tuple
 from transformers import (
@@ -23,7 +22,7 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
             self.model_args.model_name_or_path,
             trust_remote_code=self.model_args.trust_remote_code
         )
-        
+
         num_labels = 1
         config = AutoConfig.from_pretrained(
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
@@ -32,7 +31,7 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
             token=self.model_args.token,
         )
         logger.info('Config: %s', config)
-        
+
         model = BiEncoderOnlyEmbedderModel(
             base_model,
             tokenizer=tokenizer,
@@ -43,10 +42,10 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings
         )
-        
+
         if self.training_args.gradient_checkpointing:
             model.enable_input_require_grads()
-        
+
         if self.training_args.fix_position_embedding:
             for k, v in model.named_parameters():
                 if "position_embeddings" in k:

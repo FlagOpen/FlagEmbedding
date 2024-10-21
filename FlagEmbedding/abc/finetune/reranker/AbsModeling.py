@@ -1,7 +1,5 @@
 import torch
 from torch import nn, Tensor
-import torch.nn.functional as F
-import torch.distributed as dist
 from transformers import AutoTokenizer
 from transformers.file_utils import ModelOutput
 
@@ -44,11 +42,11 @@ class AbsRerankerModel(ABC, nn.Module):
 
     def enable_input_require_grads(self, **kwargs):
         self.model.enable_input_require_grads(**kwargs)
-    
+
     @abstractmethod
     def encode(self, features):
         pass
-    
+
     def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
         ranker_logits = self.encode(pair) # (batch_size * num, dim)
         if teacher_scores is not None:

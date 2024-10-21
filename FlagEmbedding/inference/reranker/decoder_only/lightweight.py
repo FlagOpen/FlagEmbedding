@@ -1,15 +1,15 @@
 import torch
 import warnings
 import numpy as np
-from tqdm import tqdm, trange
-from typing import cast, Any, List, Union, Tuple
+from tqdm import trange
+from typing import Any, List, Union, Tuple
 from peft import PeftModel
 from torch import Tensor
-from transformers import AutoModelForCausalLM, AutoTokenizer, is_torch_npu_available
-from torch.utils.data import Dataset, DataLoader
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
+
 
 def last_logit_pool_lightweight(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
@@ -22,7 +22,7 @@ def last_logit_pool_lightweight(logits: Tensor,
         return torch.stack([logits[i, sequence_lengths[i]] for i in range(batch_size)], dim=0)
 
 
-class collater_for_lightweight():
+class Collater_for_lightweight:
     def __init__(self, tokenizer, max_len):
         self.tokenizer = tokenizer
         self.max_len = max_len
@@ -91,19 +91,23 @@ class LightweightLLMReranker(AbsReranker):
             **kwargs
         )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
-                                                       cache_dir=cache_dir,
-                                                       trust_remote_code=trust_remote_code)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name_or_path,
+            cache_dir=cache_dir,
+            trust_remote_code=trust_remote_code
+        )
         self.tokenizer.padding_side = 'right'
 
         if use_bf16 is False and use_fp16 is False:
             warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
             use_fp16 = True
 
-        self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
-                                                          cache_dir=cache_dir,
-                                                          trust_remote_code=trust_remote_code,
-                                                          torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name_or_path,
+            cache_dir=cache_dir,
+            trust_remote_code=trust_remote_code,
+            torch_dtype=torch.bfloat16 if use_bf16 else torch.float32
+        )
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
             self.model = self.model.merge_and_unload()
@@ -126,7 +130,7 @@ class LightweightLLMReranker(AbsReranker):
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
-        
+
         if device is None:
             device = self.target_devices[0]
 
@@ -138,7 +142,7 @@ class LightweightLLMReranker(AbsReranker):
 
         self.model.to(device)
         self.model.eval()
-    
+
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -148,13 +152,17 @@ class LightweightLLMReranker(AbsReranker):
 
         if prompt is None:
             prompt = "Predict whether passage B contains an answer to query A."
-        prompt_inputs = self.tokenizer(prompt,
-                                       return_tensors=None,
-                                       add_special_tokens=False)['input_ids']
+        prompt_inputs = self.tokenizer(
+            prompt,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
         sep = "\n"
-        sep_inputs = self.tokenizer(sep,
-                                    return_tensors=None,
-                                    add_special_tokens=False)['input_ids']
+        sep_inputs = self.tokenizer(
+            sep,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
         encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
         all_scores = []
         for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
@@ -162,18 +170,22 @@ class LightweightLLMReranker(AbsReranker):
             batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
             queries = [s[0] for s in batch_sentences]
             passages = [s[1] for s in batch_sentences]
-            queries_inputs = self.tokenizer(queries,
-                                            return_tensors=None,
-                                            add_special_tokens=False,
-                                            max_length=max_length * 3 // 4,
-                                            truncation=True,
-                                            **kwargs)
-            passages_inputs = self.tokenizer(passages,
-                                             return_tensors=None,
-                                             add_special_tokens=False,
-                                             max_length=max_length,
-                                             truncation=True,
-                                             **kwargs)
+            queries_inputs = self.tokenizer(
+                queries,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length * 3 // 4,
+                truncation=True,
+                **kwargs
+            )
+            passages_inputs = self.tokenizer(
+                passages,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length,
+                truncation=True,
+                **kwargs
+            )
             query_lengths = []
             prompt_lengths = []
             batch_inputs = []
@@ -197,24 +209,27 @@ class LightweightLLMReranker(AbsReranker):
                 query_lengths.append(len([self.tokenizer.bos_token_id] + query_inputs + sep_inputs))
                 prompt_lengths.append(len(sep_inputs + prompt_inputs))
 
-            collater_instance = collater_for_lightweight(self.tokenizer, max_length)
-            batch_inputs = collater_instance(
-                [
-                    [{'input_ids': item['input_ids'], 'attention_mask': item['attention_mask']} for item in
-                     batch_inputs],
-                    query_lengths,
-                    prompt_lengths
-                ])[0]
+            collater_instance = Collater_for_lightweight(self.tokenizer, max_length)
+            batch_inputs = collater_instance([
+                [{
+                    'input_ids': item['input_ids'],
+                    'attention_mask': item['attention_mask']
+                } for item in batch_inputs],
+                query_lengths,
+                prompt_lengths
+            ])[0]
 
             batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
 
-            outputs = self.model(**batch_inputs,
-                                 output_hidden_states=True,
-                                 compress_layer=compress_layer,
-                                 compress_ratio=compress_ratio,
-                                 query_lengths=query_lengths,
-                                 prompt_lengths=prompt_lengths,
-                                 cutoff_layers=cutoff_layers)
+            outputs = self.model(
+                **batch_inputs,
+                output_hidden_states=True,
+                compress_layer=compress_layer,
+                compress_ratio=compress_ratio,
+                query_lengths=query_lengths,
+                prompt_lengths=prompt_lengths,
+                cutoff_layers=cutoff_layers
+            )
             scores = []
             for i in range(len(outputs.logits)):
                 logits = last_logit_pool_lightweight(outputs.logits[i], outputs.attention_masks[i])

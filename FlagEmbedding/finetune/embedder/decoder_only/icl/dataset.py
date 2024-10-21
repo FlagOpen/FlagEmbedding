@@ -33,22 +33,22 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
             num_processes=num_processes
         )
         self.args: DecoderOnlyEmbedderICLDataArguments
-        
+
         self.suffix = self.tokenizer(f"{self.args.icl_suffix_str}{self.tokenizer.eos_token}", add_special_tokens=False)['input_ids']
-        
+
         self.prefix = self.tokenizer(f"{self.tokenizer.bos_token}", add_special_tokens=False)['input_ids']
-    
+
     def _create_batch_data(self, batch_raw_data):
         queries, passages, teacher_scores = [], [], []
-        
+
         train_group_size, data_type = self._get_train_group_size(batch_raw_data)
-        
+
         icl_pairs = []
-        
+
         for i in range(len(batch_raw_data['query'])):
             if data_type is not None:
                 assert batch_raw_data['type'][i] == data_type, f"Data type is not consistent in the same batch"
-            
+
             queries.append(
                 self.args.query_instruction_format.format(
                     batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
@@ -59,7 +59,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
             pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
             pos = self._shuffle_text(batch_raw_data['pos'][i][pos_idx])
             tmp_passages.append(pos)
-            
+
             neg_all_idx = list(range(len(batch_raw_data['neg'][i])))
             if len(batch_raw_data['neg'][i]) < train_group_size - 1:
                 num = math.ceil((train_group_size - 1) / len(batch_raw_data['neg'][i]))
@@ -68,7 +68,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
                 neg_idxs = random.sample(neg_all_idx, train_group_size - 1)
             for neg_idx in neg_idxs:
                 tmp_passages.append(batch_raw_data['neg'][i][neg_idx])
-            
+
             if self.args.knowledge_distillation:
                 if 'pos_scores' in batch_raw_data and batch_raw_data['pos_scores'][i] is not None:
                     teacher_scores.append(batch_raw_data['pos_scores'][i][pos_idx])
@@ -77,7 +77,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
                         teacher_scores.append(batch_raw_data['neg_scores'][i][neg_idx])
             else:
                 teacher_scores = None
-            
+
             if data_type is not None and data_type in ['symmetric_sts', 'symmetric_clustering']:
                 tmp_passages = [
                     self.args.query_instruction_format.format(
@@ -102,12 +102,12 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
                             self.args.passage_instruction_for_retrieval, p
                         ) for p in tmp_passages
                     ]
-            
+
             passages.extend(tmp_passages)
             
             if len(teacher_scores) > 0 and len(passages) > 0:
                 assert len(teacher_scores) == len(passages)
-            
+
             # add icl pairs
             if self.args.retrieval_use_examples or (
                 data_type in ['symmetric_sts', 'symmetric_clustering', 'symmetric_class']
@@ -162,7 +162,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
                     prefix = tmp
             else:
                 prefix = ''
-            
+
             queries[i] = prefix + queries[i]
             queries[i] = self.tokenizer.decode(
                 self.tokenizer(

@@ -23,7 +23,7 @@ class FlagAutoModel:
         model_name = os.path.basename(model_name_or_path)
         if model_name.startswith("checkpoint-"):
             model_name = os.path.basename(os.path.dirname(model_name_or_path))
-        
+
         if model_name not in MODEL_MAPPING:
             raise ValueError(
                 f"Model name '{model_name}' not found in the model mapping. You can pull request to add the model to "
@@ -32,14 +32,14 @@ class FlagAutoModel:
                 "or `https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/decoder_only`. "
                 "Welcome to contribute! You can also directly use the corresponding model class to instantiate the model."
             )
-        
+
         model_config = MODEL_MAPPING[model_name]
-        
+
         model_class = model_config.model_class
         pooling_method = kwargs.pop("pooling_method", model_config.pooling_method.value)
         trust_remote_code = kwargs.pop("trust_remote_code", model_config.trust_remote_code)
         query_instruction_format = kwargs.pop("query_instruction_format", model_config.query_instruction_format)
-        
+
         return model_class(
             model_name_or_path,
             normalize_embeddings=normalize_embeddings,

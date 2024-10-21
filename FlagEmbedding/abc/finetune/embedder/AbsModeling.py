@@ -45,23 +45,23 @@ class AbsEmbedderModel(ABC, nn.Module):
 
         self.sub_batch_size = sub_batch_size
         self.kd_loss_type = kd_loss_type
-    
+
     @abstractmethod
     def encode(self, features):
         pass
-    
+
     @abstractmethod
     def compute_loss(self, scores, target):
         pass
-    
+
     @abstractmethod
     def compute_score(self, q_reps, p_reps):
         pass
-    
+
     @abstractmethod
     def save(self, output_dir: str):
         pass
-    
+
     def get_local_score(self, q_reps, p_reps, all_scores):
         group_size = p_reps.size(0) // q_reps.size(0)
         indices = torch.arange(0, q_reps.size(0), device=q_reps.device) * group_size
@@ -79,19 +79,19 @@ class AbsEmbedderModel(ABC, nn.Module):
             all_scores = compute_score_func(q_reps, p_reps, **kwargs)
         loacl_scores = self.get_local_score(q_reps, p_reps, all_scores)
         return loacl_scores
-    
+
     def _compute_no_in_batch_neg_loss(self, q_reps, p_reps, teacher_targets=None, compute_score_func=None, **kwargs):
         """
         Compute loss when using no in-batch negatives and no cross-device negatives
         """
         group_size = p_reps.size(0) // q_reps.size(0)
-        
+
         local_scores = self.compute_local_score(q_reps, p_reps, compute_score_func, **kwargs)   # (batch_size, group_size)
-        
+
         if teacher_targets is not None:
             # compute kd loss
             loss = self.distill_loss(self.kd_loss_type, teacher_targets, local_scores, group_size=group_size)
-            
+
             # add normal loss if needed
             if self.kd_loss_type == "kl_div":
                 local_targets = torch.zeros(local_scores.size(0), device=local_scores.device, dtype=torch.long) # (batch_size)
@@ -99,27 +99,27 @@ class AbsEmbedderModel(ABC, nn.Module):
         else:
             local_targets = torch.zeros(local_scores.size(0), device=local_scores.device, dtype=torch.long) # (batch_size)
             loss = self.compute_loss(local_scores, local_targets)
-        
+
         return local_scores, loss
-    
+
     def _compute_in_batch_neg_loss(self, q_reps, p_reps, teacher_targets=None, compute_score_func=None, **kwargs):
         """
         Compute loss when only using in-batch negatives
         """
         group_size = p_reps.size(0) // q_reps.size(0)
-        
+
         if compute_score_func is None:
             scores = self.compute_score(q_reps, p_reps) # (batch_size, batch_size * group_size)
         else:
             scores = compute_score_func(q_reps, p_reps, **kwargs)   # (batch_size, batch_size * group_size)
-        
+
         if teacher_targets is not None:
             # compute kd loss
             if self.kd_loss_type == "kl_div":
                 student_scores = self.get_local_score(q_reps, p_reps, scores) # (batch_size, group_size)
-                
+
                 loss = self.distill_loss(self.kd_loss_type, teacher_targets, student_scores, group_size)
-                
+
                 idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
                 targets = idxs * (p_reps.size(0) // q_reps.size(0)) # (batch_size)
                 loss += self.compute_loss(scores, targets)
@@ -131,23 +131,23 @@ class AbsEmbedderModel(ABC, nn.Module):
             idxs = torch.arange(q_reps.size(0), device=q_reps.device, dtype=torch.long)
             targets = idxs * group_size # (batch_size)
             loss = self.compute_loss(scores, targets)
-        
+
         return scores, loss
-    
+
     def _compute_cross_device_neg_loss(self, q_reps, p_reps, teacher_targets=None, compute_score_func=None, **kwargs):
         """
         Compute loss when using both in-batch negatives and cross-device negatives
         """
         group_size = p_reps.size(0) // q_reps.size(0)
-        
+
         cross_q_reps = self._dist_gather_tensor(q_reps) # (world_size * batch_size, dim)
         cross_p_reps = self._dist_gather_tensor(p_reps) # (world_size * batch_size * group_size, dim)
-        
+
         if compute_score_func is None:
             cross_scores = self.compute_score(cross_q_reps, cross_p_reps)   # (world_size * batch_size, world_size * batch_size * group_size)
         else:
             cross_scores = compute_score_func(cross_q_reps, cross_p_reps, **kwargs) # (world_size * batch_size, world_size * batch_size * group_size)
-        
+
         if teacher_targets is not None:
             # compute kd loss
             if self.kd_loss_type == "kl_div":
@@ -155,15 +155,15 @@ class AbsEmbedderModel(ABC, nn.Module):
                 student_scores = student_scores[
                     q_reps.size(0)*self.process_rank : q_reps.size(0)*(self.process_rank+1)
                 ]   # (batch_size, group_size)
-                
+
                 loss = self.distill_loss(self.kd_loss_type, teacher_targets, student_scores, group_size)
-                
+
                 cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
                 cross_targets = cross_idxs * group_size # (world_size * batch_size)
                 loss += self.compute_loss(cross_scores, cross_targets)
             elif self.kd_loss_type == "m3_kd_loss":
                 cross_teacher_targets = self._dist_gather_tensor(teacher_targets)   # (world_size * batch_size, group_size)
-                
+
                 loss = self.distill_loss(self.kd_loss_type, cross_teacher_targets, cross_scores, group_size)
             else:
                 raise ValueError(f"Invalid kd_loss_type: {self.kd_loss_type}")
@@ -171,9 +171,9 @@ class AbsEmbedderModel(ABC, nn.Module):
             cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
             cross_targets = cross_idxs * group_size # (world_size * batch_size)
             loss = self.compute_loss(cross_scores, cross_targets)
-        
+
         return cross_scores, loss
-    
+
     def forward(
         self, 
         queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
@@ -191,7 +191,7 @@ class AbsEmbedderModel(ABC, nn.Module):
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
             else:
                 teacher_targets = None
-            
+
             if no_in_batch_neg_flag:
                 compute_loss_func = self._compute_no_in_batch_neg_loss
             else:
@@ -199,7 +199,7 @@ class AbsEmbedderModel(ABC, nn.Module):
                     compute_loss_func = self._compute_cross_device_neg_loss
                 else:
                     compute_loss_func = self._compute_in_batch_neg_loss
-            
+
             scores, loss = compute_loss_func(q_reps, p_reps, teacher_targets=teacher_targets)
         else:
             loss = None

@@ -2,15 +2,16 @@ import torch
 import warnings
 import numpy as np
 from tqdm import tqdm, trange
-from typing import cast, Any, List, Union, Tuple
+from typing import Any, List, Union, Tuple
 from peft import PeftModel
 from torch import Tensor
-from transformers import AutoModelForCausalLM, AutoTokenizer, is_torch_npu_available
-from torch.utils.data import Dataset, DataLoader
+from transformers import AutoModelForCausalLM, AutoTokenizer
+from torch.utils.data import DataLoader
 
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
-from FlagEmbedding.inference.reranker.decoder_only.base import DatasetForReranker, collater
+from FlagEmbedding.inference.reranker.decoder_only.base import DatasetForReranker, Collater
+
 
 def last_logit_pool_layerwise(logits: Tensor,
                               attention_mask: Tensor) -> Tensor:
@@ -35,7 +36,6 @@ class LayerWiseLLMReranker(AbsReranker):
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         **kwargs: Any,
     ) -> None:
-
         super().__init__(
             model_name_or_path,
             use_fp16,
@@ -43,18 +43,22 @@ class LayerWiseLLMReranker(AbsReranker):
             **kwargs
         )
 
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
-                                                       cache_dir=cache_dir,
-                                                       trust_remote_code=trust_remote_code)
+        self.tokenizer = AutoTokenizer.from_pretrained(
+            model_name_or_path,
+            cache_dir=cache_dir,
+            trust_remote_code=trust_remote_code
+        )
 
         if use_bf16 is False and use_fp16 is False:
             warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
             self.use_fp16 = True
 
-        self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
-                                                          cache_dir=cache_dir,
-                                                          trust_remote_code=trust_remote_code,
-                                                          torch_dtype=torch.bfloat16 if use_bf16 else torch.float32)
+        self.model = AutoModelForCausalLM.from_pretrained(
+            model_name_or_path,
+            cache_dir=cache_dir,
+            trust_remote_code=trust_remote_code,
+            torch_dtype=torch.bfloat16 if use_bf16 else torch.float32
+        )
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
             self.model = self.model.merge_and_unload()
@@ -75,7 +79,7 @@ class LayerWiseLLMReranker(AbsReranker):
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
-        
+
         if device is None:
             device = self.target_devices[0]
 
@@ -87,7 +91,7 @@ class LayerWiseLLMReranker(AbsReranker):
 
         self.model.to(device)
         self.model.eval()
-    
+
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
@@ -99,15 +103,19 @@ class LayerWiseLLMReranker(AbsReranker):
         if use_dataloader:
             if num_workers is None:
                 num_workers = min(batch_size, 16)
-            dataset = DatasetForReranker(sentences_pairs_sorted,
-                                         self.model_name_or_path,
-                                         max_length,
-                                         cache_dir=self.cache_dir,
-                                         prompt=prompt,
-                                         **kwargs)
-            dataloader = DataLoader(dataset, shuffle=False, batch_size=batch_size, drop_last=False,
-                                    num_workers=num_workers,
-                                    collate_fn=collater(self.tokenizer, max_length))
+            dataset = DatasetForReranker(
+                sentences_pairs_sorted,
+                self.model_name_or_path,
+                max_length,
+                cache_dir=self.cache_dir,
+                prompt=prompt,
+                **kwargs
+            )
+            dataloader = DataLoader(
+                dataset, shuffle=False, batch_size=batch_size, drop_last=False,
+                num_workers=num_workers,
+                collate_fn=Collater(self.tokenizer, max_length)
+            )
 
         all_scores = []
         if dataloader is not None:
@@ -130,29 +138,37 @@ class LayerWiseLLMReranker(AbsReranker):
         else:
             if prompt is None:
                 prompt = "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'."
-            prompt_inputs = self.tokenizer(prompt,
-                                                return_tensors=None,
-                                                add_special_tokens=False)['input_ids']
+            prompt_inputs = self.tokenizer(
+                prompt,
+                return_tensors=None,
+                add_special_tokens=False
+            )['input_ids']
             sep = "\n"
-            sep_inputs = self.tokenizer(sep,
-                                             return_tensors=None,
-                                             add_special_tokens=False)['input_ids']
+            sep_inputs = self.tokenizer(
+                sep,
+                return_tensors=None,
+                add_special_tokens=False
+            )['input_ids']
             encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
             for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
                 batch_sentences = sentences_pairs_sorted[batch_start:batch_start + batch_size]
                 batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
                 queries = [s[0] for s in batch_sentences]
                 passages = [s[1] for s in batch_sentences]
-                queries_inputs = self.tokenizer(queries,
-                                                return_tensors=None,
-                                                add_special_tokens=False,
-                                                max_length=max_length * 3 // 4,
-                                                truncation=True)
-                passages_inputs = self.tokenizer(passages,
-                                                 return_tensors=None,
-                                                 add_special_tokens=False,
-                                                 max_length=max_length,
-                                                 truncation=True)
+                queries_inputs = self.tokenizer(
+                    queries,
+                    return_tensors=None,
+                    add_special_tokens=False,
+                    max_length=max_length * 3 // 4,
+                    truncation=True
+                )
+                passages_inputs = self.tokenizer(
+                    passages,
+                    return_tensors=None,
+                    add_special_tokens=False,
+                    max_length=max_length,
+                    truncation=True
+                )
 
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(queries_inputs['input_ids'], passages_inputs['input_ids']):
@@ -173,10 +189,12 @@ class LayerWiseLLMReranker(AbsReranker):
                         item['position_ids'] = list(range(len(item['input_ids'])))
                     batch_inputs.append(item)
 
-                collater_instance = collater(self.tokenizer, max_length)
-                batch_inputs = collater_instance(
-                    [{'input_ids': item['input_ids'], 'attention_mask': item['attention_mask']} for item in
-                     batch_inputs])
+                collater_instance = Collater(self.tokenizer, max_length)
+                batch_inputs = collater_instance([{
+                    'input_ids': item['input_ids'],
+                    'attention_mask': item['attention_mask']
+                    } for item in batch_inputs]
+                )
 
                 batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
 

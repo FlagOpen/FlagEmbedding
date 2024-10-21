@@ -59,12 +59,12 @@ class DecoderOnlyEmbedderICLModelArguments(AbsEmbedderModelArguments):
     raw_peft: str = field(
         default=None
     )
-    
+
     additional_special_tokens: Optional[str] = field(
         default=None,
         metadata={"help": "additional special tokens", "nargs": "+"}
     )
-    
+
     save_merged_lora_model: bool = field(
         default=False,
         metadata={"help": "If passed, will merge the lora modules and save the entire model."}

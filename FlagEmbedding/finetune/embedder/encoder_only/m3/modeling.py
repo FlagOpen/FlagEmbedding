@@ -38,7 +38,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         self.sentence_pooling_method = sentence_pooling_method
         self.normalize_embeddings = normalize_embeddings
         self.cross_entropy = torch.nn.CrossEntropyLoss(reduction='mean')
-        
+
         self.unified_finetuning = unified_finetuning
         if not self.unified_finetuning:
             self.model = base_model['model']
@@ -48,12 +48,12 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             self.model = base_model['model']
             self.colbert_linear = base_model['colbert_linear']
             self.sparse_linear = base_model['sparse_linear']
-        
+
         self.vocab_size = self.model.config.vocab_size
         self.use_self_distill = use_self_distill
         self.self_distill_start_step = self_distill_start_step
         self.step = 0
-    
+
     def _dense_embedding(self, last_hidden_state, attention_mask):
         if self.sentence_pooling_method == "cls":
             return last_hidden_state[:, 0]
@@ -81,13 +81,17 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         token_weights = torch.relu(self.sparse_linear(hidden_state))
         if not return_embedding: return token_weights
 
-        sparse_embedding = torch.zeros(input_ids.size(0), input_ids.size(1), self.vocab_size,
-                                       dtype=token_weights.dtype,
-                                       device=token_weights.device)
+        sparse_embedding = torch.zeros(
+            input_ids.size(0), input_ids.size(1), self.vocab_size,
+            dtype=token_weights.dtype,
+            device=token_weights.device
+        )
         sparse_embedding = torch.scatter(sparse_embedding, dim=-1, index=input_ids.unsqueeze(-1), src=token_weights)
 
-        unused_tokens = [self.tokenizer.cls_token_id, self.tokenizer.eos_token_id, self.tokenizer.pad_token_id,
-                         self.tokenizer.unk_token_id]
+        unused_tokens = [
+            self.tokenizer.cls_token_id, self.tokenizer.eos_token_id,
+            self.tokenizer.pad_token_id, self.tokenizer.unk_token_id
+        ]
         sparse_embedding = torch.max(sparse_embedding, dim=1).values
         sparse_embedding[:, unused_tokens] *= 0.
         return sparse_embedding
@@ -122,11 +126,10 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
         scores = scores / self.temperature
         return scores
-    
+
     def ensemble_score(self, q_reps, p_reps, dense_scores=None, sparse_scores=None, colbert_scores=None):
         if dense_scores is None or sparse_scores is None or colbert_scores is None:
             raise ValueError("dense_scores, sparse_scores, colbert_scores must be provided!")
-        
         return dense_scores + 0.3 * sparse_scores + colbert_scores
 
     def _encode(self, features):
@@ -145,7 +148,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def encode(self, features):
         if features is None:
             return None
-        
+
         if not isinstance(features, list):
             if self.sub_batch_size is not None and self.sub_batch_size != -1:
                 all_dense_vecs, all_sparse_vecs, all_colbert_vecs = [], [], []
@@ -207,7 +210,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     for mask in q_mask_list
                 ], dim=0)
         return q_mask
-    
+
     def forward(
         self, 
         queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, 
@@ -217,7 +220,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     ):
         q_dense_vecs, q_sparse_vecs, q_colbert_vecs = self.encode(queries)  # (batch_size, dim)
         p_dense_vecs, p_sparse_vecs, p_colbert_vecs = self.encode(passages) # (batch_size * group_size, dim)
-        
+
         if self.training:
             if teacher_scores is not None:
                 teacher_scores = torch.tensor(teacher_scores, device=q_dense_vecs.device)
@@ -225,7 +228,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
             else:
                 teacher_targets = None
-            
+
             if no_in_batch_neg_flag:
                 compute_loss_func = self._compute_no_in_batch_neg_loss
             else:
@@ -233,40 +236,40 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     compute_loss_func = self._compute_cross_device_neg_loss
                 else:
                     compute_loss_func = self._compute_in_batch_neg_loss
-            
+
             # dense loss
             dense_scores, loss = compute_loss_func(
                 q_dense_vecs, p_dense_vecs, teacher_targets=teacher_targets,
                 compute_score_func=self.compute_dense_score
             )
-            
+
             if self.unified_finetuning:
                 # disable cross device negatives for unified finetuning
                 if no_in_batch_neg_flag:
                     compute_loss_func = self._compute_no_in_batch_neg_loss
                 else:
                     compute_loss_func = self._compute_in_batch_neg_loss
-                
+
                 # sparse loss
                 sparse_scores, sparse_loss = compute_loss_func(
                     q_sparse_vecs, p_sparse_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_sparse_score
                 )
-                
+
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
                     q_colbert_vecs, p_colbert_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_colbert_score,
                     q_mask=self._get_queries_attention_mask(queries)
                 )
-                
+
                 # get dense scores of current process
                 if not no_in_batch_neg_flag and self.negatives_cross_device:
                     dense_scores = dense_scores[
                         q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1),
                         p_dense_vecs.size(0)*self.process_rank : p_dense_vecs.size(0)*(self.process_rank+1)
                     ]   # (batch_size, batch_size * group_size)
-                
+
                 # ensemble loss
                 ensemble_scores, ensemble_loss = compute_loss_func(
                     q_dense_vecs, p_dense_vecs, teacher_targets=teacher_targets,
@@ -275,16 +278,16 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     sparse_scores=sparse_scores,
                     colbert_scores=colbert_scores
                 )
-                
+
                 loss = (loss + ensemble_loss + 0.1 * sparse_loss + colbert_loss) / 4
-                
+
                 if self.use_self_distill and self.step > self.self_distill_start_step:
                     self_teacher_targets = torch.softmax(ensemble_scores.detach(), dim=-1)
-                    
+
                     dense_self_distill_loss = self.distill_loss("kl_div", self_teacher_targets, dense_scores)
                     sparse_self_distill_loss = self.distill_loss("kl_div", self_teacher_targets, sparse_scores)
                     colbert_self_distill_loss = self.distill_loss("kl_div", self_teacher_targets, colbert_scores)
-                    
+
                     loss += (dense_self_distill_loss + 0.1 * sparse_self_distill_loss + colbert_self_distill_loss) / 3
                     loss = loss / 2
             self.step += 1
@@ -297,13 +300,13 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
 
     def compute_loss(self, scores, target):
         return self.cross_entropy(scores, target)
-    
+
     def gradient_checkpointing_enable(self, **kwargs):
         self.model.gradient_checkpointing_enable(**kwargs)
 
     def enable_input_require_grads(self, **kwargs):
         self.model.enable_input_require_grads(**kwargs)
-    
+
     def save(self, output_dir: str):
         def _trans_state_dict(state_dict):
             state_dict = type(state_dict)(
@@ -337,8 +340,10 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             dense_vecs = self._dense_embedding(last_hidden_state, text_input['attention_mask'])
             output['dense_vecs'] = dense_vecs
         if return_sparse:
-            sparse_vecs = self._sparse_embedding(last_hidden_state, text_input['input_ids'],
-                                                return_embedding=return_sparse_embedding)
+            sparse_vecs = self._sparse_embedding(
+                last_hidden_state, text_input['input_ids'],
+                return_embedding=return_sparse_embedding
+            )
             output['sparse_vecs'] = sparse_vecs
         if return_colbert_vecs:
             colbert_vecs = self._colbert_embedding(last_hidden_state, text_input['attention_mask'])

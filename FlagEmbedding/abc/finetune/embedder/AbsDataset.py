@@ -29,7 +29,7 @@ class AbsEmbedderTrainDataset(Dataset):
         self.args = args
         self.tokenizer = tokenizer
         self.shuffle_ratio = args.shuffle_ratio
-        
+
         train_datasets = []
         for data_dir in args.train_data:
             if not os.path.isdir(data_dir):
@@ -44,11 +44,11 @@ class AbsEmbedderTrainDataset(Dataset):
                     if len(temp_dataset) == 0: continue
                     train_datasets.append(temp_dataset)
         self.dataset = datasets.concatenate_datasets(train_datasets)
-    
+
     def _load_dataset(self, file_path: str):
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
-        
+
         temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
         if len(temp_dataset) > self.args.max_example_num_per_dataset:
             temp_dataset = temp_dataset.select(random.sample(list(range(len(temp_dataset))), self.args.max_example_num_per_dataset))
@@ -61,7 +61,7 @@ class AbsEmbedderTrainDataset(Dataset):
             if 'pos_scores' not in temp_dataset.column_names or 'neg_scores' not in temp_dataset.column_names:
                 raise ValueError(f"`pos_scores` and `neg_scores` not found in the features of training data in {file_path}, which is necessary when using knowledge distillation.")
         return temp_dataset
-    
+
     def _shuffle_text(self, text):
         if self.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.shuffle_ratio:
             split_text = []
@@ -72,14 +72,14 @@ class AbsEmbedderTrainDataset(Dataset):
             return " ".join(split_text)
         else:
             return text
-    
+
     def __len__(self):
         return len(self.dataset)
-    
+
     def __getitem__(self, item):
         data = self.dataset[item]
         train_group_size = self.args.train_group_size
-        
+
         query = data['query']
         if self.args.query_instruction_for_retrieval is not None:
             query = self.args.query_instruction_format.format(
@@ -91,10 +91,10 @@ class AbsEmbedderTrainDataset(Dataset):
         teacher_scores = []
 
         assert isinstance(data['pos'], list) and isinstance(data['neg'], list)
-        
+
         pos_idx = random.choice(list(range(len(data['pos']))))
         passages.append(self._shuffle_text(data['pos'][pos_idx]))
-        
+
         neg_all_idx = list(range(len(data['neg'])))
         if len(data['neg']) < train_group_size - 1:
             num = math.ceil((train_group_size - 1) / len(data['neg']))
@@ -103,7 +103,7 @@ class AbsEmbedderTrainDataset(Dataset):
             neg_idxs = random.sample(neg_all_idx, self.args.train_group_size - 1)
         for neg_idx in neg_idxs:
             passages.append(data['neg'][neg_idx])
-        
+
         if self.args.knowledge_distillation:
             assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores', list])
             teacher_scores.append(data['pos_scores'][pos_idx])
@@ -121,7 +121,7 @@ class AbsEmbedderTrainDataset(Dataset):
                 )
                 for p in passages
             ]
-        
+
         return query, passages, teacher_scores
 
 @dataclass
@@ -129,7 +129,7 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
     query_max_len: int = 32
     passage_max_len: int = 128
     sub_batch_size: int = -1
-    
+
     def __call__(self, features):
         queries = [f[0] for f in features]
         passages = [f[1] for f in features]
@@ -138,12 +138,12 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
             teacher_scores = None
         elif isinstance(teacher_scores[0], list):
             teacher_scores = sum(teacher_scores, [])
-        
+
         if isinstance(queries[0], list):
             queries = sum(queries, [])
         if isinstance(passages[0], list):
             passages = sum(passages, [])
-        
+
         queries_inputs = self.tokenizer(
             queries,
             truncation=True,
@@ -156,7 +156,7 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
             max_length=self.passage_max_len,
             return_tensors=None
         )
-        
+
         if self.sub_batch_size is None or self.sub_batch_size <= 0:
             q_collated = self.tokenizer.pad(
                 queries_inputs,
@@ -174,7 +174,7 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
             )
         else:
             batch_size = self.sub_batch_size
-            
+
             q_collated = []
             for i in range(0, len(queries_inputs['attention_mask']), batch_size):
                 start = i
@@ -189,7 +189,7 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
                     pad_to_multiple_of=self.pad_to_multiple_of,
                     return_tensors=self.return_tensors
                 ))
-                
+
             d_collated = []
             for i in range(0, len(passages_inputs['attention_mask']), batch_size):
                 start = i
@@ -230,25 +230,25 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         self.tokenizer = tokenizer
         self.process_index = process_index
         self.num_processes = num_processes
-        
+
         self.step = 0
-        
+
         train_datasets = []
         each_data_idxs = []
         batch_size_idxs = []
         no_in_batch_neg_flags = []
         cur_all_num = 0
-        
+
         small_threshold = args.small_threshold
         drop_threshold = args.drop_threshold
-        
+
         for data_dir in args.train_data:
             if not os.path.isdir(data_dir):
                 # Add `no_in_batch_neg` **suffix** to `data_dir` to indicate that this dataset does not use in-batch negatives
                 no_in_batch_neg_flag = data_dir.split('.')[-2].endswith('no_in_batch_neg')
                 if not (data_dir.endswith('.json') or data_dir.endswith('.jsonl')): continue
                 temp_dataset = self._load_dataset(data_dir)
-                
+
                 if len(temp_dataset) == 0 or len(temp_dataset) < small_threshold: continue
                 else:
                     train_datasets.append(temp_dataset)
@@ -256,7 +256,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                     cur_all_num += len(temp_dataset)
                     batch_size_idxs.append(self._get_file_batch_size(temp_dataset, default_batch_size))
                     no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-                    
+
             else:
                 small_datasets = []
                 small_batch_size = math.inf
@@ -266,7 +266,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                 for file in os.listdir(data_dir):
                     if not (file.endswith('.json') or file.endswith('.jsonl')): continue
                     temp_dataset = self._load_dataset(os.path.join(data_dir, file))
-                    
+
                     if len(temp_dataset) == 0: continue
                     elif len(temp_dataset) < small_threshold:
                         small_datasets.append(temp_dataset)
@@ -277,7 +277,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                         cur_all_num += len(temp_dataset)
                         batch_size_idxs.append(self._get_file_batch_size(temp_dataset, default_batch_size))
                         no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-                
+
                 if len(small_datasets) > 0:
                     small_dataset = datasets.concatenate_datasets(small_datasets)
                     if len(small_dataset) >= drop_threshold:
@@ -286,19 +286,19 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                         cur_all_num += len(small_dataset)
                         batch_size_idxs.append(small_batch_size)
                         no_in_batch_neg_flags.append(no_in_batch_neg_flag)
-        
+
         self.dataset = datasets.concatenate_datasets(train_datasets)
         self.each_data_idxs = each_data_idxs
         self.datasets_inxs = np.arange(len(each_data_idxs))
         self.batch_size_idxs = batch_size_idxs
         self.no_in_batch_neg_flags = no_in_batch_neg_flags
-        
+
         self.refresh_epoch()
 
     def _load_dataset(self, file_path: str):
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
-        
+
         temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
         if len(temp_dataset) > self.args.max_example_num_per_dataset:
             temp_dataset = temp_dataset.select(random.sample(list(range(len(temp_dataset))), self.args.max_example_num_per_dataset))
@@ -318,11 +318,11 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             if 'symmetric' in data_type:
                 return default_batch_size // 2  # make the symmetric data have smaller batch size
         return default_batch_size
-    
+
     def refresh_epoch(self):
         logger.info(f'-- Rank {self.process_index}: refresh data --')
         self.deterministic_generator.shuffle(self.datasets_inxs)
-        
+
         batch_datas = []
         for dataset_inx in self.datasets_inxs:
             self.deterministic_generator.shuffle(self.each_data_idxs[dataset_inx])
@@ -351,7 +351,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         self.step += 1
         queries, passages, teacher_scores = self._create_batch_data(batch_raw_data=batch_data)
         return queries, passages, teacher_scores, no_in_batch_neg_flag
-    
+
     def _get_train_group_size(self, batch_raw_data):
         if 'type' in batch_raw_data:
             data_type = batch_raw_data['type'][0]
@@ -360,16 +360,16 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             elif data_type in ['symmetric_class']:
                 return min(len(batch_raw_data['neg'][0]) + 1, self.args.train_group_size), data_type
         return self.args.train_group_size, None
-    
+
     def _create_batch_data(self, batch_raw_data):
         queries, passages, teacher_scores = [], [], []
-        
+
         train_group_size, data_type = self._get_train_group_size(batch_raw_data)
-        
+
         for i in range(len(batch_raw_data['query'])):
             if data_type is not None:
                 assert batch_raw_data['type'][i] == data_type, f"Data type is not consistent in the same batch"
-            
+
             queries.append(
                 self.args.query_instruction_format.format(
                     batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
@@ -380,7 +380,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
             pos = self._shuffle_text(batch_raw_data['pos'][i][pos_idx])
             tmp_passages.append(pos)
-            
+
             neg_all_idx = list(range(len(batch_raw_data['neg'][i])))
             if len(batch_raw_data['neg'][i]) < train_group_size - 1:
                 num = math.ceil((train_group_size - 1) / len(batch_raw_data['neg'][i]))
@@ -389,7 +389,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                 neg_idxs = random.sample(neg_all_idx, train_group_size - 1)
             for neg_idx in neg_idxs:
                 tmp_passages.append(batch_raw_data['neg'][i][neg_idx])
-            
+
             if self.args.knowledge_distillation:
                 if 'pos_scores' in batch_raw_data and batch_raw_data['pos_scores'][i] is not None:
                     teacher_scores.append(batch_raw_data['pos_scores'][i][pos_idx])
@@ -398,7 +398,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                         teacher_scores.append(batch_raw_data['neg_scores'][i][neg_idx])
             else:
                 teacher_scores = None
-            
+
             if data_type is not None and data_type in ['symmetric_sts', 'symmetric_clustering']:
                 tmp_passages = [
                     self.args.query_instruction_format.format(
@@ -413,9 +413,9 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                             self.args.passage_instruction_for_retrieval, p
                         ) for p in tmp_passages
                     ]
-            
+
             passages.extend(tmp_passages)
-            
+
             if len(teacher_scores) > 0 and len(passages) > 0:
                 assert len(teacher_scores) == len(passages)
 
@@ -439,7 +439,7 @@ class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
         passages = features[0][1]
         teacher_scores = features[0][2]
         no_in_batch_neg_flag = features[0][3]
-        
+
         queries_inputs = self.tokenizer(
             queries,
             truncation=True,
@@ -517,7 +517,7 @@ class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
 class EmbedderTrainerCallbackForDataRefresh(TrainerCallback):
     def __init__(self, train_dataset: AbsEmbedderSameDatasetTrainDataset):
         self.train_dataset = train_dataset
-        
+
     def on_epoch_end(
         self,
         args: AbsEmbedderTrainingArguments,

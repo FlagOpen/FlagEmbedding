@@ -12,7 +12,6 @@ from .data_loader import AbsDataLoader
 from .searcher import AbsRetriever, AbsReranker
 from .utils import evaluate_metrics, evaluate_mrr
 
-
 logger = logging.getLogger(__name__)
 
 

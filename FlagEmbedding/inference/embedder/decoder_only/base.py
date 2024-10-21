@@ -1,7 +1,8 @@
-import torch
-import numpy as np
 from tqdm import tqdm
 from typing import cast, Any, List, Union
+
+import torch
+import numpy as np
 from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
@@ -42,7 +43,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             devices=devices,
             **kwargs
         )
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
@@ -53,7 +54,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             trust_remote_code=trust_remote_code,
             cache_dir=cache_dir
         )
-        
+
         if self.kwargs.get("pooling_method", "last_token") != "last_token":
             raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
 
@@ -72,7 +73,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
@@ -88,7 +89,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     def encode(
         self,
         sentences: Union[List[str], str],
@@ -123,12 +124,12 @@ class BaseLLMEmbedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         input_was_string = False
         if isinstance(sentences, str):
             sentences = [sentences]
             input_was_string = True
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(sentences), batch_size):
@@ -143,11 +144,11 @@ class BaseLLMEmbedder(AbsEmbedder):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         max_length_inputs = self.tokenizer.pad(
@@ -166,7 +167,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+
         # encode
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",

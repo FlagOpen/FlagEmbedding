@@ -10,13 +10,10 @@ from torch.utils.data import Dataset
 from transformers import (
     PreTrainedTokenizer, 
     DataCollatorWithPadding,
-    TrainerCallback,
-    TrainerState,
-    TrainerControl,
     BatchEncoding,
     DataCollatorForSeq2Seq
 )
-from typing import Optional, Union, List
+from typing import List
 
 from .AbsArguments import AbsRerankerDataArguments
 
@@ -31,7 +28,7 @@ class AbsRerankerTrainDataset(Dataset):
     ):
         self.args = args
         self.tokenizer = tokenizer
-        
+
         train_datasets = []
         for data_dir in args.train_data:
             if not os.path.isdir(data_dir):
@@ -48,11 +45,11 @@ class AbsRerankerTrainDataset(Dataset):
         self.dataset = datasets.concatenate_datasets(train_datasets)
 
         self.max_length = self.args.query_max_len + self.args.passage_max_len
-    
+
     def _load_dataset(self, file_path: str):
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
-        
+
         temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
         if len(temp_dataset) > self.args.max_example_num_per_dataset:
             temp_dataset = temp_dataset.select(random.sample(list(range(len(temp_dataset))), self.args.max_example_num_per_dataset))
@@ -65,7 +62,7 @@ class AbsRerankerTrainDataset(Dataset):
             if 'pos_scores' not in temp_dataset.column_names or 'neg_scores' not in temp_dataset.column_names:
                 raise ValueError(f"`pos_scores` and `neg_scores` not found in the features of training data in {file_path}, which is necessary when using knowledge distillation.")
         return temp_dataset
-    
+
     def _shuffle_text(self, text):
         if self.args.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.args.shuffle_ratio:
             split_text = []
@@ -76,10 +73,10 @@ class AbsRerankerTrainDataset(Dataset):
             return " ".join(split_text)
         else:
             return text
-    
+
     def __len__(self):
         return len(self.dataset)
-    
+
     def create_one_example(self, qry_encoding: str, doc_encoding: str):
         qry_inputs = self.tokenizer.encode(qry_encoding, truncation=True, max_length=self.args.query_max_len + self.args.passage_max_len // 4, add_special_tokens=False)
         doc_inputs = self.tokenizer.encode(doc_encoding, truncation=True, max_length=self.args.passage_max_len + self.args.query_max_len // 2, add_special_tokens=False)
@@ -91,11 +88,11 @@ class AbsRerankerTrainDataset(Dataset):
             padding=False,
         )
         return item
-    
+
     def __getitem__(self, item):
         data = self.dataset[item]
         train_group_size = self.args.train_group_size
-        
+
         query = data['query']
         if self.args.query_instruction_for_retrieval is not None:
             query = self.args.query_instruction_format.format(
@@ -107,10 +104,10 @@ class AbsRerankerTrainDataset(Dataset):
         teacher_scores = []
 
         assert isinstance(data['pos'], list) and isinstance(data['neg'], list)
-        
+
         pos_idx = random.choice(list(range(len(data['pos']))))
         passages.append(self._shuffle_text(data['pos'][pos_idx]))
-        
+
         neg_all_idx = list(range(len(data['neg'])))
         if len(data['neg']) < train_group_size - 1:
             num = math.ceil((train_group_size - 1) / len(data['neg']))
@@ -119,7 +116,7 @@ class AbsRerankerTrainDataset(Dataset):
             neg_idxs = random.sample(neg_all_idx, self.args.train_group_size - 1)
         for neg_idx in neg_idxs:
             passages.append(data['neg'][neg_idx])
-        
+
         if self.args.knowledge_distillation:
             assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores'], list)
             teacher_scores.append(data['pos_scores'][pos_idx])
@@ -137,11 +134,11 @@ class AbsRerankerTrainDataset(Dataset):
                 )
                 for p in passages
             ]
-        
+
         batch_data = []
         for passage in passages:
             batch_data.append(self.create_one_example(query, passage))
-        
+
         return batch_data, teacher_scores
 
 @dataclass
@@ -159,7 +156,7 @@ class AbsRerankerCollator(DataCollatorWithPadding):
         features = [f[0] for f in features]
         if isinstance(features[0], list):
             features = sum(features, [])
-            
+
         collated = self.tokenizer.pad(
             features,
             padding=self.padding,
@@ -181,14 +178,16 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
     ):
         super().__init__(args, tokenizer)
         sep = self.args.sep_token
-        self.sep_inputs = self.tokenizer(sep,
-                                         return_tensors=None,
-                                         add_special_tokens=False)['input_ids']
+        self.sep_inputs = self.tokenizer(
+            sep,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
 
     def __getitem__(self, item) -> List[BatchEncoding]:
         data = self.dataset[item]
         train_group_size = self.args.train_group_size
-        
+
         query = data['query']
         if self.args.query_instruction_for_retrieval is not None:
             query = self.args.query_instruction_format.format(
@@ -200,10 +199,10 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
         teacher_scores = []
 
         assert isinstance(data['pos'], list) and isinstance(data['neg'], list)
-        
+
         pos_idx = random.choice(list(range(len(data['pos']))))
         passages.append(self._shuffle_text(data['pos'][pos_idx]))
-        
+
         neg_all_idx = list(range(len(data['neg'])))
         if len(data['neg']) < train_group_size - 1:
             num = math.ceil((train_group_size - 1) / len(data['neg']))
@@ -212,7 +211,7 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
             neg_idxs = random.sample(neg_all_idx, self.args.train_group_size - 1)
         for neg_idx in neg_idxs:
             passages.append(data['neg'][neg_idx])
-        
+
         if self.args.knowledge_distillation:
             assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores'], list)
             teacher_scores.append(data['pos_scores'][pos_idx])
@@ -233,25 +232,31 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
 
         prompt = self.dataset[item].get('prompt', "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'.")
 
-        query_inputs = self.tokenizer(query,
-                                      return_tensors=None,
-                                      max_length=self.args.query_max_len + self.args.passage_max_len // 4,
-                                      truncation=True,
-                                      add_special_tokens=False)
+        query_inputs = self.tokenizer(
+            query,
+            return_tensors=None,
+            max_length=self.args.query_max_len + self.args.passage_max_len // 4,
+            truncation=True,
+            add_special_tokens=False
+        )
 
-        prompt_inputs = self.tokenizer(prompt,
-                                         return_tensors=None,
-                                         add_special_tokens=False)['input_ids']
+        prompt_inputs = self.tokenizer(
+            prompt,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
 
         max_length = self.max_length - len(prompt_inputs) - len(self.sep_inputs)
 
         passages_inputs = []
         for i, passage in enumerate(passages):
-            passage_inputs = self.tokenizer(passage,
-                                            return_tensors=None,
-                                            max_length=self.args.passage_max_len + self.args.query_max_len // 2,
-                                            truncation=True,
-                                            add_special_tokens=False)
+            passage_inputs = self.tokenizer(
+                passage,
+                return_tensors=None,
+                max_length=self.args.passage_max_len + self.args.query_max_len // 2,
+                truncation=True,
+                add_special_tokens=False
+            )
             if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
                 item = self.tokenizer.prepare_for_model(
                     [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
@@ -307,7 +312,7 @@ class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
             teacher_scores = None
         elif isinstance(teacher_scores[0], list):
             teacher_scores = sum(teacher_scores, [])
-        
+
         features = [f[0] for f in features]
         if isinstance(features[0], list):
             features = sum(features, [])
@@ -320,7 +325,7 @@ class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
             # print(max_label_length)
             if self.pad_to_multiple_of is not None:
                 max_label_length = (
-                        (max_label_length + self.pad_to_multiple_of - 1)
+                    (max_label_length + self.pad_to_multiple_of - 1)
                         // self.pad_to_multiple_of
                         * self.pad_to_multiple_of
                 )
@@ -330,7 +335,8 @@ class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
                 remainder = [self.label_pad_token_id] * (max_label_length - len(feature["labels"]))
                 if isinstance(feature["labels"], list):
                     feature["labels"] = (
-                        feature["labels"] + remainder if padding_side == "right" else remainder + feature["labels"]
+                        feature["labels"] + remainder
+                        if padding_side == "right" else remainder + feature["labels"]
                     )
                 elif padding_side == "right":
                     feature["labels"] = np.concatenate([feature["labels"], remainder]).astype(np.int64)

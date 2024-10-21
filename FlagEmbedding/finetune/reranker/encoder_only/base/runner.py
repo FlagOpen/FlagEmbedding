@@ -1,4 +1,3 @@
-import os
 import logging
 from typing import Tuple
 from transformers import (
@@ -39,7 +38,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
             from_tf=bool(".ckpt" in self.model_args.model_name_or_path),
             trust_remote_code=self.model_args.trust_remote_code
         )
-        
+
         model = CrossEncoderModel(
             base_model,
             tokenizer=tokenizer,
@@ -48,7 +47,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
 
         if self.training_args.gradient_checkpointing:
             model.enable_input_require_grads()
-            
+
         return tokenizer, model
 
     def load_trainer(self) -> EncoderOnlyRerankerTrainer:

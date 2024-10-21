@@ -1,6 +1,5 @@
 import os
 import re
-import torch
 import logging
 from torch import nn
 from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
@@ -9,7 +8,6 @@ from peft import LoraConfig, TaskType, get_peft_model, PeftModel
 from FlagEmbedding.finetune.reranker.decoder_only.layerwise.arguments import RerankerModelArguments
 
 from .modeling_minicpm_reranker import LayerWiseMiniCPMForCausalLM, LayerWiseHead
-from .configuration_minicpm_reranker import LayerWiseMiniCPMConfig
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +27,7 @@ def find_largest_checkpoint(checkpoint_dir):
         return os.path.join(checkpoint_dir, max_checkpoint_file)
     else:
         return None
+
 
 def get_model(model_args: RerankerModelArguments, only_for_one_logit):
     if model_args.config_name:
@@ -150,6 +149,7 @@ def get_model(model_args: RerankerModelArguments, only_for_one_logit):
 
     return model
 
+
 def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -179,7 +179,7 @@ def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
         config.start_layer = model_args.start_layer
         config.head_multi = model_args.head_multi
         config.head_type = model_args.head_type
-    
+
     model = AutoModelForCausalLM.from_pretrained(model_args.model_name_or_path,
                                                  config=config,
                                                  cache_dir=model_args.cache_dir,

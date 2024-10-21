@@ -2,7 +2,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from typing import Any, List, Union, Tuple
-from transformers import AutoModelForSequenceClassification, AutoTokenizer, is_torch_npu_available
+from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsReranker
 
@@ -27,12 +27,12 @@ class BaseReranker(AbsReranker):
             devices,
             **kwargs
         )
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, cache_dir=cache_dir)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, trust_remote_code=trust_remote_code, cache_dir=cache_dir)
 
         self.kwargs = kwargs
-    
+
     @torch.no_grad()
     def compute_score_single_gpu(
         self,
@@ -58,7 +58,7 @@ class BaseReranker(AbsReranker):
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(sentence_pairs), batch_size):
@@ -73,11 +73,11 @@ class BaseReranker(AbsReranker):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         while flag is False:

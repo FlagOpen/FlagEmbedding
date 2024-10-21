@@ -21,7 +21,7 @@ class DecoderOnlyEmbedderTrainer(AbsEmbedderTrainer):
                 f'does not support save interface')
         else:
             self.model.save(output_dir)
-            
+
         if self.tokenizer is not None and self.is_world_process_zero():
             self.tokenizer.save_pretrained(output_dir)
 

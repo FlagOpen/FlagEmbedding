@@ -22,7 +22,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         training_args: AbsEmbedderTrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
-    
+
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.tokenizer_name if self.model_args.tokenizer_name else self.model_args.model_name_or_path,
@@ -51,7 +51,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             else:
                 logger.warning(f"Special tokens {self.model_args.additional_special_tokens} already exists in the tokenizer.")
         base_model = get_model(self.model_args, self.training_args.output_dir, resize, len(tokenizer))
-        
+
         num_labels = 1
         config = AutoConfig.from_pretrained(
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
@@ -60,7 +60,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             token=self.model_args.token,
         )
         logger.info('Config: %s', config)
-        
+
         model = BiDecoderOnlyEmbedderModel(
             base_model,
             tokenizer=tokenizer,
@@ -71,10 +71,10 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings
         )
-        
+
         if self.training_args.gradient_checkpointing:
             model.enable_input_require_grads()
-        
+
         if self.training_args.fix_position_embedding:
             for k, v in model.named_parameters():
                 if "position_embeddings" in k:
@@ -96,11 +96,11 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
 
     def run(self):
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
-        
+
         # Training
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()
-        
+
         # save merged model
         if self.model_args.save_merged_lora_model and self.training_args.process_index == 0:
             save_merged_model(self.model_args, self.training_args.output_dir)

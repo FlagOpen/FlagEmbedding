@@ -43,7 +43,7 @@ class M3Embedder(AbsEmbedder):
             **kwargs
         )
         self.pooling_method = pooling_method
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
@@ -60,7 +60,7 @@ class M3Embedder(AbsEmbedder):
             sentence_pooling_method=pooling_method,
             normalize_embeddings=normalize_embeddings
         )
-    
+
     def convert_id_to_token(self, lexical_weights: List[Dict]):
         if isinstance(lexical_weights, dict):
             lexical_weights = [lexical_weights]
@@ -87,7 +87,7 @@ class M3Embedder(AbsEmbedder):
                 if token in lw2:
                     scores += weight * lw2[token]
             return scores
-        
+
         if isinstance(lexical_weights_1, dict) and isinstance(lexical_weights_2, dict):
             return _compute_single_lexical_matching_score(lexical_weights_1, lexical_weights_2)
         elif isinstance(lexical_weights_1, list) and isinstance(lexical_weights_2, list):
@@ -107,7 +107,7 @@ class M3Embedder(AbsEmbedder):
         scores, _ = token_scores.max(-1)
         scores = torch.sum(scores) / q_reps.size(0)
         return scores
-    
+
     def encode_queries(
         self,
         queries: Union[List[str], str],
@@ -130,7 +130,7 @@ class M3Embedder(AbsEmbedder):
             return_colbert_vecs=return_colbert_vecs,
             **kwargs
         )
-    
+
     def encode_corpus(
         self,
         queries: Union[List[str], str],
@@ -153,7 +153,7 @@ class M3Embedder(AbsEmbedder):
             return_colbert_vecs=return_colbert_vecs,
             **kwargs
         )
-    
+
     def encode(
         self,
         queries: Union[List[str], str],
@@ -176,7 +176,7 @@ class M3Embedder(AbsEmbedder):
             return_colbert_vecs=return_colbert_vecs,
             **kwargs
         )
-    
+
     @torch.no_grad()
     def encode_single_device(
         self,
@@ -197,12 +197,12 @@ class M3Embedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         input_was_string = False
         if isinstance(sentences, str):
             sentences = [sentences]
             input_was_string = True
-        
+
         def _process_token_weights(token_weights: np.ndarray, input_ids: list):
             # conver to dict
             result = defaultdict(int)
@@ -224,7 +224,7 @@ class M3Embedder(AbsEmbedder):
             # delte the vectors of padding tokens
             tokens_num = np.sum(attention_mask)
             return colbert_vecs[:tokens_num - 1]  # we don't use the embedding of cls, so select tokens_num-1
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(sentences), batch_size):
@@ -239,11 +239,11 @@ class M3Embedder(AbsEmbedder):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         max_length_inputs = self.tokenizer.pad(
@@ -266,7 +266,7 @@ class M3Embedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+
         # encode
         all_dense_embeddings, all_lexical_weights, all_colbert_vecs = [], [], []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
@@ -284,7 +284,7 @@ class M3Embedder(AbsEmbedder):
                 return_sparse=return_sparse,
                 return_colbert_vecs=return_colbert_vecs
             )
-            
+
             if return_dense:
                 all_dense_embeddings.append(outputs['dense_vecs'].cpu().numpy())
 
@@ -329,7 +329,7 @@ class M3Embedder(AbsEmbedder):
                 all_colbert_vecs = all_colbert_vecs[0]
         else:
             all_colbert_vecs = None
-        
+
         # return the embeddings
         return {
             "dense_vecs": all_dense_embeddings,
@@ -359,7 +359,7 @@ class M3Embedder(AbsEmbedder):
                 device=self.target_devices[0],
                 **kwargs
             )
-        
+
         pool = self.start_multi_process_pool(M3Embedder._compute_score_multi_process_worker)
         embeddings = self.compute_score_multi_process(
             sentence_pairs,
@@ -372,7 +372,7 @@ class M3Embedder(AbsEmbedder):
         )
         self.stop_multi_process_pool(pool)
         return embeddings
-    
+
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L877
     def compute_score_multi_process(
         self,
@@ -404,10 +404,10 @@ class M3Embedder(AbsEmbedder):
             [output_queue.get() for _ in trange(last_chunk_id, desc="Chunks")],
             key=lambda x: x[0],
         )
-        
+
         scores_dict = self._concatenate_compute_score_results_from_multi_process([result[1] for result in results_list])
         return scores_dict
-    
+
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L976
     @staticmethod
     def _compute_score_multi_process_worker(
@@ -464,7 +464,7 @@ class M3Embedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         if isinstance(sentence_pairs, list) and len(sentence_pairs) == 0:
             return []
         if isinstance(sentence_pairs[0], str):
@@ -490,10 +490,16 @@ class M3Embedder(AbsEmbedder):
             queries_inputs = _tokenize(queries_batch, max_length=max_query_length).to(device)
             corpus_inputs = _tokenize(corpus_batch, max_length=max_passage_length).to(device)
 
-            queries_output = self.model(queries_inputs, return_dense=True, return_sparse=True, return_colbert_vecs=True,
-                                        return_sparse_embedding=True)
-            corpus_output = self.model(corpus_inputs, return_dense=True, return_sparse=True, return_colbert_vecs=True,
-                                       return_sparse_embedding=True)
+            queries_output = self.model(
+                queries_inputs,
+                return_dense=True, return_sparse=True, return_colbert_vecs=True,
+                return_sparse_embedding=True
+            )
+            corpus_output = self.model(
+                corpus_inputs,
+                return_dense=True, return_sparse=True, return_colbert_vecs=True,
+                return_sparse_embedding=True
+            )
 
             q_dense_vecs, q_sparse_vecs, q_colbert_vecs = queries_output['dense_vecs'], queries_output['sparse_vecs'], \
             queries_output['colbert_vecs']
@@ -502,8 +508,10 @@ class M3Embedder(AbsEmbedder):
 
             dense_scores = self.model.compute_dense_score(q_dense_vecs, p_dense_vecs)
             sparse_scores = self.model.compute_sparse_score(q_sparse_vecs, p_sparse_vecs)
-            colbert_scores = self.model.compute_colbert_score(q_colbert_vecs, p_colbert_vecs,
-                                                      q_mask=queries_inputs['attention_mask'])
+            colbert_scores = self.model.compute_colbert_score(
+                q_colbert_vecs, p_colbert_vecs,
+                q_mask=queries_inputs['attention_mask']
+            )
 
             if weights_for_different_modes is None:
                 weights_for_different_modes = [1., 1., 1.]
@@ -556,10 +564,10 @@ class M3Embedder(AbsEmbedder):
                         merged_results[key].append(results[key])
                     else:
                         merged_results[key].extend(results[key])
-        
+
         if merged_results["dense_vecs"] is not None:
             merged_results["dense_vecs"] = np.concatenate(merged_results["dense_vecs"], axis=0)
-        
+
         return merged_results
 
     def _concatenate_compute_score_results_from_multi_process(
@@ -576,5 +584,5 @@ class M3Embedder(AbsEmbedder):
         for key in merged_results.keys():
             for results in results_list:
                 merged_results[key].extend(results[key])
-        
+
         return merged_results

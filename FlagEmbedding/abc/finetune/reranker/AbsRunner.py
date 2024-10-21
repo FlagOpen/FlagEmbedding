@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Tuple
 from abc import ABC, abstractmethod
-from transformers import set_seed, PreTrainedTokenizer, AutoTokenizer
+from transformers import set_seed, PreTrainedTokenizer
 
 
 from .AbsArguments import (
@@ -31,7 +31,7 @@ class AbsRerankerRunner(ABC):
         self.model_args = model_args
         self.data_args = data_args
         self.training_args = training_args
-        
+
         if (
             os.path.exists(training_args.output_dir)
             and os.listdir(training_args.output_dir)
@@ -62,20 +62,20 @@ class AbsRerankerRunner(ABC):
 
         # Set seed
         set_seed(training_args.seed)
-        
+
         self.tokenizer, self.model = self.load_tokenizer_and_model()
         self.train_dataset = self.load_train_dataset()
         self.data_collator = self.load_data_collator()
         self.trainer = self.load_trainer()
-    
+
     @abstractmethod
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
         pass
-    
+
     @abstractmethod
     def load_trainer(self) -> AbsRerankerTrainer:
         pass
-    
+
     def load_train_dataset(self) -> AbsRerankerTrainDataset:
         if self.model_args.model_type == 'encoder':
             train_dataset = AbsRerankerTrainDataset(
@@ -88,13 +88,13 @@ class AbsRerankerRunner(ABC):
                 tokenizer=self.tokenizer
             )
         return train_dataset
-    
+
     def load_data_collator(self) -> AbsRerankerCollator:
         if self.model_args.model_type == 'encoder':
             RerankerCollator = AbsRerankerCollator
         else:
             RerankerCollator = AbsLLMRerankerCollator
-        
+
         data_collator = RerankerCollator(
             tokenizer=self.tokenizer,
             query_max_len=self.data_args.query_max_len,
@@ -104,10 +104,10 @@ class AbsRerankerRunner(ABC):
             return_tensors="pt"
         )
         return data_collator
-    
+
     def run(self):
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
-        
+
         # Training
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()

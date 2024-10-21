@@ -31,7 +31,7 @@ class AbsEmbedderRunner(ABC):
         self.model_args = model_args
         self.data_args = data_args
         self.training_args = training_args
-        
+
         if (
             os.path.exists(training_args.output_dir)
             and os.listdir(training_args.output_dir)
@@ -62,20 +62,20 @@ class AbsEmbedderRunner(ABC):
 
         # Set seed
         set_seed(training_args.seed)
-        
+
         self.tokenizer, self.model = self.load_tokenizer_and_model()
         self.train_dataset = self.load_train_dataset()
         self.data_collator = self.load_data_collator()
         self.trainer = self.load_trainer()
-    
+
     @abstractmethod
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         pass
-    
+
     @abstractmethod
     def load_trainer(self) -> AbsEmbedderTrainer:
         pass
-    
+
     def load_train_dataset(self) -> AbsEmbedderTrainDataset:
         if self.data_args.same_dataset_within_batch:
             train_dataset = AbsEmbedderSameDatasetTrainDataset(
@@ -94,13 +94,13 @@ class AbsEmbedderRunner(ABC):
                 tokenizer=self.tokenizer
             )
         return train_dataset
-    
+
     def load_data_collator(self) -> AbsEmbedderCollator:
         if self.data_args.same_dataset_within_batch:
             EmbedCollator = AbsEmbedderSameDatasetCollator
         else:
             EmbedCollator = AbsEmbedderCollator
-        
+
         data_collator = EmbedCollator(
             tokenizer=self.tokenizer,
             query_max_len=self.data_args.query_max_len,
@@ -111,10 +111,10 @@ class AbsEmbedderRunner(ABC):
             return_tensors="pt"
         )
         return data_collator
-    
+
     def run(self):
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
-        
+
         # Training
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()

@@ -26,6 +26,7 @@ def find_largest_checkpoint(checkpoint_dir):
     else:
         return None
 
+
 def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, resize: bool, resize_tokens: int):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -95,6 +96,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
             model.print_trainable_parameters()
 
     return model
+
 
 def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str):
     if model_args.config_name:

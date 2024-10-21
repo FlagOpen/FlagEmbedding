@@ -1,7 +1,8 @@
-import torch
-import numpy as np
 from tqdm import tqdm
 from typing import cast, Any, List, Union
+
+import torch
+import numpy as np
 from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
@@ -32,7 +33,7 @@ class BaseEmbedder(AbsEmbedder):
             **kwargs
         )
         self.pooling_method = pooling_method
-        
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
@@ -59,7 +60,7 @@ class BaseEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
@@ -75,7 +76,7 @@ class BaseEmbedder(AbsEmbedder):
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-    
+
     def encode(
         self,
         sentences: Union[List[str], str],
@@ -113,12 +114,12 @@ class BaseEmbedder(AbsEmbedder):
 
         self.model.to(device)
         self.model.eval()
-        
+
         input_was_string = False
         if isinstance(sentences, str):
             sentences = [sentences]
             input_was_string = True
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in range(0, len(sentences), batch_size):
@@ -133,11 +134,11 @@ class BaseEmbedder(AbsEmbedder):
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
             } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
-        
+
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
         all_inputs_sorted = [all_inputs[i] for i in length_sorted_idx]
-        
+
         # adjust batch size
         flag = False
         max_length_inputs = self.tokenizer.pad(
@@ -156,7 +157,7 @@ class BaseEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+
         # encode
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
@@ -190,7 +191,7 @@ class BaseEmbedder(AbsEmbedder):
         if input_was_string:
             return all_embeddings[0]
         return all_embeddings
-    
+
     def pooling(
         self,
         last_hidden_state: torch.Tensor,

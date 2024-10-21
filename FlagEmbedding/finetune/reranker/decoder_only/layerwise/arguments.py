@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List
 from dataclasses import dataclass, field
 
 from FlagEmbedding.abc.finetune.reranker import AbsRerankerModelArguments
@@ -48,7 +48,7 @@ class RerankerModelArguments(AbsRerankerModelArguments):
     raw_peft: List[str] = field(
         default=None
     )
-    
+
     save_merged_lora_model: bool = field(
         default=False,
         metadata={"help": "If passed, will merge the lora modules and save the entire model."}

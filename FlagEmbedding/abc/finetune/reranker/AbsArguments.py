@@ -10,7 +10,7 @@ class AbsRerankerModelArguments:
     """
     Abstract class for model arguments.
     """
-    
+
     model_name_or_path: str = field(
         metadata={"help": "The model checkpoint for initialization."}
     )
@@ -77,7 +77,7 @@ class AbsRerankerDataArguments:
             "help": "The maximum total input sequence length after tokenization. Sequences longer than this will be truncated."
         },
     )
-    
+
     pad_to_multiple_of: Optional[int] = field(
         default=None,
         metadata={
@@ -95,19 +95,19 @@ class AbsRerankerDataArguments:
     query_instruction_format: str = field(
         default="{}{}", metadata={"help": "format for query instruction"}
     )
-    
+
     knowledge_distillation: bool = field(
         default=False,
         metadata={"help": "Use knowledge distillation when `pos_scores: List[float]` and `neg_scores: List[float]` are in features of training data"}
     )
-    
+
     passage_instruction_for_retrieval: Optional[str] = field(
         default=None, metadata={"help": "instruction for passage"}
     )
     passage_instruction_format: Optional[str] = field(
         default="{}{}", metadata={"help": "format for passage instruction"}
     )
-    
+
     shuffle_ratio: float = field(
         default=0.0, metadata={"help": "The ratio of shuffling the text"}
     )

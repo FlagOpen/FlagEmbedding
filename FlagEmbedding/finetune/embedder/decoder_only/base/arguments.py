@@ -56,7 +56,7 @@ class DecoderOnlyEmbedderModelArguments(AbsEmbedderModelArguments):
     raw_peft: str = field(
         default=None
     )
-    
+
     additional_special_tokens: Optional[str] = field(
         default=None,
         metadata={"help": "additional special tokens", "nargs": "+"}

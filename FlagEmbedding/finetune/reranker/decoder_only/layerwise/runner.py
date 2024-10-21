@@ -2,9 +2,8 @@ import os
 import logging
 from typing import Tuple
 from pathlib import Path
-from FlagEmbedding.abc.finetune.reranker.AbsArguments import AbsRerankerModelArguments, AbsRerankerDataArguments, AbsRerankerTrainingArguments
+from FlagEmbedding.abc.finetune.reranker.AbsArguments import AbsRerankerDataArguments, AbsRerankerTrainingArguments
 from transformers import (
-    AutoModelForCausalLM, AutoConfig,
     AutoTokenizer, PreTrainedTokenizer
 )
 
@@ -19,12 +18,12 @@ logger = logging.getLogger(__name__)
 class DecoderOnlyRerankerRunner(AbsRerankerRunner):
     def __init__(
         self,
-        model_args: AbsRerankerModelArguments,
+        model_args: RerankerModelArguments,
         data_args: AbsRerankerDataArguments,
         training_args: AbsRerankerTrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
-    
+
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
         # print(self.model_args.model_name_or_path)
         tokenizer = AutoTokenizer.from_pretrained(
@@ -54,7 +53,7 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
         tokenizer.padding_side = 'left'
 
         base_model = get_model(self.model_args, tokenizer('Yes', add_special_tokens=False)['input_ids'][-1])
-        
+
         model = CrossDecoderModel(
             base_model,
             tokenizer=tokenizer,
@@ -66,7 +65,7 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
             model.enable_input_require_grads()
 
         return tokenizer, model
-    
+
     def load_trainer(self) -> DecoderOnlyRerankerTrainer:
         trainer = DecoderOnlyRerankerTrainer(
             model=self.model,
@@ -79,11 +78,11 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
 
     def run(self):
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
-        
+
         # Training
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()
-        
+
         # save merged model
         if self.model_args.save_merged_lora_model and self.training_args.process_index == 0:
             save_merged_model(self.model_args, self.training_args.output_dir)

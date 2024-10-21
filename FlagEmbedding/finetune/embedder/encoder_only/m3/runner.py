@@ -30,7 +30,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         self.model_args: EncoderOnlyEmbedderM3ModelArguments
         self.data_args: AbsEmbedderDataArguments
         self.training_args: EncoderOnlyEmbedderM3TrainingArguments
-    
+
     @staticmethod
     def get_model(
         model_name_or_path: str,
@@ -45,7 +45,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
                 cache_dir=cache_folder,
                 ignore_patterns=['flax_model.msgpack', 'rust_model.ot', 'tf_model.h5']
             )
-        
+
         model = AutoModel.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code
@@ -58,7 +58,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             in_features=model.config.hidden_size,
             out_features=1
         )
-        
+
         colbert_model_path = os.path.join(model_name_or_path, 'colbert_linear.pt')
         sparse_model_path = os.path.join(model_name_or_path, 'sparse_linear.pt')
         if os.path.exists(colbert_model_path) and os.path.exists(sparse_model_path):
@@ -69,19 +69,19 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             sparse_linear.load_state_dict(sparse_state_dict)
         else:
             logger.info('The parameters of colbert_linear and sparse linear is new initialize. Make sure the model is loaded for training, not inferencing')
-        
+
         return {
             'model': model,
             'colbert_linear': colbert_linear,
             'sparse_linear': sparse_linear
         }
-    
+
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
             trust_remote_code=self.model_args.trust_remote_code
         )
-        
+
         num_labels = 1
         config = AutoConfig.from_pretrained(
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
@@ -90,7 +90,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             token=self.model_args.token,
         )
         logger.info('Config: %s', config)
-        
+
         model = EncoderOnlyEmbedderM3Model(
             self.get_model(self.model_args.model_name_or_path, self.model_args.trust_remote_code, self.model_args.colbert_dim),
             tokenizer=tokenizer,
@@ -104,10 +104,10 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             use_self_distill=self.training_args.use_self_distill,
             self_distill_start_step=self.training_args.self_distill_start_step
         )
-        
+
         if self.training_args.gradient_checkpointing:
             model.enable_input_require_grads()
-        
+
         if self.training_args.fix_position_embedding:
             for k, v in model.named_parameters():
                 if "position_embeddings" in k:

@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import List
 from dataclasses import dataclass, field
 
 from FlagEmbedding.abc.finetune.reranker import AbsRerankerModelArguments

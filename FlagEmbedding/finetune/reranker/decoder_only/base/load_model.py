@@ -25,6 +25,7 @@ def find_largest_checkpoint(checkpoint_dir):
     else:
         return None
 
+
 def get_model(model_args: RerankerModelArguments):
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
@@ -84,6 +85,7 @@ def get_model(model_args: RerankerModelArguments):
             model.print_trainable_parameters()
 
     return model
+
 
 def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
     if model_args.config_name:

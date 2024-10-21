@@ -10,7 +10,7 @@ class AbsEmbedderModelArguments:
     """
     Abstract class for model arguments.
     """
-    
+
     model_name_or_path: str = field(
         metadata={"help": "The model checkpoint for initialization."}
     )
@@ -62,7 +62,7 @@ class AbsEmbedderDataArguments:
             "help": "The maximum total input sequence length after tokenization for passage. Sequences longer than this will be truncated."
         },
     )
-    
+
     pad_to_multiple_of: Optional[int] = field(
         default=None,
         metadata={
@@ -80,23 +80,23 @@ class AbsEmbedderDataArguments:
     query_instruction_format: str = field(
         default="{}{}", metadata={"help": "format for query instruction"}
     )
-    
+
     knowledge_distillation: bool = field(
         default=False,
         metadata={"help": "Use knowledge distillation when `pos_scores: List[float]` and `neg_scores: List[float]` are in features of training data"}
     )
-    
+
     passage_instruction_for_retrieval: Optional[str] = field(
         default=None, metadata={"help": "instruction for passage"}
     )
     passage_instruction_format: Optional[str] = field(
         default="{}{}", metadata={"help": "format for passage instruction"}
     )
-    
+
     shuffle_ratio: float = field(
         default=0.0, metadata={"help": "The ratio of shuffling the text"}
     )
-    
+
     # Parameters for SameDatasetDataArguments
     same_dataset_within_batch: bool = field(
         default=False, metadata={"help": "All samples in the same batch comes from the same dataset."}

@@ -1,4 +1,3 @@
-import torch
 from transformers import PreTrainedModel, AutoTokenizer
 import logging
 
