@@ -104,6 +104,10 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             use_self_distill=self.training_args.use_self_distill,
             self_distill_start_step=self.training_args.self_distill_start_step
         )
+        
+        if self.training_args.gradient_checkpointing:
+            model.enable_input_require_grads()
+        
         if self.training_args.fix_position_embedding:
             for k, v in model.named_parameters():
                 if "position_embeddings" in k:

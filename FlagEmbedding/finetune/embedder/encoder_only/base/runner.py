@@ -43,6 +43,10 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings
         )
+        
+        if self.training_args.gradient_checkpointing:
+            model.enable_input_require_grads()
+        
         if self.training_args.fix_position_embedding:
             for k, v in model.named_parameters():
                 if "position_embeddings" in k:
