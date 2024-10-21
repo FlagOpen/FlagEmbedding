@@ -254,11 +254,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     compute_score_func=self.compute_sparse_score
                 )
                 
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Sparse loss: ", sparse_loss)
-                    print("Sparse scores shape: ", sparse_scores.shape)
-                
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
                     q_colbert_vecs, p_colbert_vecs, teacher_targets=teacher_targets,
@@ -266,20 +261,12 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     q_mask=self._get_queries_attention_mask(queries)
                 )
                 
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Colbert loss: ", colbert_loss)
-                    print("Colbert scores shape: ", colbert_scores.shape)
-                
                 # get dense scores of current process
                 if not no_in_batch_neg_flag and self.negatives_cross_device:
                     dense_scores = dense_scores[
-                        q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1)
-                    ]   # (batch_size, group_size)
-                
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Dense scores shape: ", dense_scores.shape)
+                        q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1),
+                        p_dense_vecs.size(0)*self.process_rank : p_dense_vecs.size(0)*(self.process_rank+1)
+                    ]   # (batch_size, batch_size * group_size)
                 
                 # ensemble loss
                 ensemble_scores, ensemble_loss = compute_loss_func(
@@ -289,10 +276,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     sparse_scores=sparse_scores,
                     colbert_scores=colbert_scores
                 )
-                
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Ensemble loss: ", ensemble_loss)
                 
                 loss = (loss + ensemble_loss + 0.1 * sparse_loss + colbert_loss) / 4
                 
