@@ -120,15 +120,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
-        if dist.get_rank() == 0:
-            print("======================")
-            print("Computing colbert score...")
-            print(scores.shape)
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
-        if dist.get_rank() == 0:
-            print("======================")
-            print("Computing colbert score...")
-            print(scores.shape)
         scores = scores / self.temperature
         return scores
     
@@ -273,20 +265,18 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 compute_score_func=self.compute_dense_score
             )
             
-            if dist.get_rank() == 0:
-                print("======================")
-                print("Dense loss:", loss)
-            
             if self.unified_finetuning:
+                # disable cross device negatives for unified finetuning
+                if no_in_batch_neg_flag:
+                    compute_loss_func = self._compute_no_in_batch_neg_loss
+                else:
+                    compute_loss_func = self._compute_in_batch_neg_loss
+                
                 # sparse loss
                 sparse_scores, sparse_loss = compute_loss_func(
                     q_sparse_vecs, p_sparse_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_sparse_score
                 )
-                
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Sparse loss:", sparse_loss)
                 
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
@@ -295,9 +285,11 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     q_mask=self._get_queries_attention_mask(queries)
                 )
                 
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Colbert loss:", colbert_loss)
+                # get dense scores of current process
+                if self.negatives_cross_device:
+                    dense_scores = dense_scores[
+                        q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1)
+                    ]   # (batch_size, group_size)
                 
                 # ensemble loss
                 ensemble_scores, ensemble_loss = compute_loss_func(
@@ -307,10 +299,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     sparse_scores=sparse_scores,
                     colbert_scores=colbert_scores
                 )
-                
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Ensemble loss:", ensemble_scores)
                 
                 loss = (loss + ensemble_loss + 0.1 * sparse_loss + colbert_loss) / 4
                 
@@ -323,10 +311,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     
                     loss += (dense_self_distill_loss + 0.1 * sparse_self_distill_loss + colbert_self_distill_loss) / 3
                     loss = loss / 2
-                    
-                    if dist.get_rank() == 0:
-                        print("======================")
-                        print("Final loss:", loss)
             self.step += 1
         else:
             loss = None

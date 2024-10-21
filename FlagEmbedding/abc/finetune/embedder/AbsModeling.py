@@ -148,11 +148,6 @@ class AbsEmbedderModel(ABC, nn.Module):
         else:
             cross_scores = compute_score_func(cross_q_reps, cross_p_reps, **kwargs) # (world_size * batch_size, world_size * batch_size * group_size)
         
-        if dist.get_rank() == 0:
-            print("======================")
-            print("Cross scores:")
-            print(cross_scores.shape)
-        
         if teacher_targets is not None:
             # compute kd loss
             if self.kd_loss_type == "kl_div":
@@ -168,11 +163,6 @@ class AbsEmbedderModel(ABC, nn.Module):
                 loss += self.compute_loss(cross_scores, cross_targets)
             elif self.kd_loss_type == "m3_kd_loss":
                 cross_teacher_targets = self._dist_gather_tensor(teacher_targets)   # (world_size * batch_size, group_size)
-                
-                if dist.get_rank() == 0:
-                    print("======================")
-                    print("Cross teacher targets:")
-                    print(cross_teacher_targets.shape)
                 
                 loss = self.distill_loss(self.kd_loss_type, cross_teacher_targets, cross_scores, group_size)
             else:
