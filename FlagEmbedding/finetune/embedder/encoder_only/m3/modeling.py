@@ -208,6 +208,10 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     for mask in q_mask_list
                 ], dim=0)
         if self.negatives_cross_device:
+            if dist.get_rank() == 0:
+                print("======================")
+                print("Start padding q_mask")
+                print(q_mask.shape)
             # gather all q_mask
             q_mask = q_mask.contiguous()
             
@@ -217,6 +221,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             all_q_mask_lengths[self.process_rank] = q_mask_length
             
             _length = int(max(all_q_mask_lengths))
+            
+            print("max length: ", _length)
             
             if self.tokenizer.padding_side == 'right':
                 q_mask = F.pad(q_mask, (0, _length - q_mask.shape[1]), value=self.tokenizer.pad_token_id)
@@ -229,6 +235,9 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             all_q_masks[self.process_rank] = q_mask
             
             q_mask = torch.cat(all_q_masks, dim=0)
+        if dist.get_rank() == 0:
+            print("======================")
+            print(q_mask.shape)
         return q_mask
     
     def forward(
