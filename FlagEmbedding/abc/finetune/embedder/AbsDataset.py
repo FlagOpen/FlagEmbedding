@@ -320,7 +320,7 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         return default_batch_size
     
     def refresh_epoch(self):
-        logger.info(f'---------------------------*Rank {self.process_index}: refresh data---------------------------')
+        logger.info(f'-- Rank {self.process_index}: refresh data --')
         self.deterministic_generator.shuffle(self.datasets_inxs)
         
         batch_datas = []
