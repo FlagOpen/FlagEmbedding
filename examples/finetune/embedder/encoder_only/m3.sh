@@ -48,7 +48,7 @@ training_args="\
     --deepspeed ../../ds_stage0.json \
     --logging_steps 1 \
     --save_steps 1000 \
-    --negatives_cross_device False \
+    --negatives_cross_device True \
     --temperature 0.02 \
     --sentence_pooling_method cls \
     --normalize_embeddings True \
