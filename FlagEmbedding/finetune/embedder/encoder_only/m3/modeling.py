@@ -257,6 +257,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 if dist.get_rank() == 0:
                     print("======================")
                     print("Sparse loss: ", sparse_loss)
+                    print("Sparse scores shape: ", sparse_scores.shape)
                 
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
@@ -268,12 +269,17 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 if dist.get_rank() == 0:
                     print("======================")
                     print("Colbert loss: ", colbert_loss)
+                    print("Colbert scores shape: ", colbert_scores.shape)
                 
                 # get dense scores of current process
                 if not no_in_batch_neg_flag and self.negatives_cross_device:
                     dense_scores = dense_scores[
                         q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1)
                     ]   # (batch_size, group_size)
+                
+                if dist.get_rank() == 0:
+                    print("======================")
+                    print("Dense scores shape: ", dense_scores.shape)
                 
                 # ensemble loss
                 ensemble_scores, ensemble_loss = compute_loss_func(
