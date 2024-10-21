@@ -60,7 +60,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
         model = model_args.from_config(config)
 
     if model_args.raw_peft is not None:
-        model.set_input_embeddings(torch.load(os.path.join(model_args.raw_peft, 'embedding', 'emb.pth')))
+        model.set_input_embeddings(torch.load(os.path.join(model_args.raw_peft, 'embedding', 'emb.pth'), weights_only=True))
         model = PeftModel.from_pretrained(model, model_args.raw_peft)
         model = model.merge_and_unload()
 
@@ -76,7 +76,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
 
     if model_args.from_peft is not None:
         if os.path.exists(os.path.join(model_args.from_peft, 'embedding')):
-            model.set_input_embeddings(torch.load(os.path.join(model_args.from_peft, 'embedding', 'emb.pth')))
+            model.set_input_embeddings(torch.load(os.path.join(model_args.from_peft, 'embedding', 'emb.pth'), weights_only=True))
             torch.save(model.embed_tokens, os.path.join(output_dir, 'embedding', 'emb.pth'))
         model = PeftModel.from_pretrained(model, model_args.from_peft, is_trainable=True)
         model.print_trainable_parameters()
@@ -129,12 +129,12 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = model_args.from_config(config)
 
     if model_args.raw_peft is not None:
-        model.set_input_embeddings(torch.load(os.path.join(model_args.raw_peft, 'embedding', 'emb.pth')))
+        model.set_input_embeddings(torch.load(os.path.join(model_args.raw_peft, 'embedding', 'emb.pth'), weights_only=True))
         model = PeftModel.from_pretrained(model, model_args.raw_peft)
         model = model.merge_and_unload()
 
     if os.path.exists(os.path.join(output_dir, 'embedding', 'emb.pth')):
-        model.set_input_embeddings(torch.load(os.path.join(output_dir, 'embedding', 'emb.pth')))
+        model.set_input_embeddings(torch.load(os.path.join(output_dir, 'embedding', 'emb.pth'), weights_only=True))
 
     try:
         model = PeftModel.from_pretrained(model, output_dir)
