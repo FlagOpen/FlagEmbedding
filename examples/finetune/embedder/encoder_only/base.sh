@@ -55,7 +55,6 @@ training_args="\
     --sentence_pooling_method cls \
     --normalize_embeddings True \
     --kd_loss_type kl_div \
-    --kd_loss_plus_normal_loss True \
 "
 
 cmd="torchrun --nproc_per_node $num_gpus \
