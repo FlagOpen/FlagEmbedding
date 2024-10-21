@@ -254,12 +254,20 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     compute_score_func=self.compute_sparse_score
                 )
                 
+                if dist.get_rank() == 0:
+                    print("======================")
+                    print("Sparse loss: ", sparse_loss)
+                
                 # colbert loss
                 colbert_scores, colbert_loss = compute_loss_func(
                     q_colbert_vecs, p_colbert_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_colbert_score,
                     q_mask=self._get_queries_attention_mask(queries)
                 )
+                
+                if dist.get_rank() == 0:
+                    print("======================")
+                    print("Colbert loss: ", colbert_loss)
                 
                 # get dense scores of current process
                 if self.negatives_cross_device:
@@ -275,6 +283,10 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     sparse_scores=sparse_scores,
                     colbert_scores=colbert_scores
                 )
+                
+                if dist.get_rank() == 0:
+                    print("======================")
+                    print("Ensemble loss: ", ensemble_loss)
                 
                 loss = (loss + ensemble_loss + 0.1 * sparse_loss + colbert_loss) / 4
                 
