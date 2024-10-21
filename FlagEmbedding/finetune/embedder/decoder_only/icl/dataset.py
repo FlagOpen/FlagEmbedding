@@ -149,7 +149,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
         for i in range(len(queries)):
             choices = random.choice([0, 1, 2, 3, 4, 5])
             if choices > 0 and len(icl_pairs) > 0:
-                prefix_ids = random.sample(list(range(len(icl_pairs))), choices + 1)
+                prefix_ids = random.sample(list(range(len(icl_pairs))), min(choices + 1, len(icl_pairs)))
                 if i in prefix_ids:
                     prefix_ids.remove(i)
                 prefix_ids = prefix_ids[:choices]
