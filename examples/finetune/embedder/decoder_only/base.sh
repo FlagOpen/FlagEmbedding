@@ -61,7 +61,6 @@ training_args="\
     --sentence_pooling_method last_token \
     --normalize_embeddings True \
     --kd_loss_type m3_kd_loss \
-    --kd_loss_plus_normal_loss False \
 "
 
 cmd="torchrun --nproc_per_node $num_gpus \

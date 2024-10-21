@@ -53,7 +53,6 @@ training_args="\
     --sentence_pooling_method cls \
     --normalize_embeddings True \
     --kd_loss_type m3_kd_loss \
-    --kd_loss_plus_normal_loss False \
     --unified_finetuning True \
     --use_self_distill True \
     --fix_encoder False \

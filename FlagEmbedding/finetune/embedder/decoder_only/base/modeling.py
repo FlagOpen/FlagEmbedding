@@ -18,7 +18,6 @@ class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
         temperature: float = 1.0,
         sub_batch_size: int = -1,
         kd_loss_type: str = 'kl_div',
-        kd_loss_plus_normal_loss: bool = True,
         sentence_pooling_method: str = 'last_token',
         normalize_embeddings: bool = False,
     ):
@@ -29,7 +28,6 @@ class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
             temperature=temperature,
             sub_batch_size=sub_batch_size,
             kd_loss_type=kd_loss_type,
-            kd_loss_plus_normal_loss=kd_loss_plus_normal_loss,
         )
         self.sentence_pooling_method = sentence_pooling_method
         self.normalize_embeddings = normalize_embeddings
