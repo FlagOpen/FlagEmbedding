@@ -1,4 +1,3 @@
-import os
 import logging
 from typing import Tuple
 from pathlib import Path
@@ -48,6 +47,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             add_num = tokenizer.add_special_tokens(special_tokens_dict)
             if add_num > 0:
                 resize = True
+                logger.info(f"Add {add_num} special tokens to the tokenizer. Special tokens: {self.model_args.additional_special_tokens}")
         base_model = get_model(self.model_args, self.training_args.output_dir, resize, len(tokenizer))
         
         num_labels = 1

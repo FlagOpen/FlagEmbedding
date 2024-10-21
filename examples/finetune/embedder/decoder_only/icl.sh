@@ -24,7 +24,7 @@ model_args="\
     --lora_rank 32 \
     --lora_alpha 64 \
     --target_modules q_proj k_proj v_proj o_proj gate_proj down_proj up_proj \
-    --additional_special_tokens <instruct> <query> <response> \
+    --additional_special_tokens '<instruct>' '<query>' '<response>' \
     --save_merged_lora_model True \
 "
 
