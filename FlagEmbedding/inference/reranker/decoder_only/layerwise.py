@@ -32,16 +32,24 @@ class LayerWiseLLMReranker(AbsReranker):
         use_bf16: bool = False,
         cache_dir: str = None,
         trust_remote_code: bool = False,
-        device: Union[str, int] = None,
+        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         **kwargs: Any,
     ) -> None:
+
+        super().__init__(
+            model_name_or_path,
+            use_fp16,
+            devices,
+            **kwargs
+        )
+
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path,
                                                        cache_dir=cache_dir,
                                                        trust_remote_code=trust_remote_code)
 
         if use_bf16 is False and use_fp16 is False:
             warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
-            use_fp16 = True
+            self.use_fp16 = True
 
         self.model = AutoModelForCausalLM.from_pretrained(model_name_or_path,
                                                           cache_dir=cache_dir,
@@ -52,32 +60,6 @@ class LayerWiseLLMReranker(AbsReranker):
             self.model = self.model.merge_and_unload()
         self.model_name_or_path = model_name_or_path
         self.cache_dir = cache_dir
-        self.kwargs = kwargs
-
-        if device and isinstance(device, str):
-            self.device = torch.device(device)
-            if device == 'cpu':
-                use_fp16 = False
-        else:
-            if torch.cuda.is_available():
-                if device is not None:
-                    self.device = torch.device(f"cuda:{device}")
-                else:
-                    self.device = torch.device("cuda")
-            elif torch.backends.mps.is_available():
-                self.device = torch.device("mps")
-            elif is_torch_npu_available():
-                self.device = torch.device("npu")
-            else:
-                self.device = torch.device("cpu")
-                use_fp16 = False
-
-        if use_fp16 and use_bf16 is False:
-            self.model.half()
-
-        self.model = self.model.to(self.device)
-
-        self.model.eval()
 
     @torch.no_grad()
     def compute_score_single_gpu(
@@ -94,11 +76,17 @@ class LayerWiseLLMReranker(AbsReranker):
         **kwargs: Any
     ) -> List[float]:
         
-        self.model.eval()
         if device is None:
-            device = self.device
+            device = self.target_devices[0]
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
 
         self.model.to(device)
+        self.model.eval()
     
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):

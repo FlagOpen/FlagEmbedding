@@ -15,27 +15,27 @@ class RerankerConfig:
 MODEL_MAPPING = OrderedDict([
     # ============================== BGE ==============================
     (
-        "BAAI/bge-reranker-base", 
+        "bge-reranker-base", 
         RerankerConfig(FlagReranker)
     ),
     (
-        "BAAI/bge-reranker-large", 
+        "bge-reranker-large", 
         RerankerConfig(FlagReranker)
     ),
     (
-        "BAAI/bge-reranker-v2-m3",
+        "bge-reranker-v2-m3",
         RerankerConfig(FlagReranker)
     ),
     (
-        "BAAI/bge-reranker-v2-gemma",
+        "bge-reranker-v2-gemma",
         RerankerConfig(FlagLLMReranker)
     ),
     (
-        "BAAI/bge-reranker-v2-minicpm-layerwise",
+        "bge-reranker-v2-minicpm-layerwise",
         RerankerConfig(LayerWiseFlagLLMReranker)
     ),
     (
-        "BAAI/bge-reranker-v2.5-gemma2-lightweight",
+        "bge-reranker-v2.5-gemma2-lightweight",
         RerankerConfig(LightWeightFlagLLMReranker)
     ),
     # TODO: Add more models, such as Jina, Stella_v5, NV-Embed, etc.

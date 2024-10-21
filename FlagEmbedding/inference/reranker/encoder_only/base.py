@@ -18,50 +18,20 @@ class BaseReranker(AbsReranker):
         use_fp16: bool = False,
         trust_remote_code: bool = False,
         cache_dir: str = None,
-        device: Union[str, int] = None, # specify device, such as "cuda:0" or "0"
+        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         **kwargs: Any,
     ):
         super().__init__(
             model_name_or_path,
-            use_fp16
+            use_fp16,
+            devices,
+            **kwargs
         )
         
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, cache_dir=cache_dir)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, trust_remote_code=trust_remote_code, cache_dir=cache_dir)
 
         self.kwargs = kwargs
-        
-        if device and isinstance(device, str):
-            self.device = torch.device(device)
-            self.num_gpus = 1
-            if device == 'cpu':
-                use_fp16 = False
-        else:
-            if torch.cuda.is_available():
-                if device is not None:
-                    self.device = torch.device(f"cuda:{device}")
-                    self.num_gpus = 1
-                else:
-                    self.device = torch.device("cuda")
-                    self.num_gpus = torch.cuda.device_count()
-            else:
-                self.num_gpus = -1  # TODO: DataParallel for other devices
-                if torch.backends.mps.is_available():
-                    self.device = torch.device("mps")
-                elif is_torch_npu_available():
-                    self.device = torch.device("npu")
-                else:
-                    self.device = torch.device("cpu")
-                    use_fp16 = False
-        
-        if self.use_fp16: self.model.half()
-        self.model = self.model.to(self.device)
-        self.model.eval()
-
-        self.num_gpus = 1
-        # if self.num_gpus > 1:
-        #     print(f"----------using {self.num_gpus}*GPUs----------")
-        #     self.model = torch.nn.DataParallel(self.model)
     
     @torch.no_grad()
     def compute_score_single_gpu(
@@ -73,14 +43,17 @@ class BaseReranker(AbsReranker):
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
-        if self.num_gpus > 0:
-            batch_size = batch_size * self.num_gpus
-        
-        self.model.eval()
         if device is None:
-            device = self.device
+            device = self.target_devices[0]
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
+
+        if device == "cpu": self.use_fp16 = False
+        if self.use_fp16: self.model.half()
 
         self.model.to(device)
+        self.model.eval()
 
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
@@ -98,7 +71,7 @@ class BaseReranker(AbsReranker):
             )
             inputs_batch = [{
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
-            } for i in range(len(sentence_pairs))]
+            } for i in range(len(sentences_batch))]
             all_inputs.extend(inputs_batch)
         
         # sort by length for less padding

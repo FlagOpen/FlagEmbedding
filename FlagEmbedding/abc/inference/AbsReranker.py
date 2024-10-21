@@ -22,23 +22,49 @@ class AbsReranker(ABC):
             self,
             model_name_or_path: str,
             use_fp16: bool = False,
+            devices: Union[str, List[str], List[int]] = None,
+            **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
         self.use_fp16 = use_fp16
+        self.target_devices = self.get_target_devices(devices)
+
+        self.kwargs = kwargs
+    
+    @staticmethod
+    def get_target_devices(devices: Union[str, List[str], List[int]]):
+        if devices is None:
+            if torch.cuda.is_available():
+                return [f"cuda:{i}" for i in range(torch.cuda.device_count())]
+            elif is_torch_npu_available():
+                return [f"npu:{i}" for i in range(torch.npu.device_count())]
+            elif torch.backends.mps.is_available():
+                return [f"mps:{i}" for i in range(torch.mps.device_count())]
+            else:
+                return ["cpu"]
+        elif isinstance(devices, str):
+            return [devices]
+        elif isinstance(devices, list):
+            if isinstance(devices[0], str):
+                return devices
+            else:
+                return ['cuda:{device}'.format(device=i) for i in devices]
+        else:
+            raise ValueError("devices should be a string or a list of strings.")
 
     def compute_score(
             self,
             sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-            multi_gpus: bool = False,
             **kwargs
     ):
-        if not multi_gpus:
+        if isinstance(sentence_pairs, str) or len(self.target_devices) == 1:
             return self.compute_score_single_gpu(
                 sentence_pairs,
+                device=self.target_devices[0],
                 **kwargs
             )
 
-        pool = self.start_multi_process_pool()
+        pool = self.start_multi_process_pool(target_devices=self.target_devices)
         scores = self.encode_multi_process(sentence_pairs,
                                            pool,
                                            **kwargs)

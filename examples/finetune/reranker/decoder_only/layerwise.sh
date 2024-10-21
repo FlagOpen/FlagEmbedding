@@ -16,8 +16,10 @@ if [ -z "$HF_HUB_CACHE" ]; then
     export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
 fi
 
+export HF_HUB_CACHE="/share/shared_models"
+
 model_args="\
-    --model_name_or_path /share/chaofan/models/minicpm-2b-fp32-dpo \
+    --model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
     --cache_dir $HF_HUB_CACHE \
     --use_lora True \
     --lora_rank 32 \
@@ -26,7 +28,7 @@ model_args="\
     --target_modules q_proj k_proj v_proj o_proj \
     --save_merged_lora_model True \
     --model_type decoder \
-    --model_type from_raw_model \
+    --model_type from_finetuned_model \
     --start_layer 8 \
     --head_multi True \
     --head_type simple \
@@ -48,7 +50,7 @@ data_args="\
 "
 
 training_args="\
-    --output_dir ./test_decoder_only_base_bge-reranker-v2-layerwise-minicpm \
+    --output_dir ./test_decoder_only_base_bge-reranker-v2-minicpm-layerwise \
     --overwrite_output_dir \
     --learning_rate 2e-4 \
     --fp16 \
