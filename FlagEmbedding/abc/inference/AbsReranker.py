@@ -60,6 +60,7 @@ class AbsReranker(ABC):
         """
         pass
 
+    # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
     def start_multi_process_pool(
             self, target_devices: List[str] = None
     ) -> Dict[Literal["input", "output", "processes"], Any]:
@@ -109,6 +110,7 @@ class AbsReranker(ABC):
 
         return {"input": input_queue, "output": output_queue, "processes": processes}
 
+    # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
     def encode_multi_process(
         self,
         sentence_pairs: List,
@@ -169,6 +171,7 @@ class AbsReranker(ABC):
         scores = np.concatenate([result[1] for result in results_list])
         return scores
 
+    # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
     @staticmethod
     def _encode_multi_process_worker(
             target_device: str, model: ABC, input_queue: Queue, results_queue: Queue
@@ -193,6 +196,7 @@ class AbsReranker(ABC):
             except:
                 break
 
+    # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
     @staticmethod
     def stop_multi_process_pool(pool: Dict[Literal["input", "output", "processes"], Any]) -> None:
         """
