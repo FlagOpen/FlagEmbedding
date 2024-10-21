@@ -15,7 +15,7 @@ from transformers import (
     TrainerControl
 )
 
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import AbsEmbedderDataArguments, AbsEmbedderTrainingArguments
+from .AbsArguments import AbsEmbedderDataArguments, AbsEmbedderTrainingArguments
 
 logger = logging.getLogger(__name__)
 

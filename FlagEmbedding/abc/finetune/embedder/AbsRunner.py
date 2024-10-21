@@ -6,14 +6,14 @@ from abc import ABC, abstractmethod
 from transformers import set_seed, PreTrainedTokenizer
 
 
-from FlagEmbedding.abc.finetune.embedder.AbsArguments import (
+from .AbsArguments import (
     AbsEmbedderModelArguments,
     AbsEmbedderDataArguments,
     AbsEmbedderTrainingArguments
 )
-from FlagEmbedding.abc.finetune.embedder.AbsTrainer import AbsEmbedderTrainer
-from FlagEmbedding.abc.finetune.embedder.AbsModeling import AbsEmbedderModel
-from FlagEmbedding.abc.finetune.embedder.AbsDataset import (
+from .AbsTrainer import AbsEmbedderTrainer
+from .AbsModeling import AbsEmbedderModel
+from .AbsDataset import (
     AbsEmbedderTrainDataset, AbsEmbedderCollator,
     AbsEmbedderSameDatasetTrainDataset, AbsEmbedderSameDatasetCollator
 )
