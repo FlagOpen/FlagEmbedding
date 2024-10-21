@@ -169,6 +169,11 @@ class AbsEmbedderModel(ABC, nn.Module):
             elif self.kd_loss_type == "m3_kd_loss":
                 cross_teacher_targets = self._dist_gather_tensor(teacher_targets)   # (world_size * batch_size, group_size)
                 
+                if dist.get_rank() == 0:
+                    print("======================")
+                    print("Cross teacher targets:")
+                    print(cross_teacher_targets.shape)
+                
                 loss = self.distill_loss(self.kd_loss_type, cross_teacher_targets, cross_scores, group_size)
             else:
                 raise ValueError(f"Invalid kd_loss_type: {self.kd_loss_type}")
