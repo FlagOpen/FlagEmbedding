@@ -120,16 +120,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
-        if dist.get_rank() == 0:
-            print("=====================================")
-            print(q_reps.shape)
-            print(p_reps.shape)
-            print(token_scores.shape)
-            print(scores.shape)
-            print(q_mask.shape)
-            print(scores.sum(1).shape)
-            print(q_mask[:, 1:].sum(-1, keepdim=True).shape)
-            print("=====================================")
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
         scores = scores / self.temperature
         return scores
@@ -240,10 +230,6 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 )
                 
                 # padding attention mask for colbert
-                if dist.get_rank() == 0:
-                    print("=====================================")
-                    print(type(queries))
-                    print("=====================================")
                 if not isinstance(queries, list):
                     q_mask = queries['attention_mask']
                 else:
@@ -252,6 +238,20 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     q_mask = torch.cat([
                         F.pad(mask, _length - mask.shape[1], value=0)
                         for mask in q_mask_list
+                    ], dim=0)
+                
+                if self.negatives_cross_device:
+                    # gather all q_mask
+                    q_mask = q_mask.contiguous()
+                    all_q_masks = [torch.empty_like(q_mask) for _ in range(self.world_size)]
+                    dist.all_gather(all_q_masks, q_mask)
+                    
+                    all_q_masks[self.process_rank] = q_mask
+                    
+                    _length = max([mask.shape[1] for mask in all_q_masks])
+                    q_mask = torch.cat([
+                        F.pad(mask, _length - mask.shape[1], value=0)
+                        for mask in all_q_masks
                     ], dim=0)
                 
                 # colbert loss
