@@ -500,9 +500,9 @@ class M3Embedder(AbsEmbedder):
             p_dense_vecs, p_sparse_vecs, p_colbert_vecs = corpus_output['dense_vecs'], corpus_output['sparse_vecs'], \
             corpus_output['colbert_vecs']
 
-            dense_scores = self.model.dense_score(q_dense_vecs, p_dense_vecs)
-            sparse_scores = self.model.sparse_score(q_sparse_vecs, p_sparse_vecs)
-            colbert_scores = self.model.colbert_score(q_colbert_vecs, p_colbert_vecs,
+            dense_scores = self.model.compute_dense_score(q_dense_vecs, p_dense_vecs)
+            sparse_scores = self.model.compute_sparse_score(q_sparse_vecs, p_sparse_vecs)
+            colbert_scores = self.model.compute_colbert_score(q_colbert_vecs, p_colbert_vecs,
                                                       q_mask=queries_inputs['attention_mask'])
 
             if weights_for_different_modes is None:
