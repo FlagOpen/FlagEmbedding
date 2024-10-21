@@ -270,7 +270,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     print("Colbert loss: ", colbert_loss)
                 
                 # get dense scores of current process
-                if self.negatives_cross_device:
+                if not no_in_batch_neg_flag and self.negatives_cross_device:
                     dense_scores = dense_scores[
                         q_dense_vecs.size(0)*self.process_rank : q_dense_vecs.size(0)*(self.process_rank+1)
                     ]   # (batch_size, group_size)
