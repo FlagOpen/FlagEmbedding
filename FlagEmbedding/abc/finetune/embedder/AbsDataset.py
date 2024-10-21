@@ -124,7 +124,7 @@ class AbsEmbedderTrainDataset(Dataset):
         
         return query, passages, teacher_scores
 
-
+@dataclass
 class AbsEmbedderCollator(DataCollatorWithPadding):
     query_max_len: int = 32
     passage_max_len: int = 128
