@@ -136,3 +136,8 @@ pic2.py
 
 # Pyre type checker
 .pyre/
+
+# results
+results/
+en_results/
+zh_results/

@@ -1,6 +1,6 @@
 import argparse
 
-from C_MTEB.tasks import *
+from C_MTEB import ChineseTaskList
 from flag_dres_model import FlagDRESModel
 from mteb import MTEB
 
@@ -24,24 +24,20 @@ def get_args():
     return parser.parse_args()
 
 
-
 if __name__ == '__main__':
     args = get_args()
 
     model = FlagDRESModel(model_name_or_path=args.model_name_or_path,
                           query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
                           pooling_method=args.pooling_method)
+    
+    print(ChineseTaskList)
 
-    task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
-                                                      task_langs=['zh', 'zh-CN']).tasks]
-
-    for task in task_names:
-        # if task not in ChineseTaskList:
-        #     continue
+    for task in ChineseTaskList:
         if task in ['T2Retrieval', 'MMarcoRetrieval', 'DuRetrieval',
                     'CovidRetrieval', 'CmedqaRetrieval',
                     'EcomRetrieval', 'MedicalRetrieval', 'VideoRetrieval',
-                    'T2Reranking', 'MMarcoReranking', 'CMedQAv1', 'CMedQAv2']:
+                    'T2Reranking', 'MMarcoReranking', 'CMedQAv1-reranking', 'CMedQAv2-reranking']:
             if args.model_name_or_path not in query_instruction_for_retrieval_dict:
                 if args.add_instruction:
                     instruction = "为这个句子生成表示以用于检索相关文章："
@@ -55,8 +51,5 @@ if __name__ == '__main__':
 
         model.query_instruction_for_retrieval = instruction
 
-        evaluation = MTEB(tasks=[task], task_langs=['zh', 'zh-CN'])
+        evaluation = MTEB(tasks=[task])
         evaluation.run(model, output_folder=f"zh_results/{args.model_name_or_path.split('/')[-1]}")
-
-
-

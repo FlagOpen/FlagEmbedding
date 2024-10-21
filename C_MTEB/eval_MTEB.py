@@ -31,7 +31,10 @@ if __name__ == '__main__':
                           query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ",
                           pooling_method=args.pooling_method)
 
-    task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
+    # task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
+    #                                                   task_langs=['en']).tasks]
+    
+    task_names = [t.metadata.name for t in MTEB(task_types=args.task_type,
                                                       task_langs=['en']).tasks]
 
     for task in task_names:
