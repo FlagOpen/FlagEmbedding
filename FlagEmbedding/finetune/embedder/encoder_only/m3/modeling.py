@@ -120,7 +120,15 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
+        if dist.get_rank() == 0:
+            print("======================")
+            print("Computing colbert score...")
+            print(scores.shape)
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
+        if dist.get_rank() == 0:
+            print("======================")
+            print("Computing colbert score...")
+            print(scores.shape)
         scores = scores / self.temperature
         return scores
     
