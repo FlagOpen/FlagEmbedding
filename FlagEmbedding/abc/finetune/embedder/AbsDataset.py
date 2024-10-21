@@ -295,6 +295,20 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         
         self.refresh_epoch()
 
+    def _load_dataset(self, file_path: str):
+        if dist.get_rank() == 0:
+            logger.info(f'loading data from {file_path} ...')
+        
+        temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
+        if len(temp_dataset) > self.args.max_example_num_per_dataset:
+            temp_dataset = temp_dataset.select(random.sample(list(range(len(temp_dataset))), self.args.max_example_num_per_dataset))
+        if not self.args.knowledge_distillation:
+            if 'pos_scores' in temp_dataset.column_names:
+                temp_dataset = temp_dataset.remove_columns(['pos_scores'])
+            if 'neg_scores' in temp_dataset.column_names:
+                temp_dataset = temp_dataset.remove_columns(['neg_scores'])
+        return temp_dataset
+
     @staticmethod
     def _get_file_batch_size(temp_dataset: datasets.Dataset, default_batch_size: int):
         if 'batch_size' in temp_dataset.column_names:
