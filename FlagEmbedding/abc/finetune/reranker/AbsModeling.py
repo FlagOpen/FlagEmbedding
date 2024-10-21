@@ -52,14 +52,16 @@ class AbsRerankerModel(ABC, nn.Module):
     def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
         ranker_logits = self.encode(pair) # (batch_size * num, dim)
         if teacher_scores is not None:
+            teacher_scores = torch.Tensor(teacher_scores)
             teacher_targets = teacher_scores.view(self.train_batch_size, -1)
-            teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1)
+            teacher_targets = torch.softmax(teacher_targets.detach(), dim=-1)
 
         if self.training:
             grouped_logits = ranker_logits.view(self.train_batch_size, -1)
             target = torch.zeros(self.train_batch_size, device=grouped_logits.device, dtype=torch.long)
             loss = self.compute_loss(grouped_logits, target)
             if teacher_scores is not None:
+                teacher_targets = teacher_targets.to(grouped_logits.device)
                 loss += torch.mean(torch.sum(torch.log_softmax(grouped_logits, dim=-1) * teacher_targets, dim=-1))
         else:
             loss = None

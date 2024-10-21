@@ -61,8 +61,9 @@ class CrossDecoderModel(AbsRerankerModel):
                     )
                     loss += - torch.mean(torch.sum(torch.log_softmax(student_scores, dim=-1) * teacher_targets, dim=-1))
             else:
+                teacher_scores = torch.Tensor(teacher_scores)
                 teacher_scores = teacher_scores.view(self.train_batch_size, -1)
-                teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1)
+                teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1).to(ranker_logits[-1].device)
                 for logits in ranker_logits:
                     student_scores = logits.view(
                         self.train_batch_size,
