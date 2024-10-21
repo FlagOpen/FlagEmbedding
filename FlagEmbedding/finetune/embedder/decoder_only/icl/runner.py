@@ -52,6 +52,8 @@ class DecoderOnlyEmbedderICLRunner(AbsEmbedderRunner):
             if add_num > 0:
                 resize = True
                 logger.info(f"Add {add_num} special tokens to the tokenizer. Special tokens: {self.model_args.additional_special_tokens}")
+            else:
+                logger.warning(f"Special tokens {self.model_args.additional_special_tokens} already exists in the tokenizer.")
         base_model = get_model(self.model_args, self.training_args.output_dir, resize, len(tokenizer))
         
         num_labels = 1

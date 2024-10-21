@@ -50,9 +50,9 @@ class DecoderOnlyEmbedderModelArguments(AbsEmbedderModelArguments):
     from_peft: str = field(
         default=None
     )
-    # modules_to_save: str = field(
-    #     default=None
-    # )
+    modules_to_save: str = field(
+        default=None
+    )
     raw_peft: str = field(
         default=None
     )
