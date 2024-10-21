@@ -148,6 +148,11 @@ class AbsEmbedderModel(ABC, nn.Module):
         else:
             cross_scores = compute_score_func(cross_q_reps, cross_p_reps, **kwargs) # (world_size * batch_size, world_size * batch_size * group_size)
         
+        if dist.get_rank() == 0:
+            print("======================")
+            print("Cross scores:")
+            print(cross_scores.shape)
+        
         if teacher_targets is not None:
             # compute kd loss
             if self.kd_loss_type == "kl_div":
