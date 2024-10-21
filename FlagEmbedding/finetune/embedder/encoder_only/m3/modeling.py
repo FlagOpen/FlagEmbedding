@@ -119,6 +119,12 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
+        print("=====================================")
+        print(scores.shape)
+        print(q_mask.shape)
+        print(scores.sum(1).shape)
+        print(q_mask[:, 1:].sum(-1, keepdim=True).shape)
+        print("=====================================")
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
         scores = scores / self.temperature
         return scores
@@ -229,6 +235,9 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 )
                 
                 # padding attention mask for colbert
+                print("=====================================")
+                print(type(queries))
+                print("=====================================")
                 if not isinstance(queries, list):
                     q_mask = queries['attention_mask']
                 else:
