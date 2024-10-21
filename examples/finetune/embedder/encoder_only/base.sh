@@ -7,7 +7,7 @@ train_data="\
     ../example_data/clustering-no_in_batch_neg "
 
 # set large epochs and small batch size for testing
-num_train_epochs=10
+num_train_epochs=4
 per_device_train_batch_size=2
 
 # set num_gpus to 2 for testing
@@ -39,6 +39,7 @@ data_args="\
 
 training_args="\
     --output_dir ./test_encoder_only_base_bge-large-en-v1.5 \
+    --overwrite_output_dir \
     --learning_rate 1e-5 \
     --fp16 \
     --num_train_epochs $num_train_epochs \
