@@ -68,8 +68,8 @@ class AbsEmbedder(ABC):
             raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
 
     @staticmethod
-    def get_detailed_instruct(instruction_format: str, instruction: str, query: str):
-        return instruction_format.format(instruction, query)
+    def get_detailed_instruct(instruction_format: str, instruction: str, sentence: str):
+        return instruction_format.format(instruction, sentence)
 
     def encode_queries(
         self,
@@ -78,18 +78,12 @@ class AbsEmbedder(ABC):
         max_length: int = 512,
         **kwargs: Any
     ):
-        if self.query_instruction_for_retrieval is not None:
-            if isinstance(queries, str):
-                input_texts = self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, queries)
-            else:
-                input_texts = [self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_retrieval, query) for query in queries]
-        else:
-            input_texts = queries
-
         return self.encode(
-            input_texts,
+            queries,
             batch_size=batch_size,
             max_length=max_length,
+            instruction=self.query_instruction_for_retrieval,
+            instruction_format=self.query_instruction_format,
             **kwargs
         )
 
@@ -102,18 +96,13 @@ class AbsEmbedder(ABC):
     ):
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
         passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
-        if passage_instruction_for_retrieval is not None:
-            if isinstance(corpus, str):
-                input_texts = self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, corpus)
-            else:
-                input_texts = [self.get_detailed_instruct(passage_instruction_format, passage_instruction_for_retrieval, passage) for passage in corpus]
-        else:
-            input_texts = corpus
 
         return self.encode(
-            input_texts,
+            corpus,
             batch_size=batch_size,
             max_length=max_length,
+            instruction=passage_instruction_for_retrieval,
+            instruction_format=passage_instruction_format,
             **kwargs
         )
 
@@ -122,8 +111,16 @@ class AbsEmbedder(ABC):
         sentences: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
+        instruction: str = None,
+        instruction_format: str = "{}{}",
         **kwargs: Any
     ):
+        if instruction is not None:
+            if isinstance(sentences, str):
+                sentences = self.get_detailed_instruct(instruction_format, instruction, sentences)
+            else:
+                sentences = [self.get_detailed_instruct(instruction_format, instruction, sentence) for sentence in sentences]
+
         if isinstance(sentences, str) or len(self.target_devices) == 1:
             return self.encode_single_device(
                 sentences,
