@@ -36,9 +36,9 @@ data_args="\
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
     --knowledge_distillation True \
-    --query_instruction_for_retrieval 'A: ' \
+    --query_instruction_for_rerank 'A: ' \
     --query_instruction_format '{}{}' \
-    --passage_instruction_for_retrieval 'B: ' \
+    --passage_instruction_for_rerank 'B: ' \
     --passage_instruction_format '{}{}' \
 "
 

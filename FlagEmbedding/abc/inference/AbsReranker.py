@@ -24,11 +24,19 @@ class AbsReranker(ABC):
         self,
         model_name_or_path: str,
         use_fp16: bool = False,
+        query_instruction_for_rerank: str = None,
+        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
+        passage_instruction_for_rerank: str = None,
+        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         devices: Union[str, int, List[str], List[int]] = None,
         **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
         self.use_fp16 = use_fp16
+        self.query_instruction_for_rerank = query_instruction_for_rerank
+        self.query_instruction_format = query_instruction_format
+        self.passage_instruction_for_rerank = passage_instruction_for_rerank
+        self.passage_instruction_format = passage_instruction_format
         self.target_devices = self.get_target_devices(devices)
 
         self.kwargs = kwargs
@@ -58,11 +66,51 @@ class AbsReranker(ABC):
         else:
             raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
 
+    def get_detailed_instruct(instruction_format: str, instruction: str, sentence: str):
+        return instruction_format.format(instruction, sentence)
+    
+    def get_detailed_inputs(sentence_pairs: Union[str, List[str]]):
+        if isinstance(sentence_pairs, str):
+            sentence_pairs = [sentence_pairs]
+
+        if self.query_instruction_format is not None:
+            if self.passage_instruction_format is None:
+                return [
+                    [
+                        self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_rerank, sentence_pair[0]),
+                        sentence_pair[1]
+                    ] for sentence_pair in sentence_pairs
+                ]
+            else:
+                return [
+                    [
+                        self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_rerank, sentence_pair[0]),
+                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[0])
+                    ] for sentence_pair in sentence_pairs
+                ]
+        else:
+            if self.passage_instruction_format is None:
+                return [
+                    [
+                        sentence_pair[0],
+                        sentence_pair[1]
+                    ] for sentence_pair in sentence_pairs
+                ]
+            else:
+                return [
+                    [
+                        sentence_pair[0],
+                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[0])
+                    ] for sentence_pair in sentence_pairs
+                ]
+
     def compute_score(
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         **kwargs
     ):
+        sentence_pairs = get_detailed_inputs(sentence_pairs)
+
         if isinstance(sentence_pairs, str) or len(self.target_devices) == 1:
             return self.compute_score_single_gpu(
                 sentence_pairs,

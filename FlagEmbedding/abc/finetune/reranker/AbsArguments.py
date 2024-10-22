@@ -89,7 +89,7 @@ class AbsRerankerDataArguments:
         default=100000000, metadata={"help": "the max number of examples for each dataset"}
     )
 
-    query_instruction_for_retrieval: str= field(
+    query_instruction_for_rerank: str= field(
         default=None, metadata={"help": "instruction for query"}
     )
     query_instruction_format: str = field(
@@ -101,7 +101,7 @@ class AbsRerankerDataArguments:
         metadata={"help": "Use knowledge distillation when `pos_scores: List[float]` and `neg_scores: List[float]` are in features of training data"}
     )
 
-    passage_instruction_for_retrieval: Optional[str] = field(
+    passage_instruction_for_rerank: Optional[str] = field(
         default=None, metadata={"help": "instruction for passage"}
     )
     passage_instruction_format: Optional[str] = field(

@@ -162,7 +162,7 @@ class LayerWiseLLMReranker(AbsReranker):
             encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
             for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
                 batch_sentences = sentences_pairs_sorted[batch_start:batch_start + batch_size]
-                batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
+                # batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
                 queries = [s[0] for s in batch_sentences]
                 passages = [s[1] for s in batch_sentences]
                 queries_inputs = self.tokenizer(

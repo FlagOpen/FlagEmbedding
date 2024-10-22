@@ -94,9 +94,9 @@ class AbsRerankerTrainDataset(Dataset):
         train_group_size = self.args.train_group_size
 
         query = data['query']
-        if self.args.query_instruction_for_retrieval is not None:
+        if self.args.query_instruction_for_rerank is not None:
             query = self.args.query_instruction_format.format(
-                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_retrieval,
+                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_rerank,
                 query
             )
 
@@ -127,10 +127,10 @@ class AbsRerankerTrainDataset(Dataset):
         else:
             teacher_scores = None
 
-        if self.args.passage_instruction_for_retrieval is not None:
+        if self.args.passage_instruction_for_rerank is not None:
             passages = [
                 self.args.passage_instruction_format.format(
-                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_retrieval, p
+                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_rerank, p
                 )
                 for p in passages
             ]
@@ -189,9 +189,9 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
         train_group_size = self.args.train_group_size
 
         query = data['query']
-        if self.args.query_instruction_for_retrieval is not None:
+        if self.args.query_instruction_for_rerank is not None:
             query = self.args.query_instruction_format.format(
-                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_retrieval,
+                data['query_prompt'] if 'query_prompt' in data else self.args.query_instruction_for_rerank,
                 query
             )
 
@@ -222,10 +222,10 @@ class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
         else:
             teacher_scores = None
 
-        if self.args.passage_instruction_for_retrieval is not None:
+        if self.args.passage_instruction_for_rerank is not None:
             passages = [
                 self.args.passage_instruction_format.format(
-                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_retrieval, p
+                    data['passage_prompt'] if 'passage_prompt' in data else self.args.passage_instruction_for_rerank, p
                 )
                 for p in passages
             ]
