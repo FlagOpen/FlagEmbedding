@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class AbsReranker(ABC):
     """
     Base class for embedder.
-    Extend this class and implement `encode_queries`, `encode_passages`, `encode` for custom embedders.
+    Extend this class and implement `compute_score_single_gpu` for custom rerankers.
     """
 
     def __init__(

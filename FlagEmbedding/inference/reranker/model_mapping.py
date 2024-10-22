@@ -38,5 +38,5 @@ MODEL_MAPPING = OrderedDict([
         "bge-reranker-v2.5-gemma2-lightweight",
         RerankerConfig(LightWeightFlagLLMReranker)
     ),
-    # TODO: Add more models, such as Jina, Stella_v5, NV-Embed, etc.
+    # TODO: Add more models, such as Jina, e5, etc.
 ])
