@@ -124,9 +124,4 @@ class AbsRerankerDataArguments:
 
 @dataclass
 class AbsRerankerTrainingArguments(TrainingArguments):
-    negatives_cross_device: bool = field(default=False, metadata={"help": "share negatives across devices"})
-    temperature: Optional[float] = field(default=0.02, metadata={"help": "temperature used for similarity score"})
-    fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})
-    sentence_pooling_method: str = field(default='cls', metadata={"help": "the pooling method"})
-    normalize_embeddings: bool = field(default=True, metadata={"help": "whether to normalize the embeddings"})
-    sub_batch_size: Optional[int] = field(default=None, metadata={"help": "sub batch size for training"})
+    sub_batch_size: Optional[int] = field(default=None, metadata={"help": "sub batch size for training, not implemented yet"})

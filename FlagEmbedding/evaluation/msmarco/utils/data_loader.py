@@ -4,12 +4,32 @@ Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/eva
 import os
 import logging
 import datasets
+import requests
 
 from huggingface_hub import snapshot_download
 from FlagEmbedding.abc.evaluation.data_loader import AbsDataLoader
 
 logger = logging.getLogger(__name__)
 
+def download_file(url, directory, filename):
+    response = requests.get(url, stream=True)
+    
+    if response.status_code == 200:
+        os.makedirs(directory, exist_ok=True)
+        
+        file_path = os.path.join(directory, filename)
+        
+        with open(file_path, 'wb') as file:
+            for chunk in response.iter_content(chunk_size=8192):
+                file.write(chunk)
+        
+        print(f"File downloaded: {file_path}")
+
+        return file_path
+    else:
+        print(f"Failed to download file. Status code: {response.status_code}")
+
+        return None
 
 class MSMARCOADataLoader(AbsDataLoader):
     def __init__(
@@ -44,8 +64,10 @@ class MSMARCOADataLoader(AbsDataLoader):
                     logger.error(f"Error downloading dataset: {e}")
 
                     raise FileNotFoundError(f"Dataset directory not found: {self.dataset_dir}")
-        
-
+        else:
+            self.dataset_dir = os.path.join('temp_data', self.dataset_dir)
+            if not os.path.exists(self.dataset_dir):
+    
 
     def load_qrels(self, split: str = 'test'):
         qrels_path = os.path.join(self.dataset_dir, f"{split}_qrels.jsonl")
