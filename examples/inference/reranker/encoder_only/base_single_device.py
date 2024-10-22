@@ -7,8 +7,7 @@ def test_base_multi_devices():
         'BAAI/bge-reranker-large',
         use_fp16=True,
         devices=["cuda:3"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
-        cache_dir='/share/shared_models'
-        # cache_dir=os.getenv('HF_HUB_CACHE', None),
+        cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
     pairs = [

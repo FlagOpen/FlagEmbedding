@@ -16,8 +16,6 @@ if [ -z "$HF_HUB_CACHE" ]; then
     export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
 fi
 
-export HF_HUB_CACHE="/share/shared_models"
-
 model_args="\
     --model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
     --cache_dir $HF_HUB_CACHE \

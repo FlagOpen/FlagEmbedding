@@ -9,8 +9,7 @@ def test_base_multi_devices():
         query_instruction_for_rerank="A: ",
         passage_instruction_for_rerank="B: ",
         devices=["cuda:3", "cuda:4"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
-        cache_dir='/share/shared_models'
-        # cache_dir=os.getenv('HF_HUB_CACHE', None),
+        cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
     
     pairs = [
