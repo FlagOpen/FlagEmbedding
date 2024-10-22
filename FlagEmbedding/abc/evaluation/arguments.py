@@ -22,9 +22,63 @@ class AbsEvalArgs:
         default=1000, metadata={"help": "Top k values for evaluation."}
     )
     rerank_top_k: int = field(default=100, metadata={"help": "Top k for reranking."})
-    cache_dir: str = field(
+    cache_path: str = field(
         default=None, metadata={"help": "Cache directory for datasets."}
     )
     overwrite: bool = field(
         default=False, metadata={"help": "whether to overwrite evaluation results"}
+    )
+
+@dataclass
+class AbsModelArgs:
+    embedder_name_or_path: str = field(
+        metadata={"help": "The embedder name or path."}
+    )
+    normalize_embeddings: bool = field(
+        default=True, metadata={"help": "whether to normalize the embeddings"}
+    )
+    use_fp16: bool = field(
+        default=True, metadata={"help": "whether to use fp16 for inference"}
+    )
+    devices: List[str] = field(
+        default=None, metadata={"help": "Devices to use for inference."}
+    )
+    query_instruction_for_retrieval: str = field(
+        default=None, metadata={"help": "Instruction for query"}
+    )
+    query_instruction_format_for_retrieval: str = field(
+        default="{}{}", metadata={"help": "Format for query instruction"}
+    )
+    examples_for_task: str = field(
+        default=None, metadata={"help": "Examples for task"}
+    )
+    examples_instruction_format: str = field(
+        default="{}{}", metadata={"help": "Format for examples instruction"}
+    )
+    trust_remote_code: bool = field(
+        default=False, metadata={"help": "Trust remote code"}
+    )
+    reranker_name_or_path: str = field(
+        default=None, metadata={"help": "The reranker name or path."}
+    )
+    reranker_peft_path: str = field(
+        default=None, metadata={"help": "The reranker peft path."}
+    )
+    use_bf16: bool = field(
+        default=False, metadata={"help": "whether to use bf16 for inference"}
+    )
+    query_instruction_for_rerank: str = field(
+        default=None, metadata={"help": "Instruction for query"}
+    )
+    query_instruction_format_for_rerank: str = field(
+        default="{}{}", metadata={"help": "Format for query instruction"}
+    )
+    passage_instruction_for_rerank: str = field(
+        default=None, metadata={"help": "Instruction for passage"}
+    )
+    passage_instruction_format_for_rerank: str = field(
+        default="{}{}", metadata={"help": "Format for passage instruction"}
+    )
+    cache_dir: str = field(
+        default=None, metadata={"help": "Cache directory for models."}
     )
