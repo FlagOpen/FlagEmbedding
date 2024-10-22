@@ -156,9 +156,9 @@ class BaseLLMReranker(AbsReranker):
         peft_path: str = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
-        query_instruction_for_rerank: str = None,
+        query_instruction_for_rerank: str = "A: ",
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
-        passage_instruction_for_rerank: str = None,
+        passage_instruction_for_rerank: str = "B: ",
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         cache_dir: str = None,
         trust_remote_code: bool = False,
