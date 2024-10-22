@@ -1,9 +1,14 @@
+import os
 import faiss
 import numpy as np
 from tqdm import tqdm
 
 
-def index(index_factory: str = "Flat", corpus_embeddings: np.array = None, load_path: str = None):
+def index(
+    index_factory: str = "Flat", 
+    corpus_embeddings: np.array = None, 
+    load_path: str = None
+):
     if corpus_embeddings is None:
         corpus_embeddings = np.load(load_path)
     print(corpus_embeddings.shape)
@@ -23,12 +28,18 @@ def index(index_factory: str = "Flat", corpus_embeddings: np.array = None, load_
     return faiss_index
 
 
-def search(load_path: str, faiss_index: faiss.Index, k:int = 100):
+def search(
+    faiss_index: faiss.Index, 
+    k: int = 100, 
+    query_embeddings: np.array = None,
+    load_path: str = None
+):
     """
     1. Encode queries into dense embeddings;
     2. Search through faiss index
     """
-    query_embeddings = np.load(load_path)
+    if query_embeddings is None:
+        query_embeddings = np.load(load_path)
 
     query_size = len(query_embeddings)
 
