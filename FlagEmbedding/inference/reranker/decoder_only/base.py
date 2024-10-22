@@ -156,6 +156,10 @@ class BaseLLMReranker(AbsReranker):
         peft_path: str = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
+        query_instruction_for_rerank: str = None,
+        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
+        passage_instruction_for_rerank: str = None,
+        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
@@ -165,6 +169,10 @@ class BaseLLMReranker(AbsReranker):
         super().__init__(
             model_name_or_path,
             use_fp16,
+            query_instruction_for_rerank,
+            query_instruction_format,
+            passage_instruction_for_rerank,
+            passage_instruction_format,
             devices,
             **kwargs
         )
@@ -268,7 +276,7 @@ class BaseLLMReranker(AbsReranker):
             encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
             for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
                 batch_sentences = sentences_pairs_sorted[batch_start:batch_start + batch_size]
-                batch_sentences = [(f'A: {q}', f'B: {p}') for q,p in batch_sentences]
+                # batch_sentences = [(f'A: {q}', f'B: {p}') for q,p in batch_sentences]
                 queries = [s[0] for s in batch_sentences]
                 passages = [s[1] for s in batch_sentences]
                 queries_inputs = self.tokenizer(

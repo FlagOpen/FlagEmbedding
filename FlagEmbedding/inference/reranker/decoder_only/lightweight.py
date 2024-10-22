@@ -80,6 +80,10 @@ class LightweightLLMReranker(AbsReranker):
         peft_path: str = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
+        query_instruction_for_rerank: str = None,
+        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
+        passage_instruction_for_rerank: str = None,
+        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
@@ -89,6 +93,10 @@ class LightweightLLMReranker(AbsReranker):
         super().__init__(
             model_name_or_path,
             use_fp16,
+            query_instruction_for_rerank,
+            query_instruction_format,
+            passage_instruction_for_rerank,
+            passage_instruction_format,
             devices,
             **kwargs
         )

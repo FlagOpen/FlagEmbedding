@@ -6,6 +6,8 @@ def test_base_multi_devices():
     model = LightWeightFlagLLMReranker(
         'BAAI/bge-reranker-v2.5-gemma2-lightweight',
         use_fp16=True,
+        query_instruction_for_rerank="A: ",
+        passage_instruction_for_rerank="B: ",
         trust_remote_code=True,
         devices=["cuda:3", "cuda:4"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
         cache_dir='/share/shared_models'

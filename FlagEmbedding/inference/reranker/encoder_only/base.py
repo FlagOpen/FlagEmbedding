@@ -16,6 +16,10 @@ class BaseReranker(AbsReranker):
         self,
         model_name_or_path: str,
         use_fp16: bool = False,
+        query_instruction_for_rerank: str = None,
+        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
+        passage_instruction_for_rerank: str = None,
+        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         trust_remote_code: bool = False,
         cache_dir: str = None,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
@@ -24,6 +28,10 @@ class BaseReranker(AbsReranker):
         super().__init__(
             model_name_or_path,
             use_fp16,
+            query_instruction_for_rerank,
+            query_instruction_format,
+            passage_instruction_for_rerank,
+            passage_instruction_format,
             devices,
             **kwargs
         )

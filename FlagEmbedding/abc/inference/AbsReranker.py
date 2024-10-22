@@ -66,10 +66,10 @@ class AbsReranker(ABC):
         else:
             raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
 
-    def get_detailed_instruct(instruction_format: str, instruction: str, sentence: str):
+    def get_detailed_instruct(self, instruction_format: str, instruction: str, sentence: str):
         return instruction_format.format(instruction, sentence)
     
-    def get_detailed_inputs(sentence_pairs: Union[str, List[str]]):
+    def get_detailed_inputs(self, sentence_pairs: Union[str, List[str]]):
         if isinstance(sentence_pairs, str):
             sentence_pairs = [sentence_pairs]
 
@@ -85,7 +85,7 @@ class AbsReranker(ABC):
                 return [
                     [
                         self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_rerank, sentence_pair[0]),
-                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[0])
+                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[1])
                     ] for sentence_pair in sentence_pairs
                 ]
         else:
@@ -100,7 +100,7 @@ class AbsReranker(ABC):
                 return [
                     [
                         sentence_pair[0],
-                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[0])
+                        self.get_detailed_instruct(self.passage_instruction_format, self.passage_instruction_for_rerank, sentence_pair[1])
                     ] for sentence_pair in sentence_pairs
                 ]
 
@@ -109,7 +109,7 @@ class AbsReranker(ABC):
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         **kwargs
     ):
-        sentence_pairs = get_detailed_inputs(sentence_pairs)
+        sentence_pairs = self.get_detailed_inputs(sentence_pairs)
 
         if isinstance(sentence_pairs, str) or len(self.target_devices) == 1:
             return self.compute_score_single_gpu(
