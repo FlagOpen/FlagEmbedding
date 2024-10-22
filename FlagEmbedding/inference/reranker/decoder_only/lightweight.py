@@ -10,6 +10,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
 
+from .models.gemma_model import CostWiseGemmaForCausalLM
+
 
 def last_logit_pool_lightweight(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
@@ -102,12 +104,20 @@ class LightweightLLMReranker(AbsReranker):
             warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
             use_fp16 = True
 
-        self.model = AutoModelForCausalLM.from_pretrained(
-            model_name_or_path,
-            cache_dir=cache_dir,
-            trust_remote_code=trust_remote_code,
-            torch_dtype=torch.bfloat16 if use_bf16 else torch.float32
-        )
+        try:
+            self.model = CostWiseGemmaForCausalLM.from_pretrained(
+                model_name_or_path,
+                cache_dir=cache_dir,
+                trust_remote_code=trust_remote_code,
+                torch_dtype=torch.bfloat16 if use_bf16 else torch.float32
+            )
+        except:
+            self.model = AutoModelForCausalLM.from_pretrained(
+                model_name_or_path,
+                cache_dir=cache_dir,
+                trust_remote_code=trust_remote_code,
+                torch_dtype=torch.bfloat16 if use_bf16 else torch.float32
+            )
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
             self.model = self.model.merge_and_unload()
