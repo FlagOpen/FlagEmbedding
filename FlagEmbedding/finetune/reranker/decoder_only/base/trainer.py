@@ -5,6 +5,7 @@ from typing import Optional
 from transformers.deepspeed import is_deepspeed_zero3_enabled
 
 from FlagEmbedding.abc.finetune.reranker import AbsRerankerTrainer
+from peft import get_peft_model_state_dict
 
 logger = logging.getLogger(__name__)
 

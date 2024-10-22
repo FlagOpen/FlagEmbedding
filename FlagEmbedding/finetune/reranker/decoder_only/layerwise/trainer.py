@@ -3,6 +3,7 @@ import torch
 import logging
 from typing import Optional
 from transformers.deepspeed import is_deepspeed_zero3_enabled
+from peft import get_peft_model_state_dict
 
 from FlagEmbedding.abc.finetune.reranker import AbsRerankerTrainer
 
