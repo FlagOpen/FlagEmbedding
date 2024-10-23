@@ -31,10 +31,9 @@ def download_file(
         source_file_path = os.path.join(directory, url.split('/')[-1])
         file_path = os.path.join(directory, filename)
 
-        if not os.path.exists(source_file_path):
-            with open(source_file_path, 'wb') as file:
-                for chunk in tqdm(response.iter_content(chunk_size=8192), desc="Downloading"):
-                    file.write(chunk)
+        with open(source_file_path, 'wb') as file:
+            for chunk in tqdm(response.iter_content(chunk_size=8192), desc="Downloading"):
+                file.write(chunk)
 
         logger.warning(f"File downloaded: {source_file_path}")
 
@@ -69,11 +68,13 @@ def download_file(
                     for line in f:
                         tmp = json.loads(line)
                         results[str(list(tmp.keys())[0])] = list(tmp.values())[0]
-            else:
+            elif temp_file_path.endswith('msmarco-docs.tsv'):
                 results = {}
                 with open(temp_file_path, newline='', encoding='utf-8') as f:
                     reader = csv.reader(f, delimiter='\t')
                     for row in reader:
+                        idx += 1
+                        # Handle different cases based on row length and content
                         if len(row) == 2:
                             results[row[0]] = row[1]
                         elif len(row) > 3:
@@ -83,22 +84,42 @@ def download_file(
                                 if row[0] not in results:
                                     results[row[0]] = {}
                                 results[row[0]][row[2]] = int(row[3])
+            else:
+                results = {}
+                with open(temp_file_path) as f:
+                    for line in f:
+                        if '\t' in line:
+                            tmp = line.strip().split('\t')
+                        else:
+                            tmp = line.strip().split()
+                        if len(tmp) == 2:
+                            results[str(tmp[0])] = tmp[1]
+                        else:
+                            if 'http' not in str(tmp[1]):
+                                results[str(tmp[0])] = (tmp[2] + ' ' + tmp[3]).strip()
+                            else:
+                                if str(tmp[0]) not in results.keys():
+                                    results[str(tmp[0])] = {}
+                                results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
             os.remove(temp_file_path)
 
         else:
             results = {}
-            with open(temp_file_path, newline='', encoding='utf-8') as f:
-                reader = csv.reader(f, delimiter='\t')
-                for row in reader:
-                    if len(row) == 2:
-                        results[row[0]] = row[1]
-                    elif len(row) > 3:
-                        if 'http' in row[1]:
-                            results[row[0]] = f"{row[2]} {row[3]}".strip()
+            with open(source_file_path) as f:
+                for line in f:
+                    if '\t' in line:
+                        tmp = line.strip().split('\t')
+                    else:
+                        tmp = line.strip().split()
+                    if len(tmp) == 2:
+                        results[str(tmp[0])] = tmp[1]
+                    else:
+                        if 'http' not in str(tmp[1]):
+                            results[str(tmp[0])] = (tmp[2] + ' ' + tmp[3]).strip()
                         else:
-                            if row[0] not in results:
-                                results[row[0]] = {}
-                            results[row[0]][row[2]] = int(row[3])
+                            if str(tmp[0]) not in results.keys():
+                                results[str(tmp[0])] = {}
+                            results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
             os.remove(source_file_path)
 
         with open(file_path, 'w') as f:
