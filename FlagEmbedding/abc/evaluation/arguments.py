@@ -2,6 +2,7 @@
 Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/evaluation_utils/evaluation_arguments.py
 """
 from dataclasses import dataclass, field
+from typing import List
 
 
 @dataclass
