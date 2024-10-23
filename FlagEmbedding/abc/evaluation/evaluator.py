@@ -9,7 +9,7 @@ import pandas as pd
 from typing import Dict, Optional, List, Union
 
 from .data_loader import AbsDataLoader
-from .searcher import AbsRetriever, AbsReranker
+from .searcher import AbsEmbedder, AbsReranker
 from .utils import evaluate_metrics, evaluate_mrr
 
 logger = logging.getLogger(__name__)
@@ -52,11 +52,13 @@ class AbsEvaluator:
         self,
         splits: Union[str, List[str]],
         search_results_save_dir: str,
-        retriever: AbsRetriever,
+        retriever: AbsEmbedder,
         reranker: Optional[AbsReranker] = None,
         corpus_embd_save_dir: Optional[str] = None,
         **kwargs,
     ):
+        if isinstance(splits, str):
+            splits = [splits]
         # Retrieval Stage
         no_reranker_search_results_save_dir = os.path.join(
             search_results_save_dir, str(retriever), "NoReranker"

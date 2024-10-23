@@ -1,16 +1,22 @@
 """
 Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/evaluation_utils/searcher.py
 """
+import os
+import numpy as np
 from typing import Any, Dict
 from abc import ABC, abstractmethod
 
+from FlagEmbedding.abc.inference import AbsEmbedder, AbsReranker
+from FlagEmbedding.abc.evaluation.utils import index, search
 
-class AbsRetriever(ABC):
+
+class AbsEmbedder(ABC):
     """
     Base class for retrievers.
     Extend this class and implement __str__ and __call__ for custom retrievers.
     """
-    def __init__(self, search_top_k: int = 1000):
+    def __init__(self, retriever: AbsEmbedder, search_top_k: int = 1000):
+        self.retriever
         self.search_top_k = search_top_k
 
     @abstractmethod
@@ -25,6 +31,7 @@ class AbsRetriever(ABC):
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
+        corpus_embd_save_dir: str = None,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -43,14 +50,39 @@ class AbsRetriever(ABC):
             Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
             Example: {"q-0": {"doc-0": 0.9}}
         """
-        pass
+        corpus_texts = [doc["text"] for _, doc in corpus.items()]
+        queries_texts = [query for _, query in queries.items()]
+        corpus_ids = list(corpus.keys())
+        queries_ids = list(queries.keys())
+
+        if os.path.exists(os.path.join(corpus_embd_save_dir, 'doc.npy')):
+            corpus_emb = np.load(os.path.join(corpus_embd_save_dir, 'doc.npy'))
+        else:
+            corpus_emb = self.retriever.encode_corpus(corpus_texts, **kwargs)
+            if corpus_embd_save_dir is not None:
+                os.makedirs(corpus_embd_save_dir, exist_ok=True)
+                np.save(os.path.join(corpus_embd_save_dir, 'doc.npy'), corpus_emb)
+
+        queries_emb = self.retriever.encode_queries(queries_texts, **kwargs)
+        
+        faiss_index = index(corpus_embeddings=corpus_emb)
+        all_scores, all_indices = search(queries_embeddings=queries_emb, faiss_index=faiss_index, top_k=self.search_top_k)
+
+        results = {}
+        for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
+            results[queries_ids[idx]] = {}
+            for score, indice in zip(scores, indices):
+                results[queries_ids[idx]][corpus_ids[indice]] = score
+
+        return results
 
 class AbsReranker(ABC):
     """
     Base class for rerankers.
     Extend this class and implement __str__ and __call__ for custom rerankers.
     """
-    def __init__(self, rerank_top_k: int = 100):
+    def __init__(self, reranker: AbsReranker, rerank_top_k: int = 100):
+        self.reranker = reranker
         self.rerank_top_k = rerank_top_k
 
     @abstractmethod
@@ -87,4 +119,32 @@ class AbsReranker(ABC):
             Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
             Example: {"q-0": {"doc-0": 0.9}}
         """
-        pass
+        corpus_texts = [doc["text"] for _, doc in corpus.items()]
+        queries_texts = [query for _, query in queries.items()]
+        corpus_ids = list(corpus.keys())
+        queries_ids = list(queries.keys())
+
+        sentence_pairs = []
+
+        for qid in search_results.keys():
+            dids = list(search_results[qid].keys())[:rerank_top_k]
+            for did in dids:
+                sentence_pairs.append((queries[qid], corpus[did]["text"]))
+        
+        scores = self.reranker.compute_scores(sentence_pairs, **kwargs)
+        if isinstance(scores[0], list):
+            scores = scores[0]
+        
+        scores = np.asarray(scores)
+        scores = scores.reshape(-1, rerank_top_k)
+
+        return {
+            qid: {
+                corpus_ids[i]: score
+                for i, score in enumerate(scores[idx])
+            }
+            for idx, qid in enumerate(queries_ids)
+        }
+
+
+

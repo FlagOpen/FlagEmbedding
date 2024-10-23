@@ -234,5 +234,8 @@ class LayerWiseLLMReranker(AbsReranker):
             all_scores[i] = [all_scores[i][idx] for idx in np.argsort(length_sorted_idx)]
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
-
+        
+        if isinstance(all_scores[0], list):
+            all_score = all_scores[0]
+            
         return all_scores

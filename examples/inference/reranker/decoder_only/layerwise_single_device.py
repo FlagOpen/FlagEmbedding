@@ -22,7 +22,7 @@ def test_base_multi_devices():
     
     scores = model.compute_score(pairs, cutoff_layers=[28])
     
-    print(scores[0][:4])
+    print(scores[:4])
 
 
 if __name__ == '__main__':
