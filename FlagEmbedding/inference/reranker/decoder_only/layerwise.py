@@ -40,6 +40,9 @@ class LayerWiseLLMReranker(AbsReranker):
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        cutoff_layers: List[int] = None, 
+        prompt: str = None,
+        normalize: bool = False,
         **kwargs: Any,
     ) -> None:
         super().__init__(
@@ -52,6 +55,10 @@ class LayerWiseLLMReranker(AbsReranker):
             devices,
             **kwargs
         )
+
+        self.cutoff_layers = cutoff_layers
+        self.prompt = prompt
+        self.normalize = normalize        
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
@@ -91,12 +98,15 @@ class LayerWiseLLMReranker(AbsReranker):
         max_length: int = 512,
         cutoff_layers: List[int] = None, 
         prompt: str = None,
-        normalize: bool = False,
+        normalize: bool = None,
         use_dataloader: bool = False,
         num_workers: int = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
+        if cutoff_layers is None: cutoff_layers = self.cutoff_layers
+        if prompt is None: prompt = self.prompt
+        if normalize is None: normalize = self.normalize
 
         if device is None:
             device = self.target_devices[0]

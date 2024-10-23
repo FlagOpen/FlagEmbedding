@@ -72,13 +72,13 @@ class AbsEmbedder(ABC):
         queries_emb = self.retriever.encode_queries(queries_texts, max_length=query_max_length, **kwargs)
         
         faiss_index = index(corpus_embeddings=corpus_emb)
-        all_scores, all_indices = search(queries_embeddings=queries_emb, faiss_index=faiss_index, top_k=self.search_top_k)
+        all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
 
         results = {}
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
             results[queries_ids[idx]] = {}
             for score, indice in zip(scores, indices):
-                results[queries_ids[idx]][corpus_ids[indice]] = score
+                results[queries_ids[idx]][corpus_ids[indice]] = float(score)
 
         return results
 
@@ -96,7 +96,7 @@ class AbsReranker(ABC):
         """
         Returns: str: Name of the reranker.
         """
-        return self.retriever.model.config._name_or_path
+        return self.reranker.model.config._name_or_path
         # pass
 
     # @abstractmethod
@@ -134,24 +134,26 @@ class AbsReranker(ABC):
         sentence_pairs = []
 
         for qid in search_results.keys():
-            dids = list(search_results[qid].keys())[:rerank_top_k]
+            dids = list(search_results[qid].keys())[:self.rerank_top_k]
             for did in dids:
                 sentence_pairs.append((queries[qid], corpus[did]["text"]))
         
-        scores = self.reranker.compute_scores(sentence_pairs, **kwargs)
+        scores = self.reranker.compute_score(sentence_pairs, **kwargs)
         if isinstance(scores[0], list):
             scores = scores[0]
         
-        scores = np.asarray(scores)
-        scores = scores.reshape(-1, rerank_top_k)
+        # scores = np.asarray(scores)
+        # scores = scores.reshape(-1, self.rerank_top_k)
 
-        return {
-            qid: {
-                corpus_ids[i]: score
-                for i, score in enumerate(scores[idx])
-            }
-            for idx, qid in enumerate(queries_ids)
-        }
+        results = {}
+        idx = 0
+        for qid in search_results.keys():
+            dids = list(search_results[qid].keys())[:self.rerank_top_k]
+            results[qid] = {}
+            for did in dids:
+                results[qid][did] = float(scores[idx])
+                idx += 1
 
+        return results
 
 

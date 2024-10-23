@@ -98,7 +98,7 @@ class AbsEvaluator:
                 corpus_embd_save_dir=corpus_embd_save_dir,
                 batch_size=retriever_batch_size,
                 query_max_length=retriever_query_max_length,
-                passage_max_length=retriever_passage_max_length
+                passage_max_length=retriever_passage_max_length,
                 **kwargs,
             )
 
@@ -133,6 +133,8 @@ class AbsEvaluator:
                     split=split,
                 )
                 no_reranker_search_results_dict[split] = search_results
+        retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir)
+        self.output_eval_results_to_json(retriever_eval_results, os.path.join(no_reranker_search_results_save_dir, 'eval.json'))
         
         # Reranking Stage
         if reranker is not None:
@@ -154,7 +156,7 @@ class AbsEvaluator:
                 )
 
                 if os.path.exists(rerank_search_results_save_path) and not self.overwrite:
-                    return
+                    continue
 
                 rerank_search_results = reranker(
                     corpus=corpus,
@@ -173,6 +175,9 @@ class AbsEvaluator:
                     split=split,
                     dataset_dir=self.dataset_dir,
                 )
+            reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir)
+            self.output_eval_results_to_json(reranker_eval_results, os.path.join(reranker_search_results_save_dir, 'eval.json'))
+
 
     @staticmethod
     def save_search_results(
@@ -200,7 +205,7 @@ class AbsEvaluator:
     def load_search_results(input_path: str):
         with open(input_path, "r", encoding="utf-8") as f:
             data_info = json.load(f)
-
+        
         search_results = data_info.pop("search_results")
         return data_info, search_results
 
@@ -237,7 +242,7 @@ class AbsEvaluator:
         eval_results_dict = {}
 
         for file in os.listdir(search_results_save_dir):
-            if not file.endswith('.json'):
+            if not file.endswith('.json') or file == 'eval.json':
                 continue
 
             file_path = os.path.join(search_results_save_dir, file)

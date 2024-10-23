@@ -163,6 +163,8 @@ class BaseLLMReranker(AbsReranker):
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        prompt: str = None,
+        normalize: bool = False,
         **kwargs: Any,
     ) -> None:
 
@@ -176,6 +178,9 @@ class BaseLLMReranker(AbsReranker):
             devices,
             **kwargs
         )
+
+        self.prompt = prompt
+        self.normalize = normalize
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
@@ -205,12 +210,14 @@ class BaseLLMReranker(AbsReranker):
         batch_size: int = 256,
         max_length: int = 512,
         prompt: str = None,
-        normalize: bool = False,
+        normalize: bool = None,
         use_dataloader: bool = False,
         num_workers: int = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
+        if prompt is None: prompt = self.prompt
+        if normalize is None: normalize = self.normalize
 
         if device is None:
             device = self.target_devices[0]

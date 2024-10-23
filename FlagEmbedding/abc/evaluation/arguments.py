@@ -11,7 +11,7 @@ class AbsEvalArgs:
         metadata={"help": "Path to the dataset directory. The data directory should contain the following files: corpus.jsonl, <split1>_queries.jsonl, ..., <splitN>_queries.jsonl, <split1>_qrels.jsonl, ..., <splitN>_qrels.jsonl."}
     )
     splits: str = field(
-        default='test', metadata={"help": "Splits to evaluate. Default: test", "nargs": "+"}
+        default="test", metadata={"help": "Splits to evaluate. Default: test", "nargs": "+"}
     )
     corpus_embd_save_dir: str = field(
         default=None, metadata={"help": "Path to save corpus embeddings. If None, embeddings are not saved."}

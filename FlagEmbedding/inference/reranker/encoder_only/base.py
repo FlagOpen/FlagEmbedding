@@ -23,6 +23,7 @@ class BaseReranker(AbsReranker):
         trust_remote_code: bool = False,
         cache_dir: str = None,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        normalize: bool = False,
         **kwargs: Any,
     ):
         super().__init__(
@@ -35,6 +36,7 @@ class BaseReranker(AbsReranker):
             devices,
             **kwargs
         )
+        self.normalize = normalize
 
         self.tokenizer = AutoTokenizer.from_pretrained(model_name_or_path, cache_dir=cache_dir)
         self.model = AutoModelForSequenceClassification.from_pretrained(model_name_or_path, trust_remote_code=trust_remote_code, cache_dir=cache_dir)
@@ -47,10 +49,12 @@ class BaseReranker(AbsReranker):
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         batch_size: int = 256,
         max_length: int = 512,
-        normalize: bool = False,
+        normalize: bool = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
+        if normalize is None: normalize = self.normalize
+
         if device is None:
             device = self.target_devices[0]
 

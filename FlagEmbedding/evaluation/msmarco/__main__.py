@@ -34,7 +34,12 @@ def get_models(model_args: AbsModelArgs):
             passage_instruction_format=model_args.passage_instruction_format_for_rerank,
             cache_dir=model_args.cache_dir,
             trust_remote_code=model_args.trust_remote_code,
-            devices=model_args.devices
+            devices=model_args.devices,
+            normalize=model_args.normalize,
+            prompt=model_args.prompt,
+            cutoff_layers=model_args.cutoff_layers,
+            compress_layers=model_args.compress_layers,
+            compress_ratio=model_args.compress_ratio,
         )
     return retriever, reranker
 
@@ -72,7 +77,7 @@ def main():
         reranker = None
     
     evaluation(
-        splits=eval_args.splits,
+        splits=eval_args.splits.split(),
         search_results_save_dir=eval_args.output_dir,
         retriever=retriever,
         reranker=reranker,
@@ -82,11 +87,6 @@ def main():
         retriever_query_max_length=model_args.retriever_query_max_length,
         retriever_passage_max_length=model_args.retriever_passage_max_length,
         reranker_max_length=model_args.reranker_max_length,
-        normalize=model_args.normalize,
-        prompt=model_args.prompt,
-        cutoff_layers=model_args.cutoff_layers,
-        compress_layers=model_args.compress_layers,
-        compress_ratio=model_args.compress_ratio,
     )
 
 

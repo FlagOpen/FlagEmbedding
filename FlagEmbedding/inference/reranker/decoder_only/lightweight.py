@@ -87,6 +87,11 @@ class LightweightLLMReranker(AbsReranker):
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        cutoff_layers: List[int] = None,
+        compress_layers: List[int] = [8],
+        compress_ratio: int = 1,
+        prompt: str = None,
+        normalize: bool = False,
         **kwargs: Any,
     ) -> None:
 
@@ -100,6 +105,12 @@ class LightweightLLMReranker(AbsReranker):
             devices,
             **kwargs
         )
+
+        self.cutoff_layers = cutoff_layers
+        self.compress_layers = compress_layers
+        self.compress_ratio = compress_ratio
+        self.prompt = prompt
+        self.normalize = normalize
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
@@ -141,13 +152,19 @@ class LightweightLLMReranker(AbsReranker):
         batch_size: int = 256,
         max_length: int = 512,
         cutoff_layers: List[int] = None,
-        compress_layer: List[int] = [8],
-        compress_ratio: int = 1,
+        compress_layers: List[int] = None,
+        compress_ratio: int = None,
         prompt: str = None,
-        normalize: bool = False,
+        normalize: bool = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:
+
+        if cutoff_layers is None: cutoff_layers = self.cutoff_layers
+        if compress_layers is None: compress_layers = self.compress_layers
+        if compress_ratio is None: compress_ratio = self.compress_ratio
+        if prompt is None: prompt = self.prompt
+        if normalize is None: normalize = self.normalize
 
         if device is None:
             device = self.target_devices[0]
@@ -242,7 +259,7 @@ class LightweightLLMReranker(AbsReranker):
             outputs = self.model(
                 **batch_inputs,
                 output_hidden_states=True,
-                compress_layer=compress_layer,
+                compress_layer=compress_layers,
                 compress_ratio=compress_ratio,
                 query_lengths=query_lengths,
                 prompt_lengths=prompt_lengths,
