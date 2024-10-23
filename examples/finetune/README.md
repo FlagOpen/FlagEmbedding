@@ -42,6 +42,7 @@ python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
 --range_for_sampling 2-200 \
+--similarity_range 0.2-0.8 \
 --negative_number 15 \
 --use_gpu_for_searching 
 ```
@@ -51,6 +52,7 @@ and random sample negatives from the top-k documents (not including the positive
 - `output_file`: path to save JSON data with mined hard negatives for finetuning
 - `negative_number`: the number of sampled negatives 
 - `range_for_sampling`: where to sample negative. For example, `2-100` means sampling `negative_number` negatives from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top60-300 passages)**
+- `similarity_range`: Specifies the similarity score range for sampling negatives. This defines the range of similarity between the query and the negative samples. For example, "0.2-0.8" will only sample negatives with similarity scores between 0.2 and 0.8, allowing control over the difficulty of the negatives based on their relevance to the query.
 - `candidate_pool`: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. 
 The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
 - `use_gpu_for_searching`: whether to use faiss-gpu to retrieve negatives.
