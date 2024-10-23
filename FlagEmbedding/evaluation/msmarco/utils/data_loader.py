@@ -1,6 +1,3 @@
-"""
-Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/evaluation_utils/data_loader.py
-"""
 import os
 import logging
 import datasets
@@ -95,12 +92,9 @@ def download_file(
                         if len(tmp) == 2:
                             results[str(tmp[0])] = tmp[1]
                         else:
-                            if 'http' not in str(tmp[1]):
-                                results[str(tmp[0])] = (tmp[2] + ' ' + tmp[3]).strip()
-                            else:
-                                if str(tmp[0]) not in results.keys():
-                                    results[str(tmp[0])] = {}
-                                results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
+                            if str(tmp[0]) not in results.keys():
+                                results[str(tmp[0])] = {}
+                            results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
             os.remove(temp_file_path)
 
         else:
@@ -114,12 +108,9 @@ def download_file(
                     if len(tmp) == 2:
                         results[str(tmp[0])] = tmp[1]
                     else:
-                        if 'http' not in str(tmp[1]):
-                            results[str(tmp[0])] = (tmp[2] + ' ' + tmp[3]).strip()
-                        else:
-                            if str(tmp[0]) not in results.keys():
-                                results[str(tmp[0])] = {}
-                            results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
+                        if str(tmp[0]) not in results.keys():
+                            results[str(tmp[0])] = {}
+                        results[str(tmp[0])][str(tmp[2])] = int(tmp[3])
             os.remove(source_file_path)
 
         with open(file_path, 'w') as f:

@@ -182,9 +182,45 @@ class LightweightLLMReranker(AbsReranker):
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
 
-        length_sorted_idx = np.argsort([-len(q) - len(p) for q, p in sentence_pairs])
-        sentences_pairs_sorted = [sentence_pairs[idx] for idx in length_sorted_idx]
+        # tokenize without padding to get the correct length
+        all_queries_inputs = []
+        all_passages_inputs = []
+        for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize"):
+            sentences_batch = sentence_pairs[start_index:start_index + batch_size]
+            queries = [s[0] for s in sentences_batch]
+            passages = [s[1] for s in sentences_batch]
+            queries_inputs_batch = self.tokenizer(
+                queries,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length * 3 // 4,
+                truncation=True,
+                **kwargs
+            )
+            passages_inputs_batch = self.tokenizer(
+                passages,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length,
+                truncation=True,
+                **kwargs
+            )
+            queries_inputs_batch = [{
+                k: queries_inputs_batch[k][i] for k in queries_inputs_batch.keys()
+            } for i in range(len(sentences_batch))]
+            passages_inputs_batch = [{
+                k: passages_inputs_batch[k][i] for k in passages_inputs_batch.keys()
+            } for i in range(len(sentences_batch))]
 
+            all_queries_inputs.extend(queries_inputs_batch)
+            all_passages_inputs.extend(passages_inputs_batch)
+
+        # sort by length for less padding
+        length_sorted_idx = np.argsort([-len(x['input_ids']) - len(y['input_ids']) for (x, y) in zip(all_queries_inputs, all_passages_inputs)])
+        all_queries_inputs_sorted = [all_queries_inputs[i] for i in length_sorted_idx]
+        all_passages_inputs_sorted = [all_passages_inputs[i] for i in length_sorted_idx]
+
+        # other inputs
         if prompt is None:
             prompt = "Predict whether passage B contains an answer to query A."
         prompt_inputs = self.tokenizer(
@@ -199,35 +235,74 @@ class LightweightLLMReranker(AbsReranker):
             add_special_tokens=False
         )['input_ids']
         encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
+
+        # adjust batch size
+        flag = False
+        while flag is False:
+            try:
+                batch_inputs = []
+                query_lengths = []
+                prompt_lengths = []
+                for query_inputs, passage_inputs in zip(
+                    all_queries_inputs_sorted[:min(len(all_queries_inputs_sorted), batch_size)], 
+                    all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
+                ):
+                    item = self.tokenizer.prepare_for_model(
+                        [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
+                        sep_inputs + passage_inputs['input_ids'],
+                        truncation='only_second',
+                        max_length=encode_max_length,
+                        padding=False,
+                        return_attention_mask=False,
+                        return_token_type_ids=False,
+                        add_special_tokens=False
+                    )
+                    item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
+                    item['attention_mask'] = [1] * len(item['input_ids'])
+                    item.pop('token_type_ids') if 'token_type_ids' in item.keys() else None
+                    if 'position_ids' in item.keys():
+                        item['position_ids'] = list(range(len(item['input_ids'])))
+                    batch_inputs.append(item)
+                    query_lengths.append(len([self.tokenizer.bos_token_id] + query_inputs['input_ids'] + sep_inputs))
+                    prompt_lengths.append(len(sep_inputs + prompt_inputs))
+
+                collater_instance = Collater_for_lightweight(self.tokenizer, max_length)
+                batch_inputs = collater_instance([
+                    [{
+                        'input_ids': item['input_ids'],
+                        'attention_mask': item['attention_mask']
+                    } for item in batch_inputs],
+                    query_lengths,
+                    prompt_lengths
+                ])[0]
+
+                batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
+
+                self.model(
+                    **batch_inputs,
+                    output_hidden_states=True,
+                    compress_layer=compress_layers,
+                    compress_ratio=compress_ratio,
+                    query_lengths=query_lengths,
+                    prompt_lengths=prompt_lengths,
+                    cutoff_layers=cutoff_layers
+                )
+                flag = True
+            except RuntimeError as e:
+                batch_size = batch_size * 3 // 4
+        
         all_scores = []
-        for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
-            batch_sentences = sentences_pairs_sorted[batch_start:batch_start + batch_size]
-            # batch_sentences = [(f'A: {q}', f'B: {p}') for q, p in batch_sentences]
-            queries = [s[0] for s in batch_sentences]
-            passages = [s[1] for s in batch_sentences]
-            queries_inputs = self.tokenizer(
-                queries,
-                return_tensors=None,
-                add_special_tokens=False,
-                max_length=max_length * 3 // 4,
-                truncation=True,
-                **kwargs
-            )
-            passages_inputs = self.tokenizer(
-                passages,
-                return_tensors=None,
-                add_special_tokens=False,
-                max_length=max_length,
-                truncation=True,
-                **kwargs
-            )
+        for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
+            queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
+            passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
+
+            batch_inputs = []
             query_lengths = []
             prompt_lengths = []
-            batch_inputs = []
-            for query_inputs, passage_inputs in zip(queries_inputs['input_ids'], passages_inputs['input_ids']):
+            for query_inputs, passage_inputs in zip(queries_inputs, passages_inputs):
                 item = self.tokenizer.prepare_for_model(
-                    [self.tokenizer.bos_token_id] + query_inputs,
-                    sep_inputs + passage_inputs,
+                    [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
+                    sep_inputs + passage_inputs['input_ids'],
                     truncation='only_second',
                     max_length=encode_max_length,
                     padding=False,
@@ -241,7 +316,7 @@ class LightweightLLMReranker(AbsReranker):
                 if 'position_ids' in item.keys():
                     item['position_ids'] = list(range(len(item['input_ids'])))
                 batch_inputs.append(item)
-                query_lengths.append(len([self.tokenizer.bos_token_id] + query_inputs + sep_inputs))
+                query_lengths.append(len([self.tokenizer.bos_token_id] + query_inputs['input_ids'] + sep_inputs))
                 prompt_lengths.append(len(sep_inputs + prompt_inputs))
 
             collater_instance = Collater_for_lightweight(self.tokenizer, max_length)
@@ -279,8 +354,8 @@ class LightweightLLMReranker(AbsReranker):
             all_scores[i] = [all_scores[i][idx] for idx in np.argsort(length_sorted_idx)]
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
-        
+    
         if isinstance(all_scores[0], list):
-            all_score = all_scores[0]
+            all_scores = all_scores[0]
 
         return all_scores

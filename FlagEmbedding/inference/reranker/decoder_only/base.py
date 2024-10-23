@@ -26,11 +26,10 @@ def last_logit_pool(logits: Tensor,
 class DatasetForReranker(Dataset):
     def __init__(
         self,
-        dataset,
+        all_queries_inputs,
+        all_passages_inputs,
         tokenizer_path: str,
         max_len: int = 512,
-        query_prefix: str = 'A: ',
-        passage_prefix: str = 'B: ',
         cache_dir: str = None,
         prompt: str = None,
         **kwargs: Any, 
@@ -41,11 +40,10 @@ class DatasetForReranker(Dataset):
             cache_dir=cache_dir
         )
 
-        self.dataset = dataset
+        self.all_queries_inputs = all_queries_inputs
+        self.all_passages_inputs = all_passages_inputs
         self.max_len = max_len
-        self.query_prefix = query_prefix
-        self.passage_prefix = passage_prefix
-        self.total_len = len(self.dataset)
+        self.total_len = len(self.all_queries_inputs)
         self.kwargs = kwargs
 
         if prompt is None:
@@ -68,25 +66,8 @@ class DatasetForReranker(Dataset):
         return self.total_len
 
     def __getitem__(self, item):
-        query, passage = self.dataset[item]
-        query = self.query_prefix + query
-        passage = self.passage_prefix + passage
-        query_inputs = self.tokenizer(
-            query,
-            return_tensors=None,
-            add_special_tokens=False,
-            max_length=self.max_len * 3 // 4,
-            truncation=True,
-            **self.kwargs
-        )
-        passage_inputs = self.tokenizer(
-            passage,
-            return_tensors=None,
-            add_special_tokens=False,
-            max_length=self.max_len,
-            truncation=True,
-            **self.kwargs
-        )
+        query_inputs = self.all_queries_inputs[item]
+        passage_inputs = self.all_passages_inputs[item]
         item = self.tokenizer.prepare_for_model(
             [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
             self.sep_inputs + passage_inputs['input_ids'],
@@ -234,80 +215,73 @@ class BaseLLMReranker(AbsReranker):
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-
-        length_sorted_idx = np.argsort([-len(q) - len(p) for q, p in sentence_pairs])
-        sentences_pairs_sorted = [sentence_pairs[idx] for idx in length_sorted_idx]
-
-        dataset, dataloader = None, None
-        if use_dataloader:
-            if num_workers is None:
-                num_workers = min(batch_size, 16)
-            dataset = DatasetForReranker(
-                sentences_pairs_sorted,
-                self.model_name_or_path,
-                max_length,
-                cache_dir=self.cache_dir,
-                prompt=prompt,
+        
+        # tokenize without padding to get the correct length
+        all_queries_inputs = []
+        all_passages_inputs = []
+        for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize"):
+            sentences_batch = sentence_pairs[start_index:start_index + batch_size]
+            queries = [s[0] for s in sentences_batch]
+            passages = [s[1] for s in sentences_batch]
+            queries_inputs_batch = self.tokenizer(
+                queries,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length * 3 // 4,
+                truncation=True,
                 **kwargs
             )
-            dataloader = DataLoader(
-                dataset, shuffle=False, batch_size=batch_size, drop_last=False,
-                num_workers=num_workers,
-                collate_fn=Collater(self.tokenizer, max_length)
+            passages_inputs_batch = self.tokenizer(
+                passages,
+                return_tensors=None,
+                add_special_tokens=False,
+                max_length=max_length,
+                truncation=True,
+                **kwargs
             )
+            queries_inputs_batch = [{
+                k: queries_inputs_batch[k][i] for k in queries_inputs_batch.keys()
+            } for i in range(len(sentences_batch))]
+            passages_inputs_batch = [{
+                k: passages_inputs_batch[k][i] for k in passages_inputs_batch.keys()
+            } for i in range(len(sentences_batch))]
 
-        all_scores = []
-        if dataloader is not None:
-            for inputs in tqdm(dataloader):
-                inputs = inputs.to(device)
+            all_queries_inputs.extend(queries_inputs_batch)
+            all_passages_inputs.extend(passages_inputs_batch)
 
-                outputs = self.model(**inputs, output_hidden_states=True)
-                logits = outputs.logits
-                scores = last_logit_pool(logits, inputs['attention_mask'])
-                scores = scores[:, self.yes_loc]
-                all_scores.extend(scores.cpu().float().tolist())
-        else:
-            if prompt is None:
-                prompt = "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'."
-            prompt_inputs = self.tokenizer(
-                prompt,
-                return_tensors=None,
-                add_special_tokens=False
-            )['input_ids']
-            sep = "\n"
-            sep_inputs = self.tokenizer(
-                sep,
-                return_tensors=None,
-                add_special_tokens=False
-            )['input_ids']
-            encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
-            for batch_start in trange(0, len(sentences_pairs_sorted), batch_size):
-                batch_sentences = sentences_pairs_sorted[batch_start:batch_start + batch_size]
-                # batch_sentences = [(f'A: {q}', f'B: {p}') for q,p in batch_sentences]
-                queries = [s[0] for s in batch_sentences]
-                passages = [s[1] for s in batch_sentences]
-                queries_inputs = self.tokenizer(
-                    queries,
-                    return_tensors=None,
-                    add_special_tokens=False,
-                    max_length=max_length * 3 // 4,
-                    truncation=True,
-                    **kwargs
-                )
-                passages_inputs = self.tokenizer(
-                    passages,
-                    return_tensors=None,
-                    add_special_tokens=False,
-                    max_length=max_length,
-                    truncation=True,
-                    **kwargs
-                )
+        # sort by length for less padding
+        length_sorted_idx = np.argsort([-len(x['input_ids']) - len(y['input_ids']) for (x, y) in zip(all_queries_inputs, all_passages_inputs)])
+        all_queries_inputs_sorted = [all_queries_inputs[i] for i in length_sorted_idx]
+        all_passages_inputs_sorted = [all_passages_inputs[i] for i in length_sorted_idx]
 
+        # other inputs
+        if prompt is None:
+            prompt = "Given a query A and a passage B, determine whether the passage contains an answer to the query by providing a prediction of either 'Yes' or 'No'."
+        prompt_inputs = self.tokenizer(
+            prompt,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
+        sep = "\n"
+        sep_inputs = self.tokenizer(
+            sep,
+            return_tensors=None,
+            add_special_tokens=False
+        )['input_ids']
+        encode_max_length = max_length + len(sep_inputs) + len(prompt_inputs)
+
+        # adjust batch size
+        flag = False
+        while flag is False:
+            try:
                 batch_inputs = []
-                for query_inputs, passage_inputs in zip(queries_inputs['input_ids'], passages_inputs['input_ids']):
+                for query_inputs, passage_inputs in zip(
+                    all_queries_inputs_sorted[:min(len(all_queries_inputs_sorted), batch_size)], 
+                    all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
+                ):
                     item = self.tokenizer.prepare_for_model(
-                        [self.tokenizer.bos_token_id] + query_inputs,
-                        sep_inputs + passage_inputs,
+                        [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
+                        sep_inputs + passage_inputs['input_ids'],
                         truncation='only_second',
                         max_length=encode_max_length,
                         padding=False,
@@ -322,7 +296,74 @@ class BaseLLMReranker(AbsReranker):
                         item['position_ids'] = list(range(len(item['input_ids'])))
                     batch_inputs.append(item)
 
-                collater_instance = Collater(self.tokenizer, max_length)
+                collater_instance = Collater(self.tokenizer, encode_max_length)
+                batch_inputs = collater_instance([{
+                        'input_ids': item['input_ids'],
+                        'attention_mask': item['attention_mask']
+                    } for item in batch_inputs]
+                )
+
+                batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
+
+                self.model(**batch_inputs, output_hidden_states=True)
+                flag = True
+            except RuntimeError as e:
+                batch_size = batch_size * 3 // 4
+
+        dataset, dataloader = None, None
+        if use_dataloader:
+            if num_workers is None:
+                num_workers = min(batch_size, 16)
+            dataset = DatasetForReranker(
+                all_queries_inputs_sorted,
+                all_passages_inputs_sorted,
+                self.model_name_or_path,
+                max_length,
+                cache_dir=self.cache_dir,
+                prompt=prompt,
+                **kwargs
+            )
+            dataloader = DataLoader(
+                dataset, shuffle=False, batch_size=batch_size, drop_last=False,
+                num_workers=num_workers,
+                collate_fn=Collater(self.tokenizer, encode_max_length)
+            )
+
+        all_scores = []
+        if dataloader is not None:
+            for inputs in tqdm(dataloader):
+                inputs = inputs.to(device)
+
+                outputs = self.model(**inputs, output_hidden_states=True)
+                logits = outputs.logits
+                scores = last_logit_pool(logits, inputs['attention_mask'])
+                scores = scores[:, self.yes_loc]
+                all_scores.extend(scores.cpu().float().tolist())
+        else:
+            for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
+                queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
+                passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
+
+                batch_inputs = []
+                for query_inputs, passage_inputs in zip(queries_inputs, passages_inputs):
+                    item = self.tokenizer.prepare_for_model(
+                        [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
+                        sep_inputs + passage_inputs['input_ids'],
+                        truncation='only_second',
+                        max_length=encode_max_length,
+                        padding=False,
+                        return_attention_mask=False,
+                        return_token_type_ids=False,
+                        add_special_tokens=False
+                    )
+                    item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
+                    item['attention_mask'] = [1] * len(item['input_ids'])
+                    item.pop('token_type_ids') if 'token_type_ids' in item.keys() else None
+                    if 'position_ids' in item.keys():
+                        item['position_ids'] = list(range(len(item['input_ids'])))
+                    batch_inputs.append(item)
+
+                collater_instance = Collater(self.tokenizer, encode_max_length)
                 batch_inputs = collater_instance([{
                         'input_ids': item['input_ids'],
                         'attention_mask': item['attention_mask']

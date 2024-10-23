@@ -20,7 +20,7 @@ def test_base_multi_devices():
         ["What is the population of China?", "The population of China is over 1.4 billion people."]
     ] * 100
     
-    scores = model.compute_score(pairs, cutoff_layers=[28], compress_ratio=2, compress_layer=[24, 40])
+    scores = model.compute_score(pairs, cutoff_layers=[28], compress_ratio=2, compress_layers=[24, 40])
     
     print(scores[:4])
 
