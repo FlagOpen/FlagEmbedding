@@ -16,22 +16,25 @@ class AbsEmbedder(ABC):
     Extend this class and implement __str__ and __call__ for custom retrievers.
     """
     def __init__(self, retriever: AbsEmbedder, search_top_k: int = 1000):
-        self.retriever
+        self.retriever = retriever
         self.search_top_k = search_top_k
 
-    @abstractmethod
+    # @abstractmethod
     def __str__(self) -> str:
         """
         Returns: str: Name of the retriever.
         """
-        pass
+        return self.retriever.model.config._name_or_path
+        # pass
 
-    @abstractmethod
+    # @abstractmethod
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
         corpus_embd_save_dir: str = None,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -55,15 +58,18 @@ class AbsEmbedder(ABC):
         corpus_ids = list(corpus.keys())
         queries_ids = list(queries.keys())
 
-        if os.path.exists(os.path.join(corpus_embd_save_dir, 'doc.npy')):
-            corpus_emb = np.load(os.path.join(corpus_embd_save_dir, 'doc.npy'))
+        if corpus_embd_save_dir is not None:
+            if os.path.exists(os.path.join(corpus_embd_save_dir, 'doc.npy')):
+                corpus_emb = np.load(os.path.join(corpus_embd_save_dir, 'doc.npy'))
+            else:
+                corpus_emb = self.retriever.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
+                if corpus_embd_save_dir is not None:
+                    os.makedirs(corpus_embd_save_dir, exist_ok=True)
+                    np.save(os.path.join(corpus_embd_save_dir, 'doc.npy'), corpus_emb)
         else:
-            corpus_emb = self.retriever.encode_corpus(corpus_texts, **kwargs)
-            if corpus_embd_save_dir is not None:
-                os.makedirs(corpus_embd_save_dir, exist_ok=True)
-                np.save(os.path.join(corpus_embd_save_dir, 'doc.npy'), corpus_emb)
+            corpus_emb = self.retriever.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
 
-        queries_emb = self.retriever.encode_queries(queries_texts, **kwargs)
+        queries_emb = self.retriever.encode_queries(queries_texts, max_length=query_max_length, **kwargs)
         
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(queries_embeddings=queries_emb, faiss_index=faiss_index, top_k=self.search_top_k)
@@ -85,14 +91,15 @@ class AbsReranker(ABC):
         self.reranker = reranker
         self.rerank_top_k = rerank_top_k
 
-    @abstractmethod
+    # @abstractmethod
     def __str__(self) -> str:
         """
         Returns: str: Name of the reranker.
         """
-        pass
+        return self.retriever.model.config._name_or_path
+        # pass
 
-    @abstractmethod
+    # @abstractmethod
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],

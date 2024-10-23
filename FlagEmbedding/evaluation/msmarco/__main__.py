@@ -1,7 +1,7 @@
 from transformers import HfArgumentParser
 
-from FlagEmbedding import AutoFlagModel, AutoFlagReranker
-from FlagEmbedding.abc.evaluation import AbsModelArgs, AbsRetriever, AbsReranker, AbsEvaluator
+from FlagEmbedding import FlagAutoModel, FlagAutoReranker
+from FlagEmbedding.abc.evaluation import AbsModelArgs, AbsEmbedder, AbsReranker, AbsEvaluator
 
 
 from utils.arguments import MSMARCOEvalArgs
@@ -9,7 +9,7 @@ from utils.data_loader import MSMARCODataLoader
 
 
 def get_models(model_args: AbsModelArgs):
-    retriever = AutoFlagModel.from_finetuned(
+    retriever = FlagAutoModel.from_finetuned(
         model_name_or_path=model_args.embedder_name_or_path,
         normalize_embeddings=model_args.normalize_embeddings,
         use_fp16=model_args.use_fp16,
@@ -23,7 +23,7 @@ def get_models(model_args: AbsModelArgs):
     )
     reranker = None
     if model_args.reranker_name_or_path is not None:
-        reranker = AutoFlagReranker.from_finetuned(
+        reranker = FlagAutoReranker.from_finetuned(
             model_name_or_path=model_args.reranker_name_or_path,
             peft_path=model_args.reranker_peft_path,
             use_fp16=model_args.use_fp16,
@@ -55,29 +55,38 @@ def main():
 
     evaluation = AbsEvaluator(
         data_loader=data_loader,
-        splits=eval_args.splits,
         overwrite=eval_args.overwrite,
     )
     
-    retriever = AbsRetriever(
-        embedding_model, 
+    retriever = AbsEmbedder(
+        retriever, 
         search_top_k=eval_args.search_top_k,
     )
     
-    if cross_encoder is not None:
+    if reranker is not None:
         reranker = AbsReranker(
-            cross_encoder,
+            reranker,
             rerank_top_k=eval_args.rerank_top_k,
         )
     else:
         reranker = None
     
     evaluation(
-        splits=eval_args.split,
+        splits=eval_args.splits,
         search_results_save_dir=eval_args.output_dir,
         retriever=retriever,
         reranker=reranker,
         corpus_embd_save_dir=eval_args.corpus_embd_save_dir,
+        retriever_batch_size=model_args.retriever_batch_size,
+        reranker_batch_size=model_args.reranker_batch_size,
+        retriever_query_max_length=model_args.retriever_query_max_length,
+        retriever_passage_max_length=model_args.retriever_passage_max_length,
+        reranker_max_length=model_args.reranker_max_length,
+        normalize=model_args.normalize,
+        prompt=model_args.prompt,
+        cutoff_layers=model_args.cutoff_layers,
+        compress_layers=model_args.compress_layers,
+        compress_ratio=model_args.compress_ratio,
     )
 
 

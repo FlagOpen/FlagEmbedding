@@ -280,5 +280,5 @@ class MSMARCODataLoader(AbsDataLoader):
         new_queries = {}
         for k in queries.keys():
             if k in rels.keys():
-                new_queries[k] = self.rels[k]
+                new_queries[k] = rels[k]
         return datasets.DatasetDict(new_queries)

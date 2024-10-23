@@ -83,3 +83,34 @@ class AbsModelArgs:
     cache_dir: str = field(
         default=None, metadata={"help": "Cache directory for models."}
     )
+    # ================for inference===============
+    retriever_batch_size: int = field(
+        default=512, metadata={"help": "Batch size for inference."}
+    )
+    reranker_batch_size: int = field(
+        default=512, metadata={"help": "Batch size for inference."}
+    )
+    retriever_query_max_length: int = field(
+        default=512, metadata={"help": "Max length for query."}
+    )
+    retriever_passage_max_length: int = field(
+        default=512, metadata={"help": "Max length for passage."}
+    )
+    reranker_max_length: int = field(
+        default=512, metadata={"help": "Max length for reranking."}
+    )
+    normalize: bool = field(
+        default=False, metadata={"help": "whether to normalize the reranking scores"}
+    )
+    prompt: str = field(
+        default=None, metadata={"help": "The prompt for the reranker."}
+    )
+    cutoff_layers: List[int] = field(
+        default=None, metadata={"help": "The output layers of layerwise/lightweight reranker."}
+    )
+    compress_ratio: int = field(
+        default=1, metadata={"help": "The compress ratio of lightweight reranker."}
+    )
+    compress_layers: List[int] = field(
+        default=None, metadata={"help": "The compress layers of lightweight reranker."}
+    )
