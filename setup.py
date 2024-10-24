@@ -20,5 +20,8 @@ setup(
         'accelerate>=0.20.1',
         'sentence_transformers',
         'peft',
+        'beir',
+        'deepspeed',
+        'flash-attn'
     ],
 )

@@ -15,7 +15,7 @@ from FlagEmbedding.abc.evaluation.data_loader import AbsDataLoader
 
 logger = logging.getLogger(__name__)
 
-class MSMARCODataLoader(AbsDataLoader):
+class BEIRDataLoader(AbsDataLoader):
     def __init__(
         self,
         dataset_dir: str, # the dataset dir to load from
@@ -32,16 +32,15 @@ class MSMARCODataLoader(AbsDataLoader):
         self.split = 'test'
         if dataset_name == 'msmarco': self.split = 'dev'
 
-        os.makedirs(self.dataset_dir, exist_ok=True)
-
         if dataset_name != 'cqadupstack':
+            os.makedirs(self.dataset_dir, exist_ok=True)
             qrels_path = os.path.join(self.dataset_dir, 'qrels-{split}.json'.format(split=self.split))
             corpus_path = os.path.join(self.dataset_dir, 'corpus.json')
             queries_path = os.path.join(self.dataset_dir, 'queries-{split}.json'.format(split=self.split))
             queries, corpus, rels = {}, {}, {}
             if not os.path.exists(corpus_path):
                 dataset = datasets.load_dataset(
-                    'BeIR/{d}'.format(d=data_name),
+                    'BeIR/{d}'.format(d=dataset_name),
                     'corpus',
                     trust_remote_code=True,
                     cache_dir=os.getenv('HF_HUB_CACHE', cache_dir),
@@ -55,7 +54,7 @@ class MSMARCODataLoader(AbsDataLoader):
 
             if not os.path.exists(queries_path):
                 dataset = datasets.load_dataset(
-                    'BeIR/{d}'.format(d=data_name), 
+                    'BeIR/{d}'.format(d=dataset_name), 
                     'queries', 
                     trust_remote_code=True,
                     cache_dir=os.getenv('HF_HUB_CACHE', cache_dir),
@@ -69,7 +68,7 @@ class MSMARCODataLoader(AbsDataLoader):
             
             if not os.path.exists(qrels_path):
                 dataset = datasets.load_dataset(
-                    'BeIR/{d}-qrels'.format(d=data_name),
+                    'BeIR/{d}-qrels'.format(d=dataset_name),
                     split=self.split, 
                     trust_remote_code=True,
                     cache_dir=os.getenv('HF_HUB_CACHE', cache_dir),
@@ -93,10 +92,8 @@ class MSMARCODataLoader(AbsDataLoader):
                 if not os.path.exists(corpus_path) or not os.path.exists(queries_path) or not os.path.exists(qrels_path):
                     full_path = os.path.join(data_path, sub_dataset_name)
                     corpus, queries, qrels = GenericDataLoader(data_folder=full_path).load(split="test")
-                    for k in corpus_data.keys():
-                        corpus[k] = {
-                            (corpus[k]['title'] + ' ' + corpus[k]['text']).strip()
-                        }
+                    for k in corpus.keys():
+                        corpus[k] = (corpus[k]['title'] + ' ' + corpus[k]['text']).strip()
 
                     with open(corpus_path, 'w') as f:
                         json.dump(corpus, f)
@@ -105,25 +102,40 @@ class MSMARCODataLoader(AbsDataLoader):
                         json.dump(queries, f)
 
                     with open(qrels_path, 'w') as f:
-                        json.dump(rels, f)
+                        json.dump(qrels, f)
 
 
-    def load_qrels(self):
-        if self.sub_dataset_name is None:
+    def load_qrels(self, sub_dataset_name: str = None, split: str = None):
+        if sub_dataset_name is None and split is not None:
+            sub_dataset_name = split.split('-')
+            if len(sub_dataset_name) == 1 or len(sub_dataset_name[0].strip()) == 0:
+                sub_dataset_name = None
+            else:
+                sub_dataset_name = sub_dataset_name[0].strip()
+        if sub_dataset_name is None:
             qrels_path = os.path.join(self.dataset_dir, 'qrels-{split}.json'.format(split=self.split))
             rels = json.load(open(qrels_path))
             return datasets.DatasetDict(rels)
         else:
-            rels_list = []
-            for sub_dataset_name in self.sub_dataset_names:
-                qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
-                rels = json.load(open(qrels_path))
-                rels_list.append(datasets.DatasetDict(rels))
-            return rels_list
+            # rels_list = []
+            # for sub_dataset_name in self.sub_dataset_names:
+            #     qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
+            #     rels = json.load(open(qrels_path))
+            #     rels_list.append(datasets.DatasetDict(rels))
+            # return rels_list
+            qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
+            rels = json.load(open(qrels_path))
+            return datasets.DatasetDict(rels)
 
 
-    def load_corpus(self):
-        if self.sub_dataset_name is None:
+    def load_corpus(self, sub_dataset_name: str = None, split: str = None):
+        if sub_dataset_name is None and split is not None:
+            sub_dataset_name = split.split('-')
+            if len(sub_dataset_name) == 1 or len(sub_dataset_name[0].strip()) == 0:
+                sub_dataset_name = None
+            else:
+                sub_dataset_name = sub_dataset_name[0].strip()
+        if sub_dataset_name is None:
             corpus_path = os.path.join(self.dataset_dir, 'corpus.json')
             corpus = json.load(open(corpus_path))
             for k in corpus.keys():
@@ -132,15 +144,28 @@ class MSMARCODataLoader(AbsDataLoader):
                 }
             return datasets.DatasetDict(corpus)
         else:
-            corpus_list = []
-            for sub_dataset_name in self.sub_dataset_names:
-                corpus_path = os.path.join(self.dataset_dir, sub_dataset_name, 'corpus.json')
-                corpus = json.load(open(corpus_path))
-                corpus_list.append(datasets.DatasetDict(corpus))
-            return corpus_list
+            corpus_path = os.path.join(self.dataset_dir, sub_dataset_name, 'corpus.json')
+            corpus = json.load(open(corpus_path))
+            for k in corpus.keys():
+                corpus[k] = {
+                    'text': corpus[k]
+                }
+            return datasets.DatasetDict(corpus)
+            # corpus_list = []
+            # for sub_dataset_name in self.sub_dataset_names:
+            #     corpus_path = os.path.join(self.dataset_dir, sub_dataset_name, 'corpus.json')
+            #     corpus = json.load(open(corpus_path))
+            #     corpus_list.append(datasets.DatasetDict(corpus))
+            # return corpus_list
 
-    def load_queries(self, split='dev'):
-        if self.sub_dataset_name is None:
+    def load_queries(self, sub_dataset_name: str = None, split: str = None):
+        if sub_dataset_name is None and split is not None:
+            sub_dataset_name = split.split('-')
+            if len(sub_dataset_name) == 1 or len(sub_dataset_name[0].strip()) == 0:
+                sub_dataset_name = None
+            else:
+                sub_dataset_name = sub_dataset_name[0].strip()
+        if sub_dataset_name is None:
             queries_path = os.path.join(self.dataset_dir, 'queries-{split}.json'.format(split=self.split))
             qrels_path = os.path.join(self.dataset_dir, 'qrels-{split}.json'.format(split=self.split))
             queries = json.load(open(queries_path))
@@ -151,15 +176,25 @@ class MSMARCODataLoader(AbsDataLoader):
                     new_queries[k] = queries[k]
             return datasets.DatasetDict(new_queries)
         else:
-            queries_list = []
-            for sub_dataset_name in self.sub_dataset_names:
-                queries_path = os.path.join(self.dataset_dir, sub_dataset_name, 'queries-{split}.json'.format(split=self.split))
-                qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
-                queries = json.load(open(queries_path))
-                rels = json.load(open(qrels_path))
-                new_queries = {}
-                for k in queries.keys():
-                    if k in rels.keys():
-                        new_queries[k] = queries[k]
-                queries_list.append(datasets.DatasetDict(new_queries))
-            return queries_list
+            queries_path = os.path.join(self.dataset_dir, sub_dataset_name, 'queries-{split}.json'.format(split=self.split))
+            qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
+            queries = json.load(open(queries_path))
+            print(qrels_path)
+            rels = json.load(open(qrels_path))
+            new_queries = {}
+            for k in queries.keys():
+                if k in rels.keys():
+                    new_queries[k] = queries[k]
+            return datasets.DatasetDict(new_queries)
+            # queries_list = []
+            # for sub_dataset_name in self.sub_dataset_names:
+            #     queries_path = os.path.join(self.dataset_dir, sub_dataset_name, 'queries-{split}.json'.format(split=self.split))
+            #     qrels_path = os.path.join(self.dataset_dir, sub_dataset_name, 'qrels-{split}.json'.format(split=self.split))
+            #     queries = json.load(open(queries_path))
+            #     rels = json.load(open(qrels_path))
+            #     new_queries = {}
+            #     for k in queries.keys():
+            #         if k in rels.keys():
+            #             new_queries[k] = queries[k]
+            #     queries_list.append(datasets.DatasetDict(new_queries))
+            # return queries_list
