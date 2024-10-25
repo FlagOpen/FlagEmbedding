@@ -1,0 +1,149 @@
+"The web application does not restrict or incorrectly restricts frame objects or UI layers that belong to another application or domain, which can lead to user confusion about which interface the user is interacting with."
+"The product receives data from an HTTP agent/component (e.g., web server, proxy, browser, etc.), but it does not neutralize or incorrectly neutralizes CR and LF characters before the data is included in outgoing HTTP headers."
+"The product prepares a structured message for communication with another component, but encoding or escaping of the data is either missing or done incorrectly. As a result, the intended structure of the message is not preserved."
+"The product initializes or sets a resource with a default that is intended to be changed by the administrator, but the default is not secure."
+"The product performs operations on a memory buffer, but it can read from or write to a memory location that is outside of the intended boundary of the buffer."
+"The product copies an input buffer to an output buffer without verifying that the size of the input buffer is less than the size of the output buffer, leading to a buffer overflow."
+"A stack-based buffer overflow condition is a condition where the buffer being overwritten is allocated on the stack (i.e., is a local variable or, rarely, a parameter to a function)."
+"A heap overflow condition is a buffer overflow, where the buffer that can be overwritten is allocated in the heap portion of memory, generally meaning that the buffer was allocated using a routine such as malloc()."
+"The product saves user-provided information into a Comma-Separated Value (CSV) file, but it does not neutralize or incorrectly neutralizes special elements that could be interpreted as a command when the file is opened by a spreadsheet product."
+"The product reads data past the end, or before the beginning, of the intended buffer."
+"The product receives input that is expected to specify a quantity (such as size or length), but it does not validate or incorrectly validates that the quantity has the required properties."
+"The product uses untrusted input when calculating or using an array index, but the product does not validate or incorrectly validates the index to ensure the index references a valid position within the array."
+"The product does not correctly calculate the size to be used when allocating a buffer, which could lead to a buffer overflow."
+"The product receives input from an upstream component that specifies attributes that are to be initialized or updated in an object, but it does not properly control modifications of attributes of the object prototype."
+"The product uses a regular expression with an inefficient, possibly exponential worst-case computational complexity that consumes excessive CPU cycles."
+"The product uses a function that accepts a format string as an argument, but the format string originates from an external source."
+"The product performs a calculation that can produce an integer overflow or wraparound, when the logic assumes that the resulting value will always be larger than the original value. This can introduce other weaknesses when the calculation is used for resource management or execution control."
+"The product subtracts one value from another, such that the result is less than the minimum allowable integer value, which produces a value that is not equal to the correct result."
+"A product calculates or uses an incorrect maximum or minimum value that is 1 more, or 1 less, than the correct value."
+"The product receives input or data, but it does
+        not validate or incorrectly validates that the input has the
+        properties that are required to process the data safely and
+        correctly."
+The product exposes sensitive information to an actor that is not explicitly authorized to have access to that information.
+"The product behaves differently or sends different responses under different circumstances in a way that is observable to an unauthorized actor, which exposes security-relevant information about the state of the product, such as whether a particular operation was successful or not."
+"The product generates an error message that includes sensitive information about its environment, users, or associated data."
+"The product stores, transfers, or shares a resource that contains sensitive information, but it does not properly remove that information before the product makes the resource available to unauthorized actors."
+"The product uses external input to construct a pathname that is intended to identify a file or directory that is located underneath a restricted parent directory, but the product does not properly neutralize special elements within the pathname that can cause the pathname to resolve to a location that is outside of the restricted directory."
+"The product uses external input to construct a pathname that should be within a restricted directory, but it does not properly neutralize ""../"" sequences that can resolve to a location that is outside of that directory."
+"The product does not check the return value from a method or function, which can prevent it from detecting unexpected states and conditions."
+"The product contains a hard-coded password, which it uses for its own inbound authentication or for outbound communication to external components."
+"A product incorrectly assigns a privilege to a particular actor, creating an unintended sphere of control for that actor."
+"The product does not properly assign, modify, track, or check privileges for an actor, creating an unintended sphere of control for that actor."
+"During installation, installed file permissions are set to allow anyone to modify those files."
+"The product does not preserve permissions or incorrectly preserves permissions when copying, restoring, or sharing objects, which can cause them to have less restrictive permissions than intended."
+The product does not restrict or incorrectly restricts access to a resource from an unauthorized actor.
+The product does not perform or incorrectly performs an authorization check when an actor attempts to access a resource or perform an action.
+"When an actor claims to have a given identity, the product does not prove or insufficiently proves that the claim is correct."
+"The product uses external input to construct a pathname that should be within a restricted directory, but it does not properly neutralize '\..\filename' (leading backslash dot dot) sequences that can resolve to a location that is outside of that directory."
+This attack-focused weakness is caused by incorrectly implemented authentication schemes that are subject to spoofing attacks.
+A capture-replay flaw exists when the design of the product makes it possible for a malicious user to sniff network traffic and bypass authentication by replaying it to the server in question to the same effect as the original message (or with minor changes).
+"The product does not validate, or incorrectly validates, a certificate."
+"The authentication algorithm is sound, but the implemented mechanism can be bypassed as the result of a separate weakness that is primary to the authentication error."
+The product does not perform any authentication for functionality that requires a provable user identity or consumes a significant amount of resources.
+"The product does not implement sufficient measures to prevent multiple failed authentication attempts within a short time frame, making it more susceptible to brute force attacks."
+The product does not encrypt sensitive or critical information before storage or transmission.
+The product stores sensitive information in cleartext within a resource that might be accessible to another control sphere.
+The product transmits sensitive or security-critical data in cleartext in a communication channel that can be sniffed by unauthorized actors.
+The use of a hard-coded cryptographic key significantly increases the possibility that encrypted data may be recovered.
+"The product stores or transmits sensitive data using an encryption scheme that is theoretically sound, but is not strong enough for the level of protection required."
+The product uses a broken or risky cryptographic algorithm or protocol.
+The product uses insufficiently random numbers or values in a security context that depends on unpredictable numbers.
+"The product uses an algorithm or scheme that produces insufficient entropy, leaving patterns or clusters of values that are more likely to occur than others."
+The product uses a Pseudo-Random Number Generator (PRNG) but does not correctly manage seeds.
+"The product uses a Pseudo-Random Number Generator (PRNG) in a security context, but the PRNG's algorithm is not cryptographically strong."
+"The product does not sufficiently verify the origin or authenticity of data, in a way that causes it to accept invalid data."
+The product does not properly verify that the source of data or communication is valid.
+"The product does not verify, or incorrectly verifies, the cryptographic signature for data."
+"The web application does not, or can not, sufficiently verify whether a well-formed, valid, consistent request was intentionally provided by the user who submitted the request."
+"The product does not validate or incorrectly validates the integrity check values or ""checksums"" of a message. This may prevent it from detecting if the data has been modified or corrupted in transmission."
+"The product contains a code sequence that can run concurrently with other code, and the code sequence requires temporary, exclusive access to a shared resource, but a timing window exists in which the shared resource can be modified by another code sequence that is operating concurrently."
+"The product checks the state of a resource before using that resource, but the resource's state can change between the check and the use in a way that invalidates the results of the check. This can cause the product to perform invalid actions when the resource is in an unexpected state."
+The product divides a value by zero.
+"Authenticating a user, or otherwise establishing a new user session, without invalidating any existing session identifier gives an attacker the opportunity to steal authenticated sessions."
+"The product does not properly control the allocation and maintenance of a limited resource, thereby enabling an actor to influence the amount of resources consumed, eventually leading to the exhaustion of available resources."
+"The product does not sufficiently track and release allocated memory after it has been used, which slowly consumes remaining memory."
+The product does not release or incorrectly releases a resource before it is made available for re-use.
+"An algorithm in a product has an inefficient worst-case computational complexity that may be detrimental to system performance and can be triggered by an attacker, typically using crafted manipulations that ensure that the worst case is being reached."
+"The product calls free() twice on the same memory address, potentially leading to modification of unexpected memory locations."
+"Referencing memory after it has been freed can cause a program to crash, use unexpected values, or execute code."
+"The web application does not adequately enforce appropriate authorization on all restricted URLs, scripts, or files."
+The product searches for critical resources using an externally-supplied search path that can point to resources that are not under the product's direct control.
+"The product uses a fixed or controlled search path to find resources, but one or more locations in that path can be under the control of unintended actors."
+"The product uses a search path that contains an unquoted element, in which the element contains whitespace or other separators. This can cause the product to access resources in a parent path."
+The product allows the attacker to upload or transfer files of dangerous types that can be automatically processed within the product's environment.
+"Product A handles inputs or steps differently than Product B, which causes A to perform incorrect actions based on its perception of B's state."
+"The product acts as an intermediary HTTP agent
+         (such as a proxy or firewall) in the data flow between two
+         entities such as a client and server, but it does not
+         interpret malformed HTTP requests or responses in ways that
+         are consistent with how the messages will be processed by
+         those entities that are at the ultimate destination."
+"The code uses a variable that has not been initialized, leading to unpredictable or unintended results."
+"The product does not properly ""clean up"" and remove temporary or supporting resources after they have been used."
+"A NULL pointer dereference occurs when the application dereferences a pointer that it expects to be valid, but is NULL, typically causing a crash or exit."
+The product downloads source code or an executable from a remote location and executes the code without sufficiently verifying the origin and integrity of the code.
+The product deserializes untrusted data without sufficiently verifying that the resulting data will be valid.
+"The product does not require that users should have strong passwords, which makes it easier for attackers to compromise user accounts."
+"The product transmits or stores authentication credentials, but it uses an insecure method that is susceptible to unauthorized interception and/or retrieval."
+Information written to log files can be of a sensitive nature and give valuable guidance to an attacker or expose sensitive user information.
+"The product makes files or directories accessible to unauthorized actors, even though they should not be."
+"The product relies on the existence or values of cookies when performing security-critical operations, but it does not properly ensure that the setting is valid for the associated user."
+"The product attempts to access a file based on the filename, but it does not properly prevent that filename from identifying a link or shortcut that resolves to an unintended resource."
+"A web application accepts a user-controlled input that specifies a link to an external site, and uses that link in a Redirect. This simplifies phishing attacks."
+The product uses an externally controlled name or reference that resolves to a resource that is outside of the intended control sphere.
+"The product processes an XML document that can contain XML entities with URIs that resolve to documents outside of the intended sphere of control, causing the product to embed incorrect documents into its output."
+"According to WASC, ""Insufficient Session Expiration is when a web site permits an attacker to reuse old session credentials or session IDs for authorization."""
+"The product contains an assert() or similar statement that can be triggered by an attacker, which leads to an application exit or other behavior that is more severe than necessary."
+The system's authorization functionality does not prevent one user from gaining access to another user's data or record by modifying the key value identifying the data.
+"The product contains a mechanism for users to recover or change their passwords without knowing the original password, but the mechanism is weak."
+"The product utilizes multiple threads or processes to allow temporary access to a shared resource that can only be exclusive to one process at a time, but it does not properly synchronize these actions, which might cause simultaneous accesses of this resource by multiple threads or processes."
+"The product does not initialize or incorrectly initializes a resource, which might leave the resource in an unexpected state when it is accessed or used."
+"The product does not properly acquire or release a lock on a resource, leading to unexpected resource state changes and behaviors."
+"The product exposes a resource to the wrong control sphere, providing unintended actors with inappropriate access to the resource."
+"The code contains a control flow path that does not reflect the algorithm that the path is intended to implement, leading to incorrect behavior any time this path is navigated."
+"The product uses, accesses, or otherwise operates on a resource after that resource has been expired, released, or revoked."
+"The product does not properly control the amount of recursion that takes place,  consuming excessive resources, such as allocated memory or the program stack."
+"When converting from one data type to another, such as long to integer, data can be omitted or translated in a way that produces unexpected values. If the resulting values are used in a sensitive context, then dangerous behaviors may occur."
+The product performs a calculation that generates incorrect or unintended results that are later used in security-critical decisions or resource management.
+The product does not use or incorrectly uses a protection mechanism that provides sufficient defense against directed attacks against the product.
+"The product compares two entities in a security-relevant context, but the comparison is incorrect, which may lead to resultant weaknesses."
+"The product does not correctly convert an object, resource, or structure from one type to a different type."
+"The product uses a name or reference to access a resource, but the name/reference resolves to a resource that is outside of the intended control sphere."
+The product allows user input to control or influence paths or file names that are used in filesystem operations.
+The product specifies permissions for a security-critical resource in a way that allows that resource to be read or modified by unintended actors.
+"The product constructs all or part of a command, data structure, or record using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify how it is parsed or interpreted when it is sent to a downstream component."
+The product does not check or incorrectly checks for unusual or exceptional conditions that are not expected to occur frequently during day to day operation of the product.
+The product does not handle or incorrectly handles an exceptional condition.
+"The product attempts to return a memory resource to the system, but it calls the wrong release function or calls the appropriate release function incorrectly."
+"The product constructs all or part of a command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended command when it is sent to a downstream component."
+"The product allocates a reusable resource or group of resources on behalf of an actor without imposing any restrictions on the size or number of resources that can be allocated, in violation of the intended security policy for that actor."
+"The product does not release a resource after its effective lifetime has ended, i.e., after the resource is no longer needed."
+"The product uses XML documents and allows their structure to be defined with a Document Type Definition (DTD), but it does not properly control the number of recursive definitions of entities."
+"The product constructs all or part of an OS command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended OS command when it is sent to a downstream component."
+"The product writes data past the end, or before the beginning, of the intended buffer."
+The product does not neutralize or incorrectly neutralizes user-controllable input before it is placed in output that is used as a web page that is served to other users.
+"The product contains hard-coded credentials, such as a password or cryptographic key, which it uses for its own inbound authentication, outbound communication to external components, or encryption of internal data."
+"The product performs pointer arithmetic on a valid pointer, but it uses an offset that can point outside of the intended range of valid memory locations for the resulting pointer."
+The product accesses or uses a pointer that has not been initialized.
+"The product imports, requires, or includes executable functionality (such as a library) from a source that is outside of the intended control sphere."
+The product performs an iteration or loop without sufficiently limiting the number of times that the loop is executed.
+"The product contains an iteration or loop with an exit condition that cannot be reached, i.e., an infinite loop."
+"The product allocates or initializes a resource such as a pointer, object, or variable using one type, but it later accesses that resource using a type that is incompatible with the original type."
+The product does not perform an authorization check when an actor attempts to access a resource or perform an action.
+"The product performs an authorization check when an actor attempts to access a resource or perform an action, but it does not correctly perform the check. This allows attackers to bypass intended access restrictions."
+"The product constructs a string for a command to be executed by a separate component
+in another control sphere, but it does not properly delimit the
+intended arguments, options, or switches within that command string."
+"The product constructs all or part of an SQL command using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended SQL command when it is sent to a downstream component."
+The product uses or accesses a resource that has not been initialized.
+The product does not initialize a critical resource.
+"The product does not properly neutralize special elements that are used in XML, allowing attackers to modify the syntax, content, or commands of the XML before it is processed by an end system."
+"The product does not properly restrict reading from or writing to dynamically-managed code resources such as variables, objects, classes, attributes, functions, or executable instructions or statements."
+"The product generates a hash for a password, but it uses a scheme that does not provide a sufficient level of computational effort that would make password cracking attacks infeasible or expensive."
+"The product constructs all or part of an expression language (EL) statement in a framework such as a Java Server Page (JSP) using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the intended EL statement before it is executed."
+"The web server receives a URL or similar request from an upstream component and retrieves the contents of this URL, but it does not sufficiently ensure that the request is being sent to the expected destination."
+The product stores sensitive information without properly limiting read or write access by unauthorized actors.
+"The product uses CRLF (carriage return line feeds) as a special element, e.g. to separate lines or records, but it does not neutralize or incorrectly neutralizes CRLF sequences from inputs."
+"The product constructs all or part of a code segment using externally-influenced input from an upstream component, but it does not neutralize or incorrectly neutralizes special elements that could modify the syntax or behavior of the intended code segment."
