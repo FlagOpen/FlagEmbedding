@@ -7,6 +7,7 @@ from FlagEmbedding.abc.evaluation import AbsModelArgs, AbsEmbedder, AbsReranker
 from utils.arguments import BEIREvalArgs
 from utils.data_loader import BEIRDataLoader
 from utils.evaluator import BEIREvaluator
+from utils.prompts import instructions
 
 
 def get_models(model_args: AbsModelArgs):
@@ -72,6 +73,9 @@ def main():
         reranker = None
 
     for dataset_name in eval_args.dataset_names:
+
+        if eval_args.use_special_instructions:
+            retriever.retriever.instruction = instructions[dataset_name]
     
         data_loader = BEIRDataLoader(
             dataset_dir = eval_args.dataset_dir,

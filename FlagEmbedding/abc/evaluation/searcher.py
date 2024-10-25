@@ -78,7 +78,8 @@ class AbsEmbedder(ABC):
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
             results[queries_ids[idx]] = {}
             for score, indice in zip(scores, indices):
-                results[queries_ids[idx]][corpus_ids[indice]] = float(score)
+                if corpus_ids[indice] != queries_ids[idx]:
+                    results[queries_ids[idx]][corpus_ids[indice]] = float(score)
 
         return results
 

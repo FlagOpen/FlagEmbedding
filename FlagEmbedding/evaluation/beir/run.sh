@@ -8,5 +8,6 @@ python __main__.py \
 --cache_dir /share/shared_models \
 --corpus_embd_save_dir /share/chaofan/code/FlagEmbedding_update/data/BEIR_passage_embds \
 --reranker_max_length 512 \
---dataset_names nfcorpus fiqa cqadupstack
+--dataset_names arguana \
+--use_special_instructions True
 
