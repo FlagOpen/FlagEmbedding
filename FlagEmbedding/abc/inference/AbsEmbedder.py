@@ -105,7 +105,7 @@ class AbsEmbedder(ABC):
             queries,
             batch_size=batch_size,
             max_length=max_length,
-            convert_to_numpy: bool = True,
+            convert_to_numpy=convert_to_numpy,
             instruction=self.query_instruction_for_retrieval,
             instruction_format=self.query_instruction_format,
             **kwargs
@@ -130,7 +130,7 @@ class AbsEmbedder(ABC):
             corpus,
             batch_size=batch_size,
             max_length=max_length,
-            convert_to_numpy: bool = True,
+            convert_to_numpy=convert_to_numpy,
             instruction=passage_instruction_for_retrieval,
             instruction_format=passage_instruction_format,
             **kwargs
