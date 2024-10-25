@@ -73,6 +73,7 @@ instance/
 
 # Sphinx documentation
 docs/_build/
+docs/build/
 
 # PyBuilder
 target/
@@ -136,3 +137,6 @@ pic2.py
 
 # Pyre type checker
 .pyre/
+
+# MacOS associated
+.DS_Store
