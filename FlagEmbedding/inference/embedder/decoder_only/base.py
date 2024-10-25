@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from typing import cast, Any, List, Union
+from typing import cast, Any, List, Union, Optional
 
 import torch
 import numpy as np
@@ -32,6 +32,13 @@ class BaseLLMEmbedder(AbsEmbedder):
         # Additional parameters for BaseLLMEmbedder
         trust_remote_code: bool = False,
         cache_dir: str = None,
+        # inference
+        batch_size: int = 256,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
+        instruction: str = None,
+        instruction_format: str = "{}{}",
+        convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
         super().__init__(
@@ -41,6 +48,12 @@ class BaseLLMEmbedder(AbsEmbedder):
             query_instruction_for_retrieval=query_instruction_for_retrieval,
             query_instruction_format=query_instruction_format,
             devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            passage_max_length=passage_max_length,
+            instruction=instruction,
+            instruction_format=instruction_format,
+            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
 
@@ -61,9 +74,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode_queries(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode_queries(
@@ -77,9 +90,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode_corpus(
@@ -93,9 +106,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode(
         self,
         sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode(

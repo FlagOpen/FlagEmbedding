@@ -2,7 +2,7 @@ import torch
 import warnings
 import numpy as np
 from tqdm import trange
-from typing import Any, List, Union, Tuple
+from typing import Any, List, Union, Tuple, Optional
 from peft import PeftModel
 from torch import Tensor
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -87,6 +87,7 @@ class LightweightLLMReranker(AbsReranker):
         cache_dir: str = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        # inference
         cutoff_layers: List[int] = None,
         compress_layers: List[int] = [8],
         compress_ratio: int = 1,
@@ -146,13 +147,14 @@ class LightweightLLMReranker(AbsReranker):
     def compute_score_single_gpu(
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: int = 256,
-        max_length: int = 512,
-        cutoff_layers: List[int] = None,
-        compress_layers: List[int] = None,
-        compress_ratio: int = None,
-        prompt: str = None,
-        normalize: bool = None,
+        batch_size: Optional[int] = None,
+        query_max_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        cutoff_layers: Optional[List[int]] = None,
+        compress_layers: Optional[List[int]] = None,
+        compress_ratio: Optional[int] = None,
+        prompt: Optional[str] = None,
+        normalize: Optional[bool] = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:

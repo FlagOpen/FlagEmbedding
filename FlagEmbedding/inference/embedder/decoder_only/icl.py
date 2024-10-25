@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from typing import cast, Any, List, Union
+from typing import cast, Any, List, Union, Optional
 
 import queue
 from multiprocessing import Queue
@@ -37,6 +37,13 @@ class ICLLLMEmbedder(AbsEmbedder):
         examples_instruction_format: str = "<instruct>{}\n<query>{}\n<response>{}", # specify the format of examples_for_task
         trust_remote_code: bool = False,
         cache_dir: str = None,
+        # inference
+        batch_size: int = 256,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
+        instruction: str = None,
+        instruction_format: str = "{}{}",
+        convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
         super().__init__(
@@ -46,6 +53,12 @@ class ICLLLMEmbedder(AbsEmbedder):
             query_instruction_for_retrieval=query_instruction_for_retrieval,
             query_instruction_format=query_instruction_format,
             devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            passage_max_length=passage_max_length,
+            instruction=instruction,
+            instruction_format=instruction_format,
+            convert_to_numpy=convert_to_numpy,
             kwargs=kwargs
         )
 
@@ -103,11 +116,15 @@ class ICLLLMEmbedder(AbsEmbedder):
     def encode_queries(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.query_max_length
+        if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
+        
         if isinstance(queries, str) or len(self.target_devices) == 1:
             return self.encode_queries_single_device(
                 queries,
@@ -133,9 +150,9 @@ class ICLLLMEmbedder(AbsEmbedder):
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode_corpus(
@@ -149,9 +166,9 @@ class ICLLLMEmbedder(AbsEmbedder):
     def encode(
         self,
         sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode(

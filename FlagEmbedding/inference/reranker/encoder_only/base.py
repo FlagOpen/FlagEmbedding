@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from tqdm import tqdm, trange
-from typing import Any, List, Union, Tuple
+from typing import Any, List, Union, Tuple, Optional
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsReranker
@@ -23,6 +23,7 @@ class BaseReranker(AbsReranker):
         trust_remote_code: bool = False,
         cache_dir: str = None,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        # inference
         batch_size: int = 128,
         query_max_length: int = None,
         max_length: int = 512,
@@ -57,10 +58,10 @@ class BaseReranker(AbsReranker):
     def compute_score_single_gpu(
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: int = None,
-        query_max_length: int = None,
-        max_length: int = None,
-        normalize: bool = None,
+        batch_size: Optional[int] = None,
+        query_max_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        normalize: Optional[bool] = None,
         device: str = None,
         **kwargs: Any
     ) -> List[float]:

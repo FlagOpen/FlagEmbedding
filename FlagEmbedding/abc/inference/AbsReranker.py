@@ -29,6 +29,7 @@ class AbsReranker(ABC):
         passage_instruction_for_rerank: str = None,
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         devices: Union[str, int, List[str], List[int]] = None,
+        # inference
         batch_size: int = 128,
         query_max_length: int = None,
         max_length: int = 512,
@@ -42,6 +43,7 @@ class AbsReranker(ABC):
         self.passage_instruction_for_rerank = passage_instruction_for_rerank
         self.passage_instruction_format = passage_instruction_format
         self.target_devices = self.get_target_devices(devices)
+        
         self.batch_size = batch_size
         self.query_max_length = query_max_length
         self.max_length = max_length
@@ -51,6 +53,10 @@ class AbsReranker(ABC):
             setattr(self, k, kwargs[k])
 
         self.kwargs = kwargs
+
+        # tokenizer and model are initialized in the child class
+        self.model = None
+        self.tokenizer = None
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
