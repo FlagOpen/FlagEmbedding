@@ -160,6 +160,7 @@ class AbsEmbedder(ABC):
                 sentences,
                 batch_size=batch_size,
                 max_length=max_length,
+                convert_to_numpy=convert_to_numpy,
                 device=self.target_devices[0],
                 **kwargs
             )
@@ -170,6 +171,7 @@ class AbsEmbedder(ABC):
             pool,
             batch_size=batch_size,
             max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
         self.stop_multi_process_pool(pool)
