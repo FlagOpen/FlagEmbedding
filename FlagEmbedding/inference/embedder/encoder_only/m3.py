@@ -262,7 +262,7 @@ class M3Embedder(AbsEmbedder):
                 sentences_batch,
                 truncation=True,
                 max_length=max_length,
-                **kwargs
+                # **kwargs
             )
             inputs_batch = [{
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
@@ -279,7 +279,7 @@ class M3Embedder(AbsEmbedder):
             all_inputs_sorted[:1],
             padding=True,
             return_tensors='pt',
-            **kwargs
+            # **kwargs
         ).to(device)
         while flag is False:
             try:
@@ -305,7 +305,7 @@ class M3Embedder(AbsEmbedder):
                 inputs_batch,
                 padding=True,
                 return_tensors='pt',
-                **kwargs
+                # **kwargs
             ).to(device)
             outputs = self.model(
                 inputs_batch,
@@ -486,7 +486,7 @@ class M3Embedder(AbsEmbedder):
                 return_token_type_ids=False,
                 truncation=True,
                 return_tensors='pt',
-                **kwargs
+                # **kwargs
             )
 
         if device is None:

@@ -4,11 +4,12 @@ import mteb
 from transformers import HfArgumentParser
 
 from FlagEmbedding import FlagAutoModel, FlagAutoReranker
-from FlagEmbedding.abc.evaluation import AbsModelArgs, AbsEmbedder, AbsReranker, AbsEvaluator
+from FlagEmbedding.abc.evaluation import AbsModelArgs, AbsEvaluator
 
 
 from utils.arguments import MTEBEvalArgs
 from utils.prompts import get_task_def_by_task_name_and_type, tasks_desc
+from utils.searcher import MTEBRetriever, MTEBReranker
 
 
 def get_models(model_args: AbsModelArgs):
@@ -47,34 +48,30 @@ def get_models(model_args: AbsModelArgs):
     return retriever, reranker
 
 def main():
-    parser = HfArgumentParser([AbsModelArgs, BEIREvalArgs])
+    parser = HfArgumentParser([AbsModelArgs, MTEBEvalArgs])
     model_args, eval_args = parser.parse_args_into_dataclasses()
     model_args: AbsModelArgs
-    eval_args: BEIREvalArgs
+    eval_args: MTEBEvalArgs
 
     retriever, reranker = get_models(model_args)
+    retriever = MTEBRetriever(retriever)
 
     task_types = eval_args.task_types
     tasks = eval_args.tasks
     languages = eval_args.languages
+    print(languages)
     tasks = mteb.get_tasks(
         languages=languages,
         tasks=tasks,
         task_types=task_types
     )
+    new_tasks = []
+    for task in tasks:
+        if task.languages is not None:
+            if len(task.languages) == len([e for e in languages if e in task.languages]):
+                new_tasks.append(task)
     evaluation = mteb.MTEB(tasks=tasks)
     results = evaluation.run(retriever, output_folder=f"results/{str(retriever)}")
-
-    # all_pairs = []
-    # for task_type in eval_args.task_types:
-    #     if task_type in tasks_desc.keys():
-    #         for task_name in tasks_desc[task_type]:
-    #             all_pairs.append((task_type, task_name))
-    # for task_type in tasks_desc.keys():
-    #     for v in tasks_desc[task_type]:
-    #         if v in eval_args.task_types:
-    #             all_pairs.append((task_type, v))
-    # all_pairs = list(set(all_pairs))
-
+    
 if __name__ == "__main__":
     main()
