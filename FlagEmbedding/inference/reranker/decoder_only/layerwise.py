@@ -42,23 +42,26 @@ class LayerWiseLLMReranker(AbsReranker):
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         cutoff_layers: List[int] = None, 
         prompt: str = None,
+        batch_size: int = 128,
+        query_max_length: int = None,
+        max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
     ) -> None:
         super().__init__(
-            model_name_or_path,
-            use_fp16,
-            query_instruction_for_rerank,
-            query_instruction_format,
-            passage_instruction_for_rerank,
-            passage_instruction_format,
-            devices,
+            model_name_or_path=model_name_or_path,
+            use_fp16=use_fp16,
+            query_instruction_for_rerank=query_instruction_for_rerank,
+            query_instruction_format=query_instruction_format,
+            passage_instruction_for_rerank=passage_instruction_for_rerank,
+            passage_instruction_format=passage_instruction_format,
+            devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            max_length=max_length,
+            normalize=normalize,
             **kwargs
         )
-
-        self.cutoff_layers = cutoff_layers
-        self.prompt = prompt
-        self.normalize = normalize        
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
@@ -87,8 +90,6 @@ class LayerWiseLLMReranker(AbsReranker):
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
             self.model = self.model.merge_and_unload()
-        self.model_name_or_path = model_name_or_path
-        self.cache_dir = cache_dir
 
     @torch.no_grad()
     def compute_score_single_gpu(
@@ -106,13 +107,17 @@ class LayerWiseLLMReranker(AbsReranker):
     ) -> List[float]:
         if cutoff_layers is None: cutoff_layers = self.cutoff_layers
         if prompt is None: prompt = self.prompt
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.max_length
+        if query_max_length is None:
+            if self.query_max_length is not None:
+                query_max_length = self.query_max_length
+            else:
+                query_max_length = max_length * 3 // 4
         if normalize is None: normalize = self.normalize
 
         if device is None:
             device = self.target_devices[0]
-
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
 
         if device == "cpu": self.use_fp16 = False
         if self.use_fp16: self.model.half()
@@ -135,7 +140,7 @@ class LayerWiseLLMReranker(AbsReranker):
                 queries,
                 return_tensors=None,
                 add_special_tokens=False,
-                max_length=max_length * 3 // 4,
+                max_length=query_max_length,
                 truncation=True,
                 **kwargs
             )

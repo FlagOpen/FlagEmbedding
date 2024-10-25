@@ -38,22 +38,40 @@ parser.add_argument('--batch_size', default=32, type=int)
 parser.add_argument('--examples-dir', default='/share/chaofan/code/embedder/evaluate_for_icl/examples', type=str)
 parser.add_argument('--eight-special-token', default=False, type=bool)
 parser.add_argument('--passage-prompt', default=False, type=bool)
+parser.add_argument('--pool-type', default='last', type=bool)
 
 args = parser.parse_args()
 base_name: str = args.model_name_or_path.split('/')[-1]
-if args.eight_special_token is True:
-    args.pool_type = 'last_eight'
-else:
-    args.pool_type = 'last'
+# if args.eight_special_token is True:
+#     args.pool_type = 'last_eight'
+# else:
+#     args.pool_type = 'last'
 
 logger.info('Args: {}'.format(json.dumps(args.__dict__, ensure_ascii=False, indent=4)))
-assert args.pool_type in ['cls', 'avg', 'last', 'weightedavg', 'last_eight'], 'pool_type should be cls / avg / last'
+# assert args.pool_type in ['cls', 'avg', 'last', 'weightedavg', 'last_eight'], 'pool_type should be cls / avg / last'
 os.makedirs(args.output_dir, exist_ok=True)
 ALL_NUM = args.all_num
 
+def find_last_index(lst, element):
+    if not isinstance(element, list):
+        try:
+            reversed_list = lst[::-1]
+            index_in_reversed = reversed_list.index(element)
+            last_index = len(lst) - 1 - index_in_reversed
+            return last_index
+        except ValueError:
+            return -1
+    else:
+        last_index = -1
+        for i in range(len(lst) - len(element)):
+            if lst[i:i + len(element)] == element:
+                last_index = i
+                break
+        return last_index
+
 print(args.special_token)
 class DenseEncoder(torch.nn.Module):
-    def __init__(self, device,  **kwargs):
+    def __init__(self,  **kwargs):
         super().__init__()
         self.encoder = AutoModel.from_pretrained(args.model_name_or_path, use_cache=False)
         if args.peft_name_or_path is not None:
@@ -74,13 +92,15 @@ class DenseEncoder(torch.nn.Module):
         self.prompt = None
         self.prefix = ''
         self.suffix = ''
-        self.gpu_count = torch.cuda.device_count()
 
         self.encoder.half()
+        self.gpu_count = torch.cuda.device_count()
+
         self.encoder.eval()
-        # self.encoder.cuda()
-        self.device = device
-        self.encoder = self.encoder.to(device)
+        self.encoder.cuda()
+
+        if self.gpu_count > 1:
+            self.encoder = torch.nn.DataParallel(self.encoder)
 
         self.eight_special_token = args.eight_special_token
         if args.eight_special_token:
@@ -92,8 +112,25 @@ class DenseEncoder(torch.nn.Module):
 
         self.batch_size = args.batch_size
 
+        if args.special_token:
+            self.index_type = 0
+            self.index_start_locs = self.tokenizer('<query>', add_special_tokens=False)['input_ids'][0]
+            self.index_end_locs = self.tokenizer('<response>', add_special_tokens=False)['input_ids'][0]
+        else:
+            self.index_type = 1
+            self.index_start_locs = self.tokenizer('\nQuery:', add_special_tokens=False)['input_ids'][1:]
+            self.index_end_locs = self.tokenizer('\nResponse:', add_special_tokens=False)['input_ids'][1:]
+
         # if self.gpu_count > 1:
         #     self.encoder = torch.nn.DataParallel(self.encoder)
+
+    def get_loc(self, sentence):
+        sentence = list(sentence)
+        if isinstance(self.index_start_locs, int):
+            return find_last_index(sentence, self.index_start_locs) + 1, find_last_index(sentence, self.index_end_locs)
+        else:
+            return find_last_index(sentence, self.index_start_locs) + len(self.index_start_locs), find_last_index(
+                sentence, self.index_end_locs)
 
     @torch.no_grad()
     def encode(self, sentences, **kwargs) -> np.ndarray:
@@ -115,13 +152,22 @@ class DenseEncoder(torch.nn.Module):
 
             batch_dict = create_batch_query_dict(self.tokenizer, self.prefix, self.suffix, batch_input_texts, special_tokens=self.special_tokens)
             # if self.device == 0:
-            #     print(self.tokenizer.decode(batch_dict['input_ids'][0]))
-            batch_dict = batch_dict.to(self.device)
-            # batch_dict = move_to_cuda(batch_dict)
+            # print(self.tokenizer.decode(batch_dict['input_ids'][0]))
+            # batch_dict = batch_dict.to(self.device)
+            batch_dict = move_to_cuda(batch_dict)
 
             with torch.cuda.amp.autocast():
                 outputs: BaseModelOutput = self.encoder(**batch_dict)
-                embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], args.pool_type)
+                if args.pool_type == 'mean':
+                    seq_locs = [self.get_loc(sentence) for sentence in batch_dict['input_ids']]
+                    embeds = torch.stack(
+                        [
+                            outputs.last_hidden_state[i, start: end, :].mean(dim=0)
+                            for i, (start, end) in enumerate(seq_locs)
+                        ]
+                    )
+                else:
+                    embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], 'last')
                 if self.l2_normalize:
                     embeds = F.normalize(embeds, p=2, dim=-1)
                 encoded_embeds.append(embeds.cpu().numpy())
@@ -151,7 +197,16 @@ class DenseEncoder(torch.nn.Module):
 
             with torch.cuda.amp.autocast():
                 outputs: BaseModelOutput = self.encoder(**batch_dict)
-                embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], args.pool_type)
+                if args.pool_type == 'mean':
+                    seq_locs = [self.get_loc(sentence) for sentence in batch_dict['input_ids']]
+                    embeds = torch.stack(
+                        [
+                            outputs.last_hidden_state[i, start: end, :].mean(dim=0)
+                            for i, (start, end) in enumerate(seq_locs)
+                        ]
+                    )
+                else:
+                    embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], 'last')
                 if self.l2_normalize:
                     embeds = F.normalize(embeds, p=2, dim=-1)
                 encoded_embeds.append(embeds.cpu().numpy())
@@ -184,7 +239,16 @@ class DenseEncoder(torch.nn.Module):
 
             with torch.cuda.amp.autocast():
                 outputs: BaseModelOutput = self.encoder(**batch_dict)
-                embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], args.pool_type)
+                if args.pool_type == 'mean':
+                    seq_locs = [self.get_loc(sentence) for sentence in batch_dict['input_ids']]
+                    embeds = torch.stack(
+                        [
+                            outputs.last_hidden_state[i, start: end, :].mean(dim=0)
+                            for i, (start, end) in enumerate(seq_locs)
+                        ]
+                    )
+                else:
+                    embeds = pool(outputs.last_hidden_state, batch_dict['attention_mask'], 'last')
                 if self.l2_normalize:
                     embeds = F.normalize(embeds, p=2, dim=-1)
                 encoded_embeds.append(embeds.cpu().numpy())
@@ -201,44 +265,9 @@ class DenseEncoder(torch.nn.Module):
         self.suffix = suffix
 
 
-def main(device, all_pairs):
-    torch.cuda.set_device(device)
+def main(all_pairs):
 
-    model = DenseEncoder(device)
-
-    os.environ['CUDA_VISIBLE_DEVICES'] = f'{device}'
-
-    ArxivClusteringP2P_FLAG = False
-    tmp = None
-    for i, p in enumerate(all_pairs):
-        if p[1] == 'ArxivClusteringP2P':
-            ArxivClusteringP2P_FLAG = True
-            tmp = p
-            break
-    if ArxivClusteringP2P_FLAG:
-        all_pairs.remove(tmp)
-
-    os.environ['CUDA_VISIBLE_DEVICES'] = f'{device}'
-    if ArxivClusteringP2P_FLAG is False:
-        length = len(all_pairs)
-        start = device * length // ALL_NUM
-        if device == ALL_NUM - 1:
-            end = length
-        else:
-            end = (device + 1) * length // ALL_NUM
-        all_pairs = all_pairs[start: end]
-    else:
-        if device == ALL_NUM - 1:
-            all_pairs = [tmp]
-        else:
-            all_num = ALL_NUM - 1
-            length = len(all_pairs)
-            start = device * length // ALL_NUM
-            if device == all_num - 1:
-                end = length
-            else:
-                end = (device + 1) * length // all_num
-            all_pairs = all_pairs[start: end]
+    model = DenseEncoder()
 
     for (task_type, task_name) in all_pairs:
         task_def: str = get_task_def_by_task_name_and_type(task_name=task_name, task_type=task_type)
@@ -299,6 +328,10 @@ def main(device, all_pairs):
             except Exception as e:
                 model.batch_size -= 4
                 print(e)
+        # sub_eval.run(
+        #             model,
+        #             output_folder=args.output_dir
+        #         )
 
 
 if __name__ == '__main__':
@@ -317,13 +350,5 @@ if __name__ == '__main__':
             if v in args.task_types:
                 all_pairs.append((task_type, v))
     all_pairs = list(set(all_pairs))
-    random.shuffle(all_pairs)
 
-    for i in range(ALL_NUM):
-        # i = 7
-        process = multiprocessing.Process(target=main, args=(i,all_pairs,))
-        processes.append(process)
-        process.start()
-
-    for process in processes:
-        process.join()
+    main(all_pairs)

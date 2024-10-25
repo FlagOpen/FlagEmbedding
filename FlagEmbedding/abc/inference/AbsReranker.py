@@ -29,6 +29,10 @@ class AbsReranker(ABC):
         passage_instruction_for_rerank: str = None,
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         devices: Union[str, int, List[str], List[int]] = None,
+        batch_size: int = 128,
+        query_max_length: int = None,
+        max_length: int = 512,
+        normalize: bool = False,
         **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
@@ -38,6 +42,13 @@ class AbsReranker(ABC):
         self.passage_instruction_for_rerank = passage_instruction_for_rerank
         self.passage_instruction_format = passage_instruction_format
         self.target_devices = self.get_target_devices(devices)
+        self.batch_size = batch_size
+        self.query_max_length = query_max_length
+        self.max_length = max_length
+        self.normalize = normalize
+
+        for k in kwargs:
+            setattr(self, k, kwargs[k])
 
         self.kwargs = kwargs
 
@@ -73,8 +84,8 @@ class AbsReranker(ABC):
         if isinstance(sentence_pairs, str):
             sentence_pairs = [sentence_pairs]
 
-        if self.query_instruction_format is not None:
-            if self.passage_instruction_format is None:
+        if self.query_instruction_for_rerank is not None:
+            if self.passage_instruction_for_rerank is None:
                 return [
                     [
                         self.get_detailed_instruct(self.query_instruction_format, self.query_instruction_for_rerank, sentence_pair[0]),
@@ -89,7 +100,7 @@ class AbsReranker(ABC):
                     ] for sentence_pair in sentence_pairs
                 ]
         else:
-            if self.passage_instruction_format is None:
+            if self.passage_instruction_for_rerank is None:
                 return [
                     [
                         sentence_pair[0],
@@ -130,6 +141,7 @@ class AbsReranker(ABC):
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         batch_size: int = 256,
+        query_max_length: int = None,
         max_length: int = 512,
         normalize: bool = False,
         device: str = None,
