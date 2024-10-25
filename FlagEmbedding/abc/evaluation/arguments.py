@@ -96,6 +96,9 @@ class AbsModelArgs:
     retriever_passage_max_length: int = field(
         default=512, metadata={"help": "Max length for passage."}
     )
+    reranker_query_max_length: int = field(
+        default=None, metadata={"help": "Max length for reranking."}
+    )
     reranker_max_length: int = field(
         default=512, metadata={"help": "Max length for reranking."}
     )

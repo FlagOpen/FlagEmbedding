@@ -19,7 +19,10 @@ def get_models(model_args: AbsModelArgs):
         examples_for_task=model_args.examples_for_task,
         examples_instruction_format=model_args.examples_instruction_format,
         trust_remote_code=model_args.trust_remote_code,
-        cache_dir=model_args.cache_dir
+        cache_dir=model_args.cache_dir,
+        batch_size=model_args.retriever_batch_size,
+        query_max_length=model_args.retriever_query_max_length,
+        passage_max_length=model_args.retriever_passage_max_length,
     )
     reranker = None
     if model_args.reranker_name_or_path is not None:
@@ -40,6 +43,9 @@ def get_models(model_args: AbsModelArgs):
             cutoff_layers=model_args.cutoff_layers,
             compress_layers=model_args.compress_layers,
             compress_ratio=model_args.compress_ratio,
+            batch_size=model_args.reranker_batch_size,
+            query_max_length=model_args.reranker_query_max_length,
+            max_length=model_args.reranker_max_length,
         )
     return retriever, reranker
 
@@ -82,11 +88,6 @@ def main():
         retriever=retriever,
         reranker=reranker,
         corpus_embd_save_dir=eval_args.corpus_embd_save_dir,
-        retriever_batch_size=model_args.retriever_batch_size,
-        reranker_batch_size=model_args.reranker_batch_size,
-        retriever_query_max_length=model_args.retriever_query_max_length,
-        retriever_passage_max_length=model_args.retriever_passage_max_length,
-        reranker_max_length=model_args.reranker_max_length,
     )
 
 

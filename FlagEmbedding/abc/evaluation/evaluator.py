@@ -55,11 +55,11 @@ class AbsEvaluator:
         retriever: AbsEmbedder,
         reranker: Optional[AbsReranker] = None,
         corpus_embd_save_dir: Optional[str] = None,
-        retriever_batch_size: int = 256,
-        reranker_batch_size: int = 256,
-        retriever_query_max_length: int = 512,
-        retriever_passage_max_length: int = 512,
-        reranker_max_length: int = 512,
+        # retriever_batch_size: int = 256,
+        # reranker_batch_size: int = 256,
+        # retriever_query_max_length: int = 512,
+        # retriever_passage_max_length: int = 512,
+        # reranker_max_length: int = 512,
         **kwargs,
     ):
         if isinstance(splits, str):
@@ -96,9 +96,9 @@ class AbsEvaluator:
                 corpus=corpus,
                 queries=all_queries,
                 corpus_embd_save_dir=corpus_embd_save_dir,
-                batch_size=retriever_batch_size,
-                query_max_length=retriever_query_max_length,
-                passage_max_length=retriever_passage_max_length,
+                # batch_size=retriever_batch_size,
+                # query_max_length=retriever_query_max_length,
+                # passage_max_length=retriever_passage_max_length,
                 **kwargs,
             )
 
@@ -162,8 +162,8 @@ class AbsEvaluator:
                     corpus=corpus,
                     queries=queries_dict[split],
                     search_results=no_reranker_search_results_dict[split],
-                    batch_size=reranker_batch_size,
-                    max_length=reranker_max_length,
+                    # batch_size=reranker_batch_size,
+                    # max_length=reranker_max_length,
                     **kwargs,
                 )
 
