@@ -50,6 +50,9 @@ class AbsEvalArgs:
     overwrite: bool = field(
         default=False, metadata={"help": "whether to overwrite evaluation results"}
     )
+    ignore_identical_ids: bool = field(
+        default=False, metadata={"help": "whether to ignore identical ids in search results"}
+    )
     # ================ for evaluation ===============
     k_values: List[int] = field(
         default_factory=lambda: [1, 3, 5, 10, 100, 1000],

@@ -142,6 +142,7 @@ class AbsEvalRunner:
                 retriever=self.retriever,
                 reranker=self.reranker,
                 corpus_embd_save_dir=self.eval_args.corpus_embd_save_dir,
+                ignore_identical_ids=self.eval_args.ignore_identical_ids,
                 k_values=self.eval_args.k_values
             )
             logger.info(f"{self.eval_args.eval_name} evaluation completed.")
@@ -155,6 +156,7 @@ class AbsEvalRunner:
                     retriever=self.retriever,
                     reranker=self.reranker,
                     corpus_embd_save_dir=self.eval_args.corpus_embd_save_dir,
+                    ignore_identical_ids=self.eval_args.ignore_identical_ids,
                     k_values=self.eval_args.k_values,
                     dataset_name=dataset_name,
                 )

@@ -61,6 +61,7 @@ class AbsEvaluator:
         retriever: EvalRetriever,
         reranker: Optional[EvalReranker] = None,
         corpus_embd_save_dir: Optional[str] = None,
+        ignore_identical_ids: bool = False,
         k_values: List[int] = [1, 3, 5, 10, 100, 1000],
         dataset_name: Optional[str] = None,
         **kwargs,
@@ -110,6 +111,7 @@ class AbsEvaluator:
                 corpus=corpus,
                 queries=all_queries,
                 corpus_embd_save_dir=corpus_embd_save_dir,
+                ignore_identical_ids=ignore_identical_ids,
                 **kwargs,
             )
 

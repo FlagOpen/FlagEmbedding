@@ -2,11 +2,14 @@
 Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/evaluation_utils/searcher.py
 """
 import os
+import logging
 import numpy as np
 from typing import Any, Dict
 
 from FlagEmbedding.abc.inference import AbsEmbedder, AbsReranker
 from FlagEmbedding.abc.evaluation.utils import index, search
+
+logger = logging.getLogger(__name__)
 
 
 class EvalRetriever:
@@ -25,8 +28,7 @@ class EvalRetriever:
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
         corpus_embd_save_dir: str = None,
-        query_max_length: int = 512,
-        passage_max_length: int = 512,
+        ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -45,24 +47,36 @@ class EvalRetriever:
             Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
             Example: {"q-0": {"doc-0": 0.9}}
         """
-        corpus_texts = [doc["text"] for _, doc in corpus.items()]
-        queries_texts = [query for _, query in queries.items()]
-        corpus_ids = list(corpus.keys())
-        queries_ids = list(queries.keys())
+        if ignore_identical_ids:
+            logger.warning("ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.")
+
+        corpus_ids = []
+        corpus_texts = []
+        for docid, doc in corpus.items():
+            corpus_ids.append(docid)
+            corpus_texts.append(
+                doc["text"] if "title" not in doc 
+                else f"{doc["title"]}\n{doc["text"]}".strip()
+            )
+        queries_ids = []
+        queries_texts = []
+        for qid, query in queries.items():
+            queries_ids.append(qid)
+            queries_texts.append(query)
 
         if corpus_embd_save_dir is not None:
-            if os.path.exists(os.path.join(corpus_embd_save_dir, 'doc.npy')):
-                corpus_emb = np.load(os.path.join(corpus_embd_save_dir, 'doc.npy'))
+            if os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")):
+                corpus_emb = np.load(os.path.join(corpus_embd_save_dir, "doc.npy"))
             else:
-                corpus_emb = self.embedder.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
+                corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
                 if corpus_embd_save_dir is not None:
                     os.makedirs(corpus_embd_save_dir, exist_ok=True)
-                    np.save(os.path.join(corpus_embd_save_dir, 'doc.npy'), corpus_emb)
+                    np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
         else:
-            corpus_emb = self.embedder.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
+            corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
 
-        queries_emb = self.embedder.encode_queries(queries_texts, max_length=query_max_length, **kwargs)
-        
+        queries_emb = self.embedder.encode_queries(queries_texts, **kwargs)
+
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
 
@@ -70,7 +84,9 @@ class EvalRetriever:
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
             results[queries_ids[idx]] = {}
             for score, indice in zip(scores, indices):
-                if corpus_ids[indice] != queries_ids[idx]:
+                if indice != -1:
+                    if ignore_identical_ids and corpus_ids[indice] == queries_ids[idx]:
+                        continue
                     results[queries_ids[idx]][corpus_ids[indice]] = float(score)
 
         return results
@@ -129,7 +145,8 @@ class EvalReranker:
                         "qid": qid,
                         "docid": docid,
                         "query": queries[qid],
-                        "doc": corpus[docid]["text"],
+                        "doc": corpus[docid]["text"] if "title" not in corpus[docid] 
+                            else f"{corpus[docid]["title"]}\n{corpus[docid]["text"]}".strip(),
                     }
                 )
         pairs = [(e["query"], e["doc"]) for e in sentence_pairs]
