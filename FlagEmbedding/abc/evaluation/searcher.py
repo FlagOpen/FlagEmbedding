@@ -99,9 +99,6 @@ class EvalDenseRetriever(EvalRetriever):
                 corpus_emb = np.load(os.path.join(corpus_embd_save_dir, "doc.npy"))
             else:
                 corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
-                if corpus_embd_save_dir is not None:
-                    os.makedirs(corpus_embd_save_dir, exist_ok=True)
-                    np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
         else:
             corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
 
@@ -112,6 +109,10 @@ class EvalDenseRetriever(EvalRetriever):
             corpus_emb = corpus_emb["dense_vecs"]
         if isinstance(queries_emb, dict):
             queries_emb = queries_emb["dense_vecs"]
+        
+        if corpus_embd_save_dir is not None and not os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")):
+            os.makedirs(corpus_embd_save_dir, exist_ok=True)
+            np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
 
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
@@ -174,8 +175,11 @@ class EvalReranker:
             )
         # generate sentence pairs
         sentence_pairs = []
+        pairs = []
         for qid in search_results:
             for docid in search_results[qid]:
+                print(corpus[docid])
+                sys.eixt()
                 sentence_pairs.append(
                     {
                         "qid": qid,
@@ -185,9 +189,19 @@ class EvalReranker:
                             else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip(),
                     }
                 )
-        pairs = [(e["query"], e["doc"]) for e in sentence_pairs]
+                pairs.append(
+                    (
+                        queries[qid],
+                        corpus[docid]["text"] if "title" not in corpus[docid] 
+                            else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip()
+                    )
+                )
+        # pairs = [(e["query"], e["doc"]) for e in sentence_pairs]
         # compute scores
         scores = self.reranker.compute_score(pairs)
+        # print(scores)
+        # print(self.reranker.compute_score([pairs[0]]))
+        # print(pairs[0], sentence_pairs[0])
         for i, score in enumerate(scores):
             sentence_pairs[i]["score"] = float(score)
         # rerank

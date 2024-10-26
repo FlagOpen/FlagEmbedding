@@ -23,6 +23,7 @@ setup(
         'beir',
         'deepspeed',
         'flash-attn==2.5.6',
-        'mteb==1.15.0'
+        'mteb==1.15.0',
+        'ir-datasets'
     ],
 )

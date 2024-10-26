@@ -126,6 +126,8 @@ class AbsReranker(ABC):
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         **kwargs
     ):
+        if isinstance(sentence_pairs[0], str):
+            sentence_pairs = [sentence_pairs]
         sentence_pairs = self.get_detailed_inputs(sentence_pairs)
 
         if isinstance(sentence_pairs, str) or len(self.target_devices) == 1:
