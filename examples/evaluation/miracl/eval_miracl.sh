@@ -2,7 +2,7 @@ if [ -z "$HF_HUB_CACHE" ]; then
     export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
 fi
 
-dataset_names="bn hi sw"
+dataset_names="bn hi sw te th yo"
 
 eval_args="\
     --eval_name miracl \
@@ -16,7 +16,7 @@ eval_args="\
     --overwrite False \
     --k_values 10 100 \
     --eval_output_method markdown \
-    --eval_output_path ./miracl_eval_results.md \
+    --eval_output_path /share/jianlv/evaluation/miracl/miracl_eval_results.md \
     --eval_metrics ndcg_at_10 recall_at_100 \
 "
 
