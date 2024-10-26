@@ -86,7 +86,7 @@ class EvalDenseRetriever(EvalRetriever):
             corpus_ids.append(docid)
             corpus_texts.append(
                 doc["text"] if "title" not in doc 
-                else f"{doc['title']}\n{doc['text']}".strip()
+                else f"{doc['title']} {doc['text']}".strip()
             )
         queries_ids = []
         queries_texts = []
@@ -182,7 +182,7 @@ class EvalReranker:
                         "docid": docid,
                         "query": queries[qid],
                         "doc": corpus[docid]["text"] if "title" not in corpus[docid] 
-                            else f"{corpus[docid]['title']}\n{corpus[docid]['text']}".strip(),
+                            else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip(),
                     }
                 )
         pairs = [(e["query"], e["doc"]) for e in sentence_pairs]
