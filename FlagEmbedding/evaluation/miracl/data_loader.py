@@ -57,7 +57,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         cmd = f"wget -O {save_path} {download_url}"
         os.system(cmd)
 
-        if not os.path.exists(save_path):
+        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
             raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
         else:
             logger.info(f"Downloaded file from {download_url} to {save_path}")
