@@ -72,7 +72,11 @@ class AbsEvalRunner:
 
     def load_retriever_and_reranker(self) -> Tuple[EvalDenseRetriever, Union[EvalReranker, None]]:
         embedder, reranker = self.get_models(self.model_args)
-        retriever = EvalDenseRetriever(embedder, search_top_k=self.eval_args.search_top_k)
+        retriever = EvalDenseRetriever(
+            embedder,
+            search_top_k=self.eval_args.search_top_k,
+            overwrite=self.eval_args.overwrite
+        )
         if reranker is not None:
             reranker = EvalReranker(reranker, rerank_top_k=self.eval_args.rerank_top_k)
         return retriever, reranker
@@ -116,7 +120,6 @@ class AbsEvalRunner:
                 else:
                     raise FileNotFoundError(f"Eval results not found: {eval_results_path}")
 
-                eval_results = json.load(open(os.path.join(reranker_search_results_save_dir, "eval_results.json")))
                 if model_name not in eval_results_dict:
                     eval_results_dict[model_name] = []
                 eval_results_dict[model_name][reranker_name] = eval_results

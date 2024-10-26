@@ -14,9 +14,10 @@ logger = logging.getLogger(__name__)
 
 
 class EvalRetriever(ABC):
-    def __init__(self, embedder: AbsEmbedder, search_top_k: int = 1000):
+    def __init__(self, embedder: AbsEmbedder, search_top_k: int = 1000, overwrite: bool = False):
         self.embedder = embedder
         self.search_top_k = search_top_k
+        self.overwrite = overwrite
 
     def __str__(self) -> str:
         """
@@ -94,7 +95,7 @@ class EvalDenseRetriever(EvalRetriever):
             queries_texts.append(query)
 
         if corpus_embd_save_dir is not None:
-            if os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")):
+            if os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")) and not self.overwrite:
                 corpus_emb = np.load(os.path.join(corpus_embd_save_dir, "doc.npy"))
             else:
                 corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
