@@ -161,7 +161,7 @@ class AbsEvaluator:
             corpus = self.data_loader.load_corpus(dataset_name=dataset_name)
 
             queries_dict = {
-                split: self.data_loader.load_queries(split=split)
+                split: self.data_loader.load_queries(dataset_name=dataset_name, split=split)
                 for split in splits
             }
 
