@@ -158,7 +158,7 @@ class AbsEvaluator:
             )
             os.makedirs(reranker_search_results_save_dir, exist_ok=True)
 
-            corpus = self.data_loader.load_corpus()
+            corpus = self.data_loader.load_corpus(dataset_name=dataset_name)
 
             queries_dict = {
                 split: self.data_loader.load_queries(split=split)
