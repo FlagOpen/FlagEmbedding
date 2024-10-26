@@ -124,8 +124,8 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
                         qid, query = line.strip().split("\t")
                         qid = str(qid)
                         _data = {
-                            "qid": qid,
-                            "query": query
+                            "id": qid,
+                            "text": query
                         }
                         queries_dict[qid] = query
                         f1.write(json.dumps(_data, ensure_ascii=False) + "\n")
