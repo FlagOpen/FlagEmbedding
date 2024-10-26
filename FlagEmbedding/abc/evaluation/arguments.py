@@ -20,14 +20,15 @@ class AbsEvalArgs:
             "2) If you want to perform evaluation on the datasets we provide evaluation APIs for, you can provide the path to saving the downloaded dataset. If you provide None, the dataset will be only downloaded to the cache directory."
         }
     )
-    dataset_names: Optional[List[str]] = field(
+    dataset_names: Optional[str] = field(
         default=None,
         metadata={
-            "help": "The names of the datasets to evaluate. Default: None. If None, all available datasets will be evaluated. The name can be a specific dataset name (BEIR), a specific language (MIRACL), etc."
+            "help": "The names of the datasets to evaluate. Default: None. If None, all available datasets will be evaluated. The name can be a specific dataset name (BEIR), a specific language (MIRACL), etc.",
+            "nargs": "+"
         }
     )
-    splits: List[str] = field(
-        default_factory=lambda: ["test"],
+    splits: str = field(
+        default="test",
         metadata={"help": "Splits to evaluate. Default: test", "nargs": "+"}
     )
     corpus_embd_save_dir: str = field(
@@ -54,7 +55,7 @@ class AbsEvalArgs:
         default=False, metadata={"help": "whether to ignore identical ids in search results"}
     )
     # ================ for evaluation ===============
-    k_values: List[int] = field(
+    k_values: int = field(
         default_factory=lambda: [1, 3, 5, 10, 100, 1000],
         metadata={"help": "k values for evaluation. Default: [1, 3, 5, 10, 100, 1000]", "nargs": "+"}
     )
@@ -65,7 +66,7 @@ class AbsEvalArgs:
     eval_output_path: str = field(
         default="./eval_results.md", metadata={"help": "The path to save evaluation results."}
     )
-    eval_metrics: List[str] = field(
+    eval_metrics: str = field(
         default_factory=lambda: ["ndcg_at_10", "recall_at_10"],
         metadata={"help": "The metrics to evaluate. Default: ['ndcg_at_10', 'recall_at_10']", "nargs": "+"}
     )
@@ -82,7 +83,7 @@ class AbsEvalModelArgs:
     use_fp16: bool = field(
         default=True, metadata={"help": "whether to use fp16 for inference"}
     )
-    devices: Optional[List[str]] = field(
+    devices: Optional[str] = field(
         default=None, metadata={"help": "Devices to use for inference.", "nargs": "+"}
     )
     query_instruction_for_retrieval: Optional[str] = field(
@@ -155,6 +156,6 @@ class AbsEvalModelArgs:
     compress_ratio: int = field(
         default=1, metadata={"help": "The compress ratio of lightweight reranker."}
     )
-    compress_layers: Optional[List[int]] = field(
+    compress_layers: Optional[int] = field(
         default=None, metadata={"help": "The compress layers of lightweight reranker.", "nargs": "+"}
     )
