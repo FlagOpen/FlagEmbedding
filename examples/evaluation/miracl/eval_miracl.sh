@@ -9,7 +9,7 @@ eval_args="\
     --dataset_dir /share/jianlv/evaluation/miracl/data \
     --dataset_names $dataset_names \
     --splits train dev \
-    --corpus_embd_save_dir /share/jianlv/data/miracl/corpus_embd \
+    --corpus_embd_save_dir /share/jianlv/evaluation/miracl/corpus_embd \
     --output_dir /share/jianlv/evaluation/miracl/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
