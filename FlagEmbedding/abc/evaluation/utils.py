@@ -1,10 +1,13 @@
-import os
 import faiss
+import torch
+import logging
 import numpy as np
 import pytrec_eval
 from tqdm import tqdm
 from collections import defaultdict
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional
+
+logger = logging.getLogger(__name__)
 
 
 # Modified from https://github.com/beir-cellar/beir/blob/f062f038c4bfd19a8ca942a9910b1e0d218759d4/beir/retrieval/custom_metrics.py#L4
@@ -83,35 +86,40 @@ def evaluate_metrics(
 
     return ndcg, _map, recall, precision
 
+
 def index(
     index_factory: str = "Flat", 
-    corpus_embeddings: np.array = None, 
-    load_path: str = None
+    corpus_embeddings: Optional[np.ndarray] = None, 
+    load_path: Optional[str] = None,
+    device: Optional[str] = None
 ):
     if corpus_embeddings is None:
         corpus_embeddings = np.load(load_path)
-    print(corpus_embeddings.shape)
+    
+    logger.info(f"Shape of embeddings: {corpus_embeddings.shape}")
     # create faiss index
-    print('create faiss index...')
-    faiss_index = faiss.index_factory(corpus_embeddings.shape[1], index_factory, faiss.METRIC_INNER_PRODUCT)
-    co = faiss.GpuMultipleClonerOptions()
-    co.shard = True
-    faiss_index = faiss.index_cpu_to_all_gpus(faiss_index, co)
+    logger.info(f'Indexing {corpus_embeddings.shape[0]} documents...')
+    faiss_index = faiss.index_factory(corpus_embeddings.shape[-1], index_factory, faiss.METRIC_INNER_PRODUCT)
+    
+    if device is None and torch.cuda.is_available():
+        co = faiss.GpuMultipleClonerOptions()
+        co.shard = True
+        co.useFloat16 = True
+        faiss_index = faiss.index_cpu_to_all_gpus(faiss_index, co)
 
-    print('add data...')
+    logger.info('Adding embeddings ...')
     corpus_embeddings = corpus_embeddings.astype(np.float32)
     faiss_index.train(corpus_embeddings)
     faiss_index.add(corpus_embeddings)
-    print('add over...')
-    
+    logger.info('Embeddings add over...')
     return faiss_index
 
 
 def search(
     faiss_index: faiss.Index, 
     k: int = 100, 
-    query_embeddings: np.array = None,
-    load_path: str = None
+    query_embeddings: Optional[np.ndarray] = None,
+    load_path: Optional[str] = None
 ):
     """
     1. Encode queries into dense embeddings;

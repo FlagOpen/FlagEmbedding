@@ -8,8 +8,8 @@ import json
 import pandas as pd
 from typing import Dict, Optional, List, Union
 
-from .data_loader import AbsDataLoader
-from .searcher import AbsEmbedder, AbsReranker
+from .data_loader import AbsEvalDataLoader
+from .searcher import EvalRetriever, EvalReranker
 from .utils import evaluate_metrics, evaluate_mrr
 
 logger = logging.getLogger(__name__)
@@ -18,12 +18,13 @@ logger = logging.getLogger(__name__)
 class AbsEvaluator:
     def __init__(
         self,
-        data_loader: AbsDataLoader,
+        eval_name: str,
+        data_loader: AbsEvalDataLoader,
         overwrite: bool = False,
     ):
+        self.eval_name = eval_name
         self.data_loader = data_loader
         self.overwrite = overwrite
-        self.dataset_dir = data_loader.dataset_dir
 
     def check_data_info(
         self,
@@ -31,10 +32,11 @@ class AbsEvaluator:
         model_name: str,
         reranker_name: str,
         split: str,
+        dataset_name: Optional[str] = None,
     ):
-        if data_info["dataset_dir"] != self.dataset_dir:
+        if data_info["eval_name"] != self.eval_name:
             raise ValueError(
-                f'dataset_dir mismatch: {data_info["dataset_dir"]} vs {self.dataset_dir}'
+                f'eval_name mismatch: {data_info["eval_name"]} vs {self.eval_name}'
             )
         if (
             data_info["model_name"] != model_name
@@ -47,23 +49,35 @@ class AbsEvaluator:
             raise ValueError(
                 f'split mismatch: {data_info["split"]} vs {split}'
             )
+        if dataset_name is not None and data_info["dataset_name"] != dataset_name:
+            raise ValueError(
+                f'dataset_name mismatch: {data_info["dataset_name"]} vs {dataset_name}'
+            )
 
     def __call__(
         self,
         splits: Union[str, List[str]],
         search_results_save_dir: str,
-        retriever: AbsEmbedder,
-        reranker: Optional[AbsReranker] = None,
+        retriever: EvalRetriever,
+        reranker: Optional[EvalReranker] = None,
         corpus_embd_save_dir: Optional[str] = None,
-        # retriever_batch_size: int = 256,
-        # reranker_batch_size: int = 256,
-        # retriever_query_max_length: int = 512,
-        # retriever_passage_max_length: int = 512,
-        # reranker_max_length: int = 512,
+        k_values: List[int] = [1, 3, 5, 10, 100, 1000],
+        dataset_name: Optional[str] = None,
         **kwargs,
     ):
-        if isinstance(splits, str):
-            splits = [splits]
+        # Check Splits
+        checked_splits = self.data_loader.check_splits(splits, dataset_name=dataset_name)
+        if len(checked_splits) == 0:
+            logger.warning(f"{splits} not found in the dataset. Skipping evaluation.")
+            return
+        splits = checked_splits
+
+        if dataset_name is not None:
+            save_name = f"{dataset_name}-" + "{split}.json"
+            corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name)
+        else:
+            save_name = "{split}.json"
+
         # Retrieval Stage
         no_reranker_search_results_save_dir = os.path.join(
             search_results_save_dir, str(retriever), "NoReranker"
@@ -73,7 +87,7 @@ class AbsEvaluator:
         flag = False
         for split in splits:
             split_no_reranker_search_results_save_path = os.path.join(
-                no_reranker_search_results_save_dir, f"{split}.json"
+                no_reranker_search_results_save_dir, save_name.format(split=split)
             )
             if not os.path.exists(split_no_reranker_search_results_save_path) or self.overwrite:
                 flag = True
@@ -81,10 +95,10 @@ class AbsEvaluator:
 
         no_reranker_search_results_dict = {}
         if flag:
-            corpus = self.data_loader.load_corpus()
+            corpus = self.data_loader.load_corpus(dataset_name=dataset_name)
 
             queries_dict = {
-                split: self.data_loader.load_queries(split=split)
+                split: self.data_loader.load_queries(dataset_name=dataset_name, split=split)
                 for split in splits
             }
 
@@ -96,9 +110,6 @@ class AbsEvaluator:
                 corpus=corpus,
                 queries=all_queries,
                 corpus_embd_save_dir=corpus_embd_save_dir,
-                # batch_size=retriever_batch_size,
-                # query_max_length=retriever_query_max_length,
-                # passage_max_length=retriever_passage_max_length,
                 **kwargs,
             )
 
@@ -108,21 +119,22 @@ class AbsEvaluator:
                     qid: all_no_reranker_search_results[qid] for qid in split_queries
                 }
                 split_no_reranker_search_results_save_path = os.path.join(
-                    no_reranker_search_results_save_dir, f"{split}.json"
+                    no_reranker_search_results_save_dir, save_name.format(split=split)
                 )
 
                 self.save_search_results(
+                    eval_name=self.eval_name,
                     model_name=str(retriever),
                     reranker_name="NoReranker",
                     search_results=no_reranker_search_results_dict[split],
                     output_path=split_no_reranker_search_results_save_path,
                     split=split,
-                    dataset_dir=self.dataset_dir,
+                    dataset_name=dataset_name,
                 )
         else:
             for split in splits:
                 split_no_reranker_search_results_save_path = os.path.join(
-                    no_reranker_search_results_save_dir, f"{split}.json"
+                    no_reranker_search_results_save_dir, save_name.format(split=split)
                 )
                 data_info, search_results = self.load_search_results(split_no_reranker_search_results_save_path)
                 
@@ -131,11 +143,12 @@ class AbsEvaluator:
                     model_name=str(retriever),
                     reranker_name="NoReranker",
                     split=split,
+                    dataset_name=dataset_name,
                 )
                 no_reranker_search_results_dict[split] = search_results
-        retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir)
-        self.output_eval_results_to_json(retriever_eval_results, os.path.join(no_reranker_search_results_save_dir, 'eval.json'))
-        
+        retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
+        self.output_eval_results_to_json(retriever_eval_results, os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json'))
+
         # Reranking Stage
         if reranker is not None:
             reranker_search_results_save_dir = os.path.join(
@@ -152,7 +165,7 @@ class AbsEvaluator:
 
             for split in splits:
                 rerank_search_results_save_path = os.path.join(
-                    reranker_search_results_save_dir, f"{split}.json"
+                    reranker_search_results_save_dir, save_name.format(split=split)
                 )
 
                 if os.path.exists(rerank_search_results_save_path) and not self.overwrite:
@@ -162,37 +175,37 @@ class AbsEvaluator:
                     corpus=corpus,
                     queries=queries_dict[split],
                     search_results=no_reranker_search_results_dict[split],
-                    # batch_size=reranker_batch_size,
-                    # max_length=reranker_max_length,
                     **kwargs,
                 )
 
                 self.save_search_results(
+                    eval_name=self.eval_name,
                     model_name=str(retriever),
                     reranker_name=str(reranker),
                     search_results=rerank_search_results,
                     output_path=rerank_search_results_save_path,
                     split=split,
-                    dataset_dir=self.dataset_dir,
+                    dataset_name=dataset_name,
                 )
-            reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir)
-            self.output_eval_results_to_json(reranker_eval_results, os.path.join(reranker_search_results_save_dir, 'eval.json'))
-
+            reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
+            self.output_eval_results_to_json(reranker_eval_results, os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json'))
 
     @staticmethod
     def save_search_results(
+        eval_name: str,
         model_name: str,
         reranker_name: str,
         search_results: Dict[str, Dict[str, float]],
         output_path: str,
         split: str,
-        dataset_dir: str,
+        dataset_name: Optional[str] = None,
     ):
         data = {
+            "eval_name": eval_name,
             "model_name": model_name,
             "reranker_name": reranker_name,
-            "dataset_dir": dataset_dir,
             "split": split,
+            "dataset_name": dataset_name,
             "search_results": search_results,
         }
 
@@ -242,17 +255,18 @@ class AbsEvaluator:
         eval_results_dict = {}
 
         for file in os.listdir(search_results_save_dir):
-            if not file.endswith('.json') or file == 'eval.json':
+            if not file.endswith('.json'):
                 continue
 
             file_path = os.path.join(search_results_save_dir, file)
             data_info, search_results = self.load_search_results(file_path)
 
-            _dataset_dir = data_info['dataset_dir']
-            assert _dataset_dir == self.dataset_dir, f'Mismatch dataset_dir: {_dataset_dir} vs {self.dataset_dir} in {file_path}'
+            _eval_name = data_info['eval_name']
+            assert _eval_name == self.eval_name, f'Mismatch eval_name: {_eval_name} vs {self.eval_name} in {file_path}'
 
             split = data_info['split']
-            qrels = self.data_loader.load_qrels(split=split)
+            dataset_name = data_info.get('dataset_name', None)
+            qrels = self.data_loader.load_qrels(dataset_name=dataset_name, split=split)
 
             eval_results = self.compute_metrics(
                 qrels=qrels,
@@ -260,7 +274,11 @@ class AbsEvaluator:
                 k_values=k_values
             )
 
-            eval_results_dict[split] = eval_results
+            if dataset_name is not None:
+                key = f"{dataset_name}-{split}"
+            else:
+                key = split
+            eval_results_dict[key] = eval_results
 
         return eval_results_dict
 
