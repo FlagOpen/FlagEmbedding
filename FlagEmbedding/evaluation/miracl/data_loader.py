@@ -68,7 +68,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
-        qrels_download_url = f"https://huggingface.co/datasets/miracl/miracl/resolve/main/miracl-v1.0-{dataset_name}/qrels/qrels.miracl-v1.0-{dataset_name}-{split}.tsv"
+        qrels_download_url = f"https://hf-mirror.com/datasets/miracl/miracl/resolve/main/miracl-v1.0-{dataset_name}/qrels/qrels.miracl-v1.0-{dataset_name}-{split}.tsv"
         qrels_save_path = os.path.join(self.cache_dir, f"qrels.miracl-v1.0-{dataset_name}-{split}.tsv")
 
         self._download_file(qrels_download_url, qrels_save_path)
@@ -109,7 +109,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
-        queries_download_url = f"https://huggingface.co/datasets/miracl/miracl/resolve/main/miracl-v1.0-{dataset_name}/topics/topics.miracl-v1.0-{dataset_name}-{split}.tsv"
+        queries_download_url = f"https://hf-mirror.com/datasets/miracl/miracl/resolve/main/miracl-v1.0-{dataset_name}/topics/topics.miracl-v1.0-{dataset_name}-{split}.tsv"
         queries_save_path = os.path.join(self.cache_dir, f"topics.miracl-v1.0-{dataset_name}-{split}.tsv")
 
         self._download_file(queries_download_url, queries_save_path)
