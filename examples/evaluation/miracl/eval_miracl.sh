@@ -25,6 +25,7 @@ model_args="\
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
     --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4 cuda:5 cuda:6 cuda:7 \
     --cache_dir $HF_HUB_CACHE \
+    --reranker_max_length 1024 \
 "
 
 cmd="python -m FlagEmbedding.evaluation.miracl \
