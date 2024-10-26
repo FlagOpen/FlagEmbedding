@@ -121,7 +121,7 @@ class AbsEvalRunner:
                     raise FileNotFoundError(f"Eval results not found: {eval_results_path}")
 
                 if model_name not in eval_results_dict:
-                    eval_results_dict[model_name] = []
+                    eval_results_dict[model_name] = {}
                 eval_results_dict[model_name][reranker_name] = eval_results
 
         if output_method == "json":
