@@ -5,6 +5,7 @@ import os
 import logging
 import numpy as np
 from typing import Any, Dict
+from abc import ABC, abstractmethod
 
 from FlagEmbedding.abc.inference import AbsEmbedder, AbsReranker
 from FlagEmbedding.abc.evaluation.utils import index, search
@@ -12,7 +13,7 @@ from FlagEmbedding.abc.evaluation.utils import index, search
 logger = logging.getLogger(__name__)
 
 
-class EvalRetriever:
+class EvalRetriever(ABC):
     def __init__(self, embedder: AbsEmbedder, search_top_k: int = 1000):
         self.embedder = embedder
         self.search_top_k = search_top_k
@@ -23,6 +24,34 @@ class EvalRetriever:
         """
         return os.path.basename(self.embedder.model.config._name_or_path)
 
+    @abstractmethod
+    def __call__(
+        self,
+        corpus: Dict[str, Dict[str, Any]],
+        queries: Dict[str, str],
+        corpus_embd_save_dir: str = None,
+        ignore_identical_ids: bool = False,
+        **kwargs,
+    ) -> Dict[str, Dict[str, float]]:
+        """
+        This is called during the retrieval process.
+        
+        Parameters:
+            corpus: Dict[str, Dict[str, Any]]: Corpus of documents. 
+                Structure: {<docid>: {"text": <text>}}.
+                Example: {"doc-0": {"text": "This is a document."}}
+            queries: Dict[str, str]: Queries to search for.
+                Structure: {<qid>: <query>}.
+                Example: {"q-0": "This is a query."}
+            **kwargs: Any: Additional arguments.
+        
+        Returns: Dict[str, Dict[str, float]]: Top-k search results for each query. k is specified by search_top_k.
+            Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
+            Example: {"q-0": {"doc-0": 0.9}}
+        """
+
+
+class EvalDenseRetriever(EvalRetriever):
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],
@@ -76,6 +105,12 @@ class EvalRetriever:
             corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
 
         queries_emb = self.embedder.encode_queries(queries_texts, **kwargs)
+
+        # check if the embeddings are in dictionary format: M3Embedder
+        if isinstance(corpus_emb, dict):
+            corpus_emb = corpus_emb["dense_vecs"]
+        if isinstance(queries_emb, dict):
+            queries_emb = queries_emb["dense_vecs"]
 
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)

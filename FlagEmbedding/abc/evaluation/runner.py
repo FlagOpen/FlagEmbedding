@@ -7,7 +7,7 @@ from FlagEmbedding import FlagAutoModel, FlagAutoReranker
 
 from .arguments import AbsEvalArgs, AbsEvalModelArgs
 from .evaluator import AbsEvaluator
-from .searcher import EvalRetriever, EvalReranker
+from .searcher import EvalDenseRetriever, EvalReranker
 from .data_loader import AbsEvalDataLoader
 
 logger = logging.getLogger(__name__)
@@ -70,9 +70,9 @@ class AbsEvalRunner:
             reranker.model.config._name_or_path = model_args.reranker_name_or_path
         return embedder, reranker
 
-    def load_retriever_and_reranker(self) -> Tuple[EvalRetriever, Union[EvalReranker, None]]:
+    def load_retriever_and_reranker(self) -> Tuple[EvalDenseRetriever, Union[EvalReranker, None]]:
         embedder, reranker = self.get_models(self.model_args)
-        retriever = EvalRetriever(embedder, search_top_k=self.eval_args.search_top_k)
+        retriever = EvalDenseRetriever(embedder, search_top_k=self.eval_args.search_top_k)
         if reranker is not None:
             reranker = EvalReranker(reranker, rerank_top_k=self.eval_args.rerank_top_k)
         return retriever, reranker
