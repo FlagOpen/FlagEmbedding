@@ -2,7 +2,6 @@ import os
 import json
 import logging
 import datasets
-import requests
 from tqdm import tqdm
 from typing import List, Optional
 
@@ -55,15 +54,13 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         return datasets.DatasetDict(corpus_dict)
 
     def _download_file(self, download_url: str, save_path: str):
-        try:
-            response = requests.get(download_url, stream=True)
-            response.raise_for_status()
+        cmd = f"wget -O {save_path} {download_url}"
+        os.system(cmd)
 
-            with open(save_path, "wb") as f:
-                for chunk in response.iter_content(chunk_size=8192):
-                    f.write(chunk)
-        except Exception as e:
-            logger.error(f"Failed to download file from {download_url}. Error: {e}")
+        if not os.path.exists(save_path):
+            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
+        else:
+            logger.info(f"Downloaded file from {download_url} to {save_path}")
 
     def _load_remote_qrels(
         self,
