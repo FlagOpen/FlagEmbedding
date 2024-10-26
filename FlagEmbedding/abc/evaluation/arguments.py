@@ -126,10 +126,10 @@ class AbsEvalModelArgs:
     )
     # ================ for inference ===============
     embedder_batch_size: int = field(
-        default=512, metadata={"help": "Batch size for inference."}
+        default=3000, metadata={"help": "Batch size for inference."}
     )
     reranker_batch_size: int = field(
-        default=512, metadata={"help": "Batch size for inference."}
+        default=3000, metadata={"help": "Batch size for inference."}
     )
     embedder_query_max_length: int = field(
         default=512, metadata={"help": "Max length for query."}
