@@ -54,15 +54,6 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
             corpus_dict = {data["docid"]: {"title": data["title"], "text": data["text"]} for data in tqdm(corpus, desc="Loading corpus")}
         return datasets.DatasetDict(corpus_dict)
 
-    def _download_file(self, download_url: str, save_path: str):
-        cmd = f"wget -O {save_path} {download_url}"
-        os.system(cmd)
-
-        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
-            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
-        else:
-            logger.info(f"Downloaded file from {download_url} to {save_path}")
-
     def _load_remote_qrels(
         self,
         dataset_name: Optional[str] = None,
@@ -71,9 +62,8 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
     ) -> datasets.DatasetDict:
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/miracl/miracl"
         qrels_download_url = f"{endpoint}/resolve/main/miracl-v1.0-{dataset_name}/qrels/qrels.miracl-v1.0-{dataset_name}-{split}.tsv"
-        qrels_save_path = os.path.join(self.cache_dir, f"qrels.miracl-v1.0-{dataset_name}-{split}.tsv")
 
-        self._download_file(qrels_download_url, qrels_save_path)
+        qrels_save_path = self._download_file(qrels_download_url, self.cache_dir)
 
         if save_dir is not None:
             os.makedirs(save_dir, exist_ok=True)
@@ -115,7 +105,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         queries_download_url = f"{endpoint}/resolve/main/miracl-v1.0-{dataset_name}/topics/topics.miracl-v1.0-{dataset_name}-{split}.tsv"
         queries_save_path = os.path.join(self.cache_dir, f"topics.miracl-v1.0-{dataset_name}-{split}.tsv")
 
-        self._download_file(queries_download_url, queries_save_path)
+        queries_save_path = self._download_file(queries_download_url, self.cache_dir)
 
         if save_dir is not None:
             os.makedirs(save_dir, exist_ok=True)

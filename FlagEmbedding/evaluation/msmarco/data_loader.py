@@ -60,31 +60,6 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
             corpus_dict = {data["docid"]: {"title": data["title"], "text": data.get("text", data.get("body", ""))} for data in tqdm(corpus, desc="Loading corpus")}
         return datasets.DatasetDict(corpus_dict)
 
-    def _download_gz_file(self, download_url: str, save_dir: str):
-        cmd = f"wget -P {save_dir} {download_url}"
-        os.system(cmd)
-        save_path = os.path.join(save_dir, download_url.split('/')[-1])
-
-        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
-            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
-        else:
-            logger.info(f"Downloaded file from {download_url} to {save_path}")
-            cmd = f"gzip -d {save_path}"
-            os.system(cmd)
-            new_save_path = save_path.replace(".gz", "")
-            logger.info(f"Unzip file from {save_path} to {new_save_path}")
-            return new_save_path
-
-    def _download_file(self, download_url: str, save_dir: str):
-        cmd = f"wget -P {save_dir} {download_url}"
-        os.system(cmd)
-        save_path = os.path.join(save_dir, download_url.split('/')[-1])
-
-        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
-            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
-        else:
-            logger.info(f"Downloaded file from {download_url} to {save_path}")
-
     def _load_remote_qrels(
         self,
         dataset_name: Optional[str] = None,

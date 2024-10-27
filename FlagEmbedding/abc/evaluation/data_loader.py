@@ -4,6 +4,7 @@ Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/eva
 import os
 import logging
 import datasets
+import subprocess
 from abc import ABC, abstractmethod
 from typing import List, Optional, Union
 
@@ -179,3 +180,35 @@ class AbsEvalDataLoader(ABC):
 
             queries = {e['id']: e['text'] for e in queries_data}
             return datasets.DatasetDict(queries)
+
+    def _download_file(self, download_url: str, save_dir: str):
+        save_path = os.path.join(save_dir, download_url.split('/')[-1])
+
+        if self.force_redownload or (not os.path.exists(save_path) or os.path.getsize(save_path) == 0):
+            cmd = ["wget", "-O", save_path, download_url]
+        else:
+            cmd = ["wget", "-nc", "-O", save_path, download_url]
+
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to download file from {download_url} to {save_dir}. Error code: {e.returncode}. Error message: {e.output}")
+            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_dir}") from e
+
+        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
+            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
+        else:
+            logger.info(f"Downloaded file from {download_url} to {save_path}")
+            return save_path
+
+    def _download_gz_file(self, download_url: str, save_dir: str):
+        gz_file_path = self._download_file(download_url, save_dir)
+        cmd = ["gzip", "-d", gz_file_path]
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to unzip file {gz_file_path}. Error code: {e.returncode}. Error message: {e.output}")
+            raise FileNotFoundError(f"Failed to unzip file {gz_file_path}") from e
+
+        file_path = gz_file_path.replace(".gz", "")
+        return file_path
