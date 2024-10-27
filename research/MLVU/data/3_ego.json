@@ -1,0 +1,4578 @@
+[
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "What did I put in the orange trashcan ",
+        "candidates": [
+            "a lemon green sponge",
+            "a blue pen",
+            "a red apple",
+            "a yellow banana"
+        ],
+        "answer": "a lemon green sponge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was my card",
+        "candidates": [
+            "under the bed",
+            "in my pocket",
+            "in my hand",
+            "on the table"
+        ],
+        "answer": "in my hand",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "Where was the oven turntable plate before I picked it up ?",
+        "candidates": [
+            "The oven turntable was in the oven before I picked it up.",
+            "The oven turntable was in the refrigerator before I picked it up.",
+            "The oven turntable was in the microwave before I picked it up.",
+            "The oven turntable was in the dishwasher before I picked it up."
+        ],
+        "answer": "The oven turntable was in the microwave before I picked it up.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "How many oranges did I pick from the plastic bag?",
+        "candidates": [
+            "3",
+            "10",
+            "5",
+            "1"
+        ],
+        "answer": "3",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "How many bolts did I screw on the circuit board of the first radio?",
+        "candidates": [
+            "3",
+            "1",
+            "7",
+            "5"
+        ],
+        "answer": "3",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the Silver container?",
+        "candidates": [
+            "In the bathroom",
+            "In the kitchen cabinet",
+            "In the dustbin",
+            "On the bookshelf"
+        ],
+        "answer": "In the dustbin",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the pair of skating shoes before I picked them up",
+        "candidates": [
+            "in the lost and found department",
+            "at the ice rink",
+            "in a shoe store",
+            "on the road side pavement"
+        ],
+        "answer": "on the road side pavement",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "How many were the Pepsi cans on the table ?",
+        "candidates": [
+            "There were six Pepsi cans on the table.",
+            "There were four Pepsi cans on the table.",
+            "There were two Pepsi cans on the table.",
+            "There were eight Pepsi cans on the table."
+        ],
+        "answer": "There were four Pepsi cans on the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "What did i put the plastic mug?\n",
+        "candidates": [
+            "water",
+            "coffee",
+            "orange juice",
+            "milk"
+        ],
+        "answer": "orange juice",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_30.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the tools?",
+        "candidates": [
+            "On the top shelf.",
+            "In the blue box.",
+            "In the red tray.",
+            "In the kitchen drawer."
+        ],
+        "answer": "In the red tray.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the brown wallet",
+        "candidates": [
+            "next to the brown lamp",
+            "under the brown sofa",
+            "on the brown cabinet top",
+            "in the brown drawer"
+        ],
+        "answer": "on the brown cabinet top",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "What colour was the blouse I held in my hands",
+        "candidates": [
+            "green",
+            "red",
+            "yellow",
+            "blue"
+        ],
+        "answer": "red",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I throw the trash from the plate?",
+        "candidates": [
+            "in the dustbin",
+            "in the refrigerator",
+            "in the sink",
+            "on the floor"
+        ],
+        "answer": "in the dustbin",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "Who did I interact with when I opened the door",
+        "candidates": [
+            "a child",
+            "a woman",
+            "a dog",
+            "a man"
+        ],
+        "answer": "a woman",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "How many square frames hung on the wall opposite the living room",
+        "candidates": [
+            "6",
+            "2",
+            "4",
+            "8"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "What colour was the towel I folded last?",
+        "candidates": [
+            "Blue",
+            "Black",
+            "Red",
+            "White"
+        ],
+        "answer": "White",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "Who did I talk to in the living room before I first sat down",
+        "candidates": [
+            "two women and one man",
+            "one woman and two men",
+            "three women",
+            "two men"
+        ],
+        "answer": "two women and one man",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_21.mp4",
+        "duration": 480.0,
+        "question": "Where was the dust pan?",
+        "candidates": [
+            "in the closet",
+            "near the window ",
+            "under the bed",
+            "on the kitchen counter"
+        ],
+        "answer": "near the window ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_21.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the jenga box?",
+        "candidates": [
+            "in the car",
+            "in the closet",
+            "on the table",
+            "under the bed"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "Where was the dark blue towel before I first picked it up?",
+        "candidates": [
+            "folded on the bedroom dresser",
+            "hanging on the bathroom door",
+            "on the kitchen sink",
+            "in the laundry basket"
+        ],
+        "answer": "on the kitchen sink",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "Where did I place the circuit board of the first radio on?",
+        "candidates": [
+            "the back case of the first radio",
+            "underneath the power button",
+            "inside the battery compartment",
+            "on top of the speaker"
+        ],
+        "answer": "the back case of the first radio",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_20.mp4",
+        "duration": 480.0,
+        "question": "Where did I last put the electric screwdriver machine?",
+        "candidates": [
+            "On the upper wooden block next to drill machine",
+            "In the toolbox",
+            "In the kitchen drawer",
+            "In the backyard shed"
+        ],
+        "answer": "On the upper wooden block next to drill machine",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "Did I close the oven door?",
+        "candidates": [
+            "I don't know",
+            "Maybe",
+            "Yes",
+            "No"
+        ],
+        "answer": "No",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_20.mp4",
+        "duration": 480.0,
+        "question": "Where did I last put the drill machine?",
+        "candidates": [
+            "On the kitchen counter",
+            "In the garage",
+            "On the upper wooden block",
+            "In the toolbox"
+        ],
+        "answer": "On the upper wooden block",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Who did I interact with when I skated",
+        "candidates": [
+            "the dog running alongside",
+            "the woman on black sports tight",
+            "the man in red sneakers",
+            "the child with a skateboard"
+        ],
+        "answer": "the woman on black sports tight",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_20.mp4",
+        "duration": 480.0,
+        "question": "How many nails did I attach?",
+        "candidates": [
+            "Three",
+            "One",
+            "Five",
+            "Seven"
+        ],
+        "answer": "Three",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_66.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the insulated drink cup?",
+        "candidates": [
+            "on table",
+            "in the refrigerator",
+            "in the dishwasher",
+            "in the car"
+        ],
+        "answer": "on table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_20.mp4",
+        "duration": 480.0,
+        "question": "Where was the bunch of nail before I took it?",
+        "candidates": [
+            "On the floor",
+            "In my pocket",
+            "In the garbage can",
+            "In the toolbox"
+        ],
+        "answer": "In my pocket",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_5.mp4",
+        "duration": 480.0,
+        "question": "Did I pick up the green herdez jar?",
+        "candidates": [
+            "I don't know.",
+            "No.",
+            "Yes.",
+            "I picked up the red herdez jar."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_5.mp4",
+        "duration": 480.0,
+        "question": "Did I pick up the yellow jar?",
+        "candidates": [
+            "Yes.",
+            "Maybe.",
+            "No.",
+            "I don't know."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "Where did I put the orange peels?",
+        "candidates": [
+            "in the laundry hamper in the bedroom",
+            "in the trash bin under the kitchen sink",
+            "in the compost bin in the backyard",
+            "in the recycling bin next to the front door"
+        ],
+        "answer": "in the trash bin under the kitchen sink",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_4.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the basket?",
+        "candidates": [
+            "Apples and Oranges",
+            "Cream and Tablets",
+            "Pens and Paper",
+            "Milk and Bread"
+        ],
+        "answer": "Cream and Tablets",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_30.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the money?",
+        "candidates": [
+            "Inside the draw.",
+            "In the kitchen cabinet",
+            "Under the bed",
+            "In my pocket"
+        ],
+        "answer": "Inside the draw.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many holes did I first drill in the wood? ",
+        "candidates": [
+            "4",
+            "6",
+            "2",
+            "8"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "Who did I interact with when I was holding the orange basket?",
+        "candidates": [
+            "Blue jacket boy",
+            "Red hat woman",
+            "Black t-shirt man",
+            "White dress girl"
+        ],
+        "answer": "Black t-shirt man",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "Where did I last put the orange top hanger?",
+        "candidates": [
+            "In the laundry basket",
+            "On the bedroom floor",
+            "In the back of the closet",
+            "On the front hanger rack"
+        ],
+        "answer": "On the front hanger rack",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I put the white cloth?",
+        "candidates": [
+            "under the bed",
+            "on the shelf",
+            "in the closet",
+            "in the drawer"
+        ],
+        "answer": "in the drawer",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "Where did I last put the white furry scarf?",
+        "candidates": [
+            "In the car",
+            "In the backyard",
+            "On the marble counter",
+            "In the closet"
+        ],
+        "answer": "On the marble counter",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_69.mp4",
+        "duration": 480.0,
+        "question": "Where was the red plastic shopping basket before she picked it up?",
+        "candidates": [
+            "On the floor",
+            "In her hand",
+            "On the shelf",
+            "In the shopping cart"
+        ],
+        "answer": "On the floor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many eggs did I pick?",
+        "candidates": [
+            "3",
+            "2",
+            "4",
+            "1"
+        ],
+        "answer": "3",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "Where was the yellow shoe before I picked it up?",
+        "candidates": [
+            "In the closet",
+            "In the car",
+            "On the table",
+            "On the floor"
+        ],
+        "answer": "On the floor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "Where did I put the white color top hanger?",
+        "candidates": [
+            "In the middle drawer",
+            "On the Lower right hanger",
+            "In the shoe rack",
+            "On the upper left hanger"
+        ],
+        "answer": "On the Lower right hanger",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_32.mp4",
+        "duration": 480.03333333333376,
+        "question": "What did I put in the red tray?",
+        "candidates": [
+            "A wrench",
+            "A hammer",
+            "A pair of pliers",
+            "A screw driver."
+        ],
+        "answer": "A screw driver.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "How many purses were kept on the display table?",
+        "candidates": [
+            "Three",
+            "Four",
+            "Two.",
+            "One"
+        ],
+        "answer": "Two.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "How many bar soaps were on the washing  machine?",
+        "candidates": [
+            "5",
+            "9",
+            "3",
+            "7"
+        ],
+        "answer": "7",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where was the polishing machine?",
+        "candidates": [
+            "in the box",
+            "outside the room",
+            "on the table",
+            "under the chair"
+        ],
+        "answer": "in the box",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "How many ties were kept on the display table?",
+        "candidates": [
+            "Eight",
+            "Four.",
+            "Two",
+            "Six"
+        ],
+        "answer": "Four.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "How many bowls did I pick from the plate rack?",
+        "candidates": [
+            "3",
+            "1",
+            "2",
+            "4"
+        ],
+        "answer": "1",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What did I put in the egg yolk?",
+        "candidates": [
+            "milk",
+            "cheese",
+            "bread",
+            "butter"
+        ],
+        "answer": "bread",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "How many boxes did I pick up? ",
+        "candidates": [
+            "four",
+            "one",
+            "two",
+            "three"
+        ],
+        "answer": "two",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_65.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the chopping machine?",
+        "candidates": [
+            "wooden piece.",
+            "metal rod",
+            "glass jar",
+            "plastic bottle"
+        ],
+        "answer": "wooden piece.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the cap?",
+        "candidates": [
+            "in the drawer",
+            "on the table",
+            "on the shelve ",
+            "in the closet"
+        ],
+        "answer": "on the shelve ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_46.mp4",
+        "duration": 480.0,
+        "question": "Where was the 'wire plier'?",
+        "candidates": [
+            "hanging on the wall",
+            "on the white boxes",
+            "in the toolbox",
+            "on the black boxes"
+        ],
+        "answer": "on the white boxes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "What jug did I take from the cupboard?",
+        "candidates": [
+            "the jug with the red lid",
+            "the jug with the blue lid",
+            "the jug with the green lid",
+            "the jug with the yellow lid"
+        ],
+        "answer": "the jug with the red lid",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_83.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I open the laptop?",
+        "candidates": [
+            "Maybe.",
+            "No.",
+            "I don't know.",
+            "Yes."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "Where was the handle of the first radio before I picked it up?",
+        "candidates": [
+            "on the table",
+            "in the drawer",
+            "in my hand",
+            "on the floor"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put on the shelf?",
+        "candidates": [
+            "Book",
+            "Cup",
+            "Pencil",
+            "Spray"
+        ],
+        "answer": "Spray",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the rack?",
+        "candidates": [
+            "Spoon",
+            "Fork",
+            "Cup",
+            "Plate"
+        ],
+        "answer": "Plate",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Did I leave the room door open?",
+        "candidates": [
+            "yes",
+            "maybe",
+            "I don't know",
+            "no"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "What bowl did I take from the cupboard?",
+        "candidates": [
+            "a green bowl",
+            "a blue bowl",
+            "a white bowl",
+            "a red bowl"
+        ],
+        "answer": "a white bowl",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What did i put in the pan?",
+        "candidates": [
+            "Salt",
+            "Sugar",
+            "Butter",
+            "Oil"
+        ],
+        "answer": "Butter",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "Where was the square bucket before I picked it up?",
+        "candidates": [
+            "in the garden area",
+            "in the kitchen",
+            "on the roof",
+            "under the bed"
+        ],
+        "answer": "in the garden area",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the door open ?",
+        "candidates": [
+            "Maybe",
+            "NO",
+            "Yes",
+            "I don't know"
+        ],
+        "answer": "NO",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_58.mp4",
+        "duration": 414.5333333333333,
+        "question": "Where was the wastebin?",
+        "candidates": [
+            "In the bathroom",
+            "In the kitchen",
+            "In the living room",
+            "In the bedroom"
+        ],
+        "answer": "In the kitchen",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_64.mp4",
+        "duration": 480.0,
+        "question": "What did I take out of my left pocket ?",
+        "candidates": [
+            "pocket folding knife",
+            "keys",
+            "phone",
+            "wallet"
+        ],
+        "answer": "pocket folding knife",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "where was the eyeglasses",
+        "candidates": [
+            "on the table ",
+            "in the drawer",
+            "under the chair",
+            "in the car"
+        ],
+        "answer": "on the table ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_40.mp4",
+        "duration": 480.0666666666667,
+        "question": "Where was the no parking board ?",
+        "candidates": [
+            "On the street.",
+            "Inside a building",
+            "In a park",
+            "In a parking lot"
+        ],
+        "answer": "On the street.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_82.mp4",
+        "duration": 480.0,
+        "question": "Where is the bowl before I put a spoon into it ?",
+        "candidates": [
+            "The bowl was in the refrigerator before I put a spoon into it.",
+            "The bowl was on the shelf before I put a spoon into it.",
+            "The bowl was on the table before I put a spoon into it.",
+            "The bowl was in the basin before I put a spoon into it."
+        ],
+        "answer": "The bowl was in the basin before I put a spoon into it.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_45.mp4",
+        "duration": 428.83333328749984,
+        "question": "Where did I kept the brown packet?",
+        "candidates": [
+            "In the cupboard",
+            "In the fridge",
+            "On the fllor",
+            "On the table"
+        ],
+        "answer": "On the fllor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_62.mp4",
+        "duration": 480.0,
+        "question": "Where was the ATM machine?",
+        "candidates": [
+            "At the top of the hill",
+            "Nearby window.",
+            "In the park",
+            "Inside the supermarket"
+        ],
+        "answer": "Nearby window.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the trash can?",
+        "candidates": [
+            "box",
+            "paper",
+            "banana peel",
+            "plastic bottle"
+        ],
+        "answer": "box",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_68.mp4",
+        "duration": 480.03333333333336,
+        "question": "What did I put in my pocket ?",
+        "candidates": [
+            "Chewing gum",
+            "ATM card.",
+            "Driver's license",
+            "Lip balm"
+        ],
+        "answer": "ATM card.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "When the woman did dropped the paper?",
+        "candidates": [
+            "Without swipe",
+            "During swipe",
+            "After swipe",
+            "Before swipe"
+        ],
+        "answer": "After swipe",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I keep the cap of the tank?",
+        "candidates": [
+            "on the car bonnet ",
+            "under the bed",
+            "in the kitchen drawer",
+            "in the glove compartment"
+        ],
+        "answer": "on the car bonnet ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_55.mp4",
+        "duration": 480.0,
+        "question": "How many white buckets were there in the truck?",
+        "candidates": [
+            "Six.",
+            "Ten",
+            "None",
+            "Three"
+        ],
+        "answer": "Six.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What word was written on the hammer? ",
+        "candidates": [
+            "pliers",
+            "husky",
+            "wrench",
+            "screwdriver"
+        ],
+        "answer": "husky",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Did I throw the papers in the trash bin?",
+        "candidates": [
+            "No",
+            "Maybe",
+            "I don't know",
+            "Yes"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the drillers?",
+        "candidates": [
+            "in the shed",
+            "in the toolbox",
+            "in the garage",
+            "on the wooden scaffolding"
+        ],
+        "answer": "on the wooden scaffolding",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_75.mp4",
+        "duration": 480.03333338333334,
+        "question": "Where was the wooden bamboo?",
+        "candidates": [
+            "Nearby tractor.",
+            "Inside the swimming pool.",
+            "In the kitchen.",
+            "On top of the mountain."
+        ],
+        "answer": "Nearby tractor.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "Where was the measurement tape?",
+        "candidates": [
+            "on the table",
+            "in the car",
+            "in the toolbox",
+            "in my pocket"
+        ],
+        "answer": "in my pocket",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the pocket?",
+        "candidates": [
+            "a piece of candy",
+            "bunch of nails",
+            "a wallet",
+            "a pen"
+        ],
+        "answer": "bunch of nails",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "Where did I put the butter?",
+        "candidates": [
+            "on the counter top",
+            "in the refrigerator",
+            "in the pantry",
+            "in the microwave"
+        ],
+        "answer": "on the counter top",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_42.mp4",
+        "duration": 480.0666666666667,
+        "question": "Whom did I talk to at the store?",
+        "candidates": [
+            "elderly person with a cane",
+            "man with a hat",
+            "child holding a balloon",
+            "lady wearing flower pattern top."
+        ],
+        "answer": "lady wearing flower pattern top.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "Did I cut the wood?",
+        "candidates": [
+            "maybe",
+            "no",
+            "I don't know",
+            "yes"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_58.mp4",
+        "duration": 414.5333333333333,
+        "question": "How many dogs did I touch first?",
+        "candidates": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the wood scaffold plank? ",
+        "candidates": [
+            "in the corner to save space",
+            "in the middle for balance",
+            "in the upward to attached the other wood",
+            "in the downward for stability"
+        ],
+        "answer": "in the upward to attached the other wood",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "Where was the L-Shaped Measuring Scale?",
+        "candidates": [
+            "in the toolbox",
+            "on the wooden platform",
+            "hanging on the wall",
+            "underneath the table"
+        ],
+        "answer": "on the wooden platform",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_39.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I remove from the box?",
+        "candidates": [
+            "metal",
+            "paper",
+            "cloth",
+            "plastic"
+        ],
+        "answer": "paper",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Did I leave the storeroom door open?",
+        "candidates": [
+            "yes",
+            "I don't know",
+            "no",
+            "maybe"
+        ],
+        "answer": "no",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_19.mp4",
+        "duration": 480.0,
+        "question": "What did I pick from the plastic box?",
+        "candidates": [
+            "pen",
+            "needle",
+            "paper",
+            "scissors"
+        ],
+        "answer": "needle",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_78.mp4",
+        "duration": 480.0,
+        "question": "Where was the hammer?",
+        "candidates": [
+            "Underneath the car",
+            "In the kitchen drawer",
+            "In the toolbox",
+            "On the plywood."
+        ],
+        "answer": "On the plywood.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_18.mp4",
+        "duration": 460.7333333333331,
+        "question": "What did I pick from the garden ?",
+        "candidates": [
+            "Wooden bench",
+            "Brass stairs",
+            "Glass vase",
+            "Red flowers"
+        ],
+        "answer": "Brass stairs",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_18.mp4",
+        "duration": 460.7333333333331,
+        "question": "Where did I keep the wooden cutter?",
+        "candidates": [
+            "in the drawer",
+            "in the toolbox",
+            "near wooden block",
+            "on the shelf"
+        ],
+        "answer": "near wooden block",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "How many face masks were on the brown cabinet",
+        "candidates": [
+            "10",
+            "3",
+            "1",
+            "5"
+        ],
+        "answer": "3",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_18.mp4",
+        "duration": 460.7333333333331,
+        "question": "How many screws did I use?",
+        "candidates": [
+            "eight",
+            "four",
+            "six",
+            "two"
+        ],
+        "answer": "four",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I open the car hood?",
+        "candidates": [
+            "I don't know",
+            "I can't remember",
+            "Yes ",
+            "No"
+        ],
+        "answer": "Yes ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_54.mp4",
+        "duration": 480.0,
+        "question": "What did I see in the vehicle?",
+        "candidates": [
+            "tools",
+            "clothing",
+            "pieces of pipes.",
+            "food wrappers"
+        ],
+        "answer": "pieces of pipes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "How many black bags are there?",
+        "candidates": [
+            "4 black bags",
+            "1 black bag",
+            "2 black bags",
+            "3 black bags"
+        ],
+        "answer": "2 black bags",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where did I keep the wood base panel?",
+        "candidates": [
+            "in the room",
+            "under the bed",
+            "in the kitchen",
+            "in the garage"
+        ],
+        "answer": "in the room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_74.mp4",
+        "duration": 480.0,
+        "question": "In what location did I last see the cat?",
+        "candidates": [
+            "in the backyard",
+            "in the kitchen",
+            "in the living room",
+            "in the storage room"
+        ],
+        "answer": "in the storage room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where did I put my lemon green wristwatch",
+        "candidates": [
+            "in the car's glove compartment",
+            "in the bedroom closet",
+            "on the white table",
+            "in the kitchen drawer"
+        ],
+        "answer": "on the white table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "What did I fill in the pink bowl?",
+        "candidates": [
+            "Soup",
+            "Milk",
+            "Orange juice",
+            "Water"
+        ],
+        "answer": "Water",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I leave the car ignition on?",
+        "candidates": [
+            "Maybe",
+            "Yes",
+            "I don't know",
+            "No"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_57.mp4",
+        "duration": 480.0,
+        "question": "Did I open the fridge?",
+        "candidates": [
+            "no",
+            "I don't know",
+            "maybe",
+            "yes"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "Where did I put the leftover pack of dog food",
+        "candidates": [
+            "in the garage",
+            "in the fridge",
+            "in the pantry",
+            "in the car"
+        ],
+        "answer": "in the fridge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_77.mp4",
+        "duration": 468.23333328749993,
+        "question": "What payment method did I use?",
+        "candidates": [
+            "cash",
+            "credit card",
+            "Venmo",
+            "check"
+        ],
+        "answer": "cash",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_37.mp4",
+        "duration": 480.0,
+        "question": "Where was the red basket?",
+        "candidates": [
+            "In the kitchen.",
+            "On the shelf.",
+            "In the bathroom.",
+            "Near the door."
+        ],
+        "answer": "Near the door.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "Where was the Tostitos queso Cheese jar?",
+        "candidates": [
+            "On the shelf",
+            "In the car",
+            "In the Fridge",
+            "In the pantry"
+        ],
+        "answer": "In the Fridge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_60.mp4",
+        "duration": 480.0333333333334,
+        "question": "Where was the juice packet before I opened the refrigerator?",
+        "candidates": [
+            "On the kitchen counter",
+            "Inside the refrigerator.",
+            "In the dishwasher",
+            "In the pantry"
+        ],
+        "answer": "Inside the refrigerator.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "Where was the Brown bag?",
+        "candidates": [
+            "On the red table in the kitchen",
+            "In the black drawer under the bed",
+            "On the blue chair beside the tv",
+            "On the white shelf in the bathroom"
+        ],
+        "answer": "On the blue chair beside the tv",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "In what location did I first see the red pair of slippers",
+        "candidates": [
+            "In my bedroom",
+            "at the entrance of my house",
+            "In a store",
+            "At the park"
+        ],
+        "answer": "at the entrance of my house",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_40.mp4",
+        "duration": 480.0666666666667,
+        "question": "Where was the Unauthorized vehicle poster ?",
+        "candidates": [
+            "In a parking lot",
+            "In a garage",
+            "On the street",
+            "In a driveway"
+        ],
+        "answer": "On the street",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "What word was written on the banner ?",
+        "candidates": [
+            "Dream big",
+            "\"We can do it\" was written on the banner.",
+            "Believe in yourself",
+            "Never give up"
+        ],
+        "answer": "\"We can do it\" was written on the banner.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_27.mp4",
+        "duration": 480.0,
+        "question": "Where was the measurement tape?",
+        "candidates": [
+            "hanging on the wall",
+            "in the pocket",
+            "in the toolbox",
+            "on the table"
+        ],
+        "answer": "in the pocket",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_27.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the pocket?\n",
+        "candidates": [
+            "Phone",
+            "Measure Tape",
+            "Pen",
+            "Wallet"
+        ],
+        "answer": "Measure Tape",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the trash can?",
+        "candidates": [
+            "pen",
+            "banana",
+            "wrapper",
+            "sock"
+        ],
+        "answer": "wrapper",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_26.mp4",
+        "duration": 375.3666666666667,
+        "question": "What part of the bicycle did I spray with the lube?",
+        "candidates": [
+            "the pedals",
+            "the bicycle chain area",
+            "the handlebars",
+            "the seat"
+        ],
+        "answer": "the bicycle chain area",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I put the white clothe?",
+        "candidates": [
+            "In the kitchen table drawer",
+            "In the living room bookshelf",
+            "In the bathroom cabinet",
+            "In the bedroom closet"
+        ],
+        "answer": "In the kitchen table drawer",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_26.mp4",
+        "duration": 375.3666666666667,
+        "question": "Where did I put the spanner?",
+        "candidates": [
+            "on the table",
+            "under the bed",
+            "in the car",
+            "in the drawer"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_26.mp4",
+        "duration": 375.3666666666667,
+        "question": "Where was the drill before I picked it up?",
+        "candidates": [
+            "In the garage",
+            "In the toolbox",
+            "",
+            "On the shelf"
+        ],
+        "answer": "",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "Where did I put the blue helmet",
+        "candidates": [
+            "on the wall hanger",
+            "on the kitchen counter",
+            "under the bed",
+            "in the closet"
+        ],
+        "answer": "on the wall hanger",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_56.mp4",
+        "duration": 480.0000000000001,
+        "question": "Where was the coffee container before pouring the coffee?",
+        "candidates": [
+            "In the coffee maker",
+            "In the refrigerator",
+            "In the microwave",
+            "In the toaster"
+        ],
+        "answer": "In the coffee maker",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_25.mp4",
+        "duration": 480.0,
+        "question": "What word was written on the black bag?",
+        "candidates": [
+            "hiker",
+            "runner",
+            "jogger",
+            "walker"
+        ],
+        "answer": "walker",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_25.mp4",
+        "duration": 480.0,
+        "question": "What color is the bag on the second rider?",
+        "candidates": [
+            "blue",
+            "yellow",
+            "green",
+            "red"
+        ],
+        "answer": "blue",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_25.mp4",
+        "duration": 480.0,
+        "question": "Where is the package in a plastic bag?",
+        "candidates": [
+            "inside the mailbox at the end of the street",
+            "under the flower vase at the entrance of the house",
+            "on top of the refrigerator in the kitchen",
+            "hidden inside the shoe rack near the door"
+        ],
+        "answer": "under the flower vase at the entrance of the house",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "In what location did I last see the cat?",
+        "candidates": [
+            "in the kitchen",
+            "on the dining chair",
+            "in the backyard",
+            "under the bed"
+        ],
+        "answer": "on the dining chair",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_25.mp4",
+        "duration": 480.0,
+        "question": "How many trash cans did I see on the front porch of the apartment?",
+        "candidates": [
+            "3",
+            "4",
+            "5",
+            "6"
+        ],
+        "answer": "6",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "Where was the battery cover of the first radio before I picked it up?",
+        "candidates": [
+            "in my pocket",
+            "on the table",
+            "underneath the chair",
+            "in the drawer"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_24.mp4",
+        "duration": 480.0,
+        "question": "What did I put on the table?",
+        "candidates": [
+            "Hammer",
+            "Drill machine",
+            "Screwdriver",
+            "Wrench"
+        ],
+        "answer": "Drill machine",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the black tape before I picked it up",
+        "candidates": [
+            "on the kitchen counter",
+            "in the backyard",
+            "on the entrance stairs",
+            "under the couch"
+        ],
+        "answer": "on the entrance stairs",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where was the router?",
+        "candidates": [
+            "on the roof",
+            "under the bed",
+            "on the table.",
+            "in the refrigerator"
+        ],
+        "answer": "on the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "What instrument did I play ?",
+        "candidates": [
+            "The piano instrument I was playing",
+            "The guitar instrument I was playing",
+            "The violin instrument I was playing",
+            "The drums instrument I was playing"
+        ],
+        "answer": "The piano instrument I was playing",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where did i put the juice mug?",
+        "candidates": [
+            "in the dishwasher",
+            "on the kitchen counter",
+            "in the microwave",
+            "inside fridge"
+        ],
+        "answer": "inside fridge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_30.mp4",
+        "duration": 480.0,
+        "question": "Where were the keys?",
+        "candidates": [
+            "In the car.",
+            "In the fridge.",
+            "On the table.",
+            "In the mailbox."
+        ],
+        "answer": "On the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "In what location did I first see the orange sticky note",
+        "candidates": [
+            "on the monitor of the desktop ",
+            "in the bathroom",
+            "underneath the couch",
+            "on the refrigerator"
+        ],
+        "answer": "on the monitor of the desktop ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "What food did I put in the plastic bag?",
+        "candidates": [
+            "banana",
+            "apple",
+            "chicken",
+            "bread"
+        ],
+        "answer": "bread",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_69.mp4",
+        "duration": 480.0,
+        "question": "Who did I interact with when I entered the clothing store?",
+        "candidates": [
+            "Yellow dress girl",
+            "Grey t-shirt man",
+            "Red hat woman",
+            "Blue jeans boy"
+        ],
+        "answer": "Grey t-shirt man",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_34.mp4",
+        "duration": 442.29999999999995,
+        "question": "Did I drink water?",
+        "candidates": [
+            "yes.",
+            "no",
+            "I don't know",
+            "maybe"
+        ],
+        "answer": "yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_17.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I cut the wood plank?",
+        "candidates": [
+            "Yes",
+            "Maybe",
+            "I don't know",
+            "No"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_17.mp4",
+        "duration": 480.0333333333333,
+        "question": "What color was the measuring tape I removed from my pocket?",
+        "candidates": [
+            "green",
+            "blue",
+            "red",
+            "Yellow"
+        ],
+        "answer": "Yellow",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_16.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the door of the second bedroom open?",
+        "candidates": [
+            "Yes",
+            "No",
+            "Maybe",
+            "I don't know"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "Where was the plate after I putting a bread slice on it ?",
+        "candidates": [
+            "the plate was in the cabinet before i put a bread slice on it.",
+            "the plate was in the refrigerator before i put a bread slice on it.",
+            "the plate was in the sink before i put a bread slice on it.",
+            "the plate was on the floor before i put a bread slice on it."
+        ],
+        "answer": "the plate was in the cabinet before i put a bread slice on it.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "Where was the glass cup before I picked it up?",
+        "candidates": [
+            "on the kitchen counter",
+            "in the bedroom",
+            "in the dishwasher",
+            "in the car"
+        ],
+        "answer": "on the kitchen counter",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_16.mp4",
+        "duration": 480.0,
+        "question": "In what room did I see the black suitcase?",
+        "candidates": [
+            "In the kitchen on the counter",
+            "In the bathroom on the sink",
+            "In the living room on the couch",
+            "In the bedroom on the bed"
+        ],
+        "answer": "In the bedroom on the bed",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "Where did I put the plate?",
+        "candidates": [
+            "In the dishwasher",
+            "In the fridge",
+            "On the counter",
+            "In the sink"
+        ],
+        "answer": "In the sink",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "Did I throw the drill on the ground?",
+        "candidates": [
+            "yes ",
+            "I don't know",
+            "no",
+            "maybe"
+        ],
+        "answer": "yes ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_16.mp4",
+        "duration": 480.0,
+        "question": "Where was the water bottle?",
+        "candidates": [
+            "Under the black chair in the dining room",
+            "In the red drawer in the kitchen",
+            "On the white table in the kid bed room",
+            "On the blue table in the living room"
+        ],
+        "answer": "On the white table in the kid bed room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_16.mp4",
+        "duration": 480.0,
+        "question": "Where was the blue chair?",
+        "candidates": [
+            "On the balcony",
+            "In the living room",
+            "In the bedroom",
+            "Beside the dining table"
+        ],
+        "answer": "Beside the dining table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "Where was the cat after I put food in the red pet plate",
+        "candidates": [
+            "on the back terrace of the house",
+            "in the kitchen",
+            "under the bed",
+            "in the living room"
+        ],
+        "answer": "on the back terrace of the house",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_16.mp4",
+        "duration": 480.0,
+        "question": "Where was the blue poly bag?",
+        "candidates": [
+            "On the floor next to the small black sofa",
+            "Underneath the dining table",
+            "On the kitchen counter",
+            "In the bathroom cabinet"
+        ],
+        "answer": "On the floor next to the small black sofa",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the big glass cup ?",
+        "candidates": [
+            "In the living room's drawer.",
+            "In the bedroom's closet.",
+            "In the kitchen's shelf.",
+            "In the bathroom's cabinet."
+        ],
+        "answer": "In the kitchen's shelf.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.0,
+        "question": "What did I put in fridge ?",
+        "candidates": [
+            "Tiffin box.",
+            "Water bottle",
+            "Spoon",
+            "Shoes"
+        ],
+        "answer": "Tiffin box.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many nails did I first drive into the wood? ",
+        "candidates": [
+            "1",
+            "3",
+            "2",
+            "0"
+        ],
+        "answer": "1",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the monitor screen on ?",
+        "candidates": [
+            "Yes, but it was accidental.",
+            "Yes.",
+            "No, the monitor screen is off.",
+            "I'm not sure, I didn't see."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_69.mp4",
+        "duration": 480.0,
+        "question": "Who did I talk to near the counter?",
+        "candidates": [
+            "Blue t-shirt man",
+            "Red hat woman",
+            "White sneakers boy",
+            "Black jacket girl"
+        ],
+        "answer": "Blue t-shirt man",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_49.mp4",
+        "duration": 480.0666666666667,
+        "question": "What equipment did I take?",
+        "candidates": [
+            "Hammer",
+            "Screwdriver",
+            "Mechanical Wire parts.",
+            "Paintbrush"
+        ],
+        "answer": "Mechanical Wire parts.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_33.mp4",
+        "duration": 480.0,
+        "question": "In what location did I see a leaf blower?",
+        "candidates": [
+            "Tool Storage Container",
+            "Garden shed",
+            "Kitchen pantry",
+            "Bathroom cabinet"
+        ],
+        "answer": "Tool Storage Container",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the door open?",
+        "candidates": [
+            "maybe",
+            "yes",
+            "I don't know",
+            "no"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where did I put the trashcan?",
+        "candidates": [
+            "In the kitchen",
+            "In the truck",
+            "On the roof",
+            "Under the bed"
+        ],
+        "answer": "In the truck",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "How many spoons of oats did I put in each bowl?",
+        "candidates": [
+            "5",
+            "3",
+            "4",
+            "2"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many mugs did i see on the counter top?",
+        "candidates": [
+            "2",
+            "3",
+            "4",
+            "1"
+        ],
+        "answer": "3",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "Where did I keep the drill?",
+        "candidates": [
+            "in the garage",
+            "near the stairs ",
+            "under the bed",
+            "in the kitchen"
+        ],
+        "answer": "near the stairs ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "What did I wear on my hands?",
+        "candidates": [
+            "Red hand gloves",
+            "Black hand gloves",
+            "White hand gloves",
+            "Blue hand gloves"
+        ],
+        "answer": "Black hand gloves",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_65.mp4",
+        "duration": 480.0,
+        "question": "What word was written on the wood cutting machine that I used?",
+        "candidates": [
+            "Milwaukee",
+            "Makita",
+            "Bosch",
+            "Dewalt."
+        ],
+        "answer": "Dewalt.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the red bag ?",
+        "candidates": [
+            "under the bed",
+            "in the car",
+            "in the closet",
+            "on the shelve "
+        ],
+        "answer": "on the shelve ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "What did I pour in the jug?",
+        "candidates": [
+            "coffee",
+            "water",
+            "squeezed orange juice",
+            "milk"
+        ],
+        "answer": "squeezed orange juice",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "How many bolts did I unscrew from the back case of the second radio?",
+        "candidates": [
+            "6",
+            "8",
+            "2",
+            "4"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_46.mp4",
+        "duration": 480.0,
+        "question": "Where was the screw packet?",
+        "candidates": [
+            "Under the bed",
+            "On the dustbin",
+            "In the refrigerator",
+            "In the mailbox"
+        ],
+        "answer": "On the dustbin",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where did I put the wooden rack?",
+        "candidates": [
+            "inside store room",
+            "on the balcony",
+            "in the kitchen",
+            "under the bed"
+        ],
+        "answer": "inside store room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_68.mp4",
+        "duration": 480.03333333333336,
+        "question": "What word did I read on the paper stuck to the green glass ?",
+        "candidates": [
+            "Golden Gate Bridge",
+            "Santana Row.",
+            "Alcatraz",
+            "San Francisco"
+        ],
+        "answer": "Santana Row.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "Did the lady plug the coffee machine?",
+        "candidates": [
+            "I don't know",
+            "yes",
+            "no",
+            "maybe"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_0.mp4",
+        "duration": 480.0,
+        "question": "What color t-shirt was the man wearing holding the air-blower machine?",
+        "candidates": [
+            "White",
+            "Red",
+            "Black",
+            "Grey"
+        ],
+        "answer": "Grey",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_24.mp4",
+        "duration": 480.0,
+        "question": "What trolley was the man pulling?",
+        "candidates": [
+            "plastic trolley",
+            "wooden trolley",
+            "cement trolley.",
+            "metal trolley"
+        ],
+        "answer": "cement trolley.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_24.mp4",
+        "duration": 480.0,
+        "question": "Where did I put three handful of nails?",
+        "candidates": [
+            "In my backpack",
+            "In my left pocket.",
+            "On the table",
+            "In my right pocket"
+        ],
+        "answer": "In my left pocket.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many holes did I last drill into the wood? ",
+        "candidates": [
+            "2",
+            "1",
+            "3",
+            "4"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_23.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where did I keep the Jenga puzzle?",
+        "candidates": [
+            "on the table",
+            "in the closet",
+            "in the kitchen",
+            "under the bed"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Did I throw the papers in the trash bin?",
+        "candidates": [
+            "Maybe",
+            "Yes",
+            "No",
+            "I don't know"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_76.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the wooden bamboo?",
+        "candidates": [
+            "In the kitchen.",
+            "Nearby tractor.",
+            "Underneath the ocean.",
+            "On top of the mountain."
+        ],
+        "answer": "Nearby tractor.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_23.mp4",
+        "duration": 479.9999999999998,
+        "question": "What did I put in the box?",
+        "candidates": [
+            "pen and paper",
+            "puzzle and coins",
+            "book and keys",
+            "socks and candy"
+        ],
+        "answer": "puzzle and coins",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "Where is the \"stop\" signboard ?",
+        "candidates": [
+            "The \"stop\" signboard was at the four-way road intersection.",
+            "On the sidewalk",
+            "Inside a building",
+            "In a park"
+        ],
+        "answer": "The \"stop\" signboard was at the four-way road intersection.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_23.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where was the white vase?",
+        "candidates": [
+            "beside the extension board",
+            "in the bathroom",
+            "under the bed",
+            "on top of the refrigerator"
+        ],
+        "answer": "beside the extension board",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What did I put in the plate",
+        "candidates": [
+            "spaghetti",
+            "lettuce",
+            "yolk",
+            "bread"
+        ],
+        "answer": "yolk",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_27.mp4",
+        "duration": 480.0,
+        "question": "Where was the hammer after I used it?",
+        "candidates": [
+            "underneath the couch",
+            "on the kitchen counter",
+            "in the toolbox",
+            "on the wood rack "
+        ],
+        "answer": "on the wood rack ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_23.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where did I put the Connect4 game box?",
+        "candidates": [
+            "behind the couch",
+            "in the kitchen cabinet",
+            "under the television stand",
+            "on top of the bookshelf"
+        ],
+        "answer": "under the television stand",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "Where were the eyeglasses",
+        "candidates": [
+            "on the window sill",
+            "on the kitchen counter",
+            "in the drawer",
+            "under the bed"
+        ],
+        "answer": "on the window sill",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the fur blanket ",
+        "candidates": [
+            "in the kitchen",
+            "on the bed",
+            "in the closet",
+            "on the couch"
+        ],
+        "answer": "on the bed",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_40.mp4",
+        "duration": 480.0666666666667,
+        "question": "What color of shoes was the man wearing as he crossed the street ?",
+        "candidates": [
+            "Black color",
+            "Blue color",
+            "Yellow color",
+            "Red color"
+        ],
+        "answer": "Red color",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "How many green mugs were on the fridge top after I first opened the fridge",
+        "candidates": [
+            "0",
+            "2",
+            "3",
+            "1"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_22.mp4",
+        "duration": 480.0,
+        "question": "Where was the guitar before I held it in my hand",
+        "candidates": [
+            "in the backyard",
+            "underneath the bed",
+            "beside the white cabinet",
+            "on the kitchen counter"
+        ],
+        "answer": "beside the white cabinet",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_45.mp4",
+        "duration": 428.83333328749984,
+        "question": "Where did I kept the brown packet?",
+        "candidates": [
+            "On the floor",
+            "In the car",
+            "In the refrigerator",
+            "In the mailbox"
+        ],
+        "answer": "On the floor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_62.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the book?",
+        "candidates": [
+            "on the book shelf",
+            "under the bed",
+            "in the refrigerator",
+            "in the car"
+        ],
+        "answer": "on the book shelf",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_82.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the spoon?",
+        "candidates": [
+            " In sink ",
+            "In the refrigerator",
+            "In the dishwasher",
+            "On the stove"
+        ],
+        "answer": " In sink ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_68.mp4",
+        "duration": 480.03333333333336,
+        "question": "What symbol did I see on my ID ?",
+        "candidates": [
+            "Instagram symbol",
+            "Facebook symbol",
+            "Snapchat symbol",
+            "Twitter symbol"
+        ],
+        "answer": "Facebook symbol",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "What word was written on the mirror door?",
+        "candidates": [
+            "Skydive",
+            "Skylounge",
+            "Skyscraper",
+            "Skylight"
+        ],
+        "answer": "Skylounge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put in the front engine?",
+        "candidates": [
+            "Wooden stick",
+            "Metal spoon",
+            "Glass cup",
+            "Plastic bottle"
+        ],
+        "answer": "Plastic bottle",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_55.mp4",
+        "duration": 480.0,
+        "question": "Where was the machine before I took it out?",
+        "candidates": [
+            "in the garage",
+            "inside the storage shed",
+            "in the basement",
+            "on the roof"
+        ],
+        "answer": "inside the storage shed",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What word was written on the tape measure? ",
+        "candidates": [
+            "bosch",
+            "stanley",
+            "dewalt",
+            "makita"
+        ],
+        "answer": "dewalt",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where did I put the white bucket?",
+        "candidates": [
+            "in the car",
+            "outside",
+            "in the room",
+            "in the kitchen"
+        ],
+        "answer": "in the room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_76.mp4",
+        "duration": 480.03333333333336,
+        "question": "What the green t-shirt man was holding in his hand?",
+        "candidates": [
+            "The red umbrella.",
+            "The black cap.",
+            "The blue backpack.",
+            "The white shoes."
+        ],
+        "answer": "The black cap.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the leash before I picked it up",
+        "candidates": [
+            "on the kitchen counter",
+            "on the front door handle",
+            "under the couch",
+            "in the backyard"
+        ],
+        "answer": "on the front door handle",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "How many ties are on the display table? ",
+        "candidates": [
+            "8",
+            "6",
+            "4",
+            "2"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "What did I put in the plastic bag?",
+        "candidates": [
+            "Apple core",
+            "Orange peel",
+            "Empty soda can",
+            "Banana peel"
+        ],
+        "answer": "Banana peel",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the dog's neck ?",
+        "candidates": [
+            "I put a muzzle on the dog's neck.",
+            "I put a collar on the dog's neck.",
+            "I put a sweater on the dog's neck.",
+            "I put the dog leash rope around the neck."
+        ],
+        "answer": "I put the dog leash rope around the neck.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_58.mp4",
+        "duration": 414.5333333333333,
+        "question": "Where did I put the bag of rice?",
+        "candidates": [
+            "In the bedroom",
+            "In the refrigerator",
+            "On the kitchen slab/ In front of the microwave",
+            "Under the sink"
+        ],
+        "answer": "On the kitchen slab/ In front of the microwave",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the refrigerator?",
+        "candidates": [
+            "water bottle",
+            "phone charger",
+            "socks",
+            "lunch box"
+        ],
+        "answer": "lunch box",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_1.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the door open?",
+        "candidates": [
+            "I don't know",
+            "no ",
+            "maybe",
+            "yes"
+        ],
+        "answer": "no ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.0,
+        "question": "Did I switch off the bedroom light?",
+        "candidates": [
+            "Yes",
+            "I don't remember",
+            "I'm not sure",
+            "No"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "What did I put in the cabinet?",
+        "candidates": [
+            "blue book",
+            "red ball",
+            "green vase",
+            "white box"
+        ],
+        "answer": "white box",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_14.mp4",
+        "duration": 480.0333333333334,
+        "question": "Did I leave the bathroom door open?",
+        "candidates": [
+            "No",
+            "Maybe",
+            "Yes",
+            "I don't know"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_78.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the drill machine?",
+        "candidates": [
+            "Closet",
+            "Table",
+            "Shelf",
+            "Drawer"
+        ],
+        "answer": "Table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_38.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I put the plastic?",
+        "candidates": [
+            "compost bin",
+            "recycling bin",
+            "garbage bin",
+            "black bin"
+        ],
+        "answer": "black bin",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_14.mp4",
+        "duration": 480.0333333333334,
+        "question": "In what room did I see red shelf ?",
+        "candidates": [
+            "Bathroom",
+            "Store room",
+            "Kitchen",
+            "Living room"
+        ],
+        "answer": "Store room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "Did i see a Flower drawing?",
+        "candidates": [
+            "Maybe",
+            "No",
+            "Yes",
+            "I'm not sure"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_14.mp4",
+        "duration": 480.0333333333334,
+        "question": "Did I wash my hands ?",
+        "candidates": [
+            "No",
+            "I don't know",
+            "Maybe",
+            "Yes."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_44.mp4",
+        "duration": 480.0,
+        "question": "Did I wash my hands?",
+        "candidates": [
+            "No",
+            "Yes",
+            "Maybe",
+            "I don't know"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.0,
+        "question": "Where is the pack of Jenga game?",
+        "candidates": [
+            "on the bookshelf",
+            "in the television cabinet",
+            "under the bed",
+            "in the kitchen drawer"
+        ],
+        "answer": "in the television cabinet",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_60.mp4",
+        "duration": 480.0333333333334,
+        "question": "What did I take from the fridge?",
+        "candidates": [
+            "yogurt",
+            "milk ",
+            "juice",
+            "cheese"
+        ],
+        "answer": "milk ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.0,
+        "question": "In what location did I see the second hint bottled water?",
+        "candidates": [
+            "in the bedroom closet",
+            "in the kitchen pantry",
+            "in the bathroom cabinet",
+            "on the table by the couch"
+        ],
+        "answer": "on the table by the couch",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What liquid did I drink?",
+        "candidates": [
+            "milk",
+            "soda",
+            "water",
+            "juice"
+        ],
+        "answer": "water",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.0,
+        "question": "What color is the towel on the rack?",
+        "candidates": [
+            "pink",
+            "blue",
+            "white with ash stripes",
+            "red"
+        ],
+        "answer": "white with ash stripes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.0,
+        "question": "How many green cups were on the table in the kitchen area?",
+        "candidates": [
+            "3",
+            "1",
+            "2",
+            "0"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the bar code",
+        "candidates": [
+            "on the ceiling",
+            "on the floor",
+            "on the door ",
+            "on the window"
+        ],
+        "answer": "on the door ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where was the white can before I picked it up?",
+        "candidates": [
+            "on the kitchen counter",
+            "in the backyard",
+            "inside the toolbox ",
+            "underneath the couch"
+        ],
+        "answer": "inside the toolbox ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.0,
+        "question": "How many picture frames were on the wall?",
+        "candidates": [
+            "5",
+            "6",
+            "4",
+            "3"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "How many paintings were there in the bedroom?",
+        "candidates": [
+            "There were two paintings in the bedroom.",
+            "There were five paintings in the bedroom.",
+            "There were three paintings in the bedroom.",
+            "There were eight paintings in the bedroom."
+        ],
+        "answer": "There were three paintings in the bedroom.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Did I leave the front door open",
+        "candidates": [
+            "No",
+            "I'm not sure",
+            "Yes",
+            "I don't remember"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where was the empty paint bucket before i kept inside the store room?",
+        "candidates": [
+            "in the garage",
+            "outside house",
+            "in the kitchen",
+            "in the living room"
+        ],
+        "answer": "outside house",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_74.mp4",
+        "duration": 480.0,
+        "question": "Where was the pack of cling wrap before I picked it up?",
+        "candidates": [
+            "in the bathroom cabinet",
+            "under the bed",
+            "on the living room table",
+            "in the kitchen drawer"
+        ],
+        "answer": "in the kitchen drawer",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "What colour was the bottle I pressed",
+        "candidates": [
+            "yellow",
+            "green",
+            "orange",
+            "blue"
+        ],
+        "answer": "orange",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_38.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put in the black bin?",
+        "candidates": [
+            "glass",
+            "paper",
+            "metal",
+            "plastic"
+        ],
+        "answer": "plastic",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "What text did I read on the Poster?",
+        "candidates": [
+            "Believe in Yourself",
+            "Never Give Up",
+            "Dream Big",
+            "We Can Do It"
+        ],
+        "answer": "We Can Do It",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_77.mp4",
+        "duration": 468.23333328749993,
+        "question": "Where is the ATM machine?",
+        "candidates": [
+            "next to the coffee shop",
+            "across the street",
+            "neat the book stand",
+            "in the parking lot"
+        ],
+        "answer": "neat the book stand",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "Who did I talk to in the boutique? ",
+        "candidates": [
+            "my friend",
+            "the security guard",
+            "a customer",
+            "the shop attendant"
+        ],
+        "answer": "the shop attendant",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_60.mp4",
+        "duration": 480.0333333333334,
+        "question": "What did I keep inside the refrigerator?",
+        "candidates": [
+            "Juice packet.",
+            "Milk carton",
+            "Eggs carton",
+            "Bread loaf"
+        ],
+        "answer": "Juice packet.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I pour in the bottle?",
+        "candidates": [
+            "milk",
+            "juice",
+            "water",
+            "soda"
+        ],
+        "answer": "water",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "What colour was the helmet on the bicylce",
+        "candidates": [
+            "red",
+            "blue",
+            "white",
+            "black"
+        ],
+        "answer": "blue",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_1.mp4",
+        "duration": 480.0,
+        "question": "Where is the metre tape before putting on the wood table saw?",
+        "candidates": [
+            "The metre tape was on the shelf before I put on the wood table saw.",
+            "The metre tape was on the floor before I put on the wood table saw.",
+            "The metre tape was in the toolbox before I put on the wood table saw.",
+            "The metre tape was in my pocket before I put on the wood table saw."
+        ],
+        "answer": "The metre tape was in my pocket before I put on the wood table saw.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put in the dustbin?\n",
+        "candidates": [
+            "banana peel and coffee grounds",
+            "box and egg shell",
+            "paper and plastic",
+            "glass bottle and aluminum can"
+        ],
+        "answer": "box and egg shell",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "What picture was drawn in the note book ?",
+        "candidates": [
+            "The tree picture was drawn in the note book.",
+            "The house picture was drawn in the note book.",
+            "The flower picture was drawn in the note book.",
+            "The car picture was drawn in the note book."
+        ],
+        "answer": "The flower picture was drawn in the note book.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where was a fruit peeler?",
+        "candidates": [
+            "in a drawer.",
+            "in the fridge",
+            "under the sink",
+            "on the counter"
+        ],
+        "answer": "in a drawer.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_31.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the table?",
+        "candidates": [
+            "book",
+            "pen",
+            "gum",
+            "phone"
+        ],
+        "answer": "gum",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_74.mp4",
+        "duration": 480.0,
+        "question": "Where was the scraper before I picked it up?",
+        "candidates": [
+            "under the sink",
+            "in the drawer",
+            "on the cupboard",
+            "in the dishwasher"
+        ],
+        "answer": "on the cupboard",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the watch I wore before I picked it up",
+        "candidates": [
+            "on the white table",
+            "in the drawer",
+            "on the black chair",
+            "in my pocket"
+        ],
+        "answer": "on the white table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put in the white dustbin?",
+        "candidates": [
+            "Glass waste",
+            "Paper waste",
+            "Food waste",
+            "Plastic waste"
+        ],
+        "answer": "Food waste",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_57.mp4",
+        "duration": 480.0,
+        "question": "Where was the violin?",
+        "candidates": [
+            "behind the black chair ",
+            "on top of the bookshelf",
+            "in the kitchen drawer",
+            "under the table"
+        ],
+        "answer": "behind the black chair ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_34.mp4",
+        "duration": 442.29999999999995,
+        "question": "Where was the mango after I smelled it?",
+        "candidates": [
+            "in the refrigerator",
+            "on the kitchen counter",
+            "under the bed",
+            "in the person who wearing grey undershirt "
+        ],
+        "answer": "in the person who wearing grey undershirt ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "What colour was the pair of trainers shoes",
+        "candidates": [
+            "blue",
+            "black",
+            "white",
+            "red"
+        ],
+        "answer": "blue",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "Where was the hand wash ?",
+        "candidates": [
+            "The hand wash was in the kitchen",
+            "The hand wash was in the living room",
+            "The hand wash was in the bathroom",
+            "The hand wash was in the bedroom"
+        ],
+        "answer": "The hand wash was in the bathroom",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the fridge?",
+        "candidates": [
+            "Soda cans",
+            "Water bottles",
+            "Milk cartons",
+            "Orange juice"
+        ],
+        "answer": "Water bottles",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where were green peas?",
+        "candidates": [
+            "in a garden",
+            "in a refrigerator.",
+            "in a pantry",
+            "in a shoebox"
+        ],
+        "answer": "in a refrigerator.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_30.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the drawer?",
+        "candidates": [
+            "Keys",
+            "Phone",
+            "Pen",
+            "Money"
+        ],
+        "answer": "Money",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "How many were the yoga mats?",
+        "candidates": [
+            "There were five yoga mats.",
+            "There were six yoga mats.",
+            "There were two yoga mats.",
+            "There were three yoga mats."
+        ],
+        "answer": "There were three yoga mats.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "What word was written on the poster on the wall? ",
+        "candidates": [
+            "get a discount on your first purchase",
+            "sign up Extra 20% off",
+            "register now for 10% off",
+            "join our loyalty program for exclusive deals"
+        ],
+        "answer": "sign up Extra 20% off",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where did I put the white cup",
+        "candidates": [
+            "in the sink",
+            "in the refrigerator",
+            "on the black table",
+            "on the white table"
+        ],
+        "answer": "on the white table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_70.mp4",
+        "duration": 480.0,
+        "question": "What color was the trolley that i picked  up?\n\n",
+        "candidates": [
+            "Yellow color",
+            "Blue color",
+            "Green color",
+            "Red color"
+        ],
+        "answer": "Blue color",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "What colour is the jacket I touched at the cloth rail? ",
+        "candidates": [
+            "black",
+            "red",
+            "blue",
+            "white"
+        ],
+        "answer": "black",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_34.mp4",
+        "duration": 442.29999999999995,
+        "question": "Whom did I talk to in the backyard of the house? ",
+        "candidates": [
+            "person wearing red hat",
+            "person wearing black hat.",
+            "person wearing white hat",
+            "person wearing blue hat"
+        ],
+        "answer": "person wearing black hat.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the wardrobe?",
+        "candidates": [
+            "Throw pillow",
+            "Shoes",
+            "Blanket",
+            "Coffee mug"
+        ],
+        "answer": "Throw pillow",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "What did I put in the pet bowl ?",
+        "candidates": [
+            "I put a toy in the pet bowl.",
+            "I put a blanket in the pet bowl.",
+            "I put water in the pet bowl.",
+            "I put the small piece of meal in the pet bowl."
+        ],
+        "answer": "I put the small piece of meal in the pet bowl.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "How many extra spoons of oats did I put in the second bowl?",
+        "candidates": [
+            "1",
+            "3",
+            "4",
+            "2"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_82.mp4",
+        "duration": 480.0,
+        "question": "Did I turn off the stove?",
+        "candidates": [
+            "maybe",
+            "no",
+            "yes",
+            "I don't know"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "Did I attached the drill into the drill machine?",
+        "candidates": [
+            "yes",
+            "I don't know",
+            "maybe",
+            "no"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_12.mp4",
+        "duration": 480.0,
+        "question": "Where was the coffee machine ?",
+        "candidates": [
+            "In the refrigerator",
+            "In the bathroom",
+            "In the car",
+            "On the table."
+        ],
+        "answer": "On the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_12.mp4",
+        "duration": 480.0,
+        "question": "What did i put in the trash bin?",
+        "candidates": [
+            "paper towel",
+            "plastic bottle",
+            "empty can",
+            "banana peel"
+        ],
+        "answer": "empty can",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_35.mp4",
+        "duration": 408.63333328750014,
+        "question": "Did I leave the front door open",
+        "candidates": [
+            "yes",
+            "no",
+            "I don't remember",
+            "I'm not sure"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_12.mp4",
+        "duration": 480.0,
+        "question": "Where was the milk pack?",
+        "candidates": [
+            "in the microwave",
+            "in the pantry",
+            "inside fridge",
+            "on the kitchen counter"
+        ],
+        "answer": "inside fridge",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_66.mp4",
+        "duration": 480.03333333333336,
+        "question": "In what room did I see a silver bucket?",
+        "candidates": [
+            "in the bathroom",
+            "in the kitchen",
+            "in the bedroom",
+            "in the living room"
+        ],
+        "answer": "in the bedroom",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_11.mp4",
+        "duration": 480.0,
+        "question": "What colors are the pillows on the white sofas?",
+        "candidates": [
+            "red",
+            "orange",
+            "brown",
+            "purple"
+        ],
+        "answer": "brown",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_11.mp4",
+        "duration": 480.0,
+        "question": "Where are the books?",
+        "candidates": [
+            "in the drawer",
+            "hanging from the ceiling",
+            "on the shelf",
+            "on the floor"
+        ],
+        "answer": "on the floor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "Where did I put the knife?",
+        "candidates": [
+            "on the living room table",
+            "outside in the garden",
+            "in the bedroom drawer",
+            "in the kitchen sink"
+        ],
+        "answer": "in the kitchen sink",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_11.mp4",
+        "duration": 480.0,
+        "question": "Where is the tape measure?",
+        "candidates": [
+            "under the chair",
+            "on the table",
+            "in the toolbox",
+            "in the drawer"
+        ],
+        "answer": "on the table",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_30.mp4",
+        "duration": 480.0,
+        "question": "Where I did put marker pen?",
+        "candidates": [
+            "In the car.",
+            "In the fridge.",
+            "Under the bed.",
+            "On the table."
+        ],
+        "answer": "On the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_10.mp4",
+        "duration": 420.5666666666666,
+        "question": "What colour is the stool I sat on? ",
+        "candidates": [
+            "black",
+            "red",
+            "white",
+            "blue"
+        ],
+        "answer": "black",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_9.mp4",
+        "duration": 480.03333333333336,
+        "question": "Did I throw away the black plastic?",
+        "candidates": [
+            "I'm not sure",
+            "I don't know",
+            "no",
+            "yes"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_9.mp4",
+        "duration": 480.03333333333336,
+        "question": "Did I keep the hammer and white cups on the stairs?",
+        "candidates": [
+            "maybe",
+            "yes",
+            "I don't know",
+            "no"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where was the baking glove before I hung it on the hook?",
+        "candidates": [
+            "in the dishwasher",
+            "on the kitchen counter",
+            "in the oven",
+            "in the refrigerator"
+        ],
+        "answer": "on the kitchen counter",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_69.mp4",
+        "duration": 480.0,
+        "question": "Where was the red ketchup bottle?",
+        "candidates": [
+            "In the refrigerator",
+            "In the pantry",
+            "Next to the bakery counter",
+            "On the top shelf"
+        ],
+        "answer": "Next to the bakery counter",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_9.mp4",
+        "duration": 480.03333333333336,
+        "question": "How many drilling machines did I keep on the stairs?",
+        "candidates": [
+            "four",
+            "three",
+            "two",
+            "one"
+        ],
+        "answer": "two",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "Where was the bread before I picked it?",
+        "candidates": [
+            "In the refrigerator",
+            "In the oven",
+            "On the kitchen counter",
+            "At the grocery store"
+        ],
+        "answer": "In the refrigerator",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_48.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the dustbin?",
+        "candidates": [
+            "Old newspaper",
+            "Used Tissu",
+            "Empty water bottle",
+            "Banana peel"
+        ],
+        "answer": "Used Tissu",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_32.mp4",
+        "duration": 480.03333333333376,
+        "question": "Where did I put the red cap bottle?",
+        "candidates": [
+            "On the table",
+            "In the shelf.",
+            "Under the bed",
+            "In the fridge"
+        ],
+        "answer": "In the shelf.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.0333332874998,
+        "question": "How many belts were kept on the display table?",
+        "candidates": [
+            "Four.",
+            "Six",
+            "Eight",
+            "Two"
+        ],
+        "answer": "Four.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "Where was my purse?",
+        "candidates": [
+            "bathroom",
+            "kitchen premies",
+            "bedroom",
+            "living room"
+        ],
+        "answer": "kitchen premies",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "How many belts are on the display table? ",
+        "candidates": [
+            "1",
+            "2",
+            "3",
+            "4"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_66.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the can ?",
+        "candidates": [
+            "under the bed",
+            "in the fridge",
+            "on the table",
+            "in the hand "
+        ],
+        "answer": "in the hand ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "How many oranges did I squeeze last?",
+        "candidates": [
+            "2 sliced oranges",
+            "1 whole orange",
+            "half cut orange",
+            "3 peeled oranges"
+        ],
+        "answer": "half cut orange",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_29.mp4",
+        "duration": 428.0666666666666,
+        "question": "How many batteries were on the table?",
+        "candidates": [
+            "5",
+            "3",
+            "2",
+            "4"
+        ],
+        "answer": "5",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_46.mp4",
+        "duration": 480.0,
+        "question": "Where was the yellow spring knot?",
+        "candidates": [
+            "In the bedroom",
+            "On the floor",
+            "In the kitchen",
+            "On the dustbin"
+        ],
+        "answer": "On the dustbin",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "What did i put in the trash bin?",
+        "candidates": [
+            "empty soda cans",
+            "banana peels",
+            "plastic bottles",
+            "scrap paper manuals"
+        ],
+        "answer": "scrap paper manuals",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_69.mp4",
+        "duration": 480.0,
+        "question": "Where was the weighing scale?",
+        "candidates": [
+            "On top of the refrigerator",
+            "Inside the pantry",
+            "In the bathroom",
+            "Next to the fruits"
+        ],
+        "answer": "Next to the fruits",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "In what room did i sawed the standing mirror?",
+        "candidates": [
+            "Living room",
+            "Kitchen",
+            "Bathroom",
+            "Bed room"
+        ],
+        "answer": "Bed room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I throw in the dustbin?",
+        "candidates": [
+            "Waste material",
+            "Plastic bottle",
+            "Food leftovers",
+            "Paper clip"
+        ],
+        "answer": "Waste material",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_47.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many tool boxes are on the floor? ",
+        "candidates": [
+            "3",
+            "4",
+            "1",
+            "2"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where was the fevicol?",
+        "candidates": [
+            "under the bed",
+            "on the shelf",
+            "outside the house",
+            "in the room"
+        ],
+        "answer": "in the room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_76.mp4",
+        "duration": 480.03333333333336,
+        "question": "Who did I talk to at the garage?",
+        "candidates": [
+            "woman with blue tshirt",
+            "woman with red tshirt",
+            "man with yellow tshirt",
+            " man with green tshirt"
+        ],
+        "answer": " man with green tshirt",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_71.mp4",
+        "duration": 1200.0,
+        "question": "What brand was the pack of tea I took from the cupboard?",
+        "candidates": [
+            "Celestial Seasonings chamomile",
+            "Twinings infuso strawberry and mango",
+            "Bigelow green tea",
+            "Lipton black tea"
+        ],
+        "answer": "Twinings infuso strawberry and mango",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many knives did I see in the cabinet?",
+        "candidates": [
+            "3",
+            "2",
+            "4",
+            "1"
+        ],
+        "answer": "4",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_27.mp4",
+        "duration": 480.0,
+        "question": "Where was the pencil?",
+        "candidates": [
+            "in the backpack",
+            "under the chair",
+            "on the table",
+            "in the pocket"
+        ],
+        "answer": "in the pocket",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "What did I take out of the cupboard ?",
+        "candidates": [
+            "cotton hand gloves I took out of the cupboard.",
+            "wool sweater",
+            "plastic hangers",
+            "metal spoon"
+        ],
+        "answer": "cotton hand gloves I took out of the cupboard.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_58.mp4",
+        "duration": 414.5333333333333,
+        "question": "Where was the tray of sausages before I carried it?",
+        "candidates": [
+            "On the dining table",
+            "On the gas cooker",
+            "In the oven",
+            "In the refrigerator"
+        ],
+        "answer": "On the gas cooker",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_64.mp4",
+        "duration": 480.0,
+        "question": "Where was the wood cutter before I keep it on the stand ?",
+        "candidates": [
+            "in the car",
+            "in the house",
+            "in the shed",
+            "on the ground"
+        ],
+        "answer": "on the ground",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_79.mp4",
+        "duration": 480.0,
+        "question": "What game did I play after playing Connect 4?",
+        "candidates": [
+            "sorry",
+            "Chess",
+            "Monopoly",
+            "Scrabble"
+        ],
+        "answer": "sorry",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_82.mp4",
+        "duration": 480.0,
+        "question": "where is the butter and bread?",
+        "candidates": [
+            "The butter and bread were in the oven.",
+            "The butter and bread were in the pantry.",
+            "The butter and bread were on the kitchen counter.",
+            "The butter and bread were inside the fridge."
+        ],
+        "answer": "The butter and bread were inside the fridge.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_45.mp4",
+        "duration": 428.83333328749984,
+        "question": "Where was the swapping machine ?",
+        "candidates": [
+            "exit",
+            "restroom",
+            "entrance",
+            "cash counter "
+        ],
+        "answer": "cash counter ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.0000000000001,
+        "question": "How many menu holders are on the display table? ",
+        "candidates": [
+            "3",
+            "0",
+            "1",
+            "2"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_61.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put under the cup?",
+        "candidates": [
+            "tissue paper",
+            "pen",
+            "key",
+            "coin"
+        ],
+        "answer": "tissue paper",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "How many tomato packets were there in the fridge?",
+        "candidates": [
+            "two",
+            "one",
+            "four",
+            "three"
+        ],
+        "answer": "two",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I leave the desktop on?",
+        "candidates": [
+            "Maybe",
+            "Yes",
+            "I don't know",
+            "No"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_67.mp4",
+        "duration": 480.0000000000001,
+        "question": "Where was the connect4 game before we played it?",
+        "candidates": [
+            "The Connect4 game was on the kitchen counter before we played it.",
+            "The Connect4 game was in the bathroom before we played it.",
+            "The Connect4 game was in the backyard before we played it.",
+            "The Connect4 game was on the TV stand before we played it."
+        ],
+        "answer": "The Connect4 game was on the TV stand before we played it.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "how  many cloth are hugging ",
+        "candidates": [
+            "3 cloth are hugging",
+            "12 cloth are hugging",
+            "6 cloth are hugging",
+            "9 cloth are hugging"
+        ],
+        "answer": "6 cloth are hugging",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Who did I talk to at the entrance of my house",
+        "candidates": [
+            "The child with the red backpack",
+            "The dog running across the street",
+            "The man in the blue hat",
+            "The woman in the pink top"
+        ],
+        "answer": "The woman in the pink top",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_43.mp4",
+        "duration": 480.0,
+        "question": "Did I leave the TV on ?",
+        "candidates": [
+            "Maybe",
+            "I don't know",
+            "Yes",
+            "NO"
+        ],
+        "answer": "NO",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_58.mp4",
+        "duration": 414.5333333333333,
+        "question": "Where did I put the pot lid?",
+        "candidates": [
+            "In the refrigerator",
+            "In the dishwasher",
+            "In the pantry",
+            "On the cooking pot"
+        ],
+        "answer": "On the cooking pot",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_81.mp4",
+        "duration": 1200.0333333333333,
+        "question": "How many jars did I see in the cabinet?",
+        "candidates": [
+            "2",
+            "5",
+            "10",
+            ""
+        ],
+        "answer": "",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Where was the cabinet after I removed it?",
+        "candidates": [
+            "in the garage",
+            "in the attic",
+            "on the floor",
+            "in the cupboard"
+        ],
+        "answer": "in the cupboard",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_79.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the blue game ?",
+        "candidates": [
+            "On the table.",
+            "Under the bed",
+            "In the closet",
+            "In the car"
+        ],
+        "answer": "On the table.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_39.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I leave the car bonnet open?",
+        "candidates": [
+            "Yes",
+            "Maybe",
+            "I don't know",
+            "No"
+        ],
+        "answer": "Yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "Where was the writing book ?",
+        "candidates": [
+            "The writing book was in the drawer.",
+            "The writing book was on the table.",
+            "The writing book was on the shelf.",
+            "The writing book was in the backpack."
+        ],
+        "answer": "The writing book was in the drawer.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_9.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where did I put the gloves and cutter?",
+        "candidates": [
+            "in the kitchen",
+            "in the garage",
+            "on the stairs",
+            "in the bedroom"
+        ],
+        "answer": "on the stairs",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_9.mp4",
+        "duration": 480.03333333333336,
+        "question": "Where was the fish thread tape?",
+        "candidates": [
+            "in the bathroom cabinet",
+            "in the kitchen drawer",
+            "in the car trunk",
+            "in tool box"
+        ],
+        "answer": "in tool box",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_45.mp4",
+        "duration": 428.83333328749984,
+        "question": "How many dustbins was  their?",
+        "candidates": [
+            "1 dustbin",
+            "5 dustbins",
+            "3 dustbins",
+            "10 dustbins"
+        ],
+        "answer": "3 dustbins",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_61.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did my friend give me coffee?",
+        "candidates": [
+            "no, he did not",
+            "yes he did.",
+            "I don't like coffee",
+            "I don't have a friend"
+        ],
+        "answer": "yes he did.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_8.mp4",
+        "duration": 361.0999999541664,
+        "question": "Where was the black heel shoe?",
+        "candidates": [
+            "on the shelf of the shop",
+            "underneath the bed",
+            "in the customer's hand",
+            "in the kitchen drawer"
+        ],
+        "answer": "on the shelf of the shop",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I pour in the bottle?",
+        "candidates": [
+            "water",
+            "juice",
+            "milk",
+            "soda"
+        ],
+        "answer": "water",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_7.mp4",
+        "duration": 480.03333333333336,
+        "question": "How many purses did I see on the lower desk?",
+        "candidates": [
+            "one",
+            "five",
+            "three",
+            "ten"
+        ],
+        "answer": "three",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the brown bag",
+        "candidates": [
+            "in the closet",
+            "on the floor",
+            "on the table",
+            "under the bed"
+        ],
+        "answer": "on the floor",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_7.mp4",
+        "duration": 480.03333333333336,
+        "question": "What word was written on the red pamphlet?",
+        "candidates": [
+            "Sign up extra 20 percent off",
+            "Buy one get one free",
+            "Get 10 percent off",
+            "Limited time offer"
+        ],
+        "answer": "Sign up extra 20 percent off",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_80.mp4",
+        "duration": 480.03333333333336,
+        "question": "In what place did I see the Tostitos bottle?",
+        "candidates": [
+            "in the table shelve ",
+            "in the bathroom",
+            "in the refrigerator",
+            "on the floor"
+        ],
+        "answer": "in the table shelve ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_7.mp4",
+        "duration": 480.03333333333336,
+        "question": "How many dresses were hanged close to the XL section?",
+        "candidates": [
+            "two",
+            "fifteen",
+            "five",
+            "ten"
+        ],
+        "answer": "five",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Did I open the car door to enter the car?",
+        "candidates": [
+            "I can't remember",
+            "Yes ",
+            "No",
+            "I don't know"
+        ],
+        "answer": "Yes ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_53.mp4",
+        "duration": 480.03333333333353,
+        "question": "What did I put in Dustbin ?",
+        "candidates": [
+            "Basin waste",
+            "Plastic bottle",
+            "Paper towel",
+            "Food scraps"
+        ],
+        "answer": "Basin waste",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_7.mp4",
+        "duration": 480.03333333333336,
+        "question": "How many handkerchiefs were in the boxes I picked?",
+        "candidates": [
+            "None",
+            "Two",
+            "Ten",
+            "Five"
+        ],
+        "answer": "Ten",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_6.mp4",
+        "duration": 385.1333332875,
+        "question": "What word was written on the glass door's white paper?",
+        "candidates": [
+            "Open",
+            "Closed",
+            "Exit",
+            "Light Bar"
+        ],
+        "answer": "Light Bar",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_63.mp4",
+        "duration": 447.0,
+        "question": "Did I cut down the wood strip?",
+        "candidates": [
+            "no",
+            "I don't know",
+            "yes",
+            "maybe not"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_5.mp4",
+        "duration": 480.0,
+        "question": "Did I pick up the paper plate bundle?",
+        "candidates": [
+            "I lost it.",
+            "I don't remember.",
+            "No.",
+            "Yes."
+        ],
+        "answer": "Yes.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_74.mp4",
+        "duration": 480.0,
+        "question": "How many picture frames were on the wall in the living room?",
+        "candidates": [
+            "3",
+            "1",
+            "2",
+            "4"
+        ],
+        "answer": "2",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the yellow bag",
+        "candidates": [
+            "in the red drawer",
+            "on the black cabinet top",
+            "under the white chair",
+            "next to the blue vase"
+        ],
+        "answer": "on the black cabinet top",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_51.mp4",
+        "duration": 480.0333333333334,
+        "question": "Where was the Cat before I served the food?",
+        "candidates": [
+            "in the room",
+            "outside the house",
+            "in the kitchen",
+            "at the vet"
+        ],
+        "answer": "in the room",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_41.mp4",
+        "duration": 480.0333333333333,
+        "question": "Where did I put the oil trolley?",
+        "candidates": [
+            "In the garage",
+            "Below the shelf",
+            "In the kitchen",
+            "On top of the shelf"
+        ],
+        "answer": "Below the shelf",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_57.mp4",
+        "duration": 480.0,
+        "question": "What did I put inside the dustbin ?",
+        "candidates": [
+            "compost",
+            "laundry",
+            "recyclables",
+            "garbage "
+        ],
+        "answer": "garbage ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_77.mp4",
+        "duration": 468.23333328749993,
+        "question": "Did my friend pay the bill in cash?",
+        "candidates": [
+            "yes",
+            "he paid with a check",
+            "no",
+            "he paid with a credit card"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_37.mp4",
+        "duration": 480.0,
+        "question": "Where did I put the cornflakes packet ?",
+        "candidates": [
+            "in the pantry",
+            "in the trash can",
+            "in the refrigerator",
+            "on the store shelf."
+        ],
+        "answer": "on the store shelf.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_52.mp4",
+        "duration": 480.0,
+        "question": "Did I see a Pepsi cans ?",
+        "candidates": [
+            "Maybe",
+            "Yes ",
+            "No",
+            "I'm not sure"
+        ],
+        "answer": "Yes ",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Where was the dog after I opened the front door",
+        "candidates": [
+            "in the kitchen",
+            "in the backyard",
+            "in the living room",
+            "in the lobby"
+        ],
+        "answer": "in the lobby",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_59.mp4",
+        "duration": 480.0,
+        "question": "What name was written on the door?",
+        "candidates": [
+            "Fuego.",
+            "Aqua",
+            "Ventus",
+            "Ignis"
+        ],
+        "answer": "Fuego.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I put in the dustbin?",
+        "candidates": [
+            "Glass waste",
+            "Food waste",
+            "Plastic waste",
+            "Paper waste"
+        ],
+        "answer": "Plastic waste",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_72.mp4",
+        "duration": 479.9999999999998,
+        "question": "Where was the cat?",
+        "candidates": [
+            "on the chair.",
+            "under the table",
+            "in the closet",
+            "outside the window"
+        ],
+        "answer": "on the chair.",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_32.mp4",
+        "duration": 480.03333333333376,
+        "question": "Did I leave the drawer open?",
+        "candidates": [
+            "Maybe",
+            "Yes",
+            "I don't know",
+            "No"
+        ],
+        "answer": "No",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_36.mp4",
+        "duration": 1200.0,
+        "question": "Did I leave the extension box on",
+        "candidates": [
+            "no",
+            "I don't know",
+            "yes",
+            "maybe"
+        ],
+        "answer": "yes",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_50.mp4",
+        "duration": 480.0333333333333,
+        "question": "What did I put in the plastic bag? ",
+        "candidates": [
+            "Apples",
+            "Bread",
+            "Toothpaste",
+            "Milk"
+        ],
+        "answer": "Bread",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_73.mp4",
+        "duration": 480.0,
+        "question": "What did I pour in the kettle?",
+        "candidates": [
+            "milk",
+            "juice",
+            "water",
+            "coffee"
+        ],
+        "answer": "water",
+        "question_type": "ego"
+    },
+    {
+        "video": "ego_57.mp4",
+        "duration": 480.0,
+        "question": "Where was the red cloth ?",
+        "candidates": [
+            "in the closet",
+            "under the bed",
+            "on the couch",
+            "on the table"
+        ],
+        "answer": "on the couch",
+        "question_type": "ego"
+    }
+]

@@ -1,0 +1,3434 @@
+[
+    {
+        "video": "AWA-6.mp4",
+        "duration": 450.0,
+        "question": "What is the main background of the video?",
+        "candidates": [
+            "Grassland",
+            "Lake",
+            "Ocean",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_10.mp4",
+        "duration": 716,
+        "question": "What color is the scarf worn by the woman in the video?",
+        "candidates": [
+            "Red",
+            "Blue",
+            "White",
+            "Pink"
+        ],
+        "answer": "Blue",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_83.mp4",
+        "duration": 640,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Mystery",
+            "Comedy",
+            "Romance",
+            "Action"
+        ],
+        "answer": "Romance",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_28.mp4",
+        "duration": 575,
+        "question": "What type of film is this?",
+        "candidates": [
+            "History",
+            "Romance",
+            "Action",
+            "Comedy"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_74.mp4",
+        "duration": 323,
+        "question": "What is the genre of this film?",
+        "candidates": [
+            "Sci-Fi",
+            "Romance",
+            "Action",
+            "Mystery"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_13.mp4",
+        "duration": 480.02,
+        "question": "What is the first-person character doing in this video?",
+        "candidates": [
+            "Making coffee",
+            "Making milk",
+            "Making a cake",
+            "Baking cookies"
+        ],
+        "answer": "Making coffee",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_86.mp4",
+        "duration": 611,
+        "question": "What story does the whole video tell?",
+        "candidates": [
+            "Criminal Investigation",
+            "Wedding Scene",
+            "Drama Performance",
+            "Chase Incident"
+        ],
+        "answer": "Criminal Investigation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_52.mp4",
+        "duration": 338,
+        "question": "What season is it in the video?",
+        "candidates": [
+            "Summer",
+            "Spring",
+            "Autumn",
+            "Winter"
+        ],
+        "answer": "Winter",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_1.mp4",
+        "duration": 305,
+        "question": "What is the background of the video?",
+        "candidates": [
+            "Desert",
+            "Undersea",
+            "Forest",
+            "Beach"
+        ],
+        "answer": "Undersea",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_106.mp4",
+        "duration": 746,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Desert",
+            "Ocean",
+            "City",
+            "Palace"
+        ],
+        "answer": "Palace",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_36.mp4",
+        "duration": 415,
+        "question": "What is the setting of the scene in the video?",
+        "candidates": [
+            "City",
+            "Island",
+            "Snowy Mountain",
+            "Forest"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_1.mp4",
+        "duration": 514,
+        "question": "Who is the main character shown in the video?",
+        "candidates": [
+            "A man in a red coat",
+            "A woman in a green coat",
+            "A woman in a blue coat",
+            "A woman in a red coat"
+        ],
+        "answer": "A woman in a red coat",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "203.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Science Fiction",
+            "Animals",
+            "Romance",
+            "Comedy"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_17.mp4",
+        "duration": 480.03,
+        "question": "What is the weather like in the video?",
+        "candidates": [
+            "Blizzard",
+            "Overcast",
+            "Sunny",
+            "Hail"
+        ],
+        "answer": "Overcast",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "232.mp4",
+        "duration": 480.0,
+        "question": "What is the video related to?",
+        "candidates": [
+            "The video is related to traditional culture",
+            "The video is related to holidays",
+            "The video is related to nature",
+            "The video is related to food"
+        ],
+        "answer": "The video is related to nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_11.mp4",
+        "duration": 206,
+        "question": "What type of movie is the scene in the video?",
+        "candidates": [
+            "Historical drama",
+            "Horror",
+            "Action",
+            "Comedy"
+        ],
+        "answer": "Historical drama",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_56.mp4",
+        "duration": 338,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Countryside",
+            "Desert",
+            "City",
+            "Seaside"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_27.mp4",
+        "duration": 486,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Comedy",
+            "Romance",
+            "History",
+            "Action"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_72.mp4",
+        "duration": 289,
+        "question": "In what setting does the majority of the video take place?",
+        "candidates": [
+            "Ancient Folk",
+            "Modern City",
+            "Modern Rural",
+            "Ancient Palace"
+        ],
+        "answer": "Ancient Folk",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_21.mp4",
+        "duration": 480.02,
+        "question": "What is the main activity of the first person perspective character in this video?",
+        "candidates": [
+            "Mopping the floor",
+            "Washing clothes",
+            "Wiping windows",
+            "Sweeping the floor"
+        ],
+        "answer": "Sweeping the floor",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_20.mp4",
+        "duration": 426,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "Forest",
+            "Snowy Mountain",
+            "City",
+            "Island"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-3.mp4",
+        "duration": 450.0,
+        "question": "What is the most frequent scene in the video?",
+        "candidates": [
+            "Cliff",
+            "Forest",
+            "Desert",
+            "Ocean"
+        ],
+        "answer": "Desert",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_1.mp4",
+        "duration": 381,
+        "question": "What is the background of the video?",
+        "candidates": [
+            "Forest",
+            "Desert",
+            "Underwater",
+            "Beach"
+        ],
+        "answer": "Underwater",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_22.mp4",
+        "duration": 441,
+        "question": "What genre of movie is the clip in the video from?",
+        "candidates": [
+            "Horror",
+            "Action",
+            "War",
+            "Documentary"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "215.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "It is a video documenting daily life.",
+            "It is a video documenting traditional customs.",
+            "It is a video documenting food.",
+            "It is a video documenting nature."
+        ],
+        "answer": "It is a video documenting nature.",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_2.mp4",
+        "duration": 364,
+        "question": "What is the background of the video?",
+        "candidates": [
+            "Under the sea",
+            "Beach",
+            "Desert",
+            "Forest"
+        ],
+        "answer": "Under the sea",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_89.mp4",
+        "duration": 677,
+        "question": "",
+        "candidates": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "answer": "",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_69.mp4",
+        "duration": 385,
+        "question": "What event is depicted in the entire video?",
+        "candidates": [
+            "Police drug bust",
+            "Technology research",
+            "Love story",
+            "Action fight"
+        ],
+        "answer": "Police drug bust",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_8.mp4",
+        "duration": 308,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Mystery",
+            "Romance",
+            "Science fiction",
+            "Cartoon animation"
+        ],
+        "answer": "Cartoon animation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-17.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Comedy",
+            "Animal",
+            "Science Fiction",
+            "Action"
+        ],
+        "answer": "Animal",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_8.mp4",
+        "duration": 750,
+        "question": "What is the weather in the video scene?",
+        "candidates": [
+            "Rainy",
+            "Sunny",
+            "Foggy",
+            "Snowy"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-12.mp4",
+        "duration": 450.0,
+        "question": "What is the main environment in the video?",
+        "candidates": [
+            "Grassland",
+            "Gobi",
+            "Forest",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_7.mp4",
+        "duration": 306,
+        "question": "Who are the characters in the video?",
+        "candidates": [
+            "Two cartoon cats",
+            "Two cartoon cats and two cartoon mice",
+            "Two cartoon cats and one cartoon mouse",
+            "One cartoon cat and one cartoon mouse"
+        ],
+        "answer": "Two cartoon cats and one cartoon mouse",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_12.mp4",
+        "duration": 587,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Advertisement video",
+            "Daily life documentary",
+            "Animation",
+            "Musical"
+        ],
+        "answer": "Daily life documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_16.mp4",
+        "duration": 552,
+        "question": "In what scenario does the scene in the video take place?",
+        "candidates": [
+            "Snow mountain",
+            "Forest",
+            "Island",
+            "City"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_11.mp4",
+        "duration": 322,
+        "question": "What character appears the most in the video?",
+        "candidates": [
+            "Cartoon fish",
+            "Cartoon dog",
+            "Cartoon bear",
+            "Cartoon mouse"
+        ],
+        "answer": "Cartoon mouse",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_30.mp4",
+        "duration": 726,
+        "question": "What is the genre of this movie clip?",
+        "candidates": [
+            "Comedy",
+            "Horror",
+            "Action",
+            "War"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_7.mp4",
+        "duration": 533,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Animation",
+            "Music video",
+            "Movie clip",
+            "Documentary"
+        ],
+        "answer": "Movie clip",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "239.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Holiday",
+            "Nature",
+            "Food",
+            "Lifestyle"
+        ],
+        "answer": "Nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_16.mp4",
+        "duration": 740,
+        "question": "What type of movie is the scene in the video?",
+        "candidates": [
+            "Science Fiction",
+            "Comedy",
+            "Horror",
+            "Documentary"
+        ],
+        "answer": "Documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_106.mp4",
+        "duration": 746,
+        "question": "What is the style of the characters' clothing in the video?",
+        "candidates": [
+            "Ancient royal style",
+            "Western style",
+            "Ethnic style",
+            "Exotic style"
+        ],
+        "answer": "Ancient royal style",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_12.mp4",
+        "duration": 480.02,
+        "question": "Who is captured in the video?",
+        "candidates": [
+            "Elderly",
+            "Child",
+            "Man",
+            "Young woman"
+        ],
+        "answer": "Young woman",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_70.mp4",
+        "duration": 361,
+        "question": "What is the genre of this film?",
+        "candidates": [
+            "Sci-Fi",
+            "Romance",
+            "Action",
+            "Mystery"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWD-7.mp4",
+        "duration": 450.13,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Traditional Festivals",
+            "Food Flavor",
+            "History and Culture",
+            "Natural Science"
+        ],
+        "answer": "Natural Science",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_73.mp4",
+        "duration": 421,
+        "question": "What is the main story of the film?",
+        "candidates": [
+            "Blind date",
+            "Fighting",
+            "Dancing",
+            "Eating"
+        ],
+        "answer": "Blind date",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_70.mp4",
+        "duration": 361,
+        "question": "What event is mainly narrated in the video?",
+        "candidates": [
+            "Theft",
+            "Romance",
+            "Dance",
+            "Chase"
+        ],
+        "answer": "Theft",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_28.mp4",
+        "duration": 575,
+        "question": "Where is the setting of the video story?",
+        "candidates": [
+            "City",
+            "Seaside",
+            "Desert",
+            "Countryside"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_12.mp4",
+        "duration": 480.02,
+        "question": "What is the weather like in the video?",
+        "candidates": [
+            "Snowy",
+            "Windy",
+            "Sunny",
+            "Rainy"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_12.mp4",
+        "duration": 346,
+        "question": "What is the weather in the scene of the video?",
+        "candidates": [
+            "Foggy",
+            "Snowy",
+            "Rainy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWD-1.mp4",
+        "duration": 450.13,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Nature Science",
+            "History Culture",
+            "Traditional Festival",
+            "Food Flavor"
+        ],
+        "answer": "Nature Science",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-4.mp4",
+        "duration": 450.0,
+        "question": "What is the main background of the video?",
+        "candidates": [
+            "Grassland",
+            "Lake",
+            "Ocean",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_22.mp4",
+        "duration": 335,
+        "question": "What type of movie is the scene in the video from?",
+        "candidates": [
+            "Horror",
+            "Comedy",
+            "Historical drama",
+            "Science fiction"
+        ],
+        "answer": "Historical drama",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.03,
+        "question": "What is the weather like in the video?",
+        "candidates": [
+            "Sunny",
+            "Snowing",
+            "Windy",
+            "Drizzling"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_28.mp4",
+        "duration": 234,
+        "question": "What is the genre of this movie clip?",
+        "candidates": [
+            "Horror",
+            "Science Fiction",
+            "War",
+            "Comedy"
+        ],
+        "answer": "Science Fiction",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-12.mp4",
+        "duration": 450.0,
+        "question": "What is the primary environment in the video?",
+        "candidates": [
+            "Forest",
+            "Gobi",
+            "Desert",
+            "Grassland"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWE-4.mp4",
+        "duration": 450.0,
+        "question": "What is the main content of the video related to?",
+        "candidates": [
+            "Weather",
+            "Food",
+            "Animals",
+            "Plants"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_33.mp4",
+        "duration": 240,
+        "question": "What is the genre of this movie clip?",
+        "candidates": [
+            "Horror",
+            "Comedy",
+            "War",
+            "Action"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_29.mp4",
+        "duration": 482,
+        "question": "What kind of weather is depicted in the video?",
+        "candidates": [
+            "Foggy",
+            "Rainy",
+            "Snowy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_11.mp4",
+        "duration": 480.02,
+        "question": "What is the first-person character doing in this first-person video?",
+        "candidates": [
+            "Posting sticky notes",
+            "Hanging wallpaper",
+            "Posting posters",
+            "Posting Spring Festival couplets"
+        ],
+        "answer": "Posting posters",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "223.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Natural Science",
+            "Food Culture",
+            "Natural Animals",
+            "Traditional Customs"
+        ],
+        "answer": "Natural Science",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_61.mp4",
+        "duration": 627,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Romance",
+            "Thriller",
+            "Mystery",
+            "Action"
+        ],
+        "answer": "Romance",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_108.mp4",
+        "duration": 330,
+        "question": "Which scene does not appear in the video?",
+        "candidates": [
+            "Bathroom",
+            "Playground",
+            "Mountain road",
+            "Auditorium"
+        ],
+        "answer": "Auditorium",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-8.mp4",
+        "duration": 450.0,
+        "question": "What is the content of this video about?",
+        "candidates": [
+            "Birds",
+            "Dinosaurs",
+            "Whales",
+            "Sea Turtles"
+        ],
+        "answer": "Dinosaurs",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_111.mp4",
+        "duration": 720,
+        "question": "What is the main plot shown in the video?",
+        "candidates": [
+            "Police solving a case",
+            "Basketball match",
+            "Friends gathering",
+            "Traveling and sightseeing"
+        ],
+        "answer": "Police solving a case",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-16.mp4",
+        "duration": 450.0,
+        "question": "What is the setting of the video?",
+        "candidates": [
+            "Ocean",
+            "Desert",
+            "City",
+            "Grassland"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_40.mp4",
+        "duration": 450,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "Snowy Mountain",
+            "Forest",
+            "Island",
+            "City"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "203.mp4",
+        "duration": 480.0,
+        "question": "What is the main scene in the video?",
+        "candidates": [
+            "Sky",
+            "Barren land",
+            "Ocean",
+            "Wetland"
+        ],
+        "answer": "Barren land",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_2.mp4",
+        "duration": 509,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Movie clip",
+            "Music video",
+            "Cartoon",
+            "Documentary"
+        ],
+        "answer": "Movie clip",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_2.mp4",
+        "duration": 480.03,
+        "question": "Where is the person in the video?",
+        "candidates": [
+            "Car dealership",
+            "Fruit store",
+            "Clothing store",
+            "Mobile phone store"
+        ],
+        "answer": "Clothing store",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "230.mp4",
+        "duration": 480.0,
+        "question": "What kind of video is this?",
+        "candidates": [
+            "This is a video related to nature",
+            "This is a video related to traditional culture",
+            "This is a video related to food",
+            "This is a video related to transportation"
+        ],
+        "answer": "This is a video related to nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_2.mp4",
+        "duration": 364,
+        "question": "What is the protagonist in the video?",
+        "candidates": [
+            "Marine animal",
+            "Bird",
+            "Bear",
+            "Dinosaur"
+        ],
+        "answer": "Marine animal",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_68.mp4",
+        "duration": 445,
+        "question": "What is the genre of this movie?",
+        "candidates": [
+            "Romance",
+            "Comedy",
+            "Science Fiction",
+            "Mystery"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-10.mp4",
+        "duration": 450.0,
+        "question": "What is the main content related to in the video?",
+        "candidates": [
+            "Plants",
+            "Food",
+            "Humans",
+            "Animals"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_19.mp4",
+        "duration": 477,
+        "question": "What genre of movie does the scene in the video belong to?",
+        "candidates": [
+            "Action",
+            "Science Fiction",
+            "Comedy",
+            "Documentary"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-1.mp4",
+        "duration": 450.04,
+        "question": "What is the main background of the video?",
+        "candidates": [
+            "Grassland",
+            "Ocean",
+            "Desert",
+            "Lake"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_6.mp4",
+        "duration": 400,
+        "question": "What is the relationship between the cartoon characters of carp, jellyfish, seahorse, and turtle?",
+        "candidates": [
+            "Friends",
+            "Lovers",
+            "Teacher-student",
+            "Enemies"
+        ],
+        "answer": "Friends",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_82.mp4",
+        "duration": 467,
+        "question": "What story does the entire video tell?",
+        "candidates": [
+            "Drama performance",
+            "Chase event",
+            "Wedding scene",
+            "Criminal investigation"
+        ],
+        "answer": "Criminal investigation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_26.mp4",
+        "duration": 522,
+        "question": "What genre of movie is the clip in the video from?",
+        "candidates": [
+            "War",
+            "Action",
+            "Horror",
+            "Documentary"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_33.mp4",
+        "duration": 240,
+        "question": "In which scene does the footage of being chased by bees in the video take place?",
+        "candidates": [
+            "Forest",
+            "City",
+            "Snowy Mountain",
+            "Grassland"
+        ],
+        "answer": "Forest",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "206.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Science Fiction",
+            "Comedy",
+            "Animal",
+            "Action"
+        ],
+        "answer": "Animal",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_33.mp4",
+        "duration": 532,
+        "question": "Where does the story in the video take place?",
+        "candidates": [
+            "Countryside",
+            "Desert",
+            "City",
+            "Seaside"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWD-1.mp4",
+        "duration": 450.13,
+        "question": "What is the background of the video?",
+        "candidates": [
+            "Forest",
+            "Ocean",
+            "Desert",
+            "Glacier"
+        ],
+        "answer": "Glacier",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "217.mp4",
+        "duration": 480.0,
+        "question": "What is the main scene shown in the video?",
+        "candidates": [
+            "Sky",
+            "Ocean",
+            "Desert",
+            "Grassland"
+        ],
+        "answer": "Ocean",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "210.mp4",
+        "duration": 480.0,
+        "question": "In what environment does the main event in the video occur?",
+        "candidates": [
+            "Sky",
+            "Water area",
+            "Forest",
+            "Desert"
+        ],
+        "answer": "Water area",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_22.mp4",
+        "duration": 335,
+        "question": "What is the weather in the scene of the video?",
+        "candidates": [
+            "Sunny",
+            "Snowy",
+            "Foggy",
+            "Rainy"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-4.mp4",
+        "duration": 450.0,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Grassland",
+            "Desert",
+            "Ocean",
+            "City"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "208.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Comedy",
+            "Animals",
+            "Science Fiction",
+            "Action"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_54.mp4",
+        "duration": 580,
+        "question": "Which activity is not included in the police's actions in the video?",
+        "candidates": [
+            "Rescuing the injured",
+            "Gunfight",
+            "Arresting",
+            "Escorting prisoners"
+        ],
+        "answer": "Escorting prisoners",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "222.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "It's a video related to animals",
+            "It's a video related to nature",
+            "It's a video related to food",
+            "It's a video related to traditional culture"
+        ],
+        "answer": "It's a video related to nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_51.mp4",
+        "duration": 796,
+        "question": "What kind of clothing is the old man preparing food on the street wearing?",
+        "candidates": [
+            "Sportswear",
+            "Zhongshan suit",
+            "Japanese clothing",
+            "Casual wear"
+        ],
+        "answer": "Japanese clothing",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "211.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Comedy",
+            "Animals",
+            "Science Fiction",
+            "Romance"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_30.mp4",
+        "duration": 584,
+        "question": "Where does the story of the video take place?",
+        "candidates": [
+            "Countryside",
+            "Seaside",
+            "City",
+            "Desert"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_3.mp4",
+        "duration": 405,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Thriller",
+            "Cartoon animation",
+            "Mystery",
+            "Science fiction"
+        ],
+        "answer": "Cartoon animation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_107.mp4",
+        "duration": 471,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Marketplace",
+            "Park",
+            "Office",
+            "Stadium"
+        ],
+        "answer": "Marketplace",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_15.mp4",
+        "duration": 441,
+        "question": "What type of movie is the scene in the video from?",
+        "candidates": [
+            "Comedy",
+            "Action",
+            "Horror",
+            "Modern film"
+        ],
+        "answer": "Modern film",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_67.mp4",
+        "duration": 530,
+        "question": "What genre is this movie?",
+        "candidates": [
+            "Sci-fi",
+            "Comedy",
+            "Thriller",
+            "Romance"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_89.mp4",
+        "duration": 677,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Comedy",
+            "Mystery",
+            "Action",
+            "Documentary"
+        ],
+        "answer": "Documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_15.mp4",
+        "duration": 441,
+        "question": "What animal appears in the video?",
+        "candidates": [
+            "Dog",
+            "Cat",
+            "Llama",
+            "Sheep"
+        ],
+        "answer": "Llama",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_10.mp4",
+        "duration": 716,
+        "question": "What color is the hat worn by the person who appeared in the market?",
+        "candidates": [
+            "Red",
+            "Blue",
+            "Black",
+            "Green"
+        ],
+        "answer": "Red",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_15.mp4",
+        "duration": 480.02,
+        "question": "In this first-person video, what is the first-person character doing?",
+        "candidates": [
+            "Making the bed",
+            "Organizing kitchen utensils",
+            "Organizing the wardrobe",
+            "Organizing the bookshelf"
+        ],
+        "answer": "Organizing kitchen utensils",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_20.mp4",
+        "duration": 476,
+        "question": "What type of movie is the scene in the video from?",
+        "candidates": [
+            "Science fiction",
+            "Comedy",
+            "War film",
+            "Horror"
+        ],
+        "answer": "War film",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_1.mp4",
+        "duration": 480.0,
+        "question": "In this first-person perspective video, what is the main activity the first-person character is doing?",
+        "candidates": [
+            "Sawing wood",
+            "Watering the lawn",
+            "Repairing pipes",
+            "Installing wooden boards"
+        ],
+        "answer": "Installing wooden boards",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_13.mp4",
+        "duration": 585,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Cartoon",
+            "Daily life documentary",
+            "Advertisement video",
+            "Music video"
+        ],
+        "answer": "Daily life documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_81.mp4",
+        "duration": 252,
+        "question": "In what setting does the entire video take place?",
+        "candidates": [
+            "Amusement park",
+            "Library",
+            "Wedding",
+            "School"
+        ],
+        "answer": "Wedding",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_17.mp4",
+        "duration": 480.03,
+        "question": "What is the main activity of the first person character in this first person video?",
+        "candidates": [
+            "Drilling holes in glass",
+            "Punching holes in wood",
+            "Drilling holes in diamonds",
+            "Punching holes in the wall"
+        ],
+        "answer": "Punching holes in wood",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-17.mp4",
+        "duration": 450.0,
+        "question": "What is the scene of the video?",
+        "candidates": [
+            "Ocean",
+            "Grassland",
+            "Desert",
+            "Sky"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_69.mp4",
+        "duration": 385,
+        "question": "What is the genre of this film?",
+        "candidates": [
+            "Police and criminals",
+            "Romance",
+            "Science fiction",
+            "Mystery"
+        ],
+        "answer": "Police and criminals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_5.mp4",
+        "duration": 415,
+        "question": "What is the main task of the three cartoon animals in the entire clip?",
+        "candidates": [
+            "Playing",
+            "Going home",
+            "Arguing",
+            "Looking for the cartoon turtle"
+        ],
+        "answer": "Looking for the cartoon turtle",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_1.mp4",
+        "duration": 305,
+        "question": "What is the protagonist of the video?",
+        "candidates": [
+            "Shark",
+            "Cartoon Sponge",
+            "Starfish",
+            "Octopus"
+        ],
+        "answer": "Cartoon Sponge",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_102.mp4",
+        "duration": 607,
+        "question": "Where does the main event in the video take place?",
+        "candidates": [
+            "School",
+            "Temple",
+            "Desert",
+            "Forest"
+        ],
+        "answer": "Temple",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_81.mp4",
+        "duration": 252,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Action",
+            "Romance",
+            "Thriller",
+            "Mystery"
+        ],
+        "answer": "Romance",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_0.mp4",
+        "duration": 789,
+        "question": "What is the weather in the video?",
+        "candidates": [
+            "Sunny",
+            "Blizzard",
+            "Heavy Rain",
+            "Overcast"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_85.mp4",
+        "duration": 560,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Mystery",
+            "Animation",
+            "Action",
+            "Comedy"
+        ],
+        "answer": "Animation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "238.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Science Fiction",
+            "Comedy",
+            "Romance",
+            "Nature Documentary"
+        ],
+        "answer": "Nature Documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_10.mp4",
+        "duration": 302,
+        "question": "Where is the scene of the video?",
+        "candidates": [
+            "Street",
+            "Park",
+            "Outdoors",
+            "Inside the house"
+        ],
+        "answer": "Inside the house",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_68.mp4",
+        "duration": 445,
+        "question": "In what environment does the story take place?",
+        "candidates": [
+            "Snowy mountains",
+            "Ocean",
+            "River",
+            "Forest"
+        ],
+        "answer": "Snowy mountains",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_26.mp4",
+        "duration": 763,
+        "question": "What is the genre of this movie clip?",
+        "candidates": [
+            "War",
+            "Documentary Drama",
+            "Horror",
+            "Comedy"
+        ],
+        "answer": "Documentary Drama",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_10.mp4",
+        "duration": 545,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Documentary",
+            "Cartoon",
+            "Movie clip",
+            "Stage play"
+        ],
+        "answer": "Movie clip",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-15.mp4",
+        "duration": 450.0,
+        "question": "What is the main content related to in the video?",
+        "candidates": [
+            "Animals",
+            "Humans",
+            "Food",
+            "Plants"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_84.mp4",
+        "duration": 387,
+        "question": "What is the main setting shown in the video?",
+        "candidates": [
+            "Desert",
+            "City",
+            "Ocean",
+            "Forest"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_111.mp4",
+        "duration": 720,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Comedy",
+            "Science fiction",
+            "Action",
+            "Mystery"
+        ],
+        "answer": "Mystery",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-15.mp4",
+        "duration": 450.0,
+        "question": "What is this video related to?",
+        "candidates": [
+            "Lifestyle",
+            "Wildlife",
+            "Food Flavors",
+            "Traditional Festivals"
+        ],
+        "answer": "Wildlife",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_14.mp4",
+        "duration": 465,
+        "question": "In what setting does the clip in the video take place?",
+        "candidates": [
+            "Grassland",
+            "Forest",
+            "City",
+            "Snow Mountain"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_25.mp4",
+        "duration": 737,
+        "question": "What is the genre of the movie clip?",
+        "candidates": [
+            "Horror",
+            "Modern",
+            "War",
+            "Comedy"
+        ],
+        "answer": "Modern",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-15.mp4",
+        "duration": 450.0,
+        "question": "What is the main background of the video?",
+        "candidates": [
+            "Ocean",
+            "Lake",
+            "Grassland",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_25.mp4",
+        "duration": 480.0,
+        "question": "What is the first-person character mainly doing in this first-person video?",
+        "candidates": [
+            "Riding a horse",
+            "Riding a motorcycle",
+            "Riding a bicycle",
+            "Riding a tricycle"
+        ],
+        "answer": "Riding a bicycle",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_34.mp4",
+        "duration": 748,
+        "question": "What is the genre of the movie clip?",
+        "candidates": [
+            "Horror",
+            "War",
+            "Modern",
+            "Comedy"
+        ],
+        "answer": "Modern",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_8.mp4",
+        "duration": 445,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Mystery",
+            "Cartoon",
+            "Science Fiction",
+            "Thriller"
+        ],
+        "answer": "Cartoon",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_6.mp4",
+        "duration": 400,
+        "question": "What is the living environment of the giant octopus?",
+        "candidates": [
+            "Bright",
+            "Dark and lightless",
+            "Spacious",
+            "Sunny"
+        ],
+        "answer": "Dark and lightless",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_9.mp4",
+        "duration": 444,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Thriller",
+            "Mystery",
+            "Cartoon",
+            "Sci-Fi"
+        ],
+        "answer": "Cartoon",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "9.mp4",
+        "duration": 471.67,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Library",
+            "Construction site",
+            "Stadium",
+            "School"
+        ],
+        "answer": "Construction site",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-10.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Traditional Festivals",
+            "Natural Science Popularization",
+            "Food Flavor",
+            "Historical Culture"
+        ],
+        "answer": "Natural Science Popularization",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_28.mp4",
+        "duration": 234,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "Island",
+            "Snowy Mountain",
+            "Forest",
+            "City"
+        ],
+        "answer": "Forest",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_71.mp4",
+        "duration": 227,
+        "question": "What event is primarily depicted in the video?",
+        "candidates": [
+            "Prison Break",
+            "Romance",
+            "Dance",
+            "Competition"
+        ],
+        "answer": "Prison Break",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_7.mp4",
+        "duration": 426,
+        "question": "Who is the protagonist of the video?",
+        "candidates": [
+            "Cartoon Sponge",
+            "Cartoon Fish",
+            "Cartoon Shark",
+            "Cartoon Jellyfish"
+        ],
+        "answer": "Cartoon Sponge",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_32.mp4",
+        "duration": 247,
+        "question": "What is the genre of this film clip?",
+        "candidates": [
+            "Comedy",
+            "War",
+            "Horror",
+            "Modern"
+        ],
+        "answer": "Modern",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "237.mp4",
+        "duration": 480.0,
+        "question": "What is this video related to?",
+        "candidates": [
+            "This video is related to holidays",
+            "This video is related to nature",
+            "This video is related to traditional culture",
+            "This video is related to food"
+        ],
+        "answer": "This video is related to nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWE-3.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Food Flavor",
+            "Natural Science",
+            "Traditional Festivals",
+            "Historical Culture"
+        ],
+        "answer": "Natural Science",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_71.mp4",
+        "duration": 227,
+        "question": "What is the genre of this film?",
+        "candidates": [
+            "Romance",
+            "Comedy",
+            "Mystery",
+            "Science Fiction"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWG-6.mp4",
+        "duration": 450.0,
+        "question": "What is the main content related to in the video?",
+        "candidates": [
+            "Animals",
+            "Food",
+            "Weather",
+            "Plants"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_9.mp4",
+        "duration": 328,
+        "question": "When does the video take place?",
+        "candidates": [
+            "Evening",
+            "Morning",
+            "Night",
+            "Noon"
+        ],
+        "answer": "Night",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_62.mp4",
+        "duration": 601,
+        "question": "What is the setting of the video?",
+        "candidates": [
+            "Grassland",
+            "Ocean",
+            "Desert",
+            "Forest"
+        ],
+        "answer": "Ocean",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "216.mp4",
+        "duration": 480.0,
+        "question": "What is the main scene shown in the video?",
+        "candidates": [
+            "Ocean",
+            "Forest",
+            "Grassland",
+            "Desert"
+        ],
+        "answer": "Desert",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_87.mp4",
+        "duration": 599,
+        "question": "What is the main setting shown in the video?",
+        "candidates": [
+            "Hospital",
+            "Campus",
+            "Countryside",
+            "Temple"
+        ],
+        "answer": "Campus",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "204.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "This is a video documenting characters",
+            "This is a video documenting daily life",
+            "This is a video documenting animals",
+            "This is a video documenting food"
+        ],
+        "answer": "This is a video documenting animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_26.mp4",
+        "duration": 375.37,
+        "question": "In this first-person perspective video, what is the main activity of the person in the first-person perspective?",
+        "candidates": [
+            "Buying a bicycle",
+            "Repairing a car",
+            "Repairing a bicycle",
+            "Riding a bicycle"
+        ],
+        "answer": "Repairing a bicycle",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_41.mp4",
+        "duration": 319,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "Forest",
+            "Snowy Mountain",
+            "City",
+            "Island"
+        ],
+        "answer": "Forest",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "1.mp4",
+        "duration": 401.23,
+        "question": "In what environment is the man in the black sweater?",
+        "candidates": [
+            "Desert",
+            "Grassland",
+            "Forest",
+            "Ocean"
+        ],
+        "answer": "Ocean",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_1.mp4",
+        "duration": 311,
+        "question": "Where is the main setting of the video?",
+        "candidates": [
+            "Desert",
+            "Grassland",
+            "Outside the house",
+            "Inside the house"
+        ],
+        "answer": "Outside the house",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-7.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Animals",
+            "Comedy",
+            "Science Fiction",
+            "Romance"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWD-7.mp4",
+        "duration": 450.13,
+        "question": "What is the main content related to in the video?",
+        "candidates": [
+            "Animals",
+            "Weather",
+            "Plants",
+            "Food"
+        ],
+        "answer": "Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_25.mp4",
+        "duration": 478,
+        "question": "What genre of film is the clip in the video from?",
+        "candidates": [
+            "War film",
+            "Horror film",
+            "Documentary",
+            "Action film"
+        ],
+        "answer": "Action film",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_12.mp4",
+        "duration": 587,
+        "question": "What does the video primarily describe?",
+        "candidates": [
+            "People's daily life",
+            "A global natural disaster",
+            "A group of people performing and partying at a concert",
+            "A vivid outdoor adventure"
+        ],
+        "answer": "People's daily life",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_51.mp4",
+        "duration": 796,
+        "question": "In the beginning of the video, under what conditions is the crane working?",
+        "candidates": [
+            "At noon",
+            "In the morning",
+            "At night",
+            "In the afternoon"
+        ],
+        "answer": "At night",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "xiaoliyu_4.mp4",
+        "duration": 399,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Mystery",
+            "Thriller",
+            "Science Fiction",
+            "Cartoon animation"
+        ],
+        "answer": "Cartoon animation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-11.mp4",
+        "duration": 450.0,
+        "question": "What is the main environment in the video?",
+        "candidates": [
+            "Desert",
+            "Gobi",
+            "Forest",
+            "Grassland"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_78.mp4",
+        "duration": 607,
+        "question": "In what setting does the event in the video take place?",
+        "candidates": [
+            "Modern Countryside",
+            "Ancient Folklore",
+            "Modern City",
+            "Ancient Palace"
+        ],
+        "answer": "Ancient Folklore",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_25.mp4",
+        "duration": 737,
+        "question": "What is the weather in the scene of the video?",
+        "candidates": [
+            "Sunny day",
+            "Snowy day",
+            "Rainy day",
+            "Foggy day"
+        ],
+        "answer": "Sunny day",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_2.mp4",
+        "duration": 509,
+        "question": "What time is the overall video set in?",
+        "candidates": [
+            "Early Morning",
+            "Noon",
+            "Afternoon",
+            "Evening"
+        ],
+        "answer": "Evening",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-4.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Food and Flavors",
+            "Lifestyle",
+            "Traditional Festivals",
+            "Nature and Animals"
+        ],
+        "answer": "Nature and Animals",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "215.mp4",
+        "duration": 480.0,
+        "question": "Where is the main environment in the video?",
+        "candidates": [
+            "River",
+            "Forest",
+            "Desert",
+            "Ocean"
+        ],
+        "answer": "Desert",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-10.mp4",
+        "duration": 450.0,
+        "question": "What is the character in the video studying?",
+        "candidates": [
+            "Whales",
+            "Sea Turtles",
+            "Birds",
+            "Dinosaurs"
+        ],
+        "answer": "Dinosaurs",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_83.mp4",
+        "duration": 640,
+        "question": "What is the main setting shown in the video?",
+        "candidates": [
+            "City",
+            "Forest",
+            "Ocean",
+            "Desert"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_11.mp4",
+        "duration": 480.02,
+        "question": "Where is the person in the video?",
+        "candidates": [
+            "Living room",
+            "Lounge",
+            "Hall",
+            "Living room"
+        ],
+        "answer": "Living room",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_21.mp4",
+        "duration": 289,
+        "question": "What is the environment in the scene of the video?",
+        "candidates": [
+            "Island",
+            "City",
+            "Grassland",
+            "Forest"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_15.mp4",
+        "duration": 541,
+        "question": "What genre of movie is the clip in the video from?",
+        "candidates": [
+            "Action movie",
+            "Documentary",
+            "Horror movie",
+            "War movie"
+        ],
+        "answer": "Action movie",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_20.mp4",
+        "duration": 426,
+        "question": "What genre of movie is the clip in the video from?",
+        "candidates": [
+            "War",
+            "Documentary",
+            "Action",
+            "Horror"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_39.mp4",
+        "duration": 473,
+        "question": "What is the genre of the film clip?",
+        "candidates": [
+            "War",
+            "Horror",
+            "Action",
+            "Comedy"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "4.mp4",
+        "duration": 603.0,
+        "question": "What environment does the video start in?",
+        "candidates": [
+            "Grassland",
+            "In the water",
+            "Desert",
+            "On a tree"
+        ],
+        "answer": "In the water",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "232.mp4",
+        "duration": 480.0,
+        "question": "Who is the person doing the explanation in the video?",
+        "candidates": [
+            "It's a man",
+            "It's a woman",
+            "It's a child",
+            "It's an old person"
+        ],
+        "answer": "It's a man",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_73.mp4",
+        "duration": 421,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Sci-fi",
+            "Comedy",
+            "Mystery",
+            "Romance"
+        ],
+        "answer": "Romance",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_23.mp4",
+        "duration": 473,
+        "question": "What type of movie is the scene in the video?",
+        "candidates": [
+            "Action",
+            "Horror",
+            "Science Fiction",
+            "Documentary"
+        ],
+        "answer": "Documentary",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_28.mp4",
+        "duration": 480.0,
+        "question": "What is the first-person character mainly doing in this video?",
+        "candidates": [
+            "Installing stairs",
+            "Installing doors and windows",
+            "Installing air conditioning",
+            "Installing stove"
+        ],
+        "answer": "Installing stairs",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_30.mp4",
+        "duration": 726,
+        "question": "In what scenario does the scene in the video take place?",
+        "candidates": [
+            "Snowy Mountain",
+            "Forest",
+            "City",
+            "Island"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_39.mp4",
+        "duration": 476,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Thriller",
+            "Romance",
+            "Comedy",
+            "Science Fiction"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_109.mp4",
+        "duration": 670,
+        "question": "What is the setting of the video?",
+        "candidates": [
+            "Ocean",
+            "Forest",
+            "Prairie",
+            "City"
+        ],
+        "answer": "Prairie",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_57.mp4",
+        "duration": 753,
+        "question": "What type of movie is this?",
+        "candidates": [
+            "Comedy",
+            "Mystery",
+            "Thriller",
+            "Romance"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_17.mp4",
+        "duration": 613,
+        "question": "What is the weather in the scene of the video?",
+        "candidates": [
+            "Rainy",
+            "Foggy",
+            "Sunny",
+            "Snowy"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_4.mp4",
+        "duration": 421,
+        "question": "When does the event in the video take place?",
+        "candidates": [
+            "Noon",
+            "Evening",
+            "Early morning",
+            "Afternoon"
+        ],
+        "answer": "Evening",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_105.mp4",
+        "duration": 744,
+        "question": "What event is primarily narrated in the video?",
+        "candidates": [
+            "Tsunami",
+            "People's beautiful life is disrupted by an earthquake",
+            "Flood",
+            "Sandstorm"
+        ],
+        "answer": "People's beautiful life is disrupted by an earthquake",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "206.mp4",
+        "duration": 480.0,
+        "question": "What is the main scene shown in the video?",
+        "candidates": [
+            "Desert",
+            "Forest",
+            "City",
+            "Ocean"
+        ],
+        "answer": "Forest",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_14.mp4",
+        "duration": 459,
+        "question": "What is the setting of the clip in the video?",
+        "candidates": [
+            "Grassland",
+            "Snowy mountain",
+            "Island",
+            "City"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_105.mp4",
+        "duration": 744,
+        "question": "What scene is primarily depicted in the video?",
+        "candidates": [
+            "City",
+            "Desert",
+            "Grassland",
+            "Forest"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_15.mp4",
+        "duration": 541,
+        "question": "In what kind of setting does the scene in the video take place?",
+        "candidates": [
+            "Snowy mountain",
+            "Island",
+            "City",
+            "Forest"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-4.mp4",
+        "duration": 450.0,
+        "question": "What is the main subject of the video?",
+        "candidates": [
+            "Poultry",
+            "Various types of dinosaurs",
+            "Fish",
+            "Birds"
+        ],
+        "answer": "Various types of dinosaurs",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_16.mp4",
+        "duration": 552,
+        "question": "What genre of movie is the clip in the video from?",
+        "candidates": [
+            "Action movie",
+            "Documentary",
+            "Horror movie",
+            "War movie"
+        ],
+        "answer": "Action movie",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_8.mp4",
+        "duration": 308,
+        "question": "What is the protagonist of the video?",
+        "candidates": [
+            "Two cartoon cats",
+            "Two cartoon cats and two cartoon mice",
+            "Two cartoon cats and a cartoon mouse",
+            "A cartoon cat and a cartoon mouse"
+        ],
+        "answer": "A cartoon cat and a cartoon mouse",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_108.mp4",
+        "duration": 330,
+        "question": "What is the main subject shown in the video?",
+        "candidates": [
+            "Two little boys",
+            "Three little girls",
+            "Two little girls",
+            "A boy and a girl"
+        ],
+        "answer": "Two little girls",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_33.mp4",
+        "duration": 532,
+        "question": "What genre does this film belong to?",
+        "candidates": [
+            "Thriller",
+            "Sci-fi",
+            "Romance",
+            "Comedy"
+        ],
+        "answer": "Sci-fi",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_6.mp4",
+        "duration": 313,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Cartoon animation",
+            "Thriller mystery",
+            "Ethics",
+            "Science fiction"
+        ],
+        "answer": "Cartoon animation",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-7.mp4",
+        "duration": 450.0,
+        "question": "What is the content of the video about?",
+        "candidates": [
+            "Dinosaurs",
+            "Birds",
+            "Sea Turtles",
+            "Whales"
+        ],
+        "answer": "Dinosaurs",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_40.mp4",
+        "duration": 450,
+        "question": "What genre of movie clip is this?",
+        "candidates": [
+            "Horror",
+            "War",
+            "Action",
+            "Comedy"
+        ],
+        "answer": "Action",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "221.mp4",
+        "duration": 480.0,
+        "question": "Who is the protagonist in the video?",
+        "candidates": [
+            "An elderly",
+            "A woman",
+            "A man",
+            "A child"
+        ],
+        "answer": "A man",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-7.mp4",
+        "duration": 450.0,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "Grassland",
+            "City",
+            "Ocean",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_87.mp4",
+        "duration": 599,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Action",
+            "Mystery",
+            "Comedy",
+            "Romance"
+        ],
+        "answer": "Romance",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-10.mp4",
+        "duration": 450.0,
+        "question": "What is the main environment in the video?",
+        "candidates": [
+            "Desert",
+            "Grassland",
+            "Gobi",
+            "Forest"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWC-8.mp4",
+        "duration": 450.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Traditional Festivals",
+            "Natural Science Popularization",
+            "History and Culture",
+            "Food and Flavor"
+        ],
+        "answer": "Natural Science Popularization",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_107.mp4",
+        "duration": 471,
+        "question": "Who is the main character of the video?",
+        "candidates": [
+            "An old man with white hair",
+            "A man in green clothes",
+            "The woman selling fish",
+            "A young child"
+        ],
+        "answer": "The woman selling fish",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_34.mp4",
+        "duration": 492,
+        "question": "Where is the setting of the video story?",
+        "candidates": [
+            "Desert",
+            "Seaside",
+            "Countryside",
+            "City"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_2.mp4",
+        "duration": 356,
+        "question": "Who is the main character of the video?",
+        "candidates": [
+            "Cartoon Whale",
+            "Cartoon Starfish",
+            "Cartoon Sponge and Cartoon Octopus",
+            "Cartoon Shark"
+        ],
+        "answer": "Cartoon Sponge and Cartoon Octopus",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_88.mp4",
+        "duration": 348,
+        "question": "What is the main setting shown in the video?",
+        "candidates": [
+            "Desert",
+            "Ocean",
+            "City",
+            "Forest"
+        ],
+        "answer": "Ocean",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "216.mp4",
+        "duration": 480.0,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Romance",
+            "Nature",
+            "Sci-fi",
+            "Comedy"
+        ],
+        "answer": "Nature",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_39.mp4",
+        "duration": 476,
+        "question": "Where does the story of the video take place?",
+        "candidates": [
+            "Countryside",
+            "Desert",
+            "Seaside",
+            "City"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_35.mp4",
+        "duration": 481,
+        "question": "What is the weather in the video scene?",
+        "candidates": [
+            "Snowy",
+            "Foggy",
+            "Rainy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_14.mp4",
+        "duration": 480.07,
+        "question": "Where is the person in the video?",
+        "candidates": [
+            "Basement",
+            "Bathroom",
+            "Bedroom",
+            "Kitchen"
+        ],
+        "answer": "Bedroom",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_3.mp4",
+        "duration": 418.06,
+        "question": "In this first-person video, what is the first-person character doing?",
+        "candidates": [
+            "Trying on jewelry",
+            "Trying on a tie",
+            "Trying on clothes",
+            "Trying on shoes"
+        ],
+        "answer": "Trying on clothes",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_24.mp4",
+        "duration": 311,
+        "question": "What genre of movie is the animation in the video?",
+        "candidates": [
+            "War",
+            "Comedy",
+            "Science Fiction",
+            "Horror"
+        ],
+        "answer": "Science Fiction",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_21.mp4",
+        "duration": 480.02,
+        "question": "Where is the person in the video?",
+        "candidates": [
+            "Bedroom",
+            "Living room",
+            "Kitchen",
+            "Bathroom"
+        ],
+        "answer": "Living room",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "ego_10.mp4",
+        "duration": 420.57,
+        "question": "What is the first-person character doing in this first-person video?",
+        "candidates": [
+            "Textile making",
+            "Glass making",
+            "Woodworking",
+            "Ceramics making"
+        ],
+        "answer": "Woodworking",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_14.mp4",
+        "duration": 465,
+        "question": "What is the weather in the scene of the video?",
+        "candidates": [
+            "Rainy",
+            "Foggy",
+            "Sunny",
+            "Snowy"
+        ],
+        "answer": "Sunny",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_18.mp4",
+        "duration": 568,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "City",
+            "Island",
+            "Forest",
+            "Snowy mountain"
+        ],
+        "answer": "City",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWA-5.mp4",
+        "duration": 450.0,
+        "question": "What is the main setting of the video?",
+        "candidates": [
+            "City",
+            "Grassland",
+            "Desert",
+            "Ocean"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_85.mp4",
+        "duration": 560,
+        "question": "What is the main setting shown in the video?",
+        "candidates": [
+            "City",
+            "Desert",
+            "Forest",
+            "Ocean"
+        ],
+        "answer": "Ocean",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "en_tv_38.mp4",
+        "duration": 410,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Thriller",
+            "Comedy",
+            "Action",
+            "Romance"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_62.mp4",
+        "duration": 601,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Action",
+            "Thriller",
+            "Mystery",
+            "Comedy"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "231.mp4",
+        "duration": 480.0,
+        "question": "What scenery is mainly shown in the video?",
+        "candidates": [
+            "Space scenery",
+            "Grassland scenery",
+            "Ocean scenery",
+            "Desert scenery"
+        ],
+        "answer": "Space scenery",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWD-5.mp4",
+        "duration": 450.09,
+        "question": "What type of video is this?",
+        "candidates": [
+            "Traditional Festivals",
+            "Natural Science",
+            "Food Flavor",
+            "History and Culture"
+        ],
+        "answer": "Natural Science",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_34.mp4",
+        "duration": 748,
+        "question": "In what setting does the scene in the video take place?",
+        "candidates": [
+            "Forest",
+            "Island",
+            "Snowy Mountain",
+            "Town"
+        ],
+        "answer": "Town",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "tomjerry_2.mp4",
+        "duration": 303,
+        "question": "What is the main character of the video?",
+        "candidates": [
+            "A cartoon cat and a cartoon mouse",
+            "Three cats",
+            "One cat and two mice",
+            "Three mice"
+        ],
+        "answer": "A cartoon cat and a cartoon mouse",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "movie101_79.mp4",
+        "duration": 590,
+        "question": "What type of film is this?",
+        "candidates": [
+            "Thriller",
+            "Action",
+            "Mystery",
+            "Comedy"
+        ],
+        "answer": "Comedy",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "AWB-15.mp4",
+        "duration": 450.0,
+        "question": "What is the main environment in the video?",
+        "candidates": [
+            "Gobi",
+            "Forest",
+            "Grassland",
+            "Desert"
+        ],
+        "answer": "Grassland",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "haimian_4.mp4",
+        "duration": 323,
+        "question": "What is the background of the video?",
+        "candidates": [
+            "Forest",
+            "Desert",
+            "Gobi",
+            "Under the sea"
+        ],
+        "answer": "Under the sea",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_21.mp4",
+        "duration": 275.07,
+        "question": "What is the type of this video?",
+        "candidates": [
+            "Movie trailer",
+            "Documentary",
+            "Tutorial",
+            "Video game"
+        ],
+        "answer": "Video game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_5.mp4",
+        "duration": 208.05,
+        "question": "What are the characteristics of the object being built in the video?",
+        "candidates": [
+            "green",
+            "high",
+            "solid",
+            "cylindroid"
+        ],
+        "answer": "high",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_29.mp4",
+        "duration": 275.11,
+        "question": "Where is the game protagonist setting up the armor equipment?",
+        "candidates": [
+            "In an open field outside",
+            "In a small underground bunker",
+            "Inside a large indoor building",
+            "On the top of a high mountain"
+        ],
+        "answer": "Inside a large indoor building",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_19.mp4",
+        "duration": 203.73,
+        "question": "What animal appears in this gameplay video?",
+        "candidates": [
+            "Parrots",
+            "Wolves",
+            "Ocelots",
+            "Chickens"
+        ],
+        "answer": "Ocelots",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_6.mp4",
+        "duration": 195.81,
+        "question": "What is the object built by the main character in the video?",
+        "candidates": [
+            "Castle",
+            "fort",
+            "Tent",
+            "fireworks"
+        ],
+        "answer": "Tent",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_43.mp4",
+        "duration": 229.04,
+        "question": "What is the person in the game doing?",
+        "candidates": [
+            "Building an automatic farm",
+            "Fighting with a game boss",
+            "Exploring a haunted house",
+            "Designing a character's outfit"
+        ],
+        "answer": "Building an automatic farm",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_4.mp4",
+        "duration": 187.62,
+        "question": "What color is the object being built in the video?",
+        "candidates": [
+            "green",
+            "blue",
+            "white",
+            "brown"
+        ],
+        "answer": "brown",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_41.mp4",
+        "duration": 312.45,
+        "question": "What is this video about?",
+        "candidates": [
+            "A person in the game planting trees by the lake",
+            "A person in the game building a structure by the lake",
+            "A person in the game taking care of pets",
+            "A documentary about humans and nature"
+        ],
+        "answer": "A person in the game building a structure by the lake",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_20.mp4",
+        "duration": 299.26,
+        "question": "What color is the building that appears in this gameplay video?",
+        "candidates": [
+            "Dark blue",
+            "Silver-gray",
+            "Red",
+            "Brown"
+        ],
+        "answer": "Silver-gray",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_22.mp4",
+        "duration": 253.68,
+        "question": "What is being built in this video?",
+        "candidates": [
+            "A floating platform",
+            "An underwater base",
+            "A treehouse",
+            "A fortress"
+        ],
+        "answer": "A floating platform",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_18.mp4",
+        "duration": 236.31,
+        "question": "What animal appears in this gameplay video?",
+        "candidates": [
+            "Wolf",
+            "Horse",
+            "Sheep",
+            "Wild boar"
+        ],
+        "answer": "Wild boar",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_15.mp4",
+        "duration": 335.32,
+        "question": "What is the object being built in this video?",
+        "candidates": [
+            "A wall and a trench behind it",
+            "A house and a garden",
+            "A bridge and a river",
+            "A tower and a moat"
+        ],
+        "answer": "A wall and a trench behind it",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_30.mp4",
+        "duration": 200.85,
+        "question": "What is the main outdoor setting where the game protagonist is located?",
+        "candidates": [
+            "Desert",
+            "Forest",
+            "Mountain",
+            "City"
+        ],
+        "answer": "Forest",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_11.mp4",
+        "duration": 264.89,
+        "question": "What is the type of this video?",
+        "candidates": [
+            "Minecraft gameplay video",
+            "Minecraft strategy guide",
+            "Minecraft mod review",
+            "Minecraft developer diary"
+        ],
+        "answer": "Minecraft gameplay video",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_17.mp4",
+        "duration": 182.65,
+        "question": "Where is the setting of this gameplay video?",
+        "candidates": [
+            "Jungle",
+            "Mountains",
+            "Forest",
+            "Desert"
+        ],
+        "answer": "Desert",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_46.mp4",
+        "duration": 208.01,
+        "question": "What is this video about?",
+        "candidates": [
+            "A person performing a song",
+            "A person doing a live product promotion",
+            "A game tutorial video",
+            "A cartoon animation"
+        ],
+        "answer": "A game tutorial video",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_32.mp4",
+        "duration": 278.83,
+        "question": "What is the theme of this video?",
+        "candidates": [
+            "A person singing",
+            "A cartoon animation",
+            "A person demonstrating how they play a game",
+            "A person live-streaming a sale"
+        ],
+        "answer": "A person demonstrating how they play a game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_38.mp4",
+        "duration": 331.3,
+        "question": "What is the video mainly about?",
+        "candidates": [
+            "A person livestreaming product promotion",
+            "A person demonstrating how to build a castle in the game.",
+            "A person demonstrating a jungle crossing in the game",
+            "A person demonstrating a castle adventure in the game"
+        ],
+        "answer": "A person demonstrating a castle adventure in the game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_2.mp4",
+        "duration": 290.83,
+        "question": "What did the man in the video put on the constructed device?",
+        "candidates": [
+            "cups",
+            "explosive boxes",
+            "bags",
+            "guns"
+        ],
+        "answer": "explosive boxes",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_13.mp4",
+        "duration": 193.84,
+        "question": "What is the main action performed by the character in this video?",
+        "candidates": [
+            "Attacking",
+            "Crafting",
+            "Trading",
+            "Exploring"
+        ],
+        "answer": "Attacking",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_26.mp4",
+        "duration": 438.53,
+        "question": "What is the indoor scene where the game protagonist is located?",
+        "candidates": [
+            "A high school classroom",
+            "A luxury penthouse",
+            "A local library",
+            "A McDonald's fast food restaurant"
+        ],
+        "answer": "A McDonald's fast food restaurant",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_7.mp4",
+        "duration": 258.07,
+        "question": "What is the object built by the mission in the video?",
+        "candidates": [
+            "Chair",
+            "Gun",
+            "Table",
+            "flying device"
+        ],
+        "answer": "Table",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_33.mp4",
+        "duration": 244.93,
+        "question": "What is the game player doing?",
+        "candidates": [
+            "Building a windmill",
+            "Constructing a tank",
+            "Performing a flight",
+            "Digging a hole"
+        ],
+        "answer": "Building a windmill",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_37.mp4",
+        "duration": 259.07,
+        "question": "What is the video demonstrating?",
+        "candidates": [
+            "How to build a pool in the game",
+            "How to build a tiny fishing hut in the game",
+            "A cartoon animation",
+            "How to catch fish in the game"
+        ],
+        "answer": "How to build a tiny fishing hut in the game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_9.mp4",
+        "duration": 240.91,
+        "question": "What is the character always holding in their hand in the game?",
+        "candidates": [
+            "Pickaxe",
+            "Gun",
+            "Map",
+            "Torch"
+        ],
+        "answer": "Map",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_44.mp4",
+        "duration": 340.61,
+        "question": "What is this video about?",
+        "candidates": [
+            "A game player digging underground tunnels in the game",
+            "A game player fighting monsters in the game",
+            "A game player building a castle in the game",
+            "A game player exploring a forest in the game"
+        ],
+        "answer": "A game player digging underground tunnels in the game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_35.mp4",
+        "duration": 202.64,
+        "question": "What is the protagonist mainly constructing in the game?",
+        "candidates": [
+            "Christmas Doorbell",
+            "Digging basements",
+            "Building houses",
+            "Tanks"
+        ],
+        "answer": "Christmas Doorbell",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_42.mp4",
+        "duration": 1173.14,
+        "question": "What is this video about?",
+        "candidates": [
+            "A person demonstrating how to win in a shooting game",
+            "Someone live-streaming a singing performance",
+            "A person demonstrating how to cook in the game",
+            "A person demonstrating how to build a device in the game"
+        ],
+        "answer": "A person demonstrating how to build a device in the game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_10.mp4",
+        "duration": 291.27,
+        "question": "What is the character building in the game?",
+        "candidates": [
+            "Pool",
+            "House",
+            "Bridge",
+            "Garden"
+        ],
+        "answer": "Pool",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_24.mp4",
+        "duration": 350.23,
+        "question": "What is the protagonist of the game doing?",
+        "candidates": [
+            "Building a bridge and setting up a trap",
+            "Planting trees and setting a fence",
+            "Constructing a house and installing windows",
+            "Digging a well and placing a ladder"
+        ],
+        "answer": "Digging a well and placing a ladder",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_36.mp4",
+        "duration": 264.5,
+        "question": "What scene is demonstrated in the video?",
+        "candidates": [
+            "How to build a bunker in the game",
+            "How to build a bee farm in the game",
+            "Educational content about the social behavior of bees",
+            "How to get along with bees"
+        ],
+        "answer": "How to build a bee farm in the game",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_25.mp4",
+        "duration": 189.89,
+        "question": "What is the game character doing?",
+        "candidates": [
+            "Making a scarecrow",
+            "Fighting with enemies",
+            "Collecting resources",
+            "Building a house"
+        ],
+        "answer": "Making a scarecrow",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_12.mp4",
+        "duration": 224.47,
+        "question": "What is the main action performed by the character in this video?",
+        "candidates": [
+            "Mining",
+            "Farming",
+            "Building",
+            "Exploring"
+        ],
+        "answer": "Building",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_16.mp4",
+        "duration": 294.99,
+        "question": "Question: What is the object being built in this video?",
+        "candidates": [
+            "An underground bunker",
+            "A floating platform",
+            "A rooftop garden",
+            "A water tower"
+        ],
+        "answer": "A floating platform",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_31.mp4",
+        "duration": 309.43,
+        "question": "What does this appear to be a video of?",
+        "candidates": [
+            "A game match",
+            "Game tutorial video",
+            "Behind-the-scenes of game development",
+            "Game developer interview"
+        ],
+        "answer": "Game tutorial video",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_27.mp4",
+        "duration": 200.37,
+        "question": "What is the protagonist of the game doing?",
+        "candidates": [
+            "Constructing a sandcastle on the beach",
+            "Setting up a tent at a coastal campsite",
+            "Exploring a cave",
+            "Building a house by the seaside"
+        ],
+        "answer": "Building a house by the seaside",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_14.mp4",
+        "duration": 260.09,
+        "question": "What is the object being built in this video?",
+        "candidates": [
+            "Farm",
+            "Bridge",
+            "Tower",
+            "Pool"
+        ],
+        "answer": "Farm",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_34.mp4",
+        "duration": 232.22,
+        "question": "What is the protagonist mainly doing in the game?",
+        "candidates": [
+            "Raising pets",
+            "Planting trees",
+            "Constructing buildings",
+            "Digging holes"
+        ],
+        "answer": "Constructing buildings",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_28.mp4",
+        "duration": 194.1,
+        "question": "What is the protagonist of the game doing?",
+        "candidates": [
+            "Building a house",
+            "Building a blinking device",
+            "Digging a tunnel",
+            "Building a scarecrow"
+        ],
+        "answer": "Building a blinking device",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_1.mp4",
+        "duration": 313.33,
+        "question": "What shape is the object built by the main character in the video?",
+        "candidates": [
+            "circle",
+            "triangle",
+            "rectangle",
+            "heart"
+        ],
+        "answer": "heart",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_3.mp4",
+        "duration": 316.99,
+        "question": "What is my main action in the video?",
+        "candidates": [
+            "sitting",
+            "fishing",
+            "running",
+            "climbing"
+        ],
+        "answer": "running",
+        "question_type": "topic_reasoning"
+    },
+    {
+        "video": "game_23.mp4",
+        "duration": 247.36,
+        "question": "What is the type of this video?",
+        "candidates": [
+            "Movie trailer",
+            "Video game",
+            "Documentary",
+            "Tutorial"
+        ],
+        "answer": "Video game",
+        "question_type": "topic_reasoning"
+    }
+]

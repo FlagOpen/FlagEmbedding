@@ -1,0 +1,2602 @@
+[
+    {
+        "video": "surveil_20.mp4",
+        "duration": 485.17,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "RoadAccidents",
+            "Shooting",
+            "Shoplifting",
+            "Assault"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_24.mp4",
+        "duration": 227.4,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Fighting",
+            "Vandalism",
+            "Robbery",
+            "Assault"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_22.mp4",
+        "duration": 195.5,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Fighting",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_11.mp4",
+        "duration": 428.55,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Fighting",
+            "Abuse",
+            "Stealing",
+            "Shooting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_91.mp4",
+        "duration": 526.55,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Burglary",
+            "Shooting",
+            "Normal",
+            "Vandalism"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_98.mp4",
+        "duration": 331.59,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Stealing",
+            "Fighting",
+            "Assault"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_82.mp4",
+        "duration": 288.02,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Abuse",
+            "RoadAccidents",
+            "Arson"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_63.mp4",
+        "duration": 607.54,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Assault",
+            "Normal",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_134.mp4",
+        "duration": 231.97,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Normal",
+            "Shooting",
+            "Shooting",
+            "Robbery"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_103.mp4",
+        "duration": 3600.03,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Normal",
+            "Stealing",
+            "Vandalism",
+            "Burglary"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_165.mp4",
+        "duration": 258.93,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Burglary",
+            "Assault",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_192.mp4",
+        "duration": 722.77,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "Burglary",
+            "Vandalism",
+            "Shooting"
+        ],
+        "answer": "Shooting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_140.mp4",
+        "duration": 318.39,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Robbery",
+            "Normal",
+            "Stealing",
+            "Arson"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_3.mp4",
+        "duration": 559.28,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Arrest",
+            "Assault",
+            "Fighting",
+            "Burglary"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_35.mp4",
+        "duration": 332.64,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Vandalism",
+            "Arson",
+            "Shoplifting",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_75.mp4",
+        "duration": 381.04,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Stealing",
+            "Burglary",
+            "Explosion",
+            "Abuse"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_144.mp4",
+        "duration": 274.67,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Fighting",
+            "Arrest",
+            "Normal",
+            "Stealing"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_33.mp4",
+        "duration": 430.79,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Normal",
+            "Vandalism",
+            "RoadAccidents",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_195.mp4",
+        "duration": 239.49,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Robbery",
+            "Stealing",
+            "Assault",
+            "Vandalism"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_149.mp4",
+        "duration": 307.32,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Robbery",
+            "Burglary",
+            "Explosion",
+            "Shooting"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_45.mp4",
+        "duration": 299.83,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shoplifting",
+            "Abuse",
+            "Fighting",
+            "Assault"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_50.mp4",
+        "duration": 212.74,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Normal",
+            "Arson",
+            "Robbery",
+            "Shooting"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_179.mp4",
+        "duration": 208.89,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shoplifting",
+            "Robbery",
+            "Explosion",
+            "Fighting"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_90.mp4",
+        "duration": 198.2,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "RoadAccidents",
+            "Shooting",
+            "Arson",
+            "Fighting"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_57.mp4",
+        "duration": 1355.21,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arrest",
+            "Abuse",
+            "Burglary",
+            "Vandalism"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_180.mp4",
+        "duration": 196.27,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arrest",
+            "Assault",
+            "Burglary",
+            "Vandalism"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_54.mp4",
+        "duration": 254.88,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Assault",
+            "Explosion",
+            "Shoplifting",
+            "Normal"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_5.mp4",
+        "duration": 2016.3,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Normal",
+            "Stealing",
+            "Assault",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_46.mp4",
+        "duration": 539.36,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arrest",
+            "Explosion",
+            "Assault",
+            "RoadAccidents"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_171.mp4",
+        "duration": 602.03,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Stealing",
+            "Robbery",
+            "Explosion",
+            "RoadAccidents"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_188.mp4",
+        "duration": 386.4,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arson",
+            "Stealing",
+            "Vandalism",
+            "Shoplifting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_138.mp4",
+        "duration": 330.94,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shooting",
+            "Normal",
+            "Fighting",
+            "Arson"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_173.mp4",
+        "duration": 352.88,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Arrest",
+            "Burglary",
+            "Explosion",
+            "Shooting"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_2.mp4",
+        "duration": 225.89,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Arrest",
+            "Arson",
+            "Stealing"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_30.mp4",
+        "duration": 387.21,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arrest",
+            "Arson",
+            "Robbery",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_58.mp4",
+        "duration": 184.66,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Stealing",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_174.mp4",
+        "duration": 246.88,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Burglary",
+            "Robbery",
+            "Shooting",
+            "Stealing"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_87.mp4",
+        "duration": 300.03,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "RoadAccidents",
+            "Normal",
+            "Shoplifting",
+            "Burglary"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_147.mp4",
+        "duration": 251.2,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Normal",
+            "Burglary",
+            "Assault",
+            "Robbery"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_156.mp4",
+        "duration": 258.17,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "RoadAccidents",
+            "Stealing",
+            "Explosion",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_137.mp4",
+        "duration": 276.23,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Explosion",
+            "RoadAccidents",
+            "Shooting",
+            "Assault"
+        ],
+        "answer": "Shooting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_155.mp4",
+        "duration": 266.68,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Abuse",
+            "RoadAccidents",
+            "Vandalism"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_124.mp4",
+        "duration": 1054.78,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Arrest",
+            "Robbery",
+            "Fighting"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_178.mp4",
+        "duration": 210.07,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "RoadAccidents",
+            "Stealing",
+            "Vandalism",
+            "Fighting"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_117.mp4",
+        "duration": 387.33,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Arrest",
+            "Arson",
+            "Shoplifting",
+            "Abuse"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_86.mp4",
+        "duration": 252.27,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Stealing",
+            "RoadAccidents",
+            "Shooting",
+            "Shooting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_193.mp4",
+        "duration": 205.7,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Normal",
+            "Robbery",
+            "Shooting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_187.mp4",
+        "duration": 365.38,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Assault",
+            "Vandalism",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_133.mp4",
+        "duration": 297.95,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arson",
+            "Fighting",
+            "Abuse",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_176.mp4",
+        "duration": 32550.13,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Stealing",
+            "Shooting",
+            "Normal",
+            "Fighting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_60.mp4",
+        "duration": 274.1,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Robbery",
+            "Normal",
+            "Shooting",
+            "Burglary"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_142.mp4",
+        "duration": 273.74,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Stealing",
+            "Explosion",
+            "Robbery",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_129.mp4",
+        "duration": 250.19,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Shoplifting",
+            "Vandalism",
+            "Robbery"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_123.mp4",
+        "duration": 600.36,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arson",
+            "Arrest",
+            "RoadAccidents",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_198.mp4",
+        "duration": 299.7,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Normal",
+            "Robbery",
+            "Arrest",
+            "Fighting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_115.mp4",
+        "duration": 806.48,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "Stealing",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_109.mp4",
+        "duration": 538.75,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Burglary",
+            "Explosion",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_104.mp4",
+        "duration": 220.13,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Burglary",
+            "Stealing",
+            "Arrest",
+            "Abuse"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_32.mp4",
+        "duration": 371.85,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Vandalism",
+            "Shoplifting",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_141.mp4",
+        "duration": 471.52,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Explosion",
+            "Stealing",
+            "Abuse"
+        ],
+        "answer": "Abuse",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_14.mp4",
+        "duration": 237.27,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Abuse",
+            "Robbery",
+            "Stealing",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_62.mp4",
+        "duration": 231.67000000000002,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Assault",
+            "Vandalism",
+            "Shooting",
+            "Robbery"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_81.mp4",
+        "duration": 285.96,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Assault",
+            "Arson",
+            "Normal",
+            "Vandalism"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_164.mp4",
+        "duration": 288.18,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Assault",
+            "Normal",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_71.mp4",
+        "duration": 189.7,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Assault",
+            "Shoplifting",
+            "Normal",
+            "Abuse"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_169.mp4",
+        "duration": 196.63,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Vandalism",
+            "Burglary",
+            "Shoplifting"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_6.mp4",
+        "duration": 185.6,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Normal",
+            "Arson",
+            "Shooting"
+        ],
+        "answer": "Shooting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_96.mp4",
+        "duration": 258.08,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Vandalism",
+            "Shooting",
+            "Burglary",
+            "Arrest"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_128.mp4",
+        "duration": 208.45,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Robbery",
+            "Fighting",
+            "Arson",
+            "Arrest"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_167.mp4",
+        "duration": 375.89,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Normal",
+            "Robbery",
+            "Shoplifting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_166.mp4",
+        "duration": 262.53,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Normal",
+            "Abuse",
+            "Shoplifting"
+        ],
+        "answer": "Abuse",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_26.mp4",
+        "duration": 209.64,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Vandalism",
+            "Normal",
+            "RoadAccidents"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_15.mp4",
+        "duration": 727.24,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Normal",
+            "Stealing",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_189.mp4",
+        "duration": 220.32,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shoplifting",
+            "Arrest",
+            "Stealing",
+            "Robbery"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_194.mp4",
+        "duration": 1320.17,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Stealing",
+            "Normal",
+            "Robbery",
+            "Arrest"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_135.mp4",
+        "duration": 180.14,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Assault",
+            "Shooting",
+            "Vandalism",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_181.mp4",
+        "duration": 225.7,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "Explosion",
+            "RoadAccidents",
+            "Burglary"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_47.mp4",
+        "duration": 1420.03,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Vandalism",
+            "Normal",
+            "Shoplifting",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_139.mp4",
+        "duration": 239.03,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Assault",
+            "Vandalism",
+            "Normal",
+            "Robbery"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_161.mp4",
+        "duration": 299.67,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Stealing",
+            "Burglary",
+            "Shooting",
+            "Arrest"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_190.mp4",
+        "duration": 216.2,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arrest",
+            "Shoplifting",
+            "Normal",
+            "Burglary"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_88.mp4",
+        "duration": 248.34,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "RoadAccidents",
+            "Fighting",
+            "Explosion"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_152.mp4",
+        "duration": 290.9,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Arrest",
+            "Normal",
+            "Robbery"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_43.mp4",
+        "duration": 409.79,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Normal",
+            "Arrest",
+            "Shoplifting",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_160.mp4",
+        "duration": 431.48,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Stealing",
+            "Vandalism",
+            "Arson",
+            "RoadAccidents"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_28.mp4",
+        "duration": 915.2,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Normal",
+            "Burglary",
+            "Abuse",
+            "Vandalism"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_130.mp4",
+        "duration": 375.26,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shoplifting",
+            "Assault",
+            "Burglary",
+            "Robbery"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_68.mp4",
+        "duration": 221.07999999999998,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Robbery",
+            "Burglary",
+            "Arrest",
+            "Arson"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_183.mp4",
+        "duration": 397.9,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Assault",
+            "Stealing",
+            "Shoplifting"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_49.mp4",
+        "duration": 484.49,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Robbery",
+            "RoadAccidents",
+            "Normal",
+            "Stealing"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_37.mp4",
+        "duration": 2223.27,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Fighting",
+            "Shoplifting",
+            "Explosion"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_118.mp4",
+        "duration": 435.79,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Robbery",
+            "Shooting",
+            "Burglary",
+            "Arson"
+        ],
+        "answer": "Shooting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_59.mp4",
+        "duration": 1200.63,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Burglary",
+            "Shooting",
+            "Normal",
+            "RoadAccidents"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_97.mp4",
+        "duration": 269.87,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Assault",
+            "Shooting",
+            "Fighting",
+            "RoadAccidents"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_186.mp4",
+        "duration": 403.58,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Abuse",
+            "Arson",
+            "Stealing",
+            "Robbery"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_84.mp4",
+        "duration": 200.03,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Normal",
+            "Vandalism",
+            "Arson"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_17.mp4",
+        "duration": 554.26,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Robbery",
+            "Normal",
+            "Vandalism",
+            "Arrest"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_112.mp4",
+        "duration": 317.3,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shoplifting",
+            "Fighting",
+            "Assault",
+            "Arrest"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_41.mp4",
+        "duration": 781.1,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Burglary",
+            "Shoplifting",
+            "Normal",
+            "Explosion"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_29.mp4",
+        "duration": 197.17000000000002,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arson",
+            "Fighting",
+            "Stealing",
+            "Arrest"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_53.mp4",
+        "duration": 300.06,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Fighting",
+            "Stealing",
+            "RoadAccidents",
+            "Robbery"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_184.mp4",
+        "duration": 218.17000000000002,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arrest",
+            "Shoplifting",
+            "Fighting",
+            "Explosion"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_9.mp4",
+        "duration": 220.07999999999998,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Robbery",
+            "Stealing",
+            "Fighting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_76.mp4",
+        "duration": 308.37,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "RoadAccidents",
+            "Explosion",
+            "Vandalism",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_8.mp4",
+        "duration": 223.87,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Burglary",
+            "Fighting",
+            "Robbery",
+            "Assault"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_151.mp4",
+        "duration": 228.67000000000002,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Stealing",
+            "Shoplifting",
+            "Fighting",
+            "Normal"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_136.mp4",
+        "duration": 195.84,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Arrest",
+            "Stealing",
+            "RoadAccidents"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_100.mp4",
+        "duration": 4730.04,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Explosion",
+            "Robbery",
+            "Arson",
+            "Shoplifting"
+        ],
+        "answer": "Explosion",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_12.mp4",
+        "duration": 192.37,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "Normal",
+            "Burglary",
+            "Fighting"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_95.mp4",
+        "duration": 301.13,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Fighting",
+            "Vandalism",
+            "Shooting",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_72.mp4",
+        "duration": 193.73,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Vandalism",
+            "Abuse",
+            "Fighting",
+            "Arson"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_191.mp4",
+        "duration": 604.98,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shoplifting",
+            "RoadAccidents",
+            "Shooting",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_182.mp4",
+        "duration": 254.38,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Vandalism",
+            "Arson",
+            "Normal",
+            "Explosion"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_168.mp4",
+        "duration": 315.14,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Explosion",
+            "Robbery",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_48.mp4",
+        "duration": 435.26,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Stealing",
+            "Shoplifting",
+            "Arson",
+            "Normal"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_199.mp4",
+        "duration": 2102.0,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arrest",
+            "Explosion",
+            "Assault",
+            "Shooting"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_106.mp4",
+        "duration": 393.35,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Normal",
+            "Burglary",
+            "Fighting",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_10.mp4",
+        "duration": 359.97,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Arrest",
+            "Assault",
+            "Stealing"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_154.mp4",
+        "duration": 343.6,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Stealing",
+            "Arson",
+            "Assault",
+            "Vandalism"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_1.mp4",
+        "duration": 182.88,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Stealing",
+            "Shoplifting",
+            "RoadAccidents"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_79.mp4",
+        "duration": 360.62,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Shoplifting",
+            "RoadAccidents",
+            "Shooting"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_39.mp4",
+        "duration": 196.05,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Abuse",
+            "RoadAccidents",
+            "Burglary",
+            "Arson"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_145.mp4",
+        "duration": 211.07,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Robbery",
+            "Explosion",
+            "Abuse"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_23.mp4",
+        "duration": 949.28,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Abuse",
+            "Assault",
+            "Arson",
+            "Robbery"
+        ],
+        "answer": "Abuse",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_111.mp4",
+        "duration": 229.6,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Normal",
+            "Explosion",
+            "Fighting"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_110.mp4",
+        "duration": 527.86,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arrest",
+            "Normal",
+            "Burglary",
+            "Shoplifting"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_105.mp4",
+        "duration": 207.17000000000002,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Robbery",
+            "Burglary",
+            "Arson",
+            "Shoplifting"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_121.mp4",
+        "duration": 314.07,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Burglary",
+            "Shooting",
+            "Shooting",
+            "RoadAccidents"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_153.mp4",
+        "duration": 495.13,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Burglary",
+            "Shoplifting",
+            "Shooting",
+            "Stealing"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_102.mp4",
+        "duration": 415.0,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Arrest",
+            "Vandalism",
+            "Fighting"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_4.mp4",
+        "duration": 192.03,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shooting",
+            "Shooting",
+            "Robbery",
+            "Burglary"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_93.mp4",
+        "duration": 257.58,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arson",
+            "Normal",
+            "Shooting",
+            "RoadAccidents"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_177.mp4",
+        "duration": 212.51,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Explosion",
+            "Assault",
+            "RoadAccidents",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_99.mp4",
+        "duration": 334.18,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Stealing",
+            "Arson",
+            "Burglary",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_67.mp4",
+        "duration": 543.0,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Vandalism",
+            "Arson",
+            "Explosion",
+            "RoadAccidents"
+        ],
+        "answer": "Explosion",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_119.mp4",
+        "duration": 519.99,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shooting",
+            "Vandalism",
+            "RoadAccidents",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_146.mp4",
+        "duration": 3599.84,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Normal",
+            "Arson",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_56.mp4",
+        "duration": 237.76,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Normal",
+            "Arson",
+            "Stealing"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_0.mp4",
+        "duration": 875.51,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Shooting",
+            "Fighting",
+            "Assault",
+            "Arson"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_120.mp4",
+        "duration": 280.29,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Vandalism",
+            "Abuse",
+            "Assault",
+            "Burglary"
+        ],
+        "answer": "Abuse",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_19.mp4",
+        "duration": 559.82,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arson",
+            "Shoplifting",
+            "Explosion",
+            "Abuse"
+        ],
+        "answer": "Abuse",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_7.mp4",
+        "duration": 262.83,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Robbery",
+            "Abuse",
+            "Vandalism",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_52.mp4",
+        "duration": 208.61,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Burglary",
+            "Shooting",
+            "Arson"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_13.mp4",
+        "duration": 248.09,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Stealing",
+            "Robbery",
+            "Normal",
+            "Burglary"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_25.mp4",
+        "duration": 195.06,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Stealing",
+            "Robbery",
+            "Assault"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_42.mp4",
+        "duration": 240.64,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shoplifting",
+            "Shooting",
+            "Explosion",
+            "Vandalism"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_77.mp4",
+        "duration": 291.04,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Burglary",
+            "Normal",
+            "Abuse",
+            "Stealing"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_65.mp4",
+        "duration": 187.53,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Normal",
+            "Fighting",
+            "Stealing",
+            "Shooting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_40.mp4",
+        "duration": 183.31,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Stealing",
+            "Shooting",
+            "RoadAccidents",
+            "Robbery"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_55.mp4",
+        "duration": 220.6,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Burglary",
+            "Assault",
+            "Vandalism"
+        ],
+        "answer": "Assault",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_38.mp4",
+        "duration": 355.4,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Assault",
+            "RoadAccidents",
+            "Normal",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_69.mp4",
+        "duration": 229.1,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Vandalism",
+            "Shooting",
+            "Burglary",
+            "Shoplifting"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_185.mp4",
+        "duration": 907.05,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Vandalism",
+            "Shoplifting",
+            "Arrest"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_114.mp4",
+        "duration": 220.27,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Abuse",
+            "Shooting",
+            "Explosion",
+            "Fighting"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_78.mp4",
+        "duration": 294.96,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Arrest",
+            "Normal",
+            "Shooting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_157.mp4",
+        "duration": 255.0,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arrest",
+            "Explosion",
+            "Arson",
+            "Shooting"
+        ],
+        "answer": "Explosion",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_132.mp4",
+        "duration": 297.57,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "RoadAccidents",
+            "Assault",
+            "Stealing",
+            "Shoplifting"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_83.mp4",
+        "duration": 511.91,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Normal",
+            "Stealing",
+            "Shooting",
+            "Fighting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_101.mp4",
+        "duration": 419.73,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Stealing",
+            "Vandalism",
+            "Robbery",
+            "Fighting"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_131.mp4",
+        "duration": 180.0,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Assault",
+            "Robbery",
+            "Fighting",
+            "Stealing"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_34.mp4",
+        "duration": 353.57,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Fighting",
+            "Arrest",
+            "Shooting",
+            "RoadAccidents"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_170.mp4",
+        "duration": 184.83,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Abuse",
+            "Arrest",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_127.mp4",
+        "duration": 4218.5,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Arson",
+            "RoadAccidents",
+            "Abuse",
+            "Assault"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_126.mp4",
+        "duration": 364.04,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Explosion",
+            "Arson",
+            "Shooting",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_162.mp4",
+        "duration": 236.21,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Robbery",
+            "Shooting",
+            "Normal"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_74.mp4",
+        "duration": 524.46,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Robbery",
+            "Stealing",
+            "Abuse"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_73.mp4",
+        "duration": 212.97,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Explosion",
+            "Shoplifting",
+            "Arrest",
+            "Robbery"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_64.mp4",
+        "duration": 360.0,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arrest",
+            "Robbery",
+            "Shooting",
+            "Explosion"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_51.mp4",
+        "duration": 180.0,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Normal",
+            "Fighting",
+            "Assault",
+            "Shoplifting"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_196.mp4",
+        "duration": 312.55,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "RoadAccidents",
+            "Assault",
+            "Burglary",
+            "Normal"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_148.mp4",
+        "duration": 180.33,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Assault",
+            "Burglary",
+            "Vandalism",
+            "Normal"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_16.mp4",
+        "duration": 190.11,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Explosion",
+            "Burglary",
+            "Vandalism",
+            "Fighting"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_18.mp4",
+        "duration": 306.71,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Vandalism",
+            "Normal",
+            "Shooting",
+            "Abuse"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_163.mp4",
+        "duration": 509.27,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "RoadAccidents",
+            "Robbery",
+            "Arrest",
+            "Shooting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_175.mp4",
+        "duration": 437.17,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Robbery",
+            "Normal",
+            "Explosion",
+            "Vandalism"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_36.mp4",
+        "duration": 222.48,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "RoadAccidents",
+            "Shoplifting",
+            "Arrest"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_172.mp4",
+        "duration": 321.85,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Arson",
+            "Abuse",
+            "Fighting",
+            "Robbery"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_94.mp4",
+        "duration": 451.44,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shoplifting",
+            "Arson",
+            "Stealing",
+            "Assault"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_107.mp4",
+        "duration": 639.59,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Stealing",
+            "RoadAccidents",
+            "Arrest"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_21.mp4",
+        "duration": 180.0,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Shoplifting",
+            "Robbery",
+            "Shooting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_85.mp4",
+        "duration": 601.84,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Normal",
+            "Robbery",
+            "Burglary",
+            "Arrest"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_31.mp4",
+        "duration": 220.96,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Stealing",
+            "Shooting",
+            "Normal",
+            "RoadAccidents"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_44.mp4",
+        "duration": 206.36,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Explosion",
+            "RoadAccidents",
+            "Abuse",
+            "Arrest"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_150.mp4",
+        "duration": 223.52,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Fighting",
+            "Arson",
+            "RoadAccidents",
+            "Arrest"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_197.mp4",
+        "duration": 221.8,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Stealing",
+            "Assault",
+            "Robbery",
+            "Shoplifting"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_61.mp4",
+        "duration": 396.5,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arrest",
+            "RoadAccidents",
+            "Abuse",
+            "Shooting"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_116.mp4",
+        "duration": 291.18,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Shooting",
+            "Arrest",
+            "Stealing",
+            "Robbery"
+        ],
+        "answer": "Arrest",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_80.mp4",
+        "duration": 411.3,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Assault",
+            "Shooting",
+            "Shoplifting",
+            "Vandalism"
+        ],
+        "answer": "Shoplifting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_27.mp4",
+        "duration": 318.46,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Stealing",
+            "Robbery",
+            "Abuse",
+            "Shooting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_113.mp4",
+        "duration": 202.62,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Vandalism",
+            "Arson",
+            "Shooting",
+            "Stealing"
+        ],
+        "answer": "Stealing",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_70.mp4",
+        "duration": 185.27,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Normal",
+            "Explosion",
+            "Vandalism"
+        ],
+        "answer": "Vandalism",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_122.mp4",
+        "duration": 240.2,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Robbery",
+            "Fighting",
+            "Normal",
+            "Shooting"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_143.mp4",
+        "duration": 341.07,
+        "question": "Is there anything unusual in this surveillance video? If there is, what type of unusual activity is it?",
+        "candidates": [
+            "Burglary",
+            "RoadAccidents",
+            "Arson",
+            "Vandalism"
+        ],
+        "answer": "Arson",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_89.mp4",
+        "duration": 187.37,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "RoadAccidents",
+            "Fighting",
+            "Shooting",
+            "Arson"
+        ],
+        "answer": "RoadAccidents",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_125.mp4",
+        "duration": 190.32,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Fighting",
+            "Robbery",
+            "RoadAccidents",
+            "Burglary"
+        ],
+        "answer": "Robbery",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_108.mp4",
+        "duration": 1620.85,
+        "question": "Is there any abnormality in this surveillance video? If so, what type of abnormality is it?",
+        "candidates": [
+            "Shooting",
+            "Explosion",
+            "Assault",
+            "Burglary"
+        ],
+        "answer": "Burglary",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_159.mp4",
+        "duration": 448.68,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Burglary",
+            "Assault",
+            "Normal",
+            "RoadAccidents"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_158.mp4",
+        "duration": 213.69,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Shooting",
+            "Shoplifting",
+            "Explosion",
+            "Normal"
+        ],
+        "answer": "Shooting",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_66.mp4",
+        "duration": 319.72,
+        "question": "Does this surveillance footage contain any anomalies? If yes, which kind of anomaly?",
+        "candidates": [
+            "Assault",
+            "Explosion",
+            "Normal",
+            "Burglary"
+        ],
+        "answer": "Normal",
+        "question_type": "anomaly_reco"
+    },
+    {
+        "video": "surveil_92.mp4",
+        "duration": 437.8,
+        "question": "Are there any irregularities in this surveillance video? If there are, what sort are they?",
+        "candidates": [
+            "Arson",
+            "Fighting",
+            "Burglary",
+            "Assault"
+        ],
+        "answer": "Fighting",
+        "question_type": "anomaly_reco"
+    }
+]
