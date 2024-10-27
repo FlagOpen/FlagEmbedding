@@ -64,6 +64,9 @@ class LayerWiseLLMReranker(AbsReranker):
             **kwargs
         )
 
+        self.cutoff_layers = cutoff_layers
+        self.prompt = prompt
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             cache_dir=cache_dir,

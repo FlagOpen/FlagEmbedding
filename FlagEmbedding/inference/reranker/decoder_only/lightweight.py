@@ -114,6 +114,11 @@ class LightweightLLMReranker(AbsReranker):
             **kwargs
         )
 
+        self.cutoff_layers = cutoff_layers
+        self.compress_layers = compress_layers
+        self.compress_ratio = compress_ratio
+        self.prompt = prompt
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             cache_dir=cache_dir,
