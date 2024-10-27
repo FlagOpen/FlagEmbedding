@@ -27,6 +27,26 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         else:
             return self._load_remote_corpus(dataset_name=dataset_name)
 
+    def _load_local_qrels(self, save_dir: str, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        checked_split = self.check_splits(split)
+        if len(checked_split) == 0:
+            raise ValueError(f"Split {split} not found in the dataset.")
+        split = checked_split[0]
+
+        qrels_path = os.path.join(save_dir, f"{split}_qrels.jsonl")
+        if self.force_redownload or not os.path.exists(qrels_path):
+            logger.warning(f"Qrels not found in {qrels_path}. Trying to download the qrels from the remote and save it to {save_dir}.")
+            return self._load_remote_qrels(dataset_name=dataset_name, split=split, save_dir=save_dir)
+        else:
+            qrels_data = datasets.load_dataset('json', data_files=qrels_path, cache_dir=self.cache_dir)['train']
+
+            qrels = {}
+            for data in qrels_data:
+                qid = data['qid']
+                qrels[qid] = data['answers']
+
+            return datasets.DatasetDict(qrels)
+
     def _load_remote_corpus(
         self,
         dataset_name: Optional[str] = None,
