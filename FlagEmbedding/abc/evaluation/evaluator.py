@@ -169,8 +169,10 @@ class AbsEvaluator:
                     dataset_name=dataset_name,
                 )
                 no_reranker_search_results_dict[split] = search_results
-        retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
-        self.output_eval_results_to_json(retriever_eval_results, os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json'))
+        eval_results_save_path = os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
+        if not os.path.exists(eval_results_save_path) or self.overwrite:
+            retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
+            self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
         # Reranking Stage
         if reranker is not None:
@@ -211,8 +213,10 @@ class AbsEvaluator:
                     split=split,
                     dataset_name=dataset_name,
                 )
-            reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
-            self.output_eval_results_to_json(reranker_eval_results, os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json'))
+            eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
+            if not os.path.exists(eval_results_save_path) or self.overwrite:
+                reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
+                self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
 
     @staticmethod
     def save_search_results(

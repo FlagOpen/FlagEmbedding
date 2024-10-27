@@ -14,7 +14,7 @@ eval_args="\
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
     --overwrite False \
-    --k_values 10 100 \
+    --k_values 20 \
     --eval_output_method markdown \
     --eval_output_path /share/jianlv/evaluation/mkqa/mkqa_eval_results.md \
     --eval_metrics qa_recall_at_20 \
