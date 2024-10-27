@@ -1,10 +1,13 @@
 import os
+import logging
 from typing import List, Union, Optional
 
 from FlagEmbedding.inference.embedder.model_mapping import (
     EmbedderModelClass,
     AUTO_EMBEDDER_MAPPING, EMBEDDER_CLASS_MAPPING
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FlagAutoModel:
@@ -33,6 +36,21 @@ class FlagAutoModel:
 
         if model_class is not None:
             _model_class = EMBEDDER_CLASS_MAPPING[EmbedderModelClass(model_class)]
+            if pooling_method is None:
+                pooling_method = _model_class.DEFAULT_POOLING_METHOD
+                logger.warning(
+                    f"`pooling_method` is not specified, use default pooling method '{pooling_method}'."
+                )
+            if trust_remote_code is None:
+                trust_remote_code = False
+                logger.warning(
+                    f"`trust_remote_code` is not specified, set to default value '{trust_remote_code}'."
+                )
+            if query_instruction_format is None:
+                query_instruction_format = "{}{}"
+                logger.warning(
+                    f"`query_instruction_format` is not specified, set to default value '{query_instruction_format}'."
+                )
         else:
             if model_name not in AUTO_EMBEDDER_MAPPING:
                 raise ValueError(

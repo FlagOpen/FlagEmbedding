@@ -18,6 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class M3Embedder(AbsEmbedder):
+    DEFAULT_POOLING_METHOD = "cls"
+
     def __init__(
         self,
         model_name_or_path: str,

@@ -1,4 +1,5 @@
 import os
+import logging
 from typing import Union, Optional
 
 from FlagEmbedding.inference.reranker.model_mapping import (
@@ -6,6 +7,8 @@ from FlagEmbedding.inference.reranker.model_mapping import (
     RERANKER_CLASS_MAPPING,
     AUTO_RERANKER_MAPPING
 )
+
+logger = logging.getLogger(__name__)
 
 
 class FlagAutoReranker:
@@ -29,6 +32,11 @@ class FlagAutoReranker:
 
         if model_class is not None:
             _model_class = RERANKER_CLASS_MAPPING[RerankerModelClass(model_class)]
+            if trust_remote_code is None:
+                trust_remote_code = False
+            logging.warning(
+                f"`trust_remote_code` is not specified, set to default value '{trust_remote_code}'."
+            )
         else:
             if model_name not in AUTO_RERANKER_MAPPING:
                 raise ValueError(

@@ -9,6 +9,8 @@ from FlagEmbedding.abc.inference import AbsEmbedder
 
 
 class BaseEmbedder(AbsEmbedder):
+    DEFAULT_POOLING_METHOD = "cls"
+
     def __init__(
         self,
         model_name_or_path: str,
