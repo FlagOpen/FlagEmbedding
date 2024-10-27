@@ -218,6 +218,9 @@ class M3Embedder(AbsEmbedder):
         device: str = None,
         **kwargs: Any
     ):        
+        # pop convert_to_numpy from kwargs
+        kwargs.pop("convert_to_numpy", None)
+
         if device is None:
             device = self.target_devices[0]
 
