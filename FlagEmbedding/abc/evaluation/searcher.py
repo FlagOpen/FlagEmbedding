@@ -146,6 +146,7 @@ class EvalReranker:
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
         search_results: Dict[str, Dict[str, float]],
+        ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -179,6 +180,8 @@ class EvalReranker:
         pairs = []
         for qid in search_results:
             for docid in search_results[qid]:
+                if ignore_identical_ids and qid == docid:
+                    continue
                 sentence_pairs.append(
                     {
                         "qid": qid,

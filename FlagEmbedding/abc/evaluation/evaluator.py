@@ -177,6 +177,7 @@ class AbsEvaluator:
                     corpus=corpus,
                     queries=queries_dict[split],
                     search_results=no_reranker_search_results_dict[split],
+                    ignore_identical_ids=ignore_identical_ids,
                     **kwargs,
                 )
 
