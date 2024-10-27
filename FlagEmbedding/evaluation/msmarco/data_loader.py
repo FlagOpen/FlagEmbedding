@@ -136,12 +136,8 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                             f1.write(json.dumps(_data, ensure_ascii=False) + "\n")
             else:
                 with open(save_path, "w", encoding="utf-8") as f:
-                    for data in tqdm(queries, desc="Loading and Saving qrels"):
+                    for data in tqdm(qrels, desc="Loading and Saving qrels"):
                         qid, docid, rel = str(data['query-id']), str(data['corpus-id']), int(data['score'])
-                        _data = {
-                            "id": qid,
-                            "text": query
-                        }
                         _data = {
                             "qid": qid,
                             "docid": docid,
@@ -158,12 +154,12 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                 with open(qrels_save_path, "r", encoding="utf-8") as f:
                     for line in tqdm(f.readlines(), desc="Loading qrels"):
                         qid, _, docid, rel = line.strip().split("\t")
-                        qid, docid, rel = int(qid), int(docid), int(rel)
+                        qid, docid, rel = str(qid), str(docid), int(rel)
                         if qid not in qrels_dict:
                             qrels_dict[qid] = {}
                         qrels_dict[qid][docid] = rel
             else:
-                for data in tqdm(queries, desc="Loading queries"):
+                for data in tqdm(qrels, desc="Loading queries"):
                     qid, docid, rel = str(qid), str(docid), int(rel)
                     if qid not in qrels_dict:
                         qrels_dict[qid] = {}

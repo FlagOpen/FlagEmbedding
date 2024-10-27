@@ -98,7 +98,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
             with open(qrels_save_path, "r", encoding="utf-8") as f:
                 for line in tqdm(f.readlines(), desc="Loading qrels"):
                     qid, _, docid, rel = line.strip().split("\t")
-                    qid, docid, rel = int(qid), int(docid), int(rel)
+                    qid, docid, rel = str(qid), str(docid), int(rel)
                     if qid not in qrels_dict:
                         qrels_dict[qid] = {}
                     qrels_dict[qid][docid] = rel
