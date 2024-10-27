@@ -133,7 +133,10 @@ class AbsEvalDataLoader(ABC):
         else:
             corpus_data = datasets.load_dataset('json', data_files=corpus_path, cache_dir=self.cache_dir)['train']
 
-            corpus = {e['id']: {'title', e.get('title', ""), 'text': e['text']} for e in corpus_data}
+            corpus = {}
+            for e in corpus_data:
+                corpus[e['id']] = {'title': e.get('title', ""), 'text': e['text']}
+
             return datasets.DatasetDict(corpus)
 
     def _load_local_qrels(self, save_dir: str, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
