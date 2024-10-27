@@ -224,7 +224,10 @@ class AbsEvalDataLoader(ABC):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Failed to unzip file {zip_file_path}. Error code: {e.returncode}. Error message: {e.output}")
-            raise FileNotFoundError(f"Failed to unzip file {zip_file_path}") from e
+            if not os.path.exists(file_path):
+                logger.error(f"Failed to unzip file {zip_file_path}. Error code: {e.returncode}. Error message: {e.output}")
+                raise FileNotFoundError(f"Failed to unzip file {zip_file_path}") from e
+            else:
+                logger.warning(f"{file_path} already exists. Skip unzipping.")
 
         return file_path
