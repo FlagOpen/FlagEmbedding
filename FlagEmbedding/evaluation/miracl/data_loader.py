@@ -27,11 +27,10 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
     ) -> datasets.DatasetDict:
         corpus = datasets.load_dataset(
             "miracl/miracl-corpus", dataset_name,
-            split="train",
             cache_dir=self.cache_dir,
             trust_remote_code=True,
             download_mode=self.hf_download_mode
-        )
+        )["train"]
 
         if save_dir is not None:
             os.makedirs(save_dir, exist_ok=True)
@@ -99,7 +98,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
     def _load_remote_queries(
         self,
         dataset_name: str,
-        split: str = 'test',
+        split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/miracl/miracl"
