@@ -28,7 +28,7 @@ class MKQAEvaluator(AbsEvaluator):
 
         corpus = self.data_loader.load_corpus()
         corpus_dict = {}
-        for docid, data in tqdm(corpus, desc="Loading corpus for evaluation"):
+        for docid, data in tqdm(corpus.items(), desc="Loading corpus for evaluation"):
             title, text = data["title"], data["text"]
             corpus_dict[docid] = f"{title} {text}".strip()
 
