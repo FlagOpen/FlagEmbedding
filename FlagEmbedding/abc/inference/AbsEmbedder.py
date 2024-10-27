@@ -25,14 +25,14 @@ class AbsEmbedder(ABC):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, int, List[str], List[int]] = None,
+        devices: Optional[Union[str, int, List[str], List[int]]] = None,
         # inference
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: str = None,
+        instruction: Optional[str] = None,
         instruction_format: str = "{}{}",
         convert_to_numpy: bool = True,
         **kwargs: Any,
@@ -184,7 +184,7 @@ class AbsEmbedder(ABC):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any,
     ):
         """

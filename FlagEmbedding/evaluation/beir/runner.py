@@ -7,8 +7,8 @@ from .evaluator import BEIREvaluator
 
 logger = logging.getLogger(__name__)
 
+
 class BEIREvalRunner(AbsEvalRunner):
-    
     def run(self):
         if self.eval_args.dataset_names is None:
             dataset_names = self.data_loader.available_dataset_names()

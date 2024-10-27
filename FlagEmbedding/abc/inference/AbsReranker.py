@@ -1,6 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
-from typing import Any, Union, List, Tuple, Dict, Literal
+from typing import Any, Union, List, Tuple, Dict, Literal, Optional
 
 import multiprocessing as mp
 from multiprocessing import Queue
@@ -24,14 +24,14 @@ class AbsReranker(ABC):
         self,
         model_name_or_path: str,
         use_fp16: bool = False,
-        query_instruction_for_rerank: str = None,
+        query_instruction_for_rerank: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
-        passage_instruction_for_rerank: str = None,
+        passage_instruction_for_rerank: Optional[str] = None,
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        devices: Union[str, int, List[str], List[int]] = None,
+        devices: Optional[Union[str, int, List[str], List[int]]] = None,
         # inference
         batch_size: int = 128,
-        query_max_length: int = None,
+        query_max_length: Optional[int] = None,
         max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
@@ -149,10 +149,10 @@ class AbsReranker(ABC):
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         batch_size: int = 256,
-        query_max_length: int = None,
+        query_max_length: Optional[int] = None,
         max_length: int = 512,
         normalize: bool = False,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any,
     ):
         """

@@ -31,19 +31,19 @@ class ICLLLMEmbedder(AbsEmbedder):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "<instruct>{}\n<query>{}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        devices: Optional[Union[str, List[str]]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
         # Additional parameters for ICLLLMEmbedder
-        examples_for_task: List[dict] = None,
+        examples_for_task: Optional[List[dict]] = None,
         examples_instruction_format: str = "<instruct>{}\n<query>{}\n<response>{}", # specify the format of examples_for_task
         trust_remote_code: bool = False,
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         # inference
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: str = None,
+        instruction: Optional[str] = None,
         instruction_format: str = "{}{}",
         convert_to_numpy: bool = True,
         **kwargs: Any,
@@ -83,7 +83,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         self.set_examples()
         self.suffix = '\n<response>'
 
-    def set_examples(self, examples_for_task: List[dict] = None):
+    def set_examples(self, examples_for_task: Optional[List[dict]] = None):
         if examples_for_task is None and self.examples_for_task is None:
             self.prefix = ''
         elif examples_for_task is not None:
@@ -211,7 +211,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ):
         if device is None:
@@ -337,7 +337,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ):
         if device is None:

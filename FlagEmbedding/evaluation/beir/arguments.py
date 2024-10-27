@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
-from typing import List
 
 from FlagEmbedding.abc.evaluation.arguments import AbsEvalArgs
+
 
 @dataclass
 class BEIREvalArgs(AbsEvalArgs):

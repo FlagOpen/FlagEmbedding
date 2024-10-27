@@ -2,12 +2,12 @@ import json
 import logging
 import os
 import json
-import pandas as pd
 from typing import Dict, Optional, List, Union
 
 from FlagEmbedding.abc.evaluation import AbsEvaluator, EvalRetriever, EvalReranker
 
 logger = logging.getLogger(__name__)
+
 
 class BEIREvaluator(AbsEvaluator):
     def check_data_info(
@@ -142,7 +142,6 @@ class BEIREvaluator(AbsEvaluator):
                     )
                     no_reranker_search_results_dict[split] = search_results
             eval_results_save_path = os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-            # if not os.path.exists(eval_results_save_path) or self.overwrite:
             retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
             self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
@@ -187,7 +186,6 @@ class BEIREvaluator(AbsEvaluator):
                         sub_dataset_name=sub_dataset_name,
                     )
                 eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                # if not os.path.exists(eval_results_save_path) or self.overwrite:
                 reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
                 self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
         else:
@@ -270,7 +268,6 @@ class BEIREvaluator(AbsEvaluator):
                         )
                         no_reranker_search_results_dict[split] = search_results
                 eval_results_save_path = os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                # if not os.path.exists(eval_results_save_path) or self.overwrite:
                 retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
                 self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
@@ -315,10 +312,8 @@ class BEIREvaluator(AbsEvaluator):
                             sub_dataset_name=sub_dataset_name,
                         )
                     eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                    # if not os.path.exists(eval_results_save_path) or self.overwrite:
                     reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
                     self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
-
 
     def evaluate_results(
         self,

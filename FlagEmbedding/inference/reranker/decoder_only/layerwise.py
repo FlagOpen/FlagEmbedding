@@ -29,22 +29,22 @@ def last_logit_pool_layerwise(logits: Tensor,
 class LayerWiseLLMReranker(AbsReranker):
     def __init__(
         self,
-        model_name_or_path: str = None,
-        peft_path: str = None,
+        model_name_or_path: str,
+        peft_path: Optional[str] = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
         query_instruction_for_rerank: str = "A: ",
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
         passage_instruction_for_rerank: str = "B: ",
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         trust_remote_code: bool = False,
-        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        devices: Optional[Union[str, List[str], List[int]]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         # inference
-        cutoff_layers: List[int] = None, 
-        prompt: str = None,
+        cutoff_layers: Optional[List[int]] = None, 
+        prompt: Optional[str] = None,
         batch_size: int = 128,
-        query_max_length: int = None,
+        query_max_length: Optional[int] = None,
         max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
@@ -103,8 +103,8 @@ class LayerWiseLLMReranker(AbsReranker):
         prompt: Optional[str] = None,
         normalize: Optional[bool] = None,
         use_dataloader: bool = False,
-        num_workers: int = None,
-        device: str = None,
+        num_workers: Optional[int] = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
         if cutoff_layers is None: cutoff_layers = self.cutoff_layers

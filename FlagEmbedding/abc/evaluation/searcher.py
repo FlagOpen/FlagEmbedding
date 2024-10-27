@@ -4,7 +4,7 @@ Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/eva
 import os
 import logging
 import numpy as np
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from abc import ABC, abstractmethod
 
 from FlagEmbedding.abc.inference import AbsEmbedder, AbsReranker
@@ -30,7 +30,7 @@ class EvalRetriever(ABC):
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
-        corpus_embd_save_dir: str = None,
+        corpus_embd_save_dir: Optional[str] = None,
         ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
@@ -57,7 +57,7 @@ class EvalDenseRetriever(EvalRetriever):
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
-        corpus_embd_save_dir: str = None,
+        corpus_embd_save_dir: Optional[str] = None,
         ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:

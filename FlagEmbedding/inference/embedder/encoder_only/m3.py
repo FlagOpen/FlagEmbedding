@@ -25,19 +25,19 @@ class M3Embedder(AbsEmbedder):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        devices: Optional[Union[str, List[str]]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
         # Additional parameters for M3Embedder
         pooling_method: str = "cls",
         trust_remote_code: bool = False,
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         colbert_dim: int = -1,
         # inference
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: str = None,
+        instruction: Optional[str] = None,
         instruction_format: str = "{}{}",
         return_dense: bool = True,
         return_sparse: bool = False,
@@ -217,7 +217,7 @@ class M3Embedder(AbsEmbedder):
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ):        
         # pop convert_to_numpy from kwargs
@@ -377,7 +377,7 @@ class M3Embedder(AbsEmbedder):
         batch_size: Optional[int] = None,
         max_query_length: Optional[int] = None,
         max_passage_length: Optional[int] = None,
-        weights_for_different_modes: List[float] = None,
+        weights_for_different_modes: Optional[List[float]] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
@@ -476,8 +476,8 @@ class M3Embedder(AbsEmbedder):
         batch_size: int = 256,
         max_query_length: int = 512,
         max_passage_length: int = 512,
-        weights_for_different_modes: List[float] = None,
-        device: str = None,
+        weights_for_different_modes: Optional[List[float]] = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],

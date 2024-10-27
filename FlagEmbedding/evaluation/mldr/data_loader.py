@@ -14,7 +14,7 @@ class MLDREvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return ["ar", "de", "en", "es", "fr", "hi", "it", "ja", "ko", "pt", "ru", "th", "zh"]
 
-    def available_splits(self, dataset_name: str = None) -> List[str]:
+    def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
         return ["train", "dev", "test"]
 
     def _load_remote_corpus(

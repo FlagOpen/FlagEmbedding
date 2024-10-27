@@ -1,6 +1,4 @@
-import sys
-
-import torch
+from typing import Dict
 
 
 def get_task_def_by_task_name_and_type(task_name: str, task_type: str) -> str:

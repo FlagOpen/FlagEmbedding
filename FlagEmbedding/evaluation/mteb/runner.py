@@ -3,16 +3,16 @@ import os
 import mteb
 import json
 import pandas as pd
-from tqdm import tqdm
-from typing import List, Optional, Tuple, Union
+from typing import Tuple, Union
 
 from FlagEmbedding.abc.evaluation import AbsEvalRunner, AbsEvalModelArgs
 
 from .arguments import MTEBEvalArgs
 from .searcher import MTEBEvalDenseRetriever, MTEBEvalReranker
-from .prompts import *
+from .prompts import get_task_def_by_task_name_and_type
 
 logger = logging.getLogger(__name__)
+
 
 class MTEBEvalRunner(AbsEvalRunner):
     def __init__(
@@ -24,7 +24,7 @@ class MTEBEvalRunner(AbsEvalRunner):
         self.model_args = model_args
 
         self.retriever, self.reranker = self.load_retriever_and_reranker()
-    
+
     def load_retriever_and_reranker(self) -> Tuple[MTEBEvalDenseRetriever, Union[MTEBEvalReranker, None]]:
         embedder, reranker = self.get_models(self.model_args)
         retriever = MTEBEvalDenseRetriever(
@@ -35,7 +35,7 @@ class MTEBEvalRunner(AbsEvalRunner):
         if reranker is not None:
             reranker = MTEBEvalReranker(reranker, rerank_top_k=self.eval_args.rerank_top_k)
         return retriever, reranker
-    
+
     def read_results(self, output_folder, tasks):
         tasks_results = {}
         task_types = list(set([t.metadata.type for t in tasks]))
@@ -70,7 +70,7 @@ class MTEBEvalRunner(AbsEvalRunner):
                         tasks_results[t_type][task_name] = round(temp_data[metric] * 100, 2)
         print(f"tasks_results: {tasks_results}")
         return tasks_results
-    
+
     def output_json(self, tasks_results, save_file):
         all_results = 0
         all_results_num = 0
@@ -103,7 +103,7 @@ class MTEBEvalRunner(AbsEvalRunner):
         new_results['Avg'] = float(round(all_results / all_results_num, 2))
         with open(save_file, 'w') as f:
             json.dump(new_results, f)
-        
+
     def run(self):
         task_types = self.eval_args.task_types
         tasks = self.eval_args.tasks

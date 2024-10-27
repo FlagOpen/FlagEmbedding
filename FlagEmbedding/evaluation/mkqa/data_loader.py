@@ -16,7 +16,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return ['en', 'ar', 'fi', 'ja', 'ko', 'ru', 'es', 'sv', 'he', 'th', 'da', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'hu', 'vi', 'ms', 'km', 'no', 'tr', 'zh_cn', 'zh_hk', 'zh_tw']
 
-    def available_splits(self, dataset_name: str = None) -> List[str]:
+    def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
         return ["test"]
 
     def load_corpus(self, dataset_name: Optional[str] = None) -> datasets.DatasetDict:

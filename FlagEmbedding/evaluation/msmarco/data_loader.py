@@ -14,7 +14,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return ["passage", "document"]
 
-    def available_splits(self, dataset_name: str = None) -> List[str]:
+    def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
         return ["dev", "dl19", "dl20"]
 
     def _load_remote_corpus(

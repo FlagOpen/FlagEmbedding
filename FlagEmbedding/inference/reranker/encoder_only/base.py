@@ -16,16 +16,16 @@ class BaseReranker(AbsReranker):
         self,
         model_name_or_path: str,
         use_fp16: bool = False,
-        query_instruction_for_rerank: str = None,
+        query_instruction_for_rerank: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
-        passage_instruction_for_rerank: str = None,
+        passage_instruction_for_rerank: Optional[str] = None,
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
         trust_remote_code: bool = False,
-        cache_dir: str = None,
-        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        cache_dir: Optional[str] = None,
+        devices: Optional[Union[str, List[str], List[int]]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         # inference
         batch_size: int = 128,
-        query_max_length: int = None,
+        query_max_length: Optional[int] = None,
         max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
@@ -62,7 +62,7 @@ class BaseReranker(AbsReranker):
         query_max_length: Optional[int] = None,
         max_length: Optional[int] = None,
         normalize: Optional[bool] = None,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
         if batch_size is None: batch_size = self.batch_size

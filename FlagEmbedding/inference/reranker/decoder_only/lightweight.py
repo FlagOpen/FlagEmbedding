@@ -76,24 +76,24 @@ class Collater_for_lightweight:
 class LightweightLLMReranker(AbsReranker):
     def __init__(
         self,
-        model_name_or_path: str = None,
-        peft_path: str = None,
+        model_name_or_path: str,
+        peft_path: Optional[str] = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
         query_instruction_for_rerank: str = "A: ",
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
         passage_instruction_for_rerank: str = "B: ",
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         trust_remote_code: bool = False,
         devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
         # inference
-        cutoff_layers: List[int] = None,
+        cutoff_layers: Optional[List[int]] = None,
         compress_layers: List[int] = [8],
         compress_ratio: int = 1,
-        prompt: str = None,
+        prompt: Optional[str] = None,
         batch_size: int = 128,
-        query_max_length: int = None,
+        query_max_length: Optional[int] = None,
         max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
@@ -155,7 +155,7 @@ class LightweightLLMReranker(AbsReranker):
         compress_ratio: Optional[int] = None,
         prompt: Optional[str] = None,
         normalize: Optional[bool] = None,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
 

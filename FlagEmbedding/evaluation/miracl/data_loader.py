@@ -14,7 +14,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return ["ar", "bn", "en", "es", "fa", "fi", "fr", "hi", "id", "ja", "ko", "ru", "sw", "te", "th", "zh", "de", "yo"]
 
-    def available_splits(self, dataset_name: str = None) -> List[str]:
+    def available_splits(self, dataset_name: str) -> List[str]:
         if dataset_name in ["de", "yo"]:
             return ["dev"]
         else:

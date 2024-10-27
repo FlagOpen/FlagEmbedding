@@ -3,7 +3,7 @@ import json
 import logging
 import datasets
 from tqdm import tqdm
-from typing import List, Optional, Union
+from typing import List, Optional
 from beir import util
 from beir.datasets.data_loader import GenericDataLoader
 
@@ -15,13 +15,13 @@ logger = logging.getLogger(__name__)
 class BEIREvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return ['arguana', 'climate-fever', 'cqadupstack', 'dbpedia-entity', 'fever', 'fiqa', 'hotpotqa', 'msmarco', 'nfcorpus', 'nq', 'quora', 'scidocs', 'scifact', 'trec-covid', 'webis-touche2020']
-    
-    def available_sub_dataset_names(self, dataset_name: str = None) -> List[str]:
+
+    def available_sub_dataset_names(self, dataset_name: Optional[str] = None) -> List[str]:
         if dataset_name == 'cqadupstack':
             return ['android', 'english', 'gaming', 'gis', 'mathematica', 'physics', 'programmers', 'stats', 'tex', 'unix', 'webmasters', 'wordpress']
         return None
 
-    def available_splits(self, dataset_name: str = None) -> List[str]:
+    def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
         if dataset_name == 'msmarco':
             return ['dev']
         return ['test']
@@ -29,7 +29,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
     def _load_remote_corpus(
         self,
         dataset_name: str,
-        sub_dataset_name: str = None,
+        sub_dataset_name: Optional[str] = None,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
         if dataset_name != 'cqadupstack':
@@ -87,11 +87,10 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
                 corpus_dict = {_id: {"title": corpus[_id]["title"], "text": corpus[_id]["text"]} for _id in tqdm(corpus.keys(), desc="Loading corpus")}
         return datasets.DatasetDict(corpus_dict)
 
-
     def _load_remote_qrels(
         self,
         dataset_name: Optional[str] = None,
-        sub_dataset_name: str = None,
+        sub_dataset_name: Optional[str] = None,
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
@@ -165,7 +164,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
     def _load_remote_queries(
         self,
         dataset_name: Optional[str] = None,
-        sub_dataset_name: str = None,
+        sub_dataset_name: Optional[str] = None,
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
@@ -229,7 +228,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
                     if qid not in qrels.keys(): continue
                     queries_dict[qid] = query
         return datasets.DatasetDict(queries_dict)
-    
+
     def load_corpus(self, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None) -> datasets.DatasetDict:
         if self.dataset_dir is not None:
             if dataset_name is None:
