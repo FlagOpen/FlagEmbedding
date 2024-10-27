@@ -19,9 +19,17 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
     def available_splits(self, dataset_name: str = None) -> List[str]:
         return ["test"]
 
+    def load_corpus(self, dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        if self.dataset_dir is not None:
+            # same corpus for all languages
+            save_dir = self.dataset_dir
+            return self._load_local_corpus(save_dir, dataset_name=dataset_name)
+        else:
+            return self._load_remote_corpus(dataset_name=dataset_name)
+
     def _load_remote_corpus(
         self,
-        dataset_name: str,
+        dataset_name: Optional[str] = None,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
         """
@@ -35,9 +43,6 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         )["corpus"]
 
         if save_dir is not None:
-            if save_dir.endswith(dataset_name):
-                # same corpus for all languages
-                save_dir = os.path.dirname(save_dir)
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, "corpus.jsonl")
             corpus_dict = {}
