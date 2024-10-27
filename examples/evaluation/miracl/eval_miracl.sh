@@ -2,9 +2,7 @@ if [ -z "$HF_HUB_CACHE" ]; then
     export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
 fi
 
-# dataset_names="bn hi sw te th yo"
-dataset_names="sw"
-HF_HUB_CACHE="/share/shared_models"
+dataset_names="bn hi sw te th yo"
 
 eval_args="\
     --eval_name miracl \
@@ -25,7 +23,7 @@ eval_args="\
 model_args="\
     --embedder_name_or_path BAAI/bge-m3 \
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
-    --devices cuda:0 \
+    --devices cuda:0 cuda:1 \
     --cache_dir $HF_HUB_CACHE \
     --reranker_max_length 1024 \
 "
