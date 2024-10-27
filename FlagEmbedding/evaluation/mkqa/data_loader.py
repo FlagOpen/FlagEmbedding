@@ -21,7 +21,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
 
     def _load_remote_corpus(
         self,
-        dataset_name: Optional[str] = None,
+        dataset_name: str,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
         """
@@ -35,6 +35,9 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         )["corpus"]
 
         if save_dir is not None:
+            if save_dir.endswith(dataset_name):
+                # same corpus for all languages
+                save_dir = os.path.dirname(save_dir)
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, "corpus.jsonl")
             corpus_dict = {}
@@ -71,7 +74,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/Shitao/bge-m3-data"
         queries_download_url = f"{endpoint}/resolve/main/MKQA_test-data.zip"
 
-        qrels_save_dir = self._download_file(queries_download_url, self.cache_dir)
+        qrels_save_dir = self._download_zip_file(queries_download_url, self.cache_dir)
         qrels_save_path = os.path.join(qrels_save_dir, f"{dataset_name}.jsonl")
 
         if save_dir is not None:
@@ -112,7 +115,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/Shitao/bge-m3-data"
         queries_download_url = f"{endpoint}/resolve/main/MKQA_test-data.zip"
 
-        queries_save_dir = self._download_file(queries_download_url, self.cache_dir)
+        queries_save_dir = self._download_zip_file(queries_download_url, self.cache_dir)
         queries_save_path = os.path.join(queries_save_dir, f"{dataset_name}.jsonl")
 
         if save_dir is not None:
