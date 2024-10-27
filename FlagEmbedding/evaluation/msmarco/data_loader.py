@@ -131,14 +131,14 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
             if qrels_save_path is None:
                 with open(qrels_save_path, "r", encoding="utf-8") as f:
                     for line in tqdm(f.readlines(), desc="Loading qrels"):
-                        qid, _, docid, rel = line.strip().split("\t")
+                        qid, _, docid, rel = line.strip().split()
                         qid, docid, rel = str(qid), str(docid), int(rel)
                         if qid not in qrels_dict:
                             qrels_dict[qid] = {}
                         qrels_dict[qid][docid] = rel
             else:
                 for data in tqdm(qrels, desc="Loading queries"):
-                    qid, docid, rel = str(qid), str(docid), int(rel)
+                    qid, docid, rel = str(data['query-id']), str(data['corpus-id']), int(data['score'])
                     if qid not in qrels_dict:
                         qrels_dict[qid] = {}
                     qrels_dict[qid][docid] = rel
@@ -168,6 +168,8 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
             queries_download_url = f"https://msmarco.z22.web.core.windows.net/msmarcoranking/msmarco-test20{year}-queries.tsv.gz"
             queries_save_path = self._download_gz_file(queries_download_url, self.cache_dir)
 
+        qrels = self.load_qrels(dataset_name=dataset_name, split=split)
+
         if save_dir is not None:
             os.makedirs(save_dir, exist_ok=True)
             save_path = os.path.join(save_dir, f"{split}_queries.jsonl")
@@ -177,6 +179,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                     with open(queries_save_path, "r", encoding="utf-8") as f2:
                         for line in tqdm(f2.readlines(), desc="Loading and Saving queries"):
                             qid, query = line.strip().split("\t")
+                            if qid not in qrels.keys(): continue
                             qid = str(qid)
                             _data = {
                                 "id": qid,
@@ -188,6 +191,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                 with open(save_path, "w", encoding="utf-8") as f:
                     for data in tqdm(queries, desc="Loading and Saving queries"):
                         qid, query = data['_id'], data['text']
+                        if qid not in qrels.keys(): continue
                         _data = {
                             "id": qid,
                             "text": query
@@ -202,9 +206,11 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                     for line in tqdm(f.readlines(), desc="Loading queries"):
                         qid, query = line.strip().split("\t")
                         qid = str(qid)
+                        if qid not in qrels.keys(): continue
                         queries_dict[qid] = query
             else:
                 for data in tqdm(queries, desc="Loading queries"):
                     qid, query = data['_id'], data['text']
+                    if qid not in qrels.keys(): continue
                     queries_dict[qid] = query
         return datasets.DatasetDict(queries_dict)

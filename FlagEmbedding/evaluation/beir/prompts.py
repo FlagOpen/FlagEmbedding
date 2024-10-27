@@ -1,4 +1,4 @@
-instructions = {
+BEIRInstructions = {
     'dbpedia-entity': 'Given a query, retrieve relevant entity descriptions from DBPedia.',
     'arguana': 'Given a claim, find documents that refute the claim.',
     'climate-fever': 'Given a claim about climate change, retrieve documents that support or refute the claim.',

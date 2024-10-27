@@ -10,12 +10,12 @@ eval_args="\
     --eval_name msmarco \
     --dataset_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco \
     --dataset_names $dataset_names \
-    --splits dl19 \
+    --splits dev \
     --corpus_embd_save_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco/corpus_embd \
     --output_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
-    --overwrite False \
+    --overwrite True \
     --k_values 10 100 \
     --eval_output_method markdown \
     --eval_output_path /share/chaofan/code/FlagEmbedding_update/data/msmarco/msmarco_eval_results.md \
@@ -23,7 +23,7 @@ eval_args="\
 "
 
 model_args="\
-    --embedder_name_or_path BAAI/bge-m3 \
+    --embedder_name_or_path BAAI/bge-large-en-v1.5 \
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
     --devices cuda:0 cuda:1 cuda:2 cuda:3 cuda:4 cuda:5 cuda:6 cuda:7 \
     --cache_dir $HF_HUB_CACHE \
