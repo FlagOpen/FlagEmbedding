@@ -31,7 +31,10 @@ if __name__ == '__main__':
                           query_instruction_for_retrieval="Represent this sentence for searching relevant passages: ",
                           pooling_method=args.pooling_method)
 
-    task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
+    # task_names = [t.description["name"] for t in MTEB(task_types=args.task_type,
+    #                                                   task_langs=['en']).tasks]
+    
+    task_names = [t.metadata.name for t in MTEB(task_types=args.task_type,
                                                       task_langs=['en']).tasks]
 
     for task in task_names:
@@ -57,6 +60,3 @@ if __name__ == '__main__':
 
         evaluation = MTEB(tasks=[task], task_langs=['en'], eval_splits = ["test" if task not in ['MSMARCO'] else 'dev'])
         evaluation.run(model, output_folder=f"en_results/{args.model_name_or_path.split('/')[-1]}")
-
-
-
