@@ -80,6 +80,9 @@ class EvalDenseRetriever(EvalRetriever):
         if ignore_identical_ids:
             logger.warning("ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.")
 
+        # dense embedding models do not require language as input: AIRBench evaluation
+        kwargs.pop("language", None)
+
         corpus_ids = []
         corpus_texts = []
         for docid, doc in corpus.items():
