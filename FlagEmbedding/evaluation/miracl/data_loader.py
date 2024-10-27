@@ -104,7 +104,6 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
     ) -> datasets.DatasetDict:
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/miracl/miracl"
         queries_download_url = f"{endpoint}/resolve/main/miracl-v1.0-{dataset_name}/topics/topics.miracl-v1.0-{dataset_name}-{split}.tsv"
-        queries_save_path = os.path.join(self.cache_dir, f"topics.miracl-v1.0-{dataset_name}-{split}.tsv")
 
         queries_save_path = self._download_file(queries_download_url, self.cache_dir)
 
