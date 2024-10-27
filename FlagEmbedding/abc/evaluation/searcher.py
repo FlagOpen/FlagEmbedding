@@ -179,7 +179,6 @@ class EvalReranker:
         pairs = []
         for qid in search_results:
             for docid in search_results[qid]:
-                print(corpus[docid])
                 sentence_pairs.append(
                     {
                         "qid": qid,
