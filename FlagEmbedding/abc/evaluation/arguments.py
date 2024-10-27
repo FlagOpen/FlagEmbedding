@@ -80,6 +80,9 @@ class AbsEvalModelArgs:
     embedder_name_or_path: str = field(
         metadata={"help": "The embedder name or path.", "required": True}
     )
+    embedder_model_class: Optional[str] = field(
+        default="auto", metadata={"help": "The embedder model class. Available classes: ['auto', 'encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: auto.", "choices": ["auto", "encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
+    )
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
     )
@@ -106,6 +109,9 @@ class AbsEvalModelArgs:
     )
     reranker_name_or_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker name or path."}
+    )
+    reranker_model_class: Optional[str] = field(
+        default="auto", metadata={"help": "The reranker model class. Available classes: ['auto', 'encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: auto.", "choices": ["auto", "encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
     )
     reranker_peft_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker peft path."}

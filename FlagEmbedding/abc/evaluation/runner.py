@@ -30,6 +30,7 @@ class AbsEvalRunner:
     def get_models(model_args: AbsEvalModelArgs) -> Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]:
         embedder = FlagAutoModel.from_finetuned(
             model_name_or_path=model_args.embedder_name_or_path,
+            model_class=model_args.embedder_model_class,
             normalize_embeddings=model_args.normalize_embeddings,
             use_fp16=model_args.use_fp16,
             query_instruction_for_retrieval=model_args.query_instruction_for_retrieval,
@@ -48,6 +49,7 @@ class AbsEvalRunner:
         if model_args.reranker_name_or_path is not None:
             reranker = FlagAutoReranker.from_finetuned(
                 model_name_or_path=model_args.reranker_name_or_path,
+                model_class=model_args.reranker_model_class,
                 peft_path=model_args.reranker_peft_path,
                 use_fp16=model_args.use_fp16,
                 use_bf16=model_args.use_bf16,
