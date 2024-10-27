@@ -17,6 +17,7 @@ class AbsEvalDataLoader(ABC):
         dataset_dir: Optional[str] = None,
         cache_dir: Optional[str] = None,
         token: Optional[str] = None,
+        force_redownload: bool = False
     ):
         self.eval_name = eval_name
         self.dataset_dir = dataset_dir
@@ -24,6 +25,8 @@ class AbsEvalDataLoader(ABC):
             cache_dir = os.getenv('HF_HUB_CACHE', '~/.cache/huggingface/hub')
         self.cache_dir = os.path.join(cache_dir, eval_name)
         self.token = token
+        self.force_redownload = force_redownload
+        self.hf_download_mode = None if not force_redownload else "force_redownload"
 
     def available_dataset_names(self) -> List[str]:
         """
@@ -127,7 +130,7 @@ class AbsEvalDataLoader(ABC):
 
     def _load_local_corpus(self, save_dir: str, dataset_name: Optional[str] = None) -> datasets.DatasetDict:
         corpus_path = os.path.join(save_dir, 'corpus.jsonl')
-        if not os.path.exists(corpus_path):
+        if self.force_redownload or not os.path.exists(corpus_path):
             logger.warning(f"Corpus not found in {corpus_path}. Trying to download the corpus from the remote and save it to {save_dir}.")
             return self._load_remote_corpus(dataset_name=dataset_name, save_dir=save_dir)
         else:
@@ -146,7 +149,7 @@ class AbsEvalDataLoader(ABC):
         split = checked_split[0]
 
         qrels_path = os.path.join(save_dir, f"{split}_qrels.jsonl")
-        if not os.path.exists(qrels_path):
+        if self.force_redownload or not os.path.exists(qrels_path):
             logger.warning(f"Qrels not found in {qrels_path}. Trying to download the qrels from the remote and save it to {save_dir}.")
             return self._load_remote_qrels(dataset_name=dataset_name, split=split, save_dir=save_dir)
         else:
@@ -168,7 +171,7 @@ class AbsEvalDataLoader(ABC):
         split = checked_split[0]
 
         queries_path = os.path.join(save_dir, f"{split}_queries.jsonl")
-        if not os.path.exists(queries_path):
+        if self.force_redownload or not os.path.exists(queries_path):
             logger.warning(f"Queries not found in {queries_path}. Trying to download the queries from the remote and save it to {save_dir}.")
             return self._load_remote_queries(dataset_name=dataset_name, split=split, save_dir=save_dir)
         else:

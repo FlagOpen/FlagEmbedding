@@ -28,6 +28,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                 'default', 
                 trust_remote_code=True,
                 cache_dir=self.cache_dir,
+                download_mode=self.hf_download_mode
             )['train']
         else:
             corpus = datasets.load_dataset(
@@ -35,6 +36,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                 'docs', 
                 trust_remote_code=True,
                 cache_dir=self.cache_dir,
+                download_mode=self.hf_download_mode
             )
 
         if save_dir is not None:
@@ -96,6 +98,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                     split='validation',
                     trust_remote_code=True,
                     cache_dir=self.cache_dir,
+                    download_mode=self.hf_download_mode
                 )
                 qrels_download_url = None
             elif split == 'dl19':
@@ -179,6 +182,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
                     'queries',
                     trust_remote_code=True,
                     cache_dir=self.cache_dir,
+                    download_mode=self.hf_download_mode
                 )['queries']
                 queries_save_path = None
             else:

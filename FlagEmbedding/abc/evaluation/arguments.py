@@ -20,6 +20,9 @@ class AbsEvalArgs:
             "2) If you want to perform evaluation on the datasets we provide evaluation APIs for, you can provide the path to saving the downloaded dataset. If you provide None, the dataset will be only downloaded to the cache directory."
         }
     )
+    force_redownload: bool = field(
+        default=False, metadata={"help": "Whether to force redownload the dataset. This is useful when you load dataset from remote and want to update the dataset."}
+    )
     dataset_names: Optional[str] = field(
         default=None,
         metadata={

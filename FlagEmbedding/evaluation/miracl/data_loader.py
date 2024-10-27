@@ -29,7 +29,8 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
             "miracl/miracl-corpus", dataset_name,
             split="train",
             cache_dir=self.cache_dir,
-            trust_remote_code=True
+            trust_remote_code=True,
+            download_mode=self.hf_download_mode
         )
 
         if save_dir is not None:
