@@ -110,7 +110,8 @@ class EvalDenseRetriever(EvalRetriever):
         if isinstance(queries_emb, dict):
             queries_emb = queries_emb["dense_vecs"]
         
-        if corpus_embd_save_dir is not None and not os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")):
+        if corpus_embd_save_dir is not None and \
+            (not os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")) or self.overwrite):
             os.makedirs(corpus_embd_save_dir, exist_ok=True)
             np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
 
@@ -179,7 +180,6 @@ class EvalReranker:
         for qid in search_results:
             for docid in search_results[qid]:
                 print(corpus[docid])
-                sys.eixt()
                 sentence_pairs.append(
                     {
                         "qid": qid,
@@ -196,12 +196,8 @@ class EvalReranker:
                             else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip()
                     )
                 )
-        # pairs = [(e["query"], e["doc"]) for e in sentence_pairs]
         # compute scores
         scores = self.reranker.compute_score(pairs)
-        # print(scores)
-        # print(self.reranker.compute_score([pairs[0]]))
-        # print(pairs[0], sentence_pairs[0])
         for i, score in enumerate(scores):
             sentence_pairs[i]["score"] = float(score)
         # rerank
