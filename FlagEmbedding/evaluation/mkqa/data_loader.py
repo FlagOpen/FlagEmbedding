@@ -40,7 +40,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
             corpus_dict = {}
             with open(save_path, "w", encoding="utf-8") as f:
                 for data in tqdm(corpus, desc="Loading and Saving corpus"):
-                    docid, title, text = str(data["docid"]), normalize_text(data["title"]).lower(), normalize_text(data["text"]).lower()
+                    docid, title, text = str(data["_id"]), normalize_text(data["title"]).lower(), normalize_text(data["text"]).lower()
                     _data = {
                         "id": docid,
                         "title": title,
@@ -55,7 +55,7 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         else:
             corpus_dict = {}
             for data in tqdm(corpus, desc="Loading corpus"):
-                docid, title, text = str(data["docid"]), normalize_text(data["title"]), normalize_text(data["text"])
+                docid, title, text = str(data["_id"]), normalize_text(data["title"]), normalize_text(data["text"])
                 corpus_dict[docid] = {
                     "title": title,
                     "text": text
