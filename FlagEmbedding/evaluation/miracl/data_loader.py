@@ -39,24 +39,25 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
             corpus_dict = {}
             with open(save_path, "w", encoding="utf-8") as f:
                 for data in tqdm(corpus, desc="Loading and Saving corpus"):
+                    docid, title, text = str(data["docid"]), data["title"], data["text"]
                     _data = {
-                        "id": data["docid"],
-                        "title": data["title"],
-                        "text": data["text"]
+                        "id": docid,
+                        "title": title,
+                        "text": text
                     }
-                    corpus_dict[data["docid"]] = {
-                        "title": data["title"],
-                        "text": data["text"]
+                    corpus_dict[docid] = {
+                        "title": title,
+                        "text": text
                     }
                     f.write(json.dumps(_data, ensure_ascii=False) + "\n")
             logging.info(f"{self.eval_name} {dataset_name} corpus saved to {save_path}")
         else:
-            corpus_dict = {data["docid"]: {"title": data["title"], "text": data["text"]} for data in tqdm(corpus, desc="Loading corpus")}
+            corpus_dict = {str(data["docid"]): {"title": data["title"], "text": data["text"]} for data in tqdm(corpus, desc="Loading corpus")}
         return datasets.DatasetDict(corpus_dict)
 
     def _load_remote_qrels(
         self,
-        dataset_name: Optional[str] = None,
+        dataset_name: str,
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
@@ -97,7 +98,7 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
 
     def _load_remote_queries(
         self,
-        dataset_name: Optional[str] = None,
+        dataset_name: str,
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
