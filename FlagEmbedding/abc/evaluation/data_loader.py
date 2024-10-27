@@ -212,3 +212,19 @@ class AbsEvalDataLoader(ABC):
 
         file_path = gz_file_path.replace(".gz", "")
         return file_path
+
+    def _download_zip_file(self, download_url: str, save_dir: str):
+        zip_file_path = self._download_file(download_url, save_dir)
+        file_path = zip_file_path.replace(".zip", "")
+        if self.force_redownload or not os.path.exists(file_path):
+            cmd = ["unzip", "-o", zip_file_path, "-d", file_path]
+        else:
+            cmd = ["unzip", "-n", zip_file_path, "-d", file_path]
+
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Failed to unzip file {zip_file_path}. Error code: {e.returncode}. Error message: {e.output}")
+            raise FileNotFoundError(f"Failed to unzip file {zip_file_path}") from e
+
+        return file_path

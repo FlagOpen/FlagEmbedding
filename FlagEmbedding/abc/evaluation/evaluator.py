@@ -54,6 +54,22 @@ class AbsEvaluator:
                 f'dataset_name mismatch: {data_info["dataset_name"]} vs {dataset_name}'
             )
 
+    def get_corpus_embd_save_dir(
+        self,
+        retriever_name: str,
+        corpus_embd_save_dir: Optional[str] = None,
+        dataset_name: Optional[str] = None
+    ):
+        """
+        If corpus_embd_save_dir is not None, then it will be used as the base directory to save the corpus embeddings. For dataset such as MKQA, the corpus for all languages is the same, so the subclass can override this method to save the corpus embeddings in the same directory.
+        """
+        if corpus_embd_save_dir is not None:
+            if dataset_name is not None:
+                corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, retriever_name, dataset_name)
+            else:
+                corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, retriever_name)
+        return corpus_embd_save_dir
+
     def __call__(
         self,
         splits: Union[str, List[str]],
@@ -75,9 +91,14 @@ class AbsEvaluator:
 
         if dataset_name is not None:
             save_name = f"{dataset_name}-" + "{split}.json"
-            corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name)
         else:
             save_name = "{split}.json"
+
+        corpus_embd_save_dir = self.get_corpus_embd_save_dir(
+            retriever_name=str(retriever),
+            corpus_embd_save_dir=corpus_embd_save_dir,
+            dataset_name=dataset_name
+        )
 
         # Retrieval Stage
         no_reranker_search_results_save_dir = os.path.join(
@@ -139,7 +160,7 @@ class AbsEvaluator:
                     no_reranker_search_results_save_dir, save_name.format(split=split)
                 )
                 data_info, search_results = self.load_search_results(split_no_reranker_search_results_save_path)
-                
+
                 self.check_data_info(
                     data_info=data_info,
                     model_name=str(retriever),
