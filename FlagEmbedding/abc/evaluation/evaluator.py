@@ -290,7 +290,7 @@ class AbsEvaluator:
 
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(eval_results_dict, f, indent=4)
-        print(f"Results saved to {output_path}")
+        logger.info(f"Results saved to {output_path}")
 
     @staticmethod
     def get_results_df(metric: str, eval_results_dict: dict):
@@ -360,4 +360,4 @@ class AbsEvaluator:
                                 line += f'**{v*100:.3f}** | '
                     f.write(line + "\n")
                 f.write("\n")
-        print(f"Results saved to {output_path}")
+        logger.info(f"Results saved to {output_path}")
