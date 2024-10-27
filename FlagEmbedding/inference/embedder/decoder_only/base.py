@@ -151,7 +151,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 sentences_batch,
                 truncation=True,
                 max_length=max_length,
-                # **kwargs
+                **kwargs
             )
             inputs_batch = [{
                 k: inputs_batch[k][i] for k in inputs_batch.keys()
@@ -168,7 +168,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             all_inputs_sorted[:1],
             padding=True,
             return_tensors='pt',
-            # **kwargs
+            **kwargs
         ).to(device)
         while flag is False:
             try:
@@ -190,7 +190,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 inputs_batch,
                 padding=True,
                 return_tensors='pt',
-                # **kwargs
+                **kwargs
             ).to(device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
