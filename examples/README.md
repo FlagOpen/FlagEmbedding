@@ -89,8 +89,8 @@ torchrun --nproc_per_node 2 \
     --overwrite_output_dir \
     --learning_rate 1e-5 \
     --fp16 \
-    --num_train_epochs $num_train_epochs \
-    --per_device_train_batch_size $per_device_train_batch_size \
+    --num_train_epochs 1 \
+    --per_device_train_batch_size 2 \
     --dataloader_drop_last True \
     --warmup_ratio 0.1 \
     --gradient_checkpointing \
@@ -122,7 +122,7 @@ torchrun --nproc_per_node 2 \
     --overwrite_output_dir \
     --learning_rate 6e-5 \
     --fp16 \
-    --num_train_epochs $num_train_epochs \
+    --num_train_epochs 1 \
     --per_device_train_batch_size 2 \
     --gradient_accumulation_steps 1 \
     --dataloader_drop_last True \
