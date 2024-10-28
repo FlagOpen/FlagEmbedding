@@ -112,7 +112,7 @@ torchrun --nproc_per_node 2 \
     --model_name_or_path BAAI/bge-reranker-large \
     --cache_dir ./cache/model \
     --train_data ./finetune/reranker/example_data/normal/examples.jsonl \
-    --cache_path ~/.cache \
+    --cache_path ./cache/data \
     --train_group_size 8 \
     --query_max_len 256 \
     --passage_max_len 256 \
@@ -131,7 +131,7 @@ torchrun --nproc_per_node 2 \
     --weight_decay 0.01 \
     --deepspeed ./finetune/ds_stage0.json \
     --logging_steps 1 \
-    --save_steps 1000 \
+    --save_steps 1000
 ```
 
 # 5. Evaluation
