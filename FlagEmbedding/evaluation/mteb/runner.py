@@ -10,6 +10,7 @@ from FlagEmbedding.abc.evaluation import AbsEvalRunner, AbsEvalModelArgs
 from .arguments import MTEBEvalArgs
 from .searcher import MTEBEvalDenseRetriever, MTEBEvalReranker
 from .prompts import get_task_def_by_task_name_and_type
+from  .examples import examples_dict
 
 logger = logging.getLogger(__name__)
 
@@ -133,18 +134,7 @@ class MTEBEvalRunner(AbsEvalRunner):
 
             if self.eval_args.use_special_examples:
                 try:
-                    eg_file_path = f'./examples/{task_name}.csv'
-                    eg_pairs = []
-                    df = pd.read_csv(eg_file_path)
-                    for i in range(len(df)):
-                        task_def = self.retriever.get_instruction()
-                        eg_pairs.append(
-                            {
-                                'instruct': task_def,
-                                'query': df[df.keys()[0]][i],
-                                'response': df[df.keys()[1]][i]
-                            }
-                        )
+                    eg_pairs = examples_dict[task_name]
                     self.retriever.set_examples(eg_pairs)
                 except:
                     logger.logger.info(f"No examples found for {task_name}")

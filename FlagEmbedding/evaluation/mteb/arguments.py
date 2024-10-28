@@ -13,7 +13,7 @@ class MTEBEvalArgs(AbsEvalArgs):
         default=None, metadata={"help": "Tasks to evaluate. Default: None"}
     )
     task_types: List[str] = field(
-        default=None, metadata={"help": "The tasks to evaluate. Default: None"}
+        default=None, metadata={"help": "The task types to evaluate. Default: None"}
     )
     use_special_instructions: bool = field(
         default=False, metadata={"help": "Whether to use specific instructions in `prompts.py` for evaluation. Default: False"}
