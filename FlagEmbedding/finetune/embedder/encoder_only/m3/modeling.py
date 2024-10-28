@@ -49,6 +49,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             self.colbert_linear = base_model['colbert_linear']
             self.sparse_linear = base_model['sparse_linear']
 
+        self.config = self.model.config
+
         self.vocab_size = self.model.config.vocab_size
         self.use_self_distill = use_self_distill
         self.self_distill_start_step = self_distill_start_step

@@ -6,6 +6,9 @@ def test_base_multi_devices():
     model = FlagReranker(
         'BAAI/bge-reranker-large',
         use_fp16=True,
+        batch_size=128,
+        query_max_length=256,
+        max_length=512,
         devices=["cuda:3", "cuda:4"],   # if you don't have GPUs, you can use ["cpu", "cpu"]
         cache_dir=os.getenv('HF_HUB_CACHE', None),
     )
@@ -27,4 +30,4 @@ if __name__ == '__main__':
     
     print("--------------------------------")
     print("Expected Output:")
-    print("[ 7.9765625  -6.859375   -7.1484375   5.44921875]")
+    print("[ 7.97265625 -6.8515625  -7.15625     5.45703125]")

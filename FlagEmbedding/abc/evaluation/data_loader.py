@@ -4,61 +4,241 @@ Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/eva
 import os
 import logging
 import datasets
-
-from huggingface_hub import snapshot_download
+import subprocess
+from abc import ABC, abstractmethod
+from typing import List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
 
-class AbsDataLoader:
+class AbsEvalDataLoader(ABC):
     def __init__(
         self,
-        dataset_dir: str,
-        cache_dir: str = None,
-        token: str = None,
-        **kwargs
+        eval_name: str,
+        dataset_dir: Optional[str] = None,
+        cache_dir: Optional[str] = None,
+        token: Optional[str] = None,
+        force_redownload: bool = False
     ):
+        self.eval_name = eval_name
         self.dataset_dir = dataset_dir
-        self.cache_dir = cache_dir
-        
-        if not os.path.exists(self.dataset_dir):
-            try:
-                logger.warning(f"Trying to download dataset from huggingface hub: {dataset_dir}")
-                dataset_dir = snapshot_download(
-                    repo_id=dataset_dir,
-                    cache_dir=os.getenv('HF_HUB_CACHE', cache_dir),
-                    token=os.getenv('HF_TOKEN', token),
-                    **kwargs
-                )
-                self.dataset_dir = dataset_dir
-            except Exception as e:
-                logger.error(f"Error downloading dataset: {e}")
+        if cache_dir is None:
+            cache_dir = os.getenv('HF_HUB_CACHE', '~/.cache/huggingface/hub')
+        self.cache_dir = os.path.join(cache_dir, eval_name)
+        self.token = token
+        self.force_redownload = force_redownload
+        self.hf_download_mode = None if not force_redownload else "force_redownload"
 
-            raise FileNotFoundError(f"Dataset directory not found: {self.dataset_dir}")
+    def available_dataset_names(self) -> List[str]:
+        """
+        Returns: List[str]: Available dataset names.
+        """
+        return []
 
-    def load_qrels(self, split: str = 'test'):
-        qrels_path = os.path.join(self.dataset_dir, f"{split}_qrels.jsonl")
-        qrels_data = datasets.load_dataset('json', data_files=qrels_path, cache_dir=self.cache_dir)['train']
+    @abstractmethod
+    def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Returns: List[str]: Available splits in the dataset.
+        """
+        pass
 
-        qrels = {}
-        for data in qrels_data:
-            qid = data['qid']
-            if qid not in qrels:
-                qrels[qid] = {}
-            qrels[qid][data['docid']] = data['relevance']
+    def check_dataset_names(self, dataset_names: Union[str, List[str]]) -> List[str]:
+        available_dataset_names = self.available_dataset_names()
+        if isinstance(dataset_names, str):
+            dataset_names = [dataset_names]
 
-        return datasets.DatasetDict(qrels)
+        for dataset_name in dataset_names:
+            if dataset_name not in available_dataset_names:
+                raise ValueError(f"Dataset name '{dataset_name}' not found in the dataset. Available dataset names: {available_dataset_names}")
+        return dataset_names
 
-    def load_corpus(self):
-        corpus_path = os.path.join(self.dataset_dir, 'corpus.jsonl')
-        corpus_data = datasets.load_dataset('json', data_files=corpus_path, cache_dir=self.cache_dir)['train']
-        
-        corpus = {e['id']: {'text': e['text']} for e in corpus_data}
-        return datasets.DatasetDict(corpus)
+    def check_splits(self, splits: Union[str, List[str]], dataset_name: Optional[str] = None) -> List[str]:
+        available_splits = self.available_splits(dataset_name=dataset_name)
+        if isinstance(splits, str):
+            splits = [splits]
+        checked_splits = []
+        for split in splits:
+            if split not in available_splits:
+                logger.warning(f"Split '{split}' not found in the dataset. Removing it from the list.")
+            else:
+                checked_splits.append(split)
+        return checked_splits
 
-    def load_queries(self, split: str = 'test'):
-        queries_path = os.path.join(self.dataset_dir, f"{split}_queries.jsonl")
-        queries_data = datasets.load_dataset('json', data_files=queries_path, cache_dir=self.cache_dir)['train']
+    def load_corpus(self, dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        if self.dataset_dir is not None:
+            if dataset_name is None:
+                save_dir = self.dataset_dir
+            else:
+                save_dir = os.path.join(self.dataset_dir, dataset_name)
+            return self._load_local_corpus(save_dir, dataset_name=dataset_name)
+        else:
+            return self._load_remote_corpus(dataset_name=dataset_name)
 
-        queries = {e['id']: e['text'] for e in queries_data}
-        return datasets.DatasetDict(queries)
+    def load_qrels(self, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        if self.dataset_dir is not None:
+            if dataset_name is None:
+                save_dir = self.dataset_dir
+            else:
+                checked_dataset_names = self.check_dataset_names(dataset_name)
+                if len(checked_dataset_names) == 0:
+                    raise ValueError(f"Dataset name {dataset_name} not found in the dataset.")
+                dataset_name = checked_dataset_names[0]
+
+                save_dir = os.path.join(self.dataset_dir, dataset_name)
+
+            return self._load_local_qrels(save_dir, dataset_name=dataset_name, split=split)
+        else:
+            return self._load_remote_qrels(dataset_name=dataset_name, split=split)
+
+    def load_queries(self, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        if self.dataset_dir is not None:
+            if dataset_name is None:
+                save_dir = self.dataset_dir
+            else:
+                checked_dataset_names = self.check_dataset_names(dataset_name)
+                if len(checked_dataset_names) == 0:
+                    raise ValueError(f"Dataset name {dataset_name} not found in the dataset.")
+                dataset_name = checked_dataset_names[0]
+
+                save_dir = os.path.join(self.dataset_dir, dataset_name)
+
+            return self._load_local_queries(save_dir, dataset_name=dataset_name, split=split)
+        else:
+            return self._load_remote_queries(dataset_name=dataset_name, split=split)
+
+    def _load_remote_corpus(
+        self,
+        dataset_name: Optional[str] = None,
+        save_dir: Optional[str] = None
+    ) -> datasets.DatasetDict:
+        raise NotImplementedError("Loading remote corpus is not implemented.")
+
+    def _load_remote_qrels(
+        self,
+        dataset_name: Optional[str] = None,
+        split: str = 'test',
+        save_dir: Optional[str] = None
+    ) -> datasets.DatasetDict:
+        raise NotImplementedError("Loading remote qrels is not implemented.")
+
+    def _load_remote_queries(
+        self,
+        dataset_name: Optional[str] = None,
+        split: str = 'test',
+        save_dir: Optional[str] = None
+    ) -> datasets.DatasetDict:
+        raise NotImplementedError("Loading remote queries is not implemented.")
+
+    def _load_local_corpus(self, save_dir: str, dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        corpus_path = os.path.join(save_dir, 'corpus.jsonl')
+        if self.force_redownload or not os.path.exists(corpus_path):
+            logger.warning(f"Corpus not found in {corpus_path}. Trying to download the corpus from the remote and save it to {save_dir}.")
+            return self._load_remote_corpus(dataset_name=dataset_name, save_dir=save_dir)
+        else:
+            corpus_data = datasets.load_dataset('json', data_files=corpus_path, cache_dir=self.cache_dir)['train']
+
+            corpus = {}
+            for e in corpus_data:
+                corpus[e['id']] = {'title': e.get('title', ""), 'text': e['text']}
+
+            return datasets.DatasetDict(corpus)
+
+    def _load_local_qrels(self, save_dir: str, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        checked_split = self.check_splits(split)
+        if len(checked_split) == 0:
+            raise ValueError(f"Split {split} not found in the dataset.")
+        split = checked_split[0]
+
+        qrels_path = os.path.join(save_dir, f"{split}_qrels.jsonl")
+        if self.force_redownload or not os.path.exists(qrels_path):
+            logger.warning(f"Qrels not found in {qrels_path}. Trying to download the qrels from the remote and save it to {save_dir}.")
+            return self._load_remote_qrels(dataset_name=dataset_name, split=split, save_dir=save_dir)
+        else:
+            qrels_data = datasets.load_dataset('json', data_files=qrels_path, cache_dir=self.cache_dir)['train']
+
+            qrels = {}
+            for data in qrels_data:
+                qid = data['qid']
+                if qid not in qrels:
+                    qrels[qid] = {}
+                qrels[qid][data['docid']] = data['relevance']
+
+            return datasets.DatasetDict(qrels)
+
+    def _load_local_queries(self, save_dir: str, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        checked_split = self.check_splits(split)
+        if len(checked_split) == 0:
+            raise ValueError(f"Split {split} not found in the dataset.")
+        split = checked_split[0]
+
+        queries_path = os.path.join(save_dir, f"{split}_queries.jsonl")
+        if self.force_redownload or not os.path.exists(queries_path):
+            logger.warning(f"Queries not found in {queries_path}. Trying to download the queries from the remote and save it to {save_dir}.")
+            return self._load_remote_queries(dataset_name=dataset_name, split=split, save_dir=save_dir)
+        else:
+            queries_data = datasets.load_dataset('json', data_files=queries_path, cache_dir=self.cache_dir)['train']
+
+            queries = {e['id']: e['text'] for e in queries_data}
+            return datasets.DatasetDict(queries)
+
+    def _download_file(self, download_url: str, save_dir: str):
+        save_path = os.path.join(save_dir, download_url.split('/')[-1])
+
+        if self.force_redownload or (not os.path.exists(save_path) or os.path.getsize(save_path) == 0):
+            cmd = ["wget", "-O", save_path, download_url]
+        else:
+            cmd = ["wget", "-nc", "-O", save_path, download_url]
+
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error code: {e.returncode}. Error message: {e.stderr}")
+
+        if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
+            raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
+        else:
+            logger.info(f"Downloaded file from {download_url} to {save_path}")
+            return save_path
+
+    def _get_fpath_size(self, fpath: str) -> int:
+        if not os.path.isdir(fpath):
+            return os.path.getsize(fpath)
+        else:
+            total_size = 0
+            for dirpath, _, filenames in os.walk(fpath):
+                for f in filenames:
+                    fp = os.path.join(dirpath, f)
+                    total_size += os.path.getsize(fp)
+            return total_size
+
+    def _download_gz_file(self, download_url: str, save_dir: str):
+        gz_file_path = self._download_file(download_url, save_dir)
+        cmd = ["gzip", "-d", gz_file_path]
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error code: {e.returncode}. Error message: {e.output}")
+
+        file_path = gz_file_path.replace(".gz", "")
+        if not os.path.exists(file_path) or self._get_fpath_size(file_path) == 0:
+            raise FileNotFoundError(f"Failed to unzip file {gz_file_path}")
+
+        return file_path
+
+    def _download_zip_file(self, download_url: str, save_dir: str):
+        zip_file_path = self._download_file(download_url, save_dir)
+        file_path = zip_file_path.replace(".zip", "")
+        if self.force_redownload or not os.path.exists(file_path):
+            cmd = ["unzip", "-o", zip_file_path, "-d", file_path]
+        else:
+            cmd = ["unzip", "-n", zip_file_path, "-d", file_path]
+
+        try:
+            subprocess.run(cmd, check=True)
+        except subprocess.CalledProcessError as e:
+            logger.error(f"Error code: {e.returncode}. Error message: {e.output}")
+
+        if not os.path.exists(file_path) or self._get_fpath_size(file_path) == 0:
+            raise FileNotFoundError(f"Failed to unzip file {zip_file_path}")
+
+        return file_path

@@ -7,7 +7,7 @@ from tqdm import tqdm, trange
 from multiprocessing import Queue
 from collections import defaultdict
 from transformers import AutoTokenizer
-from typing import Any, List, Union, Dict, Literal, Tuple
+from typing import Any, List, Union, Dict, Literal, Tuple, Optional
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
@@ -18,19 +18,30 @@ logger = logging.getLogger(__name__)
 
 
 class M3Embedder(AbsEmbedder):
+    DEFAULT_POOLING_METHOD = "cls"
+
     def __init__(
         self,
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        devices: Optional[Union[str, List[str]]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
         # Additional parameters for M3Embedder
         pooling_method: str = "cls",
         trust_remote_code: bool = False,
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         colbert_dim: int = -1,
+        # inference
+        batch_size: int = 256,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
+        instruction: Optional[str] = None,
+        instruction_format: str = "{}{}",
+        return_dense: bool = True,
+        return_sparse: bool = False,
+        return_colbert_vecs: bool = False,
         **kwargs: Any,
     ):
         super().__init__(
@@ -40,6 +51,14 @@ class M3Embedder(AbsEmbedder):
             query_instruction_for_retrieval=query_instruction_for_retrieval,
             query_instruction_format=query_instruction_format,
             devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            passage_max_length=passage_max_length,
+            instruction=instruction,
+            instruction_format=instruction_format,
+            return_dense=return_dense,
+            return_sparse=return_sparse,
+            return_colbert_vecs=return_colbert_vecs,
             **kwargs
         )
         self.pooling_method = pooling_method
@@ -111,16 +130,22 @@ class M3Embedder(AbsEmbedder):
     def encode_queries(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        return_dense: bool = True,
-        return_sparse: bool = False,
-        return_colbert_vecs: bool = False,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        return_dense: Optional[bool] = None,
+        return_sparse: Optional[bool] = None,
+        return_colbert_vecs: Optional[bool] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.query_max_length
+        if return_dense is None: return_dense = self.return_dense
+        if return_sparse is None: return_sparse = self.return_sparse
+        if return_colbert_vecs is None: return_colbert_vecs = self.return_colbert_vecs
+
         return super().encode_queries(
             queries,
             batch_size=batch_size,
@@ -134,16 +159,22 @@ class M3Embedder(AbsEmbedder):
     def encode_corpus(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        return_dense: bool = True,
-        return_sparse: bool = False,
-        return_colbert_vecs: bool = False,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        return_dense: Optional[bool] = None,
+        return_sparse: Optional[bool] = None,
+        return_colbert_vecs: Optional[bool] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.passage_max_length
+        if return_dense is None: return_dense = self.return_dense
+        if return_sparse is None: return_sparse = self.return_sparse
+        if return_colbert_vecs is None: return_colbert_vecs = self.return_colbert_vecs
+
         return super().encode_corpus(
             queries,
             batch_size=batch_size,
@@ -157,11 +188,11 @@ class M3Embedder(AbsEmbedder):
     def encode(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        return_dense: bool = True,
-        return_sparse: bool = False,
-        return_colbert_vecs: bool = False,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        return_dense: Optional[bool] = None,
+        return_sparse: Optional[bool] = None,
+        return_colbert_vecs: Optional[bool] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
@@ -186,9 +217,12 @@ class M3Embedder(AbsEmbedder):
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ):        
+        # pop convert_to_numpy from kwargs
+        kwargs.pop("convert_to_numpy", None)
+
         if device is None:
             device = self.target_devices[0]
 
@@ -340,15 +374,19 @@ class M3Embedder(AbsEmbedder):
     def compute_score(
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: int = 256,
-        max_query_length: int = 512,
-        max_passage_length: int = 512,
-        weights_for_different_modes: List[float] = None,
+        batch_size: Optional[int] = None,
+        max_query_length: Optional[int] = None,
+        max_passage_length: Optional[int] = None,
+        weights_for_different_modes: Optional[List[float]] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
         List[float]
     ]:
+        if batch_size is None: batch_size = self.batch_size
+        if max_query_length is None: max_query_length = self.query_max_length
+        if max_passage_length is None: max_passage_length = self.passage_max_length
+
         if len(self.target_devices) == 1:
             return self.compute_score_single_device(
                 sentence_pairs,
@@ -438,8 +476,8 @@ class M3Embedder(AbsEmbedder):
         batch_size: int = 256,
         max_query_length: int = 512,
         max_passage_length: int = 512,
-        weights_for_different_modes: List[float] = None,
-        device: str = None,
+        weights_for_different_modes: Optional[List[float]] = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> Dict[
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],

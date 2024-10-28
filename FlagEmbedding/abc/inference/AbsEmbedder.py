@@ -1,7 +1,7 @@
 import logging
 from tqdm import tqdm, trange
 from abc import ABC, abstractmethod
-from typing import Any, Union, List, Dict, Literal
+from typing import Any, Union, List, Dict, Literal, Optional
 
 import queue
 import multiprocessing as mp
@@ -25,9 +25,16 @@ class AbsEmbedder(ABC):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, int, List[str], List[int]] = None,
+        devices: Optional[Union[str, int, List[str], List[int]]] = None,
+        # inference
+        batch_size: int = 256,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
+        instruction: Optional[str] = None,
+        instruction_format: str = "{}{}",
+        convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
@@ -36,6 +43,17 @@ class AbsEmbedder(ABC):
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format
         self.target_devices = self.get_target_devices(devices)
+
+        self.batch_size = batch_size
+        self.query_max_length = query_max_length
+        self.passage_max_length = passage_max_length
+        self.instruction = instruction
+        self.instruction_format = instruction_format
+        self.convert_to_numpy = convert_to_numpy
+
+        for k in kwargs:
+            setattr(self, k, kwargs[k])
+
         self.kwargs = kwargs
 
         # tokenizer and model are initialized in the child class
@@ -74,14 +92,20 @@ class AbsEmbedder(ABC):
     def encode_queries(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ):
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.query_max_length
+        if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
+
         return self.encode(
             queries,
             batch_size=batch_size,
             max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
             instruction=self.query_instruction_for_retrieval,
             instruction_format=self.query_instruction_format,
             **kwargs
@@ -90,17 +114,23 @@ class AbsEmbedder(ABC):
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ):
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
         passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
 
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.passage_max_length
+        if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
+
         return self.encode(
             corpus,
             batch_size=batch_size,
             max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
             instruction=passage_instruction_for_retrieval,
             instruction_format=passage_instruction_format,
             **kwargs
@@ -109,12 +139,16 @@ class AbsEmbedder(ABC):
     def encode(
         self,
         sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        instruction: str = None,
-        instruction_format: str = "{}{}",
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
+        instruction: Optional[str] = None,
+        instruction_format: Optional[str] = None,
         **kwargs: Any
     ):
+        if instruction is None: instruction = self.instruction
+        if instruction_format is None: instruction_format = self.instruction_format
+
         if instruction is not None:
             if isinstance(sentences, str):
                 sentences = self.get_detailed_instruct(instruction_format, instruction, sentences)
@@ -126,6 +160,7 @@ class AbsEmbedder(ABC):
                 sentences,
                 batch_size=batch_size,
                 max_length=max_length,
+                convert_to_numpy=convert_to_numpy,
                 device=self.target_devices[0],
                 **kwargs
             )
@@ -136,6 +171,7 @@ class AbsEmbedder(ABC):
             pool,
             batch_size=batch_size,
             max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
         self.stop_multi_process_pool(pool)
@@ -147,7 +183,8 @@ class AbsEmbedder(ABC):
         sentences: Union[List[str], str],
         batch_size: int = 256,
         max_length: int = 512,
-        device: str = None,
+        convert_to_numpy: bool = True,
+        device: Optional[str] = None,
         **kwargs: Any,
     ):
         """

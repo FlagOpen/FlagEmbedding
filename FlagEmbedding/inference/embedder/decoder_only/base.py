@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from typing import cast, Any, List, Union
+from typing import cast, Any, List, Union, Optional
 
 import torch
 import numpy as np
@@ -21,17 +21,26 @@ def last_token_pool(last_hidden_states: torch.Tensor,
 
 
 class BaseLLMEmbedder(AbsEmbedder):
+    DEFAULT_POOLING_METHOD = "last_token"
+
     def __init__(
         self,
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
-        query_instruction_for_retrieval: str = None,
+        query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "Instruct: {}\nQuery: {}", # specify the format of query_instruction_for_retrieval
-        devices: Union[str, List[str]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
+        devices: Optional[Union[str, List[str]]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
         # Additional parameters for BaseLLMEmbedder
         trust_remote_code: bool = False,
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
+        # inference
+        batch_size: int = 256,
+        query_max_length: int = 512,
+        passage_max_length: int = 512,
+        instruction: Optional[str] = None,
+        instruction_format: str = "{}{}",
+        convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
         super().__init__(
@@ -41,6 +50,12 @@ class BaseLLMEmbedder(AbsEmbedder):
             query_instruction_for_retrieval=query_instruction_for_retrieval,
             query_instruction_format=query_instruction_format,
             devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            passage_max_length=passage_max_length,
+            instruction=instruction,
+            instruction_format=instruction_format,
+            convert_to_numpy=convert_to_numpy,
             **kwargs
         )
 
@@ -61,9 +76,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode_queries(
         self,
         queries: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode_queries(
@@ -77,9 +92,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode_corpus(
         self,
         corpus: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode_corpus(
@@ -93,9 +108,9 @@ class BaseLLMEmbedder(AbsEmbedder):
     def encode(
         self,
         sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
+        batch_size: Optional[int] = None,
+        max_length: Optional[int] = None,
+        convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
         return super().encode(
@@ -113,7 +128,7 @@ class BaseLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         max_length: int = 512,
         convert_to_numpy: bool = True,
-        device: str = None,
+        device: Optional[str] = None,
         **kwargs: Any   # add `pad_to_multiple_of=8` for bge-multilingual-gemmma2
     ):
         if device is None:

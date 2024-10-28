@@ -2,39 +2,36 @@
 Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/evaluation_utils/searcher.py
 """
 import os
+import logging
 import numpy as np
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 from abc import ABC, abstractmethod
 
 from FlagEmbedding.abc.inference import AbsEmbedder, AbsReranker
 from FlagEmbedding.abc.evaluation.utils import index, search
 
+logger = logging.getLogger(__name__)
 
-class AbsEmbedder(ABC):
-    """
-    Base class for retrievers.
-    Extend this class and implement __str__ and __call__ for custom retrievers.
-    """
-    def __init__(self, retriever: AbsEmbedder, search_top_k: int = 1000):
-        self.retriever = retriever
+
+class EvalRetriever(ABC):
+    def __init__(self, embedder: AbsEmbedder, search_top_k: int = 1000, overwrite: bool = False):
+        self.embedder = embedder
         self.search_top_k = search_top_k
+        self.overwrite = overwrite
 
-    # @abstractmethod
     def __str__(self) -> str:
         """
         Returns: str: Name of the retriever.
         """
-        return self.retriever.model.config._name_or_path
-        # pass
+        return os.path.basename(self.embedder.model.config._name_or_path)
 
-    # @abstractmethod
+    @abstractmethod
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
-        corpus_embd_save_dir: str = None,
-        query_max_length: int = 512,
-        passage_max_length: int = 512,
+        corpus_embd_save_dir: Optional[str] = None,
+        ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -53,24 +50,74 @@ class AbsEmbedder(ABC):
             Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
             Example: {"q-0": {"doc-0": 0.9}}
         """
-        corpus_texts = [doc["text"] for _, doc in corpus.items()]
-        queries_texts = [query for _, query in queries.items()]
-        corpus_ids = list(corpus.keys())
-        queries_ids = list(queries.keys())
+
+
+class EvalDenseRetriever(EvalRetriever):
+    def __call__(
+        self,
+        corpus: Dict[str, Dict[str, Any]],
+        queries: Dict[str, str],
+        corpus_embd_save_dir: Optional[str] = None,
+        ignore_identical_ids: bool = False,
+        **kwargs,
+    ) -> Dict[str, Dict[str, float]]:
+        """
+        This is called during the retrieval process.
+        
+        Parameters:
+            corpus: Dict[str, Dict[str, Any]]: Corpus of documents. 
+                Structure: {<docid>: {"text": <text>}}.
+                Example: {"doc-0": {"text": "This is a document."}}
+            queries: Dict[str, str]: Queries to search for.
+                Structure: {<qid>: <query>}.
+                Example: {"q-0": "This is a query."}
+            **kwargs: Any: Additional arguments.
+        
+        Returns: Dict[str, Dict[str, float]]: Top-k search results for each query. k is specified by search_top_k.
+            Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
+            Example: {"q-0": {"doc-0": 0.9}}
+        """
+        if ignore_identical_ids:
+            logger.warning("ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.")
+
+        # dense embedding models do not require language as input: AIRBench evaluation
+        kwargs.pop("language", None)
+
+        corpus_ids = []
+        corpus_texts = []
+        for docid, doc in corpus.items():
+            corpus_ids.append(docid)
+            corpus_texts.append(
+                doc["text"] if "title" not in doc 
+                else f"{doc['title']} {doc['text']}".strip()
+            )
+        queries_ids = []
+        queries_texts = []
+        for qid, query in queries.items():
+            queries_ids.append(qid)
+            queries_texts.append(query)
 
         if corpus_embd_save_dir is not None:
-            if os.path.exists(os.path.join(corpus_embd_save_dir, 'doc.npy')):
-                corpus_emb = np.load(os.path.join(corpus_embd_save_dir, 'doc.npy'))
+            if os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")) and not self.overwrite:
+                corpus_emb = np.load(os.path.join(corpus_embd_save_dir, "doc.npy"))
             else:
-                corpus_emb = self.retriever.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
-                if corpus_embd_save_dir is not None:
-                    os.makedirs(corpus_embd_save_dir, exist_ok=True)
-                    np.save(os.path.join(corpus_embd_save_dir, 'doc.npy'), corpus_emb)
+                corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
         else:
-            corpus_emb = self.retriever.encode_corpus(corpus_texts, max_length=passage_max_length, **kwargs)
+            corpus_emb = self.embedder.encode_corpus(corpus_texts, **kwargs)
 
-        queries_emb = self.retriever.encode_queries(queries_texts, max_length=query_max_length, **kwargs)
+        queries_emb = self.embedder.encode_queries(queries_texts, **kwargs)
+
+        # check if the embeddings are in dictionary format: M3Embedder
+        if isinstance(corpus_emb, dict):
+            corpus_emb = corpus_emb["dense_vecs"]
+        if isinstance(queries_emb, dict):
+            queries_emb = queries_emb["dense_vecs"]
         
+        if corpus_embd_save_dir is not None and \
+            (not os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")) or self.overwrite):
+            os.makedirs(corpus_embd_save_dir, exist_ok=True)
+            np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
+
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
 
@@ -78,33 +125,31 @@ class AbsEmbedder(ABC):
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
             results[queries_ids[idx]] = {}
             for score, indice in zip(scores, indices):
-                results[queries_ids[idx]][corpus_ids[indice]] = float(score)
+                if indice != -1:
+                    if ignore_identical_ids and corpus_ids[indice] == queries_ids[idx]:
+                        continue
+                    results[queries_ids[idx]][corpus_ids[indice]] = float(score)
 
         return results
 
-class AbsReranker(ABC):
-    """
-    Base class for rerankers.
-    Extend this class and implement __str__ and __call__ for custom rerankers.
-    """
+
+class EvalReranker:
     def __init__(self, reranker: AbsReranker, rerank_top_k: int = 100):
         self.reranker = reranker
         self.rerank_top_k = rerank_top_k
 
-    # @abstractmethod
     def __str__(self) -> str:
         """
         Returns: str: Name of the reranker.
         """
-        return self.reranker.model.config._name_or_path
-        # pass
+        return os.path.basename(self.reranker.model.config._name_or_path)
 
-    # @abstractmethod
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],
         queries: Dict[str, str],
         search_results: Dict[str, Dict[str, float]],
+        ignore_identical_ids: bool = False,
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
@@ -126,34 +171,42 @@ class AbsReranker(ABC):
             Structure: {qid: {docid: score}}. The higher is the score, the more relevant is the document.
             Example: {"q-0": {"doc-0": 0.9}}
         """
-        corpus_texts = [doc["text"] for _, doc in corpus.items()]
-        queries_texts = [query for _, query in queries.items()]
-        corpus_ids = list(corpus.keys())
-        queries_ids = list(queries.keys())
-
+        # truncate search results to top_k
+        for qid in search_results:
+            search_results[qid] = dict(
+                sorted(search_results[qid].items(), key=lambda x: x[1], reverse=True)[
+                    :self.rerank_top_k
+                ]
+            )
+        # generate sentence pairs
         sentence_pairs = []
-
-        for qid in search_results.keys():
-            dids = list(search_results[qid].keys())[:self.rerank_top_k]
-            for did in dids:
-                sentence_pairs.append((queries[qid], corpus[did]["text"]))
-        
-        scores = self.reranker.compute_score(sentence_pairs, **kwargs)
-        if isinstance(scores[0], list):
-            scores = scores[0]
-        
-        # scores = np.asarray(scores)
-        # scores = scores.reshape(-1, self.rerank_top_k)
-
-        results = {}
-        idx = 0
-        for qid in search_results.keys():
-            dids = list(search_results[qid].keys())[:self.rerank_top_k]
-            results[qid] = {}
-            for did in dids:
-                results[qid][did] = float(scores[idx])
-                idx += 1
-
-        return results
-
-
+        pairs = []
+        for qid in search_results:
+            for docid in search_results[qid]:
+                if ignore_identical_ids and qid == docid:
+                    continue
+                sentence_pairs.append(
+                    {
+                        "qid": qid,
+                        "docid": docid,
+                        "query": queries[qid],
+                        "doc": corpus[docid]["text"] if "title" not in corpus[docid] 
+                            else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip(),
+                    }
+                )
+                pairs.append(
+                    (
+                        queries[qid],
+                        corpus[docid]["text"] if "title" not in corpus[docid] 
+                            else f"{corpus[docid]['title']} {corpus[docid]['text']}".strip()
+                    )
+                )
+        # compute scores
+        scores = self.reranker.compute_score(pairs)
+        for i, score in enumerate(scores):
+            sentence_pairs[i]["score"] = float(score)
+        # rerank
+        reranked_results = {qid: {} for qid in search_results}
+        for pair in sentence_pairs:
+            reranked_results[pair["qid"]][pair["docid"]] = pair["score"]
+        return reranked_results

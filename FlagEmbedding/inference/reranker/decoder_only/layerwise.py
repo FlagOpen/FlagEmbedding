@@ -2,7 +2,7 @@ import torch
 import warnings
 import numpy as np
 from tqdm import tqdm, trange
-from typing import Any, List, Union, Tuple
+from typing import Any, List, Union, Tuple, Optional
 from peft import PeftModel
 from torch import Tensor
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -29,36 +29,43 @@ def last_logit_pool_layerwise(logits: Tensor,
 class LayerWiseLLMReranker(AbsReranker):
     def __init__(
         self,
-        model_name_or_path: str = None,
-        peft_path: str = None,
+        model_name_or_path: str,
+        peft_path: Optional[str] = None,
         use_fp16: bool = False,
         use_bf16: bool = False,
         query_instruction_for_rerank: str = "A: ",
         query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
         passage_instruction_for_rerank: str = "B: ",
         passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        cache_dir: str = None,
+        cache_dir: Optional[str] = None,
         trust_remote_code: bool = False,
-        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
-        cutoff_layers: List[int] = None, 
-        prompt: str = None,
+        devices: Optional[Union[str, List[str], List[int]]] = None, # specify devices, such as ["cuda:0"] or ["0"]
+        # inference
+        cutoff_layers: Optional[List[int]] = None, 
+        prompt: Optional[str] = None,
+        batch_size: int = 128,
+        query_max_length: Optional[int] = None,
+        max_length: int = 512,
         normalize: bool = False,
         **kwargs: Any,
     ) -> None:
         super().__init__(
-            model_name_or_path,
-            use_fp16,
-            query_instruction_for_rerank,
-            query_instruction_format,
-            passage_instruction_for_rerank,
-            passage_instruction_format,
-            devices,
+            model_name_or_path=model_name_or_path,
+            use_fp16=use_fp16,
+            query_instruction_for_rerank=query_instruction_for_rerank,
+            query_instruction_format=query_instruction_format,
+            passage_instruction_for_rerank=passage_instruction_for_rerank,
+            passage_instruction_format=passage_instruction_format,
+            devices=devices,
+            batch_size=batch_size,
+            query_max_length=query_max_length,
+            max_length=max_length,
+            normalize=normalize,
             **kwargs
         )
 
         self.cutoff_layers = cutoff_layers
         self.prompt = prompt
-        self.normalize = normalize        
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
@@ -87,32 +94,35 @@ class LayerWiseLLMReranker(AbsReranker):
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model,peft_path)
             self.model = self.model.merge_and_unload()
-        self.model_name_or_path = model_name_or_path
-        self.cache_dir = cache_dir
 
     @torch.no_grad()
     def compute_score_single_gpu(
         self,
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: int = 256,
-        max_length: int = 512,
-        cutoff_layers: List[int] = None, 
-        prompt: str = None,
-        normalize: bool = None,
+        batch_size: Optional[int] = None,
+        query_max_length: Optional[int] = None,
+        max_length: Optional[int] = None,
+        cutoff_layers: Optional[List[int]] = None, 
+        prompt: Optional[str] = None,
+        normalize: Optional[bool] = None,
         use_dataloader: bool = False,
-        num_workers: int = None,
-        device: str = None,
+        num_workers: Optional[int] = None,
+        device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
         if cutoff_layers is None: cutoff_layers = self.cutoff_layers
         if prompt is None: prompt = self.prompt
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.max_length
+        if query_max_length is None:
+            if self.query_max_length is not None:
+                query_max_length = self.query_max_length
+            else:
+                query_max_length = max_length * 3 // 4
         if normalize is None: normalize = self.normalize
 
         if device is None:
             device = self.target_devices[0]
-
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
 
         if device == "cpu": self.use_fp16 = False
         if self.use_fp16: self.model.half()
@@ -135,7 +145,7 @@ class LayerWiseLLMReranker(AbsReranker):
                 queries,
                 return_tensors=None,
                 add_special_tokens=False,
-                max_length=max_length * 3 // 4,
+                max_length=query_max_length,
                 truncation=True,
                 **kwargs
             )

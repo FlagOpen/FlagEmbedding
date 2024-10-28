@@ -7,6 +7,21 @@ from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.inference.embedder import FlagModel, BGEM3FlagModel, FlagLLMModel, FlagICLModel
 
 
+class EmbedderModelClass(Enum):
+    ENCODER_ONLY_BASE = "encoder-only-base"
+    ENCODER_ONLY_M3 = "encoder-only-m3"
+    DECODER_ONLY_BASE = "decoder-only-base"
+    DECODER_ONLY_ICL = "decoder-only-icl"
+
+
+EMBEDDER_CLASS_MAPPING = OrderedDict([
+    (EmbedderModelClass.ENCODER_ONLY_BASE, FlagModel),
+    (EmbedderModelClass.ENCODER_ONLY_M3, BGEM3FlagModel),
+    (EmbedderModelClass.DECODER_ONLY_BASE, FlagLLMModel),
+    (EmbedderModelClass.DECODER_ONLY_ICL, FlagICLModel)
+])
+
+
 class PoolingMethod(Enum):
     LAST_TOKEN = "last_token"
     CLS = "cls"
@@ -21,7 +36,7 @@ class EmbedderConfig:
     query_instruction_format: str = "{}{}"
 
 
-MODEL_MAPPING = OrderedDict([
+AUTO_EMBEDDER_MAPPING = OrderedDict([
     # ============================== BGE ==============================
     (
         "bge-en-icl", 
