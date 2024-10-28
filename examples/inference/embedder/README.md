@@ -185,8 +185,6 @@ examples = [
         'response': "Back pain in females lasting a week can stem from various factors. Common causes include muscle strain due to lifting heavy objects or improper posture, spinal issues like herniated discs or osteoporosis, menstrual cramps causing referred pain, urinary tract infections, or pelvic inflammatory disease. Pregnancy-related changes can also contribute. Stress and lack of physical activity may exacerbate symptoms. Proper diagnosis by a healthcare professional is crucial for effective treatment and management."
     }
 ]
-sentences_1 = ["样例数据-1", "样例数据-2"]
-sentences_2 = ["样例数据-3", "样例数据-4"]
 model = FlagICLModel(
     'BAAI/bge-en-icl',
     query_instruction_for_retrieval="Given a question, retrieve passages that answer the question.",
