@@ -58,12 +58,12 @@ We are aiming to enhance text and multi-model retrieval by leveraging advanced e
 
 .. toctree::
    :hidden:
-   :maxdepth: 1
-   :caption: Projects
+   :maxdepth: 4
+   :caption: API
 
-   projects/C-MTEB
-   projects/MLVU
-   projects/Visualized_BGE
+   API/abc
+   API/evaluation
+   API/inference
 
 .. toctree::
    :hidden:
