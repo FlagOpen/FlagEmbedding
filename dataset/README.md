@@ -10,3 +10,4 @@ This will point to the training data we use for training various models.
 | [full-data](https://huggingface.co/datasets/cfli/bge-full-data) | The full dataset we used for training [bge-en-icl](https://huggingface.co/BAAI/bge-en-icl) |
 | [reranker-data](Shitao/bge-reranker-data)                    | a mixture of multilingual datasets                           |
 
+
