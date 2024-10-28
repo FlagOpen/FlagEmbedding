@@ -2,6 +2,7 @@
 
 - [Model List](#model-list)
 - [Usage](#usage)
+- [Citation](#citation)
 
 An embedder can encode text into embeddings.
 
@@ -288,3 +289,27 @@ with torch.no_grad():
 sentence_embeddings = torch.nn.functional.normalize(sentence_embeddings, p=2, dim=1)
 print("Sentence embeddings:", sentence_embeddings)
 ```
+
+## Citation
+
+If you find this repository useful, please consider giving a star :star: and citation
+
+```
+@misc{bge_embedding,
+      title={C-Pack: Packaged Resources To Advance General Chinese Embedding}, 
+      author={Shitao Xiao and Zheng Liu and Peitian Zhang and Niklas Muennighoff},
+      year={2023},
+      eprint={2309.07597},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+@misc{bge-m3,
+      title={BGE M3-Embedding: Multi-Lingual, Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge Distillation}, 
+      author={Jianlv Chen and Shitao Xiao and Peitian Zhang and Kun Luo and Defu Lian and Zheng Liu},
+      year={2024},
+      eprint={2402.03216},
+      archivePrefix={arXiv},
+      primaryClass={cs.CL}
+}
+```
+
