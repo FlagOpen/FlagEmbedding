@@ -314,7 +314,7 @@ The example data for `test_qrels.jsonl`:
 {"qid": "79085", "docid": "81285", "relevance": 1}
 ```
 
-Please put the above file in `dataset_dir`, and then you can use the following code:
+Please put the above file (`corpus.jsonl`, `test_queries.jsonl`, `test_qrels.jsonl`) in `dataset_dir`, and then you can use the following code:
 
 ```shell
 python -m FlagEmbedding.evaluation.custom \
@@ -335,31 +335,6 @@ python -m FlagEmbedding.evaluation.custom \
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
     --devices cuda:0 cuda:1 \
     --cache_dir ./cache/model \
-    --reranker_query_max_length 512 \
-    --reranker_max_length 1024 
-```
-
-Please put the above file in `dataset_dir`, and then you can use the following code:
-
-```shell
-python -m FlagEmbedding.evaluation.custom \
-	--eval_name your_data_name \
-    --dataset_dir /share/chaofan/code/FlagEmbedding_update/data/beir/cqadupstack/android \
-    --splits test \
-    --corpus_embd_save_dir ./your_data_name/corpus_embd \
-    --output_dir ./your_data_name/search_results \
-    --search_top_k 1000 \
-    --rerank_top_k 100 \
-    --cache_path ./cache/data \
-    --overwrite False \
-    --k_values 10 100 \
-    --eval_output_method markdown \
-    --eval_output_path ./your_data_name/eval_results.md \
-    --eval_metrics ndcg_at_10 recall_at_100 \
-    --embedder_name_or_path BAAI/bge-m3 \
-    --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
-    --devices cuda:0 cuda:1 \
-    --cache_dir /share/shared_models \
     --reranker_query_max_length 512 \
     --reranker_max_length 1024 
 ```
