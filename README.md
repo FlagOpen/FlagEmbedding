@@ -16,20 +16,20 @@
         <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.1-red">
     </a>
 </p>
-
 <h4 align="center">
     <p>
         <a href=#news>News</a> |
         <a href=#installation>Installation</a> |
         <a href=#quick-start>Quick Start</a> |
         <a href=#community>Community</a> |
-        <a href="#projects">Projects</a> |
+        <a href="https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research">Projects</a> |
         <a href=#model-list>Model List</a> |
         <a href="#contributor">Contributor</a> |
         <a href="#citation">Citation</a> |
         <a href="#license">License</a> 
     <p>
 </h4>
+
 
 
 [English](README.md) | [中文](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/README_zh.md)

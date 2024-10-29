@@ -23,7 +23,7 @@
         <a href=#安装>安装</a> |
         <a href=#快速开始>快速开始</a> |
         <a href=#社区>社区</a> |
-        <a href="#项目">项目</a> |
+        <a href="https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research">项目</a> |
         <a href="#模型列表">模型列表</a> |
         <a href=#贡献者>贡献者</a> |
         <a href="#citation">Citation</a> |
