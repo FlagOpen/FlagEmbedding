@@ -82,8 +82,8 @@ See [example_data](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagem
   --reranker_max_length 1024
   ```
 
-  - `input_file`: path to save JSON data with mined hard negatives for finetuning
-  - `output_file`: path to save JSON data with scores for finetuning
+  - **`input_file`**: path to save JSON data with mined hard negatives for finetuning
+  - **`output_file`**: path to save JSON data with scores for finetuning
   - **`use_fp16`**: Whether to use fp16 for inference. Default: True
   - **`devices`**: Devices to use for inference. Default: None, multiple values allowed
   - **`trust_remote_code`**: Trust remote code. Default: False

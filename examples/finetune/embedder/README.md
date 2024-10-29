@@ -80,8 +80,8 @@ python add_reranker_score.py \
 --use_gpu_for_searching 
 ```
 
-- `input_file`: path to save JSON data with mined hard negatives for finetuning
-- `output_file`: path to save JSON data with scores for finetuning
+- **`input_file`**: path to save JSON data with mined hard negatives for finetuning
+- **`output_file`**: path to save JSON data with scores for finetuning
 - **`use_fp16`**: Whether to use fp16 for inference. Default: True
 - **`devices`**: Devices to use for inference. Default: None, multiple values allowed
 - **`trust_remote_code`**: Trust remote code. Default: False
