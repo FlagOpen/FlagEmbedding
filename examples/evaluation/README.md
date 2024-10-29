@@ -93,6 +93,10 @@ In the evaluation of MTEB, we primarily utilize the official [MTEB](https://gith
 Here is an example for evaluation:
 
 ```shell
+pip install mteb==1.15.0
+```
+
+```shell
 python -m FlagEmbedding.evaluation.mteb \
 	--eval_name mteb \
     --output_dir ./data/mteb/search_results \
@@ -111,6 +115,10 @@ python -m FlagEmbedding.evaluation.mteb \
 - **`use_special_instructions`**: Whether to use specific instructions in `prompts.py` for evaluation. Default: False
 
 Here is an example for evaluation:
+
+```shell
+pip install beir
+```
 
 ```shell
 python -m FlagEmbedding.evaluation.beir \
@@ -266,6 +274,10 @@ The AIR-Bench is mainly based on the official [AIR-Bench](https://github.com/AIR
 - **`languages`**: Languages to evaluate.
 
 Here is an example for evaluation:
+
+```shell
+pip install air-benchmark
+```
 
 ```shell
 python -m FlagEmbedding.evaluation.air_bench \
