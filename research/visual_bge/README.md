@@ -70,7 +70,7 @@ images
 #### Install FlagEmbedding:
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding
+cd FlagEmbedding/research/visual_bge
 pip install -e .
 ```
 #### Another Core Packages:
@@ -88,7 +88,7 @@ Visualized-BGE provides the versatility to encode multi-modal data in a variety 
 ``` python
 ####### Use Visualized BGE doing composed image retrieval
 import torch
-from FlagEmbedding.visual.modeling import Visualized_BGE
+from visual_bge.modeling import Visualized_BGE
 
 model = Visualized_BGE(model_name_bge = "BAAI/bge-base-en-v1.5", model_weight="path: Visualized_base_en_v1.5.pth")
 model.eval()
@@ -106,7 +106,7 @@ print(sim_1, sim_2) # tensor([[0.8750]]) tensor([[0.7816]])
 ``` python
 ####### Use Visualized BGE doing multi-modal knowledge retrieval
 import torch
-from FlagEmbedding.visual.modeling import Visualized_BGE
+from visual_bge.modeling import Visualized_BGE
 
 model = Visualized_BGE(model_name_bge = "BAAI/bge-base-en-v1.5", model_weight="path: Visualized_base_en_v1.5.pth")
 model.eval()
@@ -125,7 +125,7 @@ print(sim_1, sim_2, sim_3) # tensor([[0.6932]]) tensor([[0.4441]]) tensor([[0.64
 ``` python
 ##### Use M3 doing Multilingual Multi-Modal Retrieval
 import torch
-from FlagEmbedding.visual.modeling import Visualized_BGE
+from visual_bge.modeling import Visualized_BGE
 
 model = Visualized_BGE(model_name_bge = "BAAI/bge-m3", model_weight="path: Visualized_m3.pth")
 model.eval()

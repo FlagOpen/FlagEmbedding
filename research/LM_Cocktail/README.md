@@ -49,7 +49,7 @@ The merged model can be used to perform multiple tasks.
 Install the latest version from source (Recommended): 
 ```bash
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding/LM_Cocktail
+cd FlagEmbedding/research/LM_Cocktail
 pip install -e .
 ```
 Install by pip:
@@ -260,6 +260,7 @@ torchrun --nproc_per_node 8 -m evaluation.eval_mmlu \
 - Models: we fine-tune the [bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) on 9 tasks, and you can find the fine-tuned models at this [link](https://huggingface.co/Shitao).
 - Examples Data: [./embedder_examples.json]()
   
+
 Use [MTEB script](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) to evaluate the mixed embedding model:
 ```bash
 python eval_MTEB.py --model_name_or_path mixed_model --task_type Retrieval
