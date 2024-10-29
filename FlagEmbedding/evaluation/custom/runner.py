@@ -1,11 +1,11 @@
 from FlagEmbedding.abc.evaluation import AbsEvalRunner
 
-from .data_loader import MLDREvalDataLoader
+from .data_loader import CustomEvalDataLoader
 
 
-class MLDREvalRunner(AbsEvalRunner):
-    def load_data_loader(self) -> MLDREvalDataLoader:
-        data_loader = MLDREvalDataLoader(
+class CustomEvalRunner(AbsEvalRunner):
+    def load_data_loader(self) -> CustomEvalDataLoader:
+        data_loader = CustomEvalDataLoader(
             eval_name=self.eval_args.eval_name,
             dataset_dir=self.eval_args.dataset_dir,
             cache_dir=self.eval_args.cache_path,

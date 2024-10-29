@@ -10,7 +10,7 @@ from FlagEmbedding.abc.evaluation import AbsEvalDataLoader
 logger = logging.getLogger(__name__)
 
 
-class MLDREvalDataLoader(AbsEvalDataLoader):
+class CustomEvalDataLoader(AbsEvalDataLoader):
     def available_dataset_names(self) -> List[str]:
         return []
 
