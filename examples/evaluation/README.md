@@ -123,7 +123,7 @@ python -m FlagEmbedding.evaluation.mteb \
 
 ### 2. BEIR
 
-BEIR supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new variables have been introduced:
+[BEIR](https://github.com/beir-cellar/beir/) supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new variables have been introduced:
 
 - **`use_special_instructions`**: Whether to use specific instructions in `prompts.py` for evaluation. Default: False
 
@@ -155,7 +155,7 @@ python -m FlagEmbedding.evaluation.beir \
 
 ### 3. MSMARCO
 
-MSMARCO supports evaluations on both `passage` and `document`, providing evaluation splits for `dev`, `dl19`, and `dl20` respectively.
+[MSMARCO](https://microsoft.github.io/msmarco/) supports evaluations on both `passage` and `document`, providing evaluation splits for `dev`, `dl19`, and `dl20` respectively.
 
 Here is an example for evaluation:
 
@@ -185,7 +185,7 @@ python -m FlagEmbedding.evaluation.msmarco \
 
 ### 4. MIRACL
 
-MIRACL supports evaluations in multiple languages. We utilize different languages as dataset names, including `ar`, `bn`, `en`, `es`, `fa`, `fi`, `fr`, `hi`, `id`, `ja`, `ko`, `ru`, `sw`, `te`, `th`, `zh`, `de`, `yo`. For the languages `de` and `yo`, the supported splits are `dev`, while for the rest, the supported splits are `train` and `dev`.
+[MIRACL](https://github.com/project-miracl/miracl) supports evaluations in multiple languages. We utilize different languages as dataset names, including `ar`, `bn`, `en`, `es`, `fa`, `fi`, `fr`, `hi`, `id`, `ja`, `ko`, `ru`, `sw`, `te`, `th`, `zh`, `de`, `yo`. For the languages `de` and `yo`, the supported splits are `dev`, while for the rest, the supported splits are `train` and `dev`.
 
 Here is an example for evaluation:
 
@@ -215,7 +215,7 @@ python -m FlagEmbedding.evaluation.miracl \
 
 ### 5. MLDR
 
-MLDR supports evaluations in multiple languages. We have dataset names in various languages, including `ar`, `de`, `en`, `es`, `fr`, `hi`, `it`, `ja`, `ko`, `pt`, `ru`, `th`, `zh`. The available splits are `train`, `dev`, and `test`.
+[MLDR](https://huggingface.co/datasets/Shitao/MLDR) supports evaluations in multiple languages. We have dataset names in various languages, including `ar`, `de`, `en`, `es`, `fr`, `hi`, `it`, `ja`, `ko`, `pt`, `ru`, `th`, `zh`. The available splits are `train`, `dev`, and `test`.
 
 Here is an example for evaluation:
 
@@ -245,7 +245,7 @@ python -m FlagEmbedding.evaluation.mldr \
 
 ### 6. MKQA
 
-MKQA supports multi-language evaluation, using different languages as dataset names, including `en`, `ar`, `fi`, `ja`, `ko`, `ru`, `es`, `sv`, `he`, `th`, `da`, `de`, `fr`, `it`, `nl`, `pl`, `pt`, `hu`, `vi`, `ms`, `km`, `no`, `tr`, `zh_cn`, `zh_hk`, `zh_tw`. The supported split is `test`.
+[MKQA](https://aclanthology.org/2021.tacl-1.82/) supports multi-language evaluation, using different languages as dataset names, including `en`, `ar`, `fi`, `ja`, `ko`, `ru`, `es`, `sv`, `he`, `th`, `da`, `de`, `fr`, `it`, `nl`, `pl`, `pt`, `hu`, `vi`, `ms`, `km`, `no`, `tr`, `zh_cn`, `zh_hk`, `zh_tw`. The supported split is `test`.
 
 Here is an example for evaluation:
 
@@ -306,7 +306,7 @@ python -m FlagEmbedding.evaluation.air_bench \
 
 ### 8. Custom Dataset
 
-You can refer to MLDR custom dataset, just need to rewrite `DataLoader`, rewriting the loading method for the required dataset.
+You can refer to [MLDR dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/FlagEmbedding/evaluation/mldr), just need to rewrite `DataLoader`, rewriting the loading method for the required dataset.
 
 The example data for `corpus.jsonl`:
 
