@@ -2,7 +2,7 @@
 
 After finetuning, the model needs to be evaluated. To facilitate this, we have provided scripts for assessing it on various datasets, including **MTEB**, **BEIR**, **MSMARCO**, **MIRACL**, **MLDR**, **MKQA**, and **AIR-Bench**. You can find the specific bash scripts in the respective folders. This document provides an overview of these evaluations.
 
-First, we will introduce the commonly used variables, followed by an introduction to the variables for each dataset.
+First, we will introduce the commonly used parameters, followed by an introduction to the parameters for each dataset.
 
 ## Introduction
 
@@ -99,7 +99,7 @@ First, we will introduce the commonly used variables, followed by an introductio
 
 ### 1. MTEB
 
-In the evaluation of MTEB, we primarily utilize the official [MTEB](https://github.com/embeddings-benchmark/mteb) code, which supports only the assessment of embedders. Additionally, it restricts the output format of evaluation results to JSON. The following new variables have been introduced:
+In the evaluation of MTEB, we primarily utilize the official [MTEB](https://github.com/embeddings-benchmark/mteb) code, which supports only the assessment of embedders. Additionally, it restricts the output format of evaluation results to JSON. The following new parameters have been introduced:
 
 - **`languages`**: Languages to evaluate. Default: eng
 - **`tasks`**: Tasks to evaluate. Default: None
@@ -123,7 +123,7 @@ python -m FlagEmbedding.evaluation.mteb \
 
 ### 2. BEIR
 
-[BEIR](https://github.com/beir-cellar/beir/) supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new variables have been introduced:
+[BEIR](https://github.com/beir-cellar/beir/) supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new parameters have been introduced:
 
 - **`use_special_instructions`**: Whether to use specific instructions in `prompts.py` for evaluation. Default: False
 
@@ -275,7 +275,7 @@ python -m FlagEmbedding.evaluation.mkqa \
 
 ### 7. AIR-Bench
 
-The AIR-Bench is mainly based on the official [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench/tree/main) framework, and it necessitates the use of official evaluation metrics. Below are some important variables:
+The AIR-Bench is mainly based on the official [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench/tree/main) framework, and it necessitates the use of official evaluation metrics. Below are some important parameters:
 
 - **`benchmark_version`**: Benchmark version.
 - **`task_types`**: Task types.
