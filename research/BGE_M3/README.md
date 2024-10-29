@@ -113,7 +113,8 @@ pip install -U FlagEmbedding
 from FlagEmbedding import BGEM3FlagModel
 
 model = BGEM3FlagModel('BAAI/bge-m3',  
-                       use_fp16=True) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+                       use_fp16=True,
+                       devices=['cuda:0']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
 sentences_1 = ["What is BGE M3?", "Defination of BM25"]
 sentences_2 = ["BGE M3 is an embedding model supporting dense retrieval, lexical matching and multi-vector interaction.", 
@@ -290,7 +291,6 @@ If you find this repository useful, please consider giving a star :star: and cit
       primaryClass={cs.CL}
 }
 ```
-
 
 
 
