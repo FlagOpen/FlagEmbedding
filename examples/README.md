@@ -22,7 +22,7 @@ pip install -e .
 
 # 3. Inference
 
-We have provided the inference code for two models, namely the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/reranker).
+We have provided the inference code for two models, the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/reranker).
 
 ## 1. Embedder
 
