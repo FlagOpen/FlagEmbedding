@@ -410,4 +410,13 @@ If you find this repository useful, please consider giving a star :star: and cit
       archivePrefix={arXiv},
       primaryClass={cs.CL}
 }
+@misc{li2024makingtextembeddersfewshot,
+      title={Making Text Embedders Few-Shot Learners}, 
+      author={Chaofan Li and MingHao Qin and Shitao Xiao and Jianlyu Chen and Kun Luo and Yingxia Shao and Defu Lian and Zheng Liu},
+      year={2024},
+      eprint={2409.15700},
+      archivePrefix={arXiv},
+      primaryClass={cs.IR},
+      url={https://arxiv.org/abs/2409.15700}, 
+}
 ```
