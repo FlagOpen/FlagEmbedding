@@ -101,11 +101,11 @@ pip install -e .
 ## 快速开始
 首先，加载一个BGE向量模型：
 ```
-from FlagEmbedding import FlagModel
+from FlagEmbedding import FlagAutoModel
 
-model = FlagModel('BAAI/bge-base-en-v1.5',
-                  query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
-                  use_fp16=True)
+model = FlagAutoModel.from_finetuned('BAAI/bge-base-en-v1.5',
+                                      query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
+                                      use_fp16=True)
 ```
 将语句作为模型输入，得到向量：
 ```
@@ -142,7 +142,7 @@ print(similarity)
 | [BAAI/bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2) | Multilingual | 基于大型语言模型的多语言向量模型，在多种语言和任务上训练，适应多样化的下游场景。 |            根据给定的任务自由提供指示和少数示例。            |
 | [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | 多功能（向量检索，稀疏检索，多表征检索）、多语言、多粒度（最大长度8192） |  |
 | [LM-Cocktail](https://huggingface.co/Shitao)                              |       English       | 微调的Llama和BGE模型，可以用来复现LM-Cocktail论文的结果  |  |
-| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |       English       |         专为大语言模型各种检索增强任务设计的向量模型         | 详见 [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) |
+| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |       English       |         专为大语言模型各种检索增强任务设计的向量模型         | 详见 [README](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder) |
 | [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) |    Multilingual     | 一个轻量级的交叉编码器模型，具有强大的多语言能力，易于部署，具有快速的推理能力。 |                                                              |
 | [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) |    Multilingual     | 一个支持多语言的交叉编码器模型，在英文和多语言能力方面均表现出色。 |                                                              |
 | [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) |    Multilingual     | 一个支持多语言的交叉编码器模型，在英文和中文方面均表现良好，允许自由选择输出层，以便加速推理。 |                                                              |
