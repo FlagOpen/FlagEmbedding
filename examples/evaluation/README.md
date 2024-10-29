@@ -54,46 +54,28 @@ First, we will introduce the commonly used parameters, followed by an introducti
 **Parameters for Model Configuration:**
 
 - **`embedder_name_or_path`**: The name or path to the embedder.
-
 - **`embedder_model_class`**: Class of the model used for embedding (options include 'auto', 'encoder-only-base', etc.). Default is `auto`.
-
 - **`normalize_embeddings`**: Set to `true` to normalize embeddings.
-
 - **`use_fp16`**: Use FP16 precision for inference.
-
 - **`devices`**: List of devices used for inference.
-
 - **`query_instruction_for_retrieval`**, **`query_instruction_format_for_retrieval`**: Instructions and format for query during retrieval.
-
 - **`examples_for_task`**, **`examples_instruction_format`**: Example tasks and their instructions format.
-
 - **`trust_remote_code`**: Set to `true` to trust remote code execution.
-
 - **`reranker_name_or_path`**: Name or path to the reranker.
-
 - **`reranker_model_class`**: Reranker model class (options include 'auto', 'decoder-only-base', etc.). Default is `auto`.
-
 - **`reranker_peft_path`**: Path for portable encoder fine-tuning of the reranker.
-
 - **`use_bf16`**: Use BF16 precision for inference.
-
 - **`query_instruction_for_rerank`**, **`query_instruction_format_for_rerank`**: Instructions and format for query during reranking.
-
 - **`passage_instruction_for_rerank`**, **`passage_instruction_format_for_rerank`**: Instructions and format for processing passages during reranking.
-
 - **`cache_dir`**: Cache directory for models.
-
 - **`embedder_batch_size`**, **`reranker_batch_size`**: Batch sizes for embedding and reranking.
-
 - **`embedder_query_max_length`**, **`embedder_passage_max_length`**: Maximum length for embedding queries and passages.
-
 - **`reranker_query_max_length`**, **`reranker_max_length`**: Maximum lengths for reranking queries and reranking in general.
-
 - **`normalize`**: Normalize the reranking scores.
-
 - **`prompt`**: Prompt for the reranker.
-
 - **`cutoff_layers`**, **`compress_ratio`**, **`compress_layers`**: Parameters for configuring the output and compression of layerwise or lightweight rerankers.
+
+***Notice:*** If you evaluate your own model, please set `embedder_model_class` and `reranker_model_class`.
 
 ## Usage
 
@@ -306,8 +288,6 @@ python -m FlagEmbedding.evaluation.air_bench \
 
 ### 8. Custom Dataset
 
-You can refer to [MLDR dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/FlagEmbedding/evaluation/mldr), just need to rewrite `DataLoader`, rewriting the loading method for the required dataset.
-
 The example data for `corpus.jsonl`:
 
 ```json
@@ -334,3 +314,27 @@ The example data for `test_qrels.jsonl`:
 {"qid": "79085", "docid": "81285", "relevance": 1}
 ```
 
+Please put the above file in `dataset_dir`, and then you can use the following code:
+
+```shell
+python -m FlagEmbedding.evaluation.custom \
+	--eval_name your_data_name \
+    --dataset_dir ./your_data_path \
+    --splits test \
+    --corpus_embd_save_dir ./your_data_name/corpus_embd \
+    --output_dir ./your_data_name/search_results \
+    --search_top_k 1000 \
+    --rerank_top_k 100 \
+    --cache_path ./cache/data \
+    --overwrite False \
+    --k_values 10 100 \
+    --eval_output_method markdown \
+    --eval_output_path ./your_data_name/eval_results.md \
+    --eval_metrics ndcg_at_10 recall_at_100 \
+    --embedder_name_or_path BAAI/bge-m3 \
+    --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
+    --devices cuda:0 cuda:1 \
+    --cache_dir ./cache/model \
+    --reranker_query_max_length 512 \
+    --reranker_max_length 1024 
+```
