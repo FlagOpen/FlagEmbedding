@@ -1,6 +1,6 @@
 # 1. Introduction
 
-In this example, we show how to **inference**, **finetune** and **evaluation** the baai-general-embedding.
+In this example, we show how to **inference**, **finetune** and **evaluate** the baai-general-embedding.
 
 # 2. Installation
 
