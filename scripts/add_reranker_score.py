@@ -134,6 +134,6 @@ if __name__ == '__main__':
             data[i]['neg_scores'].append(float(scores[score_idx]))
             score_idx += 1
 
-    with open(score_args.output_dir, 'w') as f:
+    with open(score_args.output_file, 'w') as f:
         for d in data:
             f.write(json.dumps(d) + '\n')
