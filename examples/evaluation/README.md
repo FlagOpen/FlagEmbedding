@@ -56,6 +56,7 @@ First, we will introduce the commonly used parameters, followed by an introducti
 - **`embedder_name_or_path`**: The name or path to the embedder.
 - **`embedder_model_class`**: Class of the model used for embedding (options include 'auto', 'encoder-only-base', etc.). Default is `auto`.
 - **`normalize_embeddings`**: Set to `true` to normalize embeddings.
+- **`pooling_method`**: The pooling method for the embedder.
 - **`use_fp16`**: Use FP16 precision for inference.
 - **`devices`**: List of devices used for inference.
 - **`query_instruction_for_retrieval`**, **`query_instruction_format_for_retrieval`**: Instructions and format for query during retrieval.

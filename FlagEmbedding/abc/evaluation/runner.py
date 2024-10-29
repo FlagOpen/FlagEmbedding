@@ -32,6 +32,7 @@ class AbsEvalRunner:
             model_name_or_path=model_args.embedder_name_or_path,
             model_class=model_args.embedder_model_class,
             normalize_embeddings=model_args.normalize_embeddings,
+            pooling_method=model_args.pooling_method,
             use_fp16=model_args.use_fp16,
             query_instruction_for_retrieval=model_args.query_instruction_for_retrieval,
             query_instruction_format=model_args.query_instruction_format_for_retrieval,
