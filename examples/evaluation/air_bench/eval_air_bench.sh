@@ -8,7 +8,7 @@ eval_args="\
     --domains arxiv \
     --languages en \
     --splits dev test \
-    --output_dir /share/jianlv/evaluation/air_bench/search_results \
+    --output_dir ./air_bench/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_dir $HF_HUB_CACHE \
     --overwrite False \

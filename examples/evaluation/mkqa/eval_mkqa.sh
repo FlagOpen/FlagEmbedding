@@ -6,17 +6,17 @@ dataset_names="en zh_cn"
 
 eval_args="\
     --eval_name mkqa \
-    --dataset_dir /share/jianlv/evaluation/mkqa/data \
+    --dataset_dir ./mkqa/data \
     --dataset_names $dataset_names \
     --splits test \
-    --corpus_embd_save_dir /share/jianlv/evaluation/mkqa/corpus_embd \
-    --output_dir /share/jianlv/evaluation/mkqa/search_results \
+    --corpus_embd_save_dir ./mkqa/corpus_embd \
+    --output_dir ./mkqa/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
     --overwrite False \
     --k_values 20 \
     --eval_output_method markdown \
-    --eval_output_path /share/jianlv/evaluation/mkqa/mkqa_eval_results.md \
+    --eval_output_path ./mkqa/mkqa_eval_results.md \
     --eval_metrics qa_recall_at_20 \
 "
 

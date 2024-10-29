@@ -2,23 +2,21 @@ if [ -z "$HF_HUB_CACHE" ]; then
     export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
 fi
 
-HF_HUB_CACHE="/share/shared_models"
-
 dataset_names="passage"
 
 eval_args="\
     --eval_name msmarco \
-    --dataset_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco \
+    --dataset_dir ./msmarco/data \
     --dataset_names $dataset_names \
     --splits dev \
-    --corpus_embd_save_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco/corpus_embd \
-    --output_dir /share/chaofan/code/FlagEmbedding_update/data/msmarco/search_results \
+    --corpus_embd_save_dir ./msmarco/corpus_embd \
+    --output_dir ./msmarco/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
     --overwrite True \
     --k_values 10 100 \
     --eval_output_method markdown \
-    --eval_output_path /share/chaofan/code/FlagEmbedding_update/data/msmarco/msmarco_eval_results.md \
+    --eval_output_path ./msmarco/msmarco_eval_results.md \
     --eval_metrics ndcg_at_10 recall_at_100 \
 "
 

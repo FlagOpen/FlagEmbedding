@@ -65,7 +65,6 @@ training_args="\
 "
 
 cmd="torchrun --nproc_per_node $num_gpus \
-    --master_port=4567 \
     -m FlagEmbedding.finetune.reranker.decoder_only.layerwise \
     $model_args \
     $data_args \
