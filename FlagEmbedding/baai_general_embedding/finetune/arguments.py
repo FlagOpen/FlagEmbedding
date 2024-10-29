@@ -72,3 +72,6 @@ class RetrieverTrainingArguments(TrainingArguments):
     sentence_pooling_method: str = field(default='cls', metadata={"help": "the pooling method, should be cls or mean"})
     normlized: bool = field(default=True)
     use_inbatch_neg: bool = field(default=True, metadata={"help": "use passages in the same batch as negatives"})
+    num_train_epochs: float = field(default=3.0, metadata={"help": "Total number of training epochs to perform."})
+    learning_rate: float = field(default=5e-5, metadata={"help": "The initial learning rate for AdamW."})
+   
