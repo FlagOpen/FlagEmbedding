@@ -1,6 +1,6 @@
 from transformers import HfArgumentParser
 
-from FlagEmbedding.evaluation.mldr import (
+from FlagEmbedding.evaluation.custom import (
     CustomEvalArgs, CustomEvalModelArgs,
     CustomEvalRunner
 )
