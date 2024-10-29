@@ -1,28 +1,92 @@
 import json
+from typing import Optional, List
 
 from FlagEmbedding import FlagAutoReranker
-from FlagEmbedding.abc.evaluation import AbsEvalModelArgs
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
 
 @dataclass
 class ScoreArgs:
     input_file: str = field(
-        default=None, metadata={"help": "The input json file, each line includes query, pos and neg."}
+        default=None, metadata={"help": "The input jsonl file, each line includes query, pos and neg."}
     )
     output_file: str = field(
-        default=None, metadata={"help": "The output json file, it includes query, pos, neg, pos_scores and neg_scores."}
+        default=None, metadata={"help": "The output jsonl file, it includes query, pos, neg, pos_scores and neg_scores."}
+    )
+
+@dataclass
+class ModelArgs:
+    use_fp16: bool = field(
+        default=True, metadata={"help": "whether to use fp16 for inference"}
+    )
+    devices: Optional[str] = field(
+        default=None, metadata={"help": "Devices to use for inference.", "nargs": "+"}
+    )
+    trust_remote_code: bool = field(
+        default=False, metadata={"help": "Trust remote code"}
+    )
+    reranker_name_or_path: Optional[str] = field(
+        default=None, metadata={"help": "The reranker name or path."}
+    )
+    reranker_model_class: Optional[str] = field(
+        default="auto", metadata={"help": "The reranker model class. Available classes: ['auto', 'encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: auto.", "choices": ["auto", "encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
+    )
+    reranker_peft_path: Optional[str] = field(
+        default=None, metadata={"help": "The reranker peft path."}
+    )
+    use_bf16: bool = field(
+        default=False, metadata={"help": "whether to use bf16 for inference"}
+    )
+    query_instruction_for_rerank: Optional[str] = field(
+        default=None, metadata={"help": "Instruction for query"}
+    )
+    query_instruction_format_for_rerank: str = field(
+        default="{}{}", metadata={"help": "Format for query instruction"}
+    )
+    passage_instruction_for_rerank: Optional[str] = field(
+        default=None, metadata={"help": "Instruction for passage"}
+    )
+    passage_instruction_format_for_rerank: str = field(
+        default="{}{}", metadata={"help": "Format for passage instruction"}
+    )
+    cache_dir: str = field(
+        default=None, metadata={"help": "Cache directory for models."}
+    )
+    # ================ for inference ===============
+    reranker_batch_size: int = field(
+        default=3000, metadata={"help": "Batch size for inference."}
+    )
+    reranker_query_max_length: Optional[int] = field(
+        default=None, metadata={"help": "Max length for reranking."}
+    )
+    reranker_max_length: int = field(
+        default=512, metadata={"help": "Max length for reranking."}
+    )
+    normalize: bool = field(
+        default=False, metadata={"help": "whether to normalize the reranking scores"}
+    )
+    prompt: Optional[str] = field(
+        default=None, metadata={"help": "The prompt for the reranker."}
+    )
+    cutoff_layers: List[int] = field(
+        default=None, metadata={"help": "The output layers of layerwise/lightweight reranker."}
+    )
+    compress_ratio: int = field(
+        default=1, metadata={"help": "The compress ratio of lightweight reranker."}
+    )
+    compress_layers: Optional[int] = field(
+        default=None, metadata={"help": "The compress layers of lightweight reranker.", "nargs": "+"}
     )
 
 
 if __name__ == '__main__':
     parser = HfArgumentParser((
         ScoreArgs,
-        AbsEvalModelArgs
+        ModelArgs
     ))
     score_args, model_args = parser.parse_args_into_dataclasses()
     eval_args: ScoreArgs
-    model_args: AbsEvalModelArgs
+    model_args: ModelArgs
 
     reranker = FlagAutoReranker.from_finetuned(
         model_name_or_path=model_args.reranker_name_or_path,
