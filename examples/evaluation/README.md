@@ -291,27 +291,32 @@ python -m FlagEmbedding.evaluation.air_bench \
 The example data for `corpus.jsonl`:
 
 ```json
-{"id": "77628", "title": "Recover deleted cache", "text": "Is it possible to recover cache photos? The files were deleted by Clean Master to save space. I have no idea where to start. The photos are precious and are irreplaceable."}
-{"id": "806", "title": "How do I undelete or recover deleted files on Android?", "text": "> **Possible Duplicate:**   >  How can I recover a deleted file on Android? Is there a way to recover deleted files on Android phones without using standard USB storage recovery tools?"}
-{"id": "74923", "title": "Recovering deleted pictures", "text": "I recently deleted all of my pictures by mistake from my samsung galaxy s4.   I went into my files and documents and deleted not realising it would delete all my pics! Is there a way for me to recover them? My phone is not rooted. I have not taken any pictures since but have received pictures through whatsapp?"}
-{"id": "50864", "title": "How to recover deleted files on Android phone", "text": "I was a using an autocall recorder app on my HTC Wildfire. I saved a call on my phones SD card and in my Dropbox. However, I accidently deleted the saved call and it was removed from my dropbox file. I now need this call and I tried some data recovery software. I scanned both my phone and pc. The software found the deleted call and recovered it, but the file which has .AMR extension does not work. The size of the file is only 143kb.   1. What is the likelihood this file is corrupted/stiil intact? Can I check that?   2. Which software can I use to salvage/replay the AMR file?"}
-{"id": "81285", "title": "How to recover deleted photo album saved on internal memory - Note 3", "text": "I have a Samsung Note 3 and I accidentally deleted an entire photo album from my phones gallery. I didn't enable my device to sync with Gmail. I didn't manually backup any of the data. The images were saved on my phone, not on the SD card. Is there any way for me to recover this deleted photo album? I Google'd and came across SDrescan but that won't work since the images were not initially saved on my SD card."}
+{"id": "566392", "title": "", "text": "Have the check reissued to the proper payee."}
+{"id": "65404", "title": "", "text": "Just have the associate sign the back and then deposit it.  It's called a third party cheque and is perfectly legal.  I wouldn't be surprised if it has a longer hold period and, as always, you don't get the money if the cheque doesn't clear. Now, you may have problems if it's a large amount or you're not very well known at the bank.  In that case you can have the associate go to the bank and endorse it in front of the teller with some ID.  You don't even technically have to be there.  Anybody can deposit money to your account if they have the account number. He could also just deposit it in his account and write a cheque to the business."}
+{"id": "325273", "title": "", "text": "Sure you can.  You can fill in whatever you want in the From section of a money order, so your business name and address would be fine. The price only includes the money order itself.  You can hand deliver it yourself if you want, but if you want to mail it, you'll have to provide an envelope and a stamp. Note that, since you won't have a bank record of this payment, you'll want to make sure you keep other records, such as the stub of the money order.  You should probably also ask the contractor to give you a receipt."}
+{"id": "88124", "title": "", "text": "You're confusing a lot of things here. Company B LLC will have it's sales run under Company A LLC, and cease operating as a separate entity These two are contradicting each other. If B LLC ceases to exist - it is not going to have it's sales run under A LLC, since there will be no sales to run for a non-existent company. What happens is that you merge B LLC into A LLC, and then convert A LLC into S Corp. So you're cancelling the EIN for B LLC, you're cancelling the EIN for A LLC - because both entities cease to exist. You then create a EIN for A Corp, which is the converted A LLC, and you create a DBA where A Corp DBA B Shop. You then go to the bank and open the account for A Corp DBA B Shop with the EIN you just created for A Corp. Get a better accountant. Before you convert to S-Corp."}
+{"id": "285255", "title": "", "text": "\"I'm afraid the great myth of limited liability companies is that all such vehicles have instant access to credit.  Limited liability on a company with few physical assets to underwrite the loan, or with insufficient revenue, will usually mean that the owners (or others) will be asked to stand surety on any credit. However, there is a particular form of \"\"credit\"\" available to businesses on terms with their clients.  It is called factoring. Factoring is a financial transaction   whereby a business sells its accounts   receivable (i.e., invoices) to a third   party (called a factor) at a discount   in exchange for immediate money with   which to finance continued business.   Factoring differs from a bank loan in   three main ways. First, the emphasis   is on the value of the receivables   (essentially a financial asset), not   the firm’s credit worthiness.   Secondly, factoring is not a loan – it   is the purchase of a financial asset   (the receivable). Finally, a bank loan   involves two parties whereas factoring   involves three. Recognise that this can be quite expensive.  Most banks catering to small businesses will offer some form of factoring service, or will know of services that offer it.  It isn't that different from cheque encashment services (pay-day services) where you offer a discount on future income for money now. An alternative is simply to ask his clients if they'll pay him faster if he offers a discount (since either of interest payments or factoring would reduce profitability anyway).\""}
+{"id": "350819", "title": "", "text": "Banks will usually look at 2 years worth of tax returns for issuing business credit.  If those aren't available (for instance, for recently formed businesses), they will look at the personal returns of the owners. Unfortunately, it sounds like your friend is in the latter category. Bringing in another partner isn't necessarily going to help, either; with only two partners / owners, the bank would probably look at both owners' personal tax returns and credit histories.  It may be necessary to offer collateral. I'm sorry I can't offer any better solutions, but alternative funding such as personal loans from family & friends could be necessary.  Perhaps making them partners in exchange for capital."}
 ```
 
 The example data for `test_queries.jsonl`:
 
 ```json
-{"id": "79085", "text": "HTC One Mini data recovery after root"}
+{"id": "8", "text": "How to deposit a cheque issued to an associate in my business into my business account?"}
+{"id": "15", "text": "Can I send a money order from USPS as a business?"}
+{"id": "18", "text": "1 EIN doing business under multiple business names"}
+{"id": "26", "text": "Applying for and receiving business credit"}
 ```
 
 The example data for `test_qrels.jsonl`:
 
 ```json
-{"qid": "79085", "docid": "77628", "relevance": 1}
-{"qid": "79085", "docid": "806", "relevance": 1}
-{"qid": "79085", "docid": "74923", "relevance": 1}
-{"qid": "79085", "docid": "50864", "relevance": 1}
-{"qid": "79085", "docid": "81285", "relevance": 1}
+{"qid": "8", "docid": "566392", "relevance": 1}
+{"qid": "8", "docid": "65404", "relevance": 1}
+{"qid": "15", "docid": "325273", "relevance": 1}
+{"qid": "18", "docid": "88124", "relevance": 1}
+{"qid": "26", "docid": "285255", "relevance": 1}
+{"qid": "26", "docid": "350819", "relevance": 1}
 ```
 
 Please put the above file (`corpus.jsonl`, `test_queries.jsonl`, `test_qrels.jsonl`) in `dataset_dir`, and then you can use the following code:
