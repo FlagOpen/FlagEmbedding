@@ -38,7 +38,7 @@ FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following p
 
 - **Inference**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/reranker)
 - **Finetune**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker)
-- **Evaluation**: [MTEB](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/mteb), [BEIR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/beir), [MSMARCO](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/msmarco), [MIRACL](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/miracl), [MLDR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/mldr), [MKQA](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/mkqa), [AIR-Bench](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation/air_bench)
+- **Evaluation**: [MTEB](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#1-mteb), [BEIR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#2-beir), [MSMARCO](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#3-msmarco), [MIRACL](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#4-miracl), [MLDR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#5-mldr), [MKQA](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#6-mkqa), [AIR-Bench](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#7-air-bench), [Custom Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#8-custom-dataset)
 - **[Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/dataset)**: [MLDR](https://huggingface.co/datasets/Shitao/MLDR), [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data), [public-data](https://huggingface.co/datasets/cfli/bge-e5data), [full-data](https://huggingface.co/datasets/cfli/bge-full-data), [reranker-data](Shitao/bge-reranker-data)
 - **[Tutorials](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/Tutorials)**
 - **research**:
@@ -144,7 +144,7 @@ The following contents are releasing in the upcoming weeks:
 </details>
 
 
-## Projects
+## [Projects](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research)
 
 ### BGE-M3 ([Paper](https://arxiv.org/pdf/2402.03216.pdf), [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3))
 
@@ -176,7 +176,7 @@ More details please refer to our [paper](https://arxiv.org/abs/2401.03462) and [
 
 
 ### [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail)
- 
+
 LM-Cocktail automatically merges fine-tuned models and base model using a simple function to compute merging weights.
 LM-Cocktail can be used to improve the performance on target domain without decrease the general capabilities beyond target domain, 
 as well as generate a model for new tasks without fine-tuning.
