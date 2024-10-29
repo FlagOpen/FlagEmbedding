@@ -137,3 +137,5 @@ if __name__ == '__main__':
     with open(score_args.output_file, 'w') as f:
         for d in data:
             f.write(json.dumps(d) + '\n')
+
+    del reranker

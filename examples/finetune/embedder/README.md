@@ -62,6 +62,31 @@ python hn_mine.py \
 - `candidate_pool`: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
 - `use_gpu_for_searching`: whether to use faiss-gpu to retrieve negatives.
 
+### Teacher Scores
+
+Teacher scores can be used for model distillation. You can obtain the scores using the following command:
+
+```shell
+git clone https://github.com/FlagOpen/FlagEmbedding.git
+cd FlagEmbedding/scripts
+```
+
+```shell
+python add_reranker_score.py \
+--input_file toy_finetune_data_minedHN.jsonl \
+--output_file toy_finetune_data_score.jsonl \
+--range_for_sampling 2-200 \
+--negative_number 15 \
+--use_gpu_for_searching 
+```
+
+- `input_file`: path to save JSON data with mined hard negatives for finetuning
+- `output_file`: path to save JSON data with scores for finetuning
+- `negative_number`: the number of sampled negatives
+- `range_for_sampling`: where to sample negative. For example, `2-100` means sampling `negative_number` negatives from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top60-300 passages)**
+- `candidate_pool`: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
+- `use_gpu_for_searching`: whether to use faiss-gpu to retrieve negatives.
+
 ## 3. Train
 
 Detailed examples of various fine-tuning can be found in the bash files located in the corresponding folders. Here, we simply provide the training methods for the `standard model`, `bge-m3`, `bge-multilingual-gemma2` and `bge-en-icl`.
