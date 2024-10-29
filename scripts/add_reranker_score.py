@@ -78,16 +78,7 @@ class ModelArgs:
         default=None, metadata={"help": "The compress layers of lightweight reranker.", "nargs": "+"}
     )
 
-
-if __name__ == '__main__':
-    parser = HfArgumentParser((
-        ScoreArgs,
-        ModelArgs
-    ))
-    score_args, model_args = parser.parse_args_into_dataclasses()
-    eval_args: ScoreArgs
-    model_args: ModelArgs
-
+def main(score_args, model_args):
     reranker = FlagAutoReranker.from_finetuned(
         model_name_or_path=model_args.reranker_name_or_path,
         model_class=model_args.reranker_model_class,
@@ -138,4 +129,14 @@ if __name__ == '__main__':
         for d in data:
             f.write(json.dumps(d) + '\n')
 
-    del reranker
+
+if __name__ == '__main__':
+    parser = HfArgumentParser((
+        ScoreArgs,
+        ModelArgs
+    ))
+    score_args, model_args = parser.parse_args_into_dataclasses()
+    score_args: ScoreArgs
+    model_args: ModelArgs
+    main(score_args, model_args)
+
