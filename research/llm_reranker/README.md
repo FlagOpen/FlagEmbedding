@@ -260,7 +260,7 @@ Refer to: https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranke
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
+-m finetune_for_instruction.run \
 --output_dir {path to save model} \
 --model_name_or_path google/gemma-2b \
 --train_data ./toy_finetune_data.jsonl \
@@ -291,7 +291,7 @@ torchrun --nproc_per_node {number of gpus} \
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
+-m finetune_for_layerwise.run \
 --output_dir {path to save model} \
 --model_name_or_path openbmb/MiniCPM-2B-dpo-bf16 \
 --train_data ./toy_finetune_data.jsonl \

@@ -57,6 +57,7 @@ class AbsReranker(ABC):
         # tokenizer and model are initialized in the child class
         self.model = None
         self.tokenizer = None
+        self.pool = None
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
@@ -137,12 +138,16 @@ class AbsReranker(ABC):
                 **kwargs
             )
 
-        pool = self.start_multi_process_pool()
+        if self.pool is None:
+            self.pool = self.start_multi_process_pool()
         scores = self.encode_multi_process(sentence_pairs,
-                                           pool,
+                                           self.pool,
                                            **kwargs)
-        self.stop_multi_process_pool(pool)
         return scores
+
+    def __del__(self):
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
 
     @abstractmethod
     def compute_score_single_gpu(

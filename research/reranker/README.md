@@ -45,7 +45,7 @@ with torch.no_grad():
 
 ## Fine-tune
 
-You can follow this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker) to fine-tune the reranker.
+You can follow this [example](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker) to fine-tune the reranker.
 
 This reranker is initialized from [xlm-roberta-base](https://huggingface.co/xlm-roberta-base), and we train it on a mixture of multilingual datasets:
 - Chinese: 788,491 text pairs from [T2ranking](https://huggingface.co/datasets/THUIR/T2Ranking), [MMmarco](https://github.com/unicamp-dl/mMARCO), [dulreader](https://github.com/baidu/DuReader), [Cmedqa-v2](https://github.com/zhangsheng93/cMedQA2), and [nli-zh](https://huggingface.co/datasets/shibing624/nli_zh)
