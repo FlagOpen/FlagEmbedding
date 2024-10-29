@@ -43,6 +43,8 @@ FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following p
 - **Benchmark**: [C-MTEB](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB), [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench), [MLVU](https://github.com/JUNJIE99/MLVU)
 
 ## News
+- 29/10/2024: :earth_asia: We created WeChat group for BGE. Scan the [QR code](./BGE_WeChat_Group.png) to join the group chat! To get the first hand message about our updates and new release, or having any questions or idea, join us now!
+- <img src="./BGE_WeChat_Group.png" alt="bge_wechat_group" class="center" width="200">
 - 22/10/2024:  :fire: We release another interesting model: [OmniGen](https://github.com/VectorSpaceLab/OmniGen), which is a unified image generation model supporting various tasks. OmniGen can accomplish complex image generation tasks without the need for additional plugins like ControlNet, IP-Adapter, or auxiliary models such as pose detection and face detection.
 - 9/10/2024: Introducing **MemoRAG**, a step forward towards RAG 2.0 on top of memory-inspired knowledge discovery (repo: https://github.com/qhjqhj00/MemoRAG, paper: https://arxiv.org/pdf/2409.05591v1) :fire:
 - 9/2/2024: Start to maintain the [tutorials](./Tutorials/). The contents within will be actively updated and eariched, stay tuned! :books:
@@ -129,13 +131,16 @@ Currently we are updating the [tutorials](./Tutorials/), we aim to create a comp
 
 The following contents are releasing in the upcoming weeks:
 
-- BGE Intro
-- Evaluation on MTEB tasks
+- RAG
 
 <details>
   <summary>The whole tutorial roadmap</summary>
     <img src="./Tutorials/tutorial_map.png"/>
 </details>
+
+Join our WeChat group:
+
+![bge_wechat_group](./BGE_WeChat_Group.png)
 
 
 ## Projects
