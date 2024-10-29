@@ -34,7 +34,7 @@ class FlagAutoModel:
         if model_name.startswith("checkpoint-"):
             model_name = os.path.basename(os.path.dirname(model_name_or_path))
 
-        if model_class is not None:
+        if model_class is not None and model_class != 'auto':
             _model_class = EMBEDDER_CLASS_MAPPING[EmbedderModelClass(model_class)]
             if pooling_method is None:
                 pooling_method = _model_class.DEFAULT_POOLING_METHOD

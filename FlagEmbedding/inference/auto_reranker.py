@@ -30,7 +30,7 @@ class FlagAutoReranker:
         if model_name.startswith("checkpoint-"):
             model_name = os.path.basename(os.path.dirname(model_name_or_path))
 
-        if model_class is not None:
+        if model_class is not None and model_class != 'auto':
             _model_class = RERANKER_CLASS_MAPPING[RerankerModelClass(model_class)]
             if trust_remote_code is None:
                 trust_remote_code = False
