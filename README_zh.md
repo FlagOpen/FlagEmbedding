@@ -136,33 +136,32 @@ print(similarity)
     <img src="./Tutorials/tutorial_map.png"/>
 </details>
 ## 模型列表
-| Model                                                                     |      Language       |              Description               | query instruction for retrieval [1] |
-|:--------------------------------------------------------------------------|:-------------------:|:--------------------------------------:|:--------:|
-| [BAAI/bge-en-icl](https://huggingface.co/BAAI/bge-en-icl) | English | 基于大型语言模型的向量模型，具有上下文学习能力，能够基于少量示例充分发挥模型的潜力。 |            根据给定的任务自由提供指示和少数示例。            |
-| [BAAI/bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2) | Multilingual | 基于大型语言模型的多语言向量模型，在多种语言和任务上训练，适应多样化的下游场景。 |            根据给定的任务自由提供指示和少数示例。            |
-| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | 多功能（向量检索，稀疏检索，多表征检索）、多语言、多粒度（最大长度8192） |  |
-| [LM-Cocktail](https://huggingface.co/Shitao)                              |       English       | 微调的Llama和BGE模型，可以用来复现LM-Cocktail论文的结果  |  |
-| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |       English       |         专为大语言模型各种检索增强任务设计的向量模型         | 详见 [README](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder) |
-| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) |    Multilingual     | 一个轻量级的交叉编码器模型，具有强大的多语言能力，易于部署，具有快速的推理能力。 |                                                              |
-| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) |    Multilingual     | 一个支持多语言的交叉编码器模型，在英文和多语言能力方面均表现出色。 |                                                              |
-| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) |    Multilingual     | 一个支持多语言的交叉编码器模型，在英文和中文方面均表现良好，允许自由选择输出层，以便加速推理。 |                                                              |
-| [BAAI/bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight) |    Multilingual     | 一个支持多语言的跨编码器模型，不仅在英文和中文上表现良好，还允许自由选择输出层、压缩比例和压缩层，从而便于加速推理。 |  |
-| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) | Chinese and English |      交叉编码器模型，精度比向量模型更高但推理效率较低 [2]      |   |
-| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base)   | Chinese and English |      交叉编码器模型，精度比向量模型更高但推理效率较低 [2]      |   |
-| [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)   |       English       |            1.5版本，相似度分布更加合理             | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5)     |       English       |            1.5版本，相似度分布更加合理             | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)   |       English       |            1.5版本，相似度分布更加合理             | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5)   |       Chinese       |            1.5版本，相似度分布更加合理             | `为这个句子生成表示以用于检索相关文章：`  |
-| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5)     |       Chinese       |            1.5版本，相似度分布更加合理             | `为这个句子生成表示以用于检索相关文章：`  |
-| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5)   |       Chinese       |            1.5版本，相似度分布更加合理             | `为这个句子生成表示以用于检索相关文章：`  |
-| [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en)             |       English       |             向量模型，将文本转换为向量              | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en)               |       English       |            base-scale 向量模型             | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en)             |       English       |            small-scale 向量模型            | `Represent this sentence for searching relevant passages: `  |
-| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh)             |       Chinese       |             向量模型，将文本转换为向量              | `为这个句子生成表示以用于检索相关文章：`  |
-| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh)               |       Chinese       |            base-scale 向量模型             | `为这个句子生成表示以用于检索相关文章：`  |
-| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh)             |       Chinese       |            small-scale 向量模型            | `为这个句子生成表示以用于检索相关文章：`  |
 
-
+| Model                                                                     | Language |                                                             Description                                                             |                                       query instruction for retrieval                                       |
+|:--------------------------------------------------------------------------|:--------:|:-----------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------:|
+| [BAAI/bge-en-icl](https://huggingface.co/BAAI/bge-en-icl) | English | 基于大型语言模型的向量模型，具有上下文学习能力，能够基于少量示例充分发挥模型的潜力。	 |                                             根据给定的任务自由提供指示和少数示例。                                             |
+| [BAAI/bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2) |    Multilingual     | 基于大型语言模型的多语言向量模型，在多种语言和任务上训练，适应多样化的下游场景。 |                               根据给定的任务自由提供指示和少数示例。                                |
+| [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | 多功能（向量检索，稀疏检索，多表征检索）、多语言、多粒度（最大长度8192） |                                                                                                             |
+| [LM-Cocktail](https://huggingface.co/Shitao)                   |   English |   微调的Llama和BGE模型，可以用来复现LM-Cocktail论文的结果    |                                                                                                             |
+| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English |         专为大语言模型各种检索增强任务设计的向量模型         | 详见[README](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder) |
+| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | Multilingual | 一个轻量级的交叉编码器模型，具有强大的多语言能力，易于部署，具有快速的推理能力。 |                                                                                                             |
+| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | Multilingual | 一个支持多语言的交叉编码器模型，在英文和多语言能力方面均表现出色。 |                                                                                                             |
+| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | Multilingual | 一个支持多语言的交叉编码器模型，在英文和中文方面均表现良好，允许自由选择输出层，以便加速推理。 |                                                                                                             |
+| [BAAI/bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight) | Multilingual | 一个支持多语言的跨编码器模型，不仅在英文和中文上表现良好，还允许自由选择输出层、压缩比例和压缩层，从而便于加速推理。 |                                                                                                             |
+| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English |       交叉编码器模型，精度比向量模型更高但推理效率较低       |                                                                                                             |
+| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base)   |   Chinese and English |       交叉编码器模型，精度比向量模型更高但推理效率较低       |                                                                                                             |
+| [BAAI/bge-large-en-v1.5](https://huggingface.co/BAAI/bge-large-en-v1.5)   |   English |                                      1.5版本，相似度分布更加合理                                       |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5)     |   English |                                      1.5版本，相似度分布更加合理                                       |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-small-en-v1.5](https://huggingface.co/BAAI/bge-small-en-v1.5)   |   English |                                      1.5版本，相似度分布更加合理                                       |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-large-zh-v1.5](https://huggingface.co/BAAI/bge-large-zh-v1.5)   |   Chinese |                                      1.5版本，相似度分布更加合理                                       |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
+| [BAAI/bge-base-zh-v1.5](https://huggingface.co/BAAI/bge-base-zh-v1.5)     |   Chinese |                                      1.5版本，相似度分布更加合理                                       |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
+| [BAAI/bge-small-zh-v1.5](https://huggingface.co/BAAI/bge-small-zh-v1.5)   |   Chinese |                                      1.5版本，相似度分布更加合理                                       |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
+| [BAAI/bge-large-en](https://huggingface.co/BAAI/bge-large-en)             |   English |                  向量模型，将文本转换为向量                  |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-base-en](https://huggingface.co/BAAI/bge-base-en)               |   English |                     base-scale 向量模型                      |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-small-en](https://huggingface.co/BAAI/bge-small-en)             |   English |                     base-scale 向量模型                      |                         `Represent this sentence for searching relevant passages: `                         |
+| [BAAI/bge-large-zh](https://huggingface.co/BAAI/bge-large-zh)             |   Chinese |                                             向量模型，将文本转换为向量                                 |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
+| [BAAI/bge-base-zh](https://huggingface.co/BAAI/bge-base-zh)               |   Chinese |                                    base-scale 向量模型                                    |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
+| [BAAI/bge-small-zh](https://huggingface.co/BAAI/bge-small-zh)             |   Chinese |                                        base-scale 向量模型                          |                                            `为这个句子生成表示以用于检索相关文章：`                                            |
 
 
 ## 贡献者:
