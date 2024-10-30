@@ -51,7 +51,6 @@ We are aiming to enhance text and multi-model retrieval by leveraging advanced e
 
    bge/introduction
    bge/bge_v1
-   bge/llm_embedder
    bge/bge_m3
    bge/bge_icl
    bge/bge_reranker
@@ -62,8 +61,8 @@ We are aiming to enhance text and multi-model retrieval by leveraging advanced e
    :caption: API
 
    API/abc
-   API/evaluation
    API/inference
+   API/evaluation
 
 .. toctree::
    :hidden:
