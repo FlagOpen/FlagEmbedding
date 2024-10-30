@@ -33,7 +33,7 @@
 </h4>
 
 
-[English](README.md) | [中文](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/README_zh.md)
+[English](README.md) | [中文](https://github.com/FlagOpen/FlagEmbedding/blob/master/README_zh.md)
 
 
 

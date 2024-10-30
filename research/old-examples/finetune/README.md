@@ -142,7 +142,7 @@ Please replace the `query_instruction_for_retrieval` with your instruction if yo
 
 
 ### 6. Evaluate model
-We provide [a simple script](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/research/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance.
+We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/blob/master/research/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance.
 A brief summary of how the script works:
 
 1. Load the model on all available GPUs through [DataParallel](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html). 

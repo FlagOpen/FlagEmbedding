@@ -63,7 +63,7 @@ torchrun --nproc_per_node {number of gpus} \
 You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for more details. In this script, we use `deepspeed` to perform distributed training. Learn more about `deepspeed` at https://www.deepspeed.ai/getting-started/. Note that there are some important parameters to be modified in this script:
 
 - `HOST_FILE_CONTENT`: Machines and GPUs for training. If you want to use multiple machines for training, please refer to https://www.deepspeed.ai/getting-started/#resource-configuration-multi-node (note that you should configure `pdsh` and `ssh` properly).
-- `DS_CONFIG_FILE`: Path of deepspeed config file. [Here](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/finetune/ds_stage0.json) is an example of `ds_config.json`.
+- `DS_CONFIG_FILE`: Path of deepspeed config file. [Here](https://github.com/FlagOpen/FlagEmbedding/blob/master/examples/finetune/ds_stage0.json) is an example of `ds_config.json`.
 - `DATA_PATH`: One or more paths of training data. **Each path must be a directory containing one or more jsonl files**.
 - `DEFAULT_BATCH_SIZE`: Default batch size for training. If you use efficient batching strategy, which means you have split your data to different parts by sequence length, then the batch size for each part will be decided by the `get_file_batch_size()` function in [`BGE_M3/data.py`](../../BGE_M3/data.py). Before starting training, you should set the corresponding batch size for each part in this function according to the GPU memory of your machines. `DEFAULT_BATCH_SIZE` will be used for the part whose sequence length is not in the `get_file_batch_size()` function.
 - `EPOCHS`: Number of training epochs.
