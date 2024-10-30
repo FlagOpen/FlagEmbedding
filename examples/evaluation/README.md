@@ -131,6 +131,8 @@ Here is an example for evaluation:
 
 ```shell
 pip install beir
+mkdir eval_beir
+cd eavl_beir
 ```
 
 ```shell
