@@ -192,7 +192,7 @@ class AbsEvalDataLoader(ABC):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Error code: {e.returncode}. Error message: {e.stderr}")
+            logger.warning(e.output)
 
         if not os.path.exists(save_path) or os.path.getsize(save_path) == 0:
             raise FileNotFoundError(f"Failed to download file from {download_url} to {save_path}")
@@ -217,7 +217,7 @@ class AbsEvalDataLoader(ABC):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Error code: {e.returncode}. Error message: {e.output}")
+            logger.warning(e.output)
 
         file_path = gz_file_path.replace(".gz", "")
         if not os.path.exists(file_path) or self._get_fpath_size(file_path) == 0:
@@ -236,7 +236,7 @@ class AbsEvalDataLoader(ABC):
         try:
             subprocess.run(cmd, check=True)
         except subprocess.CalledProcessError as e:
-            logger.error(f"Error code: {e.returncode}. Error message: {e.output}")
+            logger.warning(e.output)
 
         if not os.path.exists(file_path) or self._get_fpath_size(file_path) == 0:
             raise FileNotFoundError(f"Failed to unzip file {zip_file_path}")
