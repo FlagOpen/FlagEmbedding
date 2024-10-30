@@ -165,8 +165,11 @@ class BaseLLMReranker(AbsReranker):
             query_max_length=query_max_length,
             max_length=max_length,
             normalize=normalize,
+            prompt=prompt,
             **kwargs
         )
+
+        self.prompt = prompt
 
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,

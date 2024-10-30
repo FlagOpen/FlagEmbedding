@@ -84,6 +84,14 @@ In this section, we will first introduce the commonly used arguments across all 
 
 ## Usage
 
+### Requirements
+
+You need install faiss for evaluation:
+
+```shell
+pip install https://github.com/kyamagu/faiss-wheels/releases/download/v1.7.3/faiss_gpu-1.7.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
+
 ### 1. MTEB
 
 For MTEB, we primarily use the official [MTEB](https://github.com/embeddings-benchmark/mteb) code, which only supports the assessment of embedders. Moreover, it restricts the output format of the evaluation results to JSON. We have introduced the following new arguments:
