@@ -395,7 +395,7 @@ with torch.no_grad():
 
 If you download reranker-v2-minicpm-layerwise, you can load it with the following method:
 
-1. make sure `configuration_minicpm_reranker.py` and `modeling_minicpm_reranker.py` in `/path/bge-reranker-v2-minicpm-layerwise`.
+1. make sure `configuration_minicpm_reranker.py` and `modeling_minicpm_reranker.py` from [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) in your local path.
 2. modify the following part of `config.json`:
 
 ```
