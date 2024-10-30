@@ -188,8 +188,10 @@ run.py \
 --dataloader_drop_last True \
 --normlized True \
 --temperature 0.02 \
---query_max_len 512 \
+--query_max_len 2048 \
 --passage_max_len 512 \
+--example_query_max_len 256 \
+--example_passage_max_len 256 \
 --train_group_size 8 \
 --logging_steps 1 \
 --save_steps 250 \
