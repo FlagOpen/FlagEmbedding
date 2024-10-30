@@ -164,10 +164,10 @@ reranker = LightWeightFlagLLMReranker(
     devices=['cuda:1']
 ) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 
-score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], compress_ratio=2, compress_layer=[24, 40]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
+score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], compress_ratio=2, compress_layers=[24, 40]) # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
 print(score)
 
-scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28], compress_ratio=2, compress_layer=[24, 40])
+scores = reranker.compute_score([['what is panda?', 'hi'], ['what is panda?', 'The giant panda (Ailuropoda melanoleuca), sometimes called a panda bear or simply panda, is a bear species endemic to China.']], cutoff_layers=[28], compress_ratio=2, compress_layers=[24, 40])
 print(scores)
 ```
 
