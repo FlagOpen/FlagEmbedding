@@ -3,6 +3,8 @@ Adapted from https://github.com/AIR-Bench/AIR-Bench/blob/0.1.0/air_benchmark/eva
 """
 import os
 import logging
+import gc
+import torch
 import numpy as np
 from typing import Any, Dict, Optional
 from abc import ABC, abstractmethod
@@ -29,6 +31,9 @@ class EvalRetriever(ABC):
         if self.embedder.pool is not None:
             self.embedder.stop_multi_process_pool(self.embedder.pool)
             self.embedder.pool = None
+            self.embedder.model.to('cpu')
+            gc.collect()
+            torch.cuda.empty_cache()
 
     @abstractmethod
     def __call__(
@@ -153,6 +158,9 @@ class EvalReranker:
         if self.reranker.pool is not None:
             self.reranker.stop_multi_process_pool(self.reranker.pool)
             self.reranker.pool = None
+            self.reranker.model.to('cpu')
+            gc.collect()
+            torch.cuda.empty_cache()
 
     def __call__(
         self,
