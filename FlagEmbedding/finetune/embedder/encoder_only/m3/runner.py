@@ -38,8 +38,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         colbert_dim: int = -1,
         cache_dir: str = None
     ):
+        cache_folder = os.getenv('HF_HUB_CACHE', None) if cache_dir is None else cache_dir
         if not os.path.exists(model_name_or_path):
-            cache_folder = os.getenv('HF_HUB_CACHE', None) if cache_dir is None else cache_dir
             model_name_or_path = snapshot_download(
                 repo_id=model_name_or_path,
                 cache_dir=cache_folder,
@@ -48,6 +48,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
 
         model = AutoModel.from_pretrained(
             model_name_or_path,
+            cache_dir=cache_folder,
             trust_remote_code=trust_remote_code
         )
         colbert_linear = torch.nn.Linear(
