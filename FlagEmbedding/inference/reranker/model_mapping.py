@@ -54,5 +54,22 @@ AUTO_RERANKER_MAPPING = OrderedDict([
         "bge-reranker-v2.5-gemma2-lightweight",
         RerankerConfig(LightWeightFlagLLMReranker)
     ),
-    # TODO: Add more models, such as Jina, e5, etc.
+    # others
+    (
+        "jinaai/jina-reranker-v2-base-multilingual",
+        RerankerConfig(FlagReranker)
+    ),
+    (
+        "Alibaba-NLP/gte-multilingual-reranker-base",
+        RerankerConfig(FlagReranker)
+    ),
+    (
+        "maidalun1020/bce-reranker-base_v1",
+        RerankerConfig(FlagReranker)
+    ),
+    (
+        "jinaai/jina-reranker-v1-turbo-en",
+        RerankerConfig(FlagReranker)
+    ),
+    # TODO: Add more models.
 ])

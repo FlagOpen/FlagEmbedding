@@ -1,4 +1,6 @@
-<h1 align="center">FlagEmbedding</h1>
+![bge_logo](./imgs/bge_logo.jpg)
+
+<h1 align="center">⚡️BGE: One-Stop Retrieval Toolkit For Search and RAG</h1>
 <p align="center">
     <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
         <img alt="Build" src="https://img.shields.io/badge/BGE_series-🤗-yellow">
@@ -12,7 +14,7 @@
     <a href="https://huggingface.co/C-MTEB">
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
-    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding">
+    <a href="https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding">
         <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.1-red">
     </a>
 </p>
@@ -30,25 +32,26 @@
     <p>
 </h4>
 
-
-
 [English](README.md) | [中文](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/README_zh.md)
 
-FlagEmbedding focuses on retrieval-augmented LLMs, consisting of the following projects currently:
+
+
+BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of the following projects currently:
+
+![projects](./imgs/projects.png)
 
 - **Inference**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/reranker)
 - **Finetune**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker)
-- **Evaluation**: [MTEB](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#1-mteb), [BEIR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#2-beir), [MSMARCO](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#3-msmarco), [MIRACL](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#4-miracl), [MLDR](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#5-mldr), [MKQA](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#6-mkqa), [AIR-Bench](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#7-air-bench), [Custom Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#8-custom-dataset)
-- **[Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/dataset)**: [MLDR](https://huggingface.co/datasets/Shitao/MLDR), [bge-m3-data](https://huggingface.co/datasets/Shitao/bge-m3-data), [public-data](https://huggingface.co/datasets/cfli/bge-e5data), [full-data](https://huggingface.co/datasets/cfli/bge-full-data), [reranker-data](Shitao/bge-reranker-data)
+- **[Evaluation](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation)**
+- **[Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/dataset)**
 - **[Tutorials](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/Tutorials)**
-- **research**:
-  - **Long-Context LLM**: [Activation Beacon](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/Long_LLM/activation_beacon), [LongLLM QLoRA](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/Long_LLM/longllm_qlora)
-  - **Fine-tuning of LM** : [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail)
-  - **Embedding Model**: [Visualized-BGE](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/visual_bge), [BGE-M3](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/BGE_M3), [LLM Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder), [BGE Embedding](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding)
-  - **Reranker Model**: [llm rerankers](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_reranker), [BGE Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/reranker)
-  - **Benchmark**: [C-MTEB](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/C_MTEB), [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench), [MLVU](https://github.com/JUNJIE99/MLVU)
+- **[research](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research)**
 
 ## News
+
+- 29/10/2024: :earth_asia: We created WeChat group for BGE. Scan the [QR code](./imgs/BGE_WeChat_Group.png) to join the group chat! To get the first hand message about our updates and new release, or having any questions or ideas, join us now!
+- <img src="./imgs/BGE_WeChat_Group.png" alt="bge_wechat_group" class="center" width="200">
+
 - 22/10/2024:  :fire: We release another interesting model: [OmniGen](https://github.com/VectorSpaceLab/OmniGen), which is a unified image generation model supporting various tasks. OmniGen can accomplish complex image generation tasks without the need for additional plugins like ControlNet, IP-Adapter, or auxiliary models such as pose detection and face detection.
 - 9/10/2024: Introducing **MemoRAG**, a step forward towards RAG 2.0 on top of memory-inspired knowledge discovery (repo: https://github.com/qhjqhj00/MemoRAG, paper: https://arxiv.org/pdf/2409.05591v1) :fire:
 - 9/2/2024: Start to maintain the [tutorials](./Tutorials/). The contents within will be actively updated and eariched, stay tuned! :books:
