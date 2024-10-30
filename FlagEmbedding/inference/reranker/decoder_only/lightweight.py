@@ -156,6 +156,7 @@ class LightweightLLMReranker(AbsReranker):
         query_max_length: Optional[int] = None,
         max_length: Optional[int] = None,
         cutoff_layers: Optional[List[int]] = None,
+        compress_layer: Optional[List[int]] = None,
         compress_layers: Optional[List[int]] = None,
         compress_ratio: Optional[int] = None,
         prompt: Optional[str] = None,
@@ -166,6 +167,9 @@ class LightweightLLMReranker(AbsReranker):
 
         if cutoff_layers is None: cutoff_layers = self.cutoff_layers
         if compress_layers is None: compress_layers = self.compress_layers
+        if compress_layer is not None:
+            print('Try not to use the parameter `compress_layer`; use `compress_layers` instead.')
+            compress_layers = compress_layer
         if compress_ratio is None: compress_ratio = self.compress_ratio
         if prompt is None: prompt = self.prompt
         if batch_size is None: batch_size = self.batch_size
