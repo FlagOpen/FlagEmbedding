@@ -16,7 +16,7 @@ setup(
     install_requires=[
         'torch>=1.6.0',
         'transformers==4.45.2',
-        'datasets>=2.19.0',
+        'datasets==2.19.0',
         'accelerate>=0.20.1',
         'sentence_transformers',
         'peft',
