@@ -147,7 +147,7 @@ torchrun --nproc_per_node 2 \
     --query_max_len 512 \
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
-    --knowledge_distillation True \
+    --knowledge_distillation False \
 	--output_dir ./test_encoder_only_base_bge-reranker-base \
     --overwrite_output_dir \
     --learning_rate 6e-5 \
@@ -159,7 +159,7 @@ torchrun --nproc_per_node 2 \
     --warmup_ratio 0.1 \
     --gradient_checkpointing \
     --weight_decay 0.01 \
-    --deepspeed ../../ds_stage0.json \
+    --deepspeed ../ds_stage0.json \
     --logging_steps 1 \
     --save_steps 1000
 ```
