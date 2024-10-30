@@ -139,8 +139,10 @@ torchrun --nproc_per_node 2 \
 We support evaluations on MTEB, BEIR, MSMARCO, MIRACL, MLDR, MKQA, AIR-Bench, and custom datasets. Below is an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation).
 
 ```shell
-export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"
+pip install https://github.com/kyamagu/faiss-wheels/releases/download/v1.7.3/faiss_gpu-1.7.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+```
 
+```shell
 python -m FlagEmbedding.evaluation.msmarco \
     --eval_name msmarco \
     --dataset_dir ./data/msmarco \
