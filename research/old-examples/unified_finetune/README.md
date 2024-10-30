@@ -33,7 +33,7 @@ See [toy_train_data](./toy_train_data) for an example of training data.
 
 ## 3. Train
 
-> **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder#1-standard-model).
+> **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder#1-standard-model).
 
 Here is an simple example of how to perform unified fine-tuning (dense embedding, sparse embedding and colbert) based on `BAAI/bge-m3`:
 

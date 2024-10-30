@@ -8,7 +8,7 @@ An embedder can encode text into embeddings.
 
 When provided with a query and a passage, the embedder encodes both separately, and then uses the similarity between their embeddings as the similarity score.
 
-For more detailed using, you can look [embedder-encoder only](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/embedder/encoder_only) or [embedder-decoder only](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/embedder/decoder_only)
+For more detailed using, you can look [embedder-encoder only](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder/encoder_only) or [embedder-decoder only](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder/decoder_only)
 
 
 ## Model List
@@ -39,7 +39,7 @@ For more detailed using, you can look [embedder-encoder only](https://github.com
 
 #### 1. Auto Model
 
-You can use `FlagAutoModel` to load the model. If the model isn't included in `model_mapping`, it won't load correctly. You can either modify the `model_mapping` file yourself or submit a pull request.
+You can use `FlagAutoModel` to load the model. For the **custom model** (not included in [`AUTO_EMBEDDER_MAPPING`](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/inference/embedder/model_mapping.py#L39)), you must specify the `model_class` parameter. You can also submit a pull request to add your **released model** to the [`AUTO_EMBEDDER_MAPPING`](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/inference/embedder/model_mapping.py#L39) dictionary. If need, you can create a new `<model>.py` file in [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/encoder_only) or [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/inference/embedder/decoder_only).
 
 ```python
 from FlagEmbedding import FlagAutoModel
@@ -49,8 +49,8 @@ model = FlagAutoModel.from_finetuned('BAAI/bge-large-zh-v1.5',
                                      query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
                                      use_fp16=True,
                                      devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
-embeddings_1 = model.encode_corpus(sentences_1)
-embeddings_2 = model.encode_corpus(sentences_2)
+embeddings_1 = model.encode(sentences_1)
+embeddings_2 = model.encode(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
@@ -64,6 +64,39 @@ scores = q_embeddings @ p_embeddings.T
 print(scores)
 ```
 
+For your **custom model** (assume the model is finetuned from `BAAI/bge-large-zh-v1.5`, then the model class is `encoder-only-base`), you can use the following code:
+
+```python
+from FlagEmbedding import FlagAutoModel
+sentences_1 = ["样例数据-1", "样例数据-2"]
+sentences_2 = ["样例数据-3", "样例数据-4"]
+model = FlagAutoModel.from_finetuned('your_model_name_or_path',
+                                     model_class='encoder-only-base',   # specify the model class
+                                     query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
+                                     pooling_method='cls',  # specify the pooling method
+                                     use_fp16=True,
+                                     devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+embeddings_1 = model.encode(sentences_1)
+embeddings_2 = model.encode(sentences_2)
+similarity = embeddings_1 @ embeddings_2.T
+print(similarity)
+
+# for s2p(short query to long passage) retrieval task, suggest to use encode_queries() which will automatically add the instruction to each query
+# corpus in retrieval task can still use encode_corpus(), since they don't need instruction
+queries = ['query_1', 'query_2']
+passages = ["样例文档-1", "样例文档-2"]
+q_embeddings = model.encode_queries(queries)
+p_embeddings = model.encode_corpus(passages)
+scores = q_embeddings @ p_embeddings.T
+print(scores)
+```
+
+The `model_class` parameter currently includes the following options:
+- `encoder-only-base`: for encoder-only normal model, such as `BAAI/bge-large-en-v1.5`
+- `encoder-only-m3`: for encoder-only M3 model, such as `BAAI/bge-m3`
+- `decoder-only-base`: for decoder-only normal model, such as `BAAI/bge-multilingual-gemma2`
+- `decoder-only-icl`: for decoder-only ICL model, such as `BAAI/bge-en-icl`
+
 #### 2. Normal Model
 
 For `FlagModel`, it supports `BAAI/bge-large-en-v1.5`, `BAAI/bge-base-en-v1.5`, `BAAI/bge-small-en-v1.5`, `BAAI/bge-large-zh-v1.5`, `BAAI/bge-base-zh-v1.5`, `BAAI/bge-small-zh-v1.5`, `BAAI/bge-large-en`, `BAAI/bge-base-en`, `BAAI/bge-small-en`, `BAAI/bge-large-zh`, `BAAI/bge-base-zh`, `BAAI/bge-small-zh'`:
@@ -76,8 +109,8 @@ model = FlagModel('BAAI/bge-large-zh-v1.5',
                   query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
                   use_fp16=True,
                   devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
-embeddings_1 = model.encode_corpus(sentences_1)
-embeddings_2 = model.encode_corpus(sentences_2)
+embeddings_1 = model.encode(sentences_1)
+embeddings_2 = model.encode(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 
@@ -93,7 +126,7 @@ print(scores)
 
 #### 3. M3 Model
 
-For `FlagModel`, it supports `BAAI/bge-m3`:
+For `BGEM3FlagModel`, it supports `BAAI/bge-m3`:
 
 ```python
 from FlagEmbedding import BGEM3FlagModel
@@ -103,13 +136,13 @@ model = BGEM3FlagModel('BAAI/bge-m3',
                        use_fp16=True,
                        pooling_method='cls',
                        devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
-embeddings_1 = model.encode_corpus(
+embeddings_1 = model.encode(
     sentences_1,
     return_dense=True,
     return_sparse=True,
     return_colbert_vecs=False,
 )
-embeddings_2 = model.encode_corpus(
+embeddings_2 = model.encode(
     sentences_2,
     return_dense=True,
     return_sparse=True,
@@ -148,7 +181,7 @@ print('sparse similarity:', sparse_scores)
 
 #### 4. LLM-based Model
 
-For `FlagModel`, it supports `BAAI/bge-multilingual-gemma2`, `gte-Qwen2-7B-instruct`, `e5-mistral-7b-instruct`, .etc:
+For `FlagLLMModel`, it supports `BAAI/bge-multilingual-gemma2`, `Alibaba-NLP/gte-Qwen2-7B-instruct`, `intfloat/e5-mistral-7b-instruct`, .etc:
 
 ```python
 from FlagEmbedding import FlagLLMModel
@@ -169,7 +202,7 @@ print(scores)
 
 #### 5. LLM-based ICL Model
 
-For `FlagModel`, it supports `BAAI/bge-en-icl`:
+For `FlagICLModel`, it supports `BAAI/bge-en-icl`:
 
 ```python
 from FlagEmbedding import FlagICLModel
@@ -208,6 +241,37 @@ p_embeddings = model.encode_corpus(passages)
 scores = q_embeddings @ p_embeddings.T
 print(scores)
 ```
+
+### Using HuggingFace Transformers
+
+With the transformers package, you can use the model like this: First, you pass your input through the transformer model, then you select the last hidden state of the first token (i.e., [CLS]) as the sentence embedding.
+
+```python
+from transformers import AutoTokenizer, AutoModel
+import torch
+# Sentences we want sentence embeddings for
+sentences = ["样例数据-1", "样例数据-2"]
+
+# Load model from HuggingFace Hub
+tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh-v1.5')
+model = AutoModel.from_pretrained('BAAI/bge-large-zh-v1.5')
+model.eval()
+
+# Tokenize sentences
+encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
+# for s2p(short query to long passage) retrieval task, add an instruction to query (not add instruction for passages)
+# encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
+
+# Compute token embeddings
+with torch.no_grad():
+    model_output = model(**encoded_input)
+    # Perform pooling. In this case, cls pooling.
+    sentence_embeddings = model_output[0][:, 0]
+# normalize embeddings
+sentence_embeddings = torch.nn.functional.normalize(sentence_embeddings, p=2, dim=1)
+print("Sentence embeddings:", sentence_embeddings)
+```
+
 
 ### Using Sentence-Transformers
 
@@ -258,36 +322,6 @@ model = HuggingFaceBgeEmbeddings(
     query_instruction="为这个句子生成表示以用于检索相关文章："
 )
 model.query_instruction = "为这个句子生成表示以用于检索相关文章："
-```
-
-### Using HuggingFace Transformers
-
-With the transformers package, you can use the model like this: First, you pass your input through the transformer model, then you select the last hidden state of the first token (i.e., [CLS]) as the sentence embedding.
-
-```python
-from transformers import AutoTokenizer, AutoModel
-import torch
-# Sentences we want sentence embeddings for
-sentences = ["样例数据-1", "样例数据-2"]
-
-# Load model from HuggingFace Hub
-tokenizer = AutoTokenizer.from_pretrained('BAAI/bge-large-zh-v1.5')
-model = AutoModel.from_pretrained('BAAI/bge-large-zh-v1.5')
-model.eval()
-
-# Tokenize sentences
-encoded_input = tokenizer(sentences, padding=True, truncation=True, return_tensors='pt')
-# for s2p(short query to long passage) retrieval task, add an instruction to query (not add instruction for passages)
-# encoded_input = tokenizer([instruction + q for q in queries], padding=True, truncation=True, return_tensors='pt')
-
-# Compute token embeddings
-with torch.no_grad():
-    model_output = model(**encoded_input)
-    # Perform pooling. In this case, cls pooling.
-    sentence_embeddings = model_output[0][:, 0]
-# normalize embeddings
-sentence_embeddings = torch.nn.functional.normalize(sentence_embeddings, p=2, dim=1)
-print("Sentence embeddings:", sentence_embeddings)
 ```
 
 ## Citation

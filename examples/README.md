@@ -22,7 +22,7 @@ pip install -e .
 
 # 3. Inference
 
-We have provided the inference code for two types of models: the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/reranker).
+We have provided the inference code for two types of models: the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder) and [reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker).
 
 ## 1. Embedder
 
@@ -33,7 +33,7 @@ sentences_2 = ["样例数据-3", "样例数据-4"]
 model = FlagAutoModel.from_finetuned('BAAI/bge-large-zh-v1.5', 
                                      query_instruction_for_retrieval="为这个句子生成表示以用于检索相关文章：",
                                      use_fp16=True,
-                                     devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+                                     devices=['cuda:0']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 embeddings_1 = model.encode_corpus(sentences_1)
 embeddings_2 = model.encode_corpus(sentences_2)
 similarity = embeddings_1 @ embeddings_2.T
@@ -56,7 +56,7 @@ from FlagEmbedding import FlagAutoReranker
 pairs = [("样例数据-1", "样例数据-3"), ("样例数据-2", "样例数据-4")]
 model = FlagAutoReranker.from_finetuned('BAAI/bge-reranker-large',
                                         use_fp16=True,
-                                        devices=['cuda:1']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
+                                        devices=['cuda:0']) # Setting use_fp16 to True speeds up computation with a slight performance degradation
 similarity = model.compute_score(pairs, normalize=True)
 print(similarity)
 
@@ -67,7 +67,7 @@ print(scores)
 
 # 4. Finetune
 
-We support fine-tuning a variety of BGE series models, including `bge-large-en-v1.5`, `bge-m3`, bge-`en-icl`, `bge-reranker-v2-m3`, `bge-reranker-v2-gemma`, and `bge-reranker-v2-minicpm-layerwise`, among others. As examples, we use the basic models `bge-large-en-v1.5` and `bge-reranker-large`. For more details, please refer to the [embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker) sections.
+We support fine-tuning a variety of BGE series models, including `bge-large-en-v1.5`, `bge-m3`, `bge-en-icl`, `bge-multilingual-gemma2`, `bge-reranker-v2-m3`, `bge-reranker-v2-gemma`, and `bge-reranker-v2-minicpm-layerwise`, among others. As examples, we use the basic models `bge-large-en-v1.5` and `bge-reranker-large`. For more details, please refer to the [embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder) and [reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker) sections.
 
 ## 1. Embedder
 
@@ -136,7 +136,7 @@ torchrun --nproc_per_node 2 \
 
 # 5. Evaluation
 
-We support evaluations on MTEB, BEIR, MSMARCO, MIRACL, MLDR, MKQA, AIR-Bench, and custom datasets. Below is an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation).
+We support evaluations on [MTEB](https://github.com/embeddings-benchmark/mteb), [BEIR](https://github.com/beir-cellar/beir), [MSMARCO](https://microsoft.github.io/msmarco/), [MIRACL](https://github.com/project-miracl/miracl), [MLDR](https://huggingface.co/datasets/Shitao/MLDR), [MKQA](https://github.com/apple/ml-mkqa), [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench), and custom datasets. Below is an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation).
 
 ```shell
 export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"

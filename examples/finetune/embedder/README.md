@@ -34,7 +34,7 @@ Train data should be a json file, where each line is a dict like this:
 
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts. `pos_scores` is a list of scores corresponding to the `query` and `pos`, `neg_scores` is a list of scores corresponding to the `query` and `neg`, if you don't use knowledge distillation, it can be ignored. `prompt` is the prompt used for the query, it will cover `query_instruction_for_retrieval`. `type` is used for `bge-en-icl`,  it includes `normal`, `symmetric_class`, `symmetric_clustering`, .etc. If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
 
-See [example_data](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder/example_data) for more detailed files.
+See [example_data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder/example_data) for more detailed files.
 
 ### Hard Negatives
 
@@ -295,13 +295,13 @@ Here are some new arguments:
 ```shell
 torchrun --nproc_per_node 2 \
     -m FlagEmbedding.finetune.embedder.decoder_only.base \
-	--model_name_or_path BAAI/bge-multilingual-gemma2 \
+	--model_name_or_path BAAI/bge-en-icl \
     --cache_dir ./cache/model \
     --use_lora True \
     --lora_rank 32 \
     --lora_alpha 64 \
     --target_modules q_proj k_proj v_proj o_proj gate_proj down_proj up_proj \
-    --additional_special_tokens '<instruct>' '<query>' \
+    --additional_special_tokens '<instruct>' '<query>' '<response>' \
     --save_merged_lora_model True \
     --train_data ./example_data/retrieval \
     			 ./example_data/sts/sts.jsonl \
@@ -318,6 +318,10 @@ torchrun --nproc_per_node 2 \
     --same_dataset_within_batch True \
     --small_threshold 0 \
     --drop_threshold 0 \
+    --example_query_max_len 64 \
+    --example_passage_max_len 96 \
+    --retrieval_use_examples True \
+    --icl_suffix_str '\n<response>' \
     --output_dir ./test_decoder_only_base_bge-en-icl_sd \
     --overwrite_output_dir \
     --learning_rate 1e-4 \

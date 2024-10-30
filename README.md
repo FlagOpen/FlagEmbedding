@@ -14,7 +14,7 @@
     <a href="https://huggingface.co/C-MTEB">
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
-    <a href="https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding">
+    <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/research/baai_general_embedding">
         <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.1-red">
     </a>
 </p>
@@ -24,7 +24,7 @@
         <a href=#installation>Installation</a> |
         <a href=#quick-start>Quick Start</a> |
         <a href=#community>Community</a> |
-        <a href="https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research">Projects</a> |
+        <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/research">Projects</a> |
         <a href=#model-list>Model List</a> |
         <a href="#contributor">Contributor</a> |
         <a href="#citation">Citation</a> |
@@ -40,12 +40,12 @@ BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of 
 
 ![projects](./imgs/projects.png)
 
-- **Inference**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/inference/reranker)
-- **Finetune**: [Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder), [Reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker)
-- **[Evaluation](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation)**
-- **[Dataset](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/dataset)**
-- **[Tutorials](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/Tutorials)**
-- **[research](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research)**
+- **Inference**: [Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder), [Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker)
+- **Finetune**: [Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder), [Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker)
+- **[Evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation)**
+- **[Dataset](https://github.com/FlagOpen/FlagEmbedding/tree/master/dataset)**
+- **[Tutorials](https://github.com/FlagOpen/FlagEmbedding/tree/master/Tutorials)**
+- **[research](https://github.com/FlagOpen/FlagEmbedding/tree/master/research)**
 
 ## News
 
@@ -65,26 +65,26 @@ BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of 
 
 - 6/7/2024: Release a new benchmark [MLVU](https://github.com/JUNJIE99/MLVU), the first comprehensive benchmark specifically designed for long video understanding. MLVU features an extensive range of video durations, a diverse collection of video sources, and a set of evaluation tasks uniquely tailored for long-form video understanding. :fire:
 - 5/21/2024: Release a new benchmark [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench) together with Jina AI, Zilliz, HuggingFace, and other partners. AIR-Bench focuses on a fair out-of-distribution evaluation for Neural IR & RAG. It generates the synthetic data for benchmarking w.r.t. diverse domains and languages. It is dynamic and will be updated on regular basis. [Leaderboard](https://huggingface.co/spaces/AIR-Bench/leaderboard) :fire:
-- 4/30/2024: Release [Llama-3-8B-Instruct-80K-QLoRA](https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA), extending the context length of Llama-3-8B-Instruct from 8K to 80K via QLoRA training on a few synthesized long-context data. The model achieves remarkable performance on various long-context benchmarks. [Code](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/Long_LLM/longllm_qlora) :fire:
-- 3/18/2024: Release new [rerankers](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_reranker), built upon powerful M3 and LLM (GEMMA and MiniCPM, not so large actually :smiley:) backbones, supporitng multi-lingual processing and larger inputs, massive improvements of ranking performances on BEIR, C-MTEB/Retrieval, MIRACL, LlamaIndex Evaluation :fire:
-- 3/18/2024: Release [Visualized-BGE](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/visual_bge), equipping BGE with visual capabilities. Visualized-BGE can be utilized to generate embeddings for hybrid image-text data. :fire:
+- 4/30/2024: Release [Llama-3-8B-Instruct-80K-QLoRA](https://huggingface.co/namespace-Pt/Llama-3-8B-Instruct-80K-QLoRA), extending the context length of Llama-3-8B-Instruct from 8K to 80K via QLoRA training on a few synthesized long-context data. The model achieves remarkable performance on various long-context benchmarks. [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/Long_LLM/longllm_qlora) :fire:
+- 3/18/2024: Release new [rerankers](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_reranker), built upon powerful M3 and LLM (GEMMA and MiniCPM, not so large actually :smiley:) backbones, supporitng multi-lingual processing and larger inputs, massive improvements of ranking performances on BEIR, C-MTEB/Retrieval, MIRACL, LlamaIndex Evaluation :fire:
+- 3/18/2024: Release [Visualized-BGE](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/visual_bge), equipping BGE with visual capabilities. Visualized-BGE can be utilized to generate embeddings for hybrid image-text data. :fire:
 - 1/30/2024: Release **BGE-M3**, a new member to BGE model series! M3 stands for **M**ulti-linguality (100+ languages), **M**ulti-granularities (input length up to 8192), **M**ulti-Functionality (unification of dense, lexical, multi-vec/colbert retrieval). 
 It is the first embedding model which supports all three retrieval methods, achieving new SOTA on multi-lingual (MIRACL) and cross-lingual (MKQA) benchmarks.
-[Technical Report](https://arxiv.org/pdf/2402.03216.pdf) and [Code](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/BGE_M3). :fire:
-- 1/9/2024: Release [Activation-Beacon](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/Long_LLM/activation_beacon), an effective, efficient, compatible, and low-cost (training) method to extend the context length of LLM. [Technical Report](https://arxiv.org/abs/2401.03462) 
-- 12/24/2023: Release **LLaRA**, a LLaMA-7B based dense retriever, leading to state-of-the-art performances on MS MARCO and BEIR. Model and code will be open-sourced. Please stay tuned. [Technical Report](https://arxiv.org/abs/2312.15503) and [Code](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LLARA)
-- 11/23/2023: Release [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail), a method to maintain general capabilities during fine-tuning by merging multiple language models. [Technical Report](https://arxiv.org/abs/2311.13534) 
-- 10/12/2023: Release [LLM-Embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Technical Report](https://arxiv.org/pdf/2310.07554.pdf)
+[Technical Report](https://arxiv.org/pdf/2402.03216.pdf) and [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/BGE_M3). :fire:
+- 1/9/2024: Release [Activation-Beacon](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/Long_LLM/activation_beacon), an effective, efficient, compatible, and low-cost (training) method to extend the context length of LLM. [Technical Report](https://arxiv.org/abs/2401.03462) 
+- 12/24/2023: Release **LLaRA**, a LLaMA-7B based dense retriever, leading to state-of-the-art performances on MS MARCO and BEIR. Model and code will be open-sourced. Please stay tuned. [Technical Report](https://arxiv.org/abs/2312.15503) and [Code](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LLARA)
+- 11/23/2023: Release [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail), a method to maintain general capabilities during fine-tuning by merging multiple language models. [Technical Report](https://arxiv.org/abs/2311.13534) 
+- 10/12/2023: Release [LLM-Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_embedder), a unified embedding model to support diverse retrieval augmentation needs for LLMs. [Technical Report](https://arxiv.org/pdf/2310.07554.pdf)
 - 09/15/2023: The [technical report](https://arxiv.org/pdf/2309.07597.pdf) of BGE has been released 
 - 09/15/2023: The [massive training data](https://data.baai.ac.cn/details/BAAI-MTP) of BGE has been released 
 - 09/12/2023: New models: 
     - **New reranker model**: release cross-encoder models `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`, which are more powerful than embedding model. We recommend to use/fine-tune them to re-rank top-k documents returned by embedding models. 
     - **update embedding model**: release `bge-*-v1.5` embedding model to alleviate the issue of the similarity distribution, and enhance its retrieval ability without instruction.
-- 09/07/2023: Update [fine-tune code](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding): Add script to mine hard negatives and support adding instruction during fine-tuning. 
+- 09/07/2023: Update [fine-tune code](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/baai_general_embedding): Add script to mine hard negatives and support adding instruction during fine-tuning. 
 - 08/09/2023: BGE Models are integrated into **Langchain**, you can use it like [this](#using-langchain); C-MTEB **leaderboard** is [available](https://huggingface.co/spaces/mteb/leaderboard).  
 - 08/05/2023: Release base-scale and small-scale models, **best performance among the models of the same size 🤗**  
 - 08/02/2023: Release `bge-large-*`(short for BAAI General Embedding) Models, **rank 1st on MTEB and C-MTEB benchmark!** :tada: :tada:   
-- 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
+- 08/01/2023: We release the [Chinese Massive Text Embedding Benchmark](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/C_MTEB) (**C-MTEB**), consisting of 31 test dataset.  
   
 
 </details>
@@ -156,7 +156,7 @@ The following contents are releasing in the upcoming weeks:
 | [BAAI/bge-multilingual-gemma2](https://huggingface.co/BAAI/bge-multilingual-gemma2) |    Multilingual     | A LLM-based multilingual embedding model, trained on a diverse range of languages and tasks. |        Provide instructions based on the given task.         |
 | [BAAI/bge-m3](https://huggingface.co/BAAI/bge-m3)                   |    Multilingual     | Multi-Functionality(dense retrieval, sparse retrieval, multi-vector(colbert)), Multi-Linguality, and Multi-Granularity(8192 tokens) |  |
 | [LM-Cocktail](https://huggingface.co/Shitao)                   |   English |                     fine-tuned models (Llama and BGE) which can be used to reproduce the results of LM-Cocktail                     |  |
-| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English |                         a unified embedding model to support diverse retrieval augmentation needs for LLMs                          | See [README](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/llm_embedder) |
+| [BAAI/llm-embedder](https://huggingface.co/BAAI/llm-embedder)             |   English |                         a unified embedding model to support diverse retrieval augmentation needs for LLMs                          | See [README](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_embedder) |
 | [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | Multilingual | a lightweight cross-encoder model, possesses strong multilingual capabilities, easy to deploy, with fast inference. |  |
 | [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | Multilingual | a cross-encoder model which is suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. |  |
 | [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | Multilingual | a cross-encoder model which is suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. |  |

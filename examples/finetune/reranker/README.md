@@ -34,7 +34,7 @@ Train data should be a json file, where each line is a dict like this:
 
 `query` is the query, and `pos` is a list of positive texts, `neg` is a list of negative texts. `pos_scores` is a list of scores corresponding to the `query` and `pos`, `neg_scores` is a list of scores corresponding to the `query` and `neg`, if you don't use knowledge distillation, it can be ignored. `prompt` is the prompt used for the input, input has the following format: `query [sep] passage [sep] prompt`. If you have no negative texts for a query, you can random sample some from the entire corpus as the negatives.
 
-See [example_data](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder/example_data) for more detailed files.
+See [example_data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder/example_data) for more detailed files.
 
 ### Hard Negatives
 

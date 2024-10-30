@@ -1,6 +1,6 @@
 # Evaluation
 
-After fine-tuning the model, it is essential to evaluate its performance. To facilitate this process, we have provided scripts for assessing the model on various datasets. These datasets include: **MTEB**, **BEIR**, **MSMARCO**, **MIRACL**, **MLDR**, **MKQA**, **AIR-Bench**, and your **custom datasets**.
+After fine-tuning the model, it is essential to evaluate its performance. To facilitate this process, we have provided scripts for assessing the model on various datasets. These datasets include: [**MTEB**](https://github.com/embeddings-benchmark/mteb), [**BEIR**](https://github.com/beir-cellar/beir), [**MSMARCO**](https://microsoft.github.io/msmarco/), [**MIRACL**](https://github.com/project-miracl/miracl), [**MLDR**](https://huggingface.co/datasets/Shitao/MLDR), [**MKQA**](https://github.com/apple/ml-mkqa), [**AIR-Bench**](https://github.com/AIR-Bench/AIR-Bench), and your **custom datasets**.
 
 To evaluate the model on a specific dataset, you can find the corresponding bash scripts in the respective folders dedicated to each dataset. These scripts contain the necessary commands and configurations to run the evaluation process.
 
@@ -23,9 +23,9 @@ In this section, we will first introduce the commonly used arguments across all 
         - `<split>_qrels.jsonl`
     2. Path to store datasets downloaded via API. Provide `None` to use the cache directory.
   
-- **`force_redownload`**: Set to `true` to force redownload of the dataset.
+- **`force_redownload`**: Set to `True` to force redownload of the dataset. Default is `False`.
 
-- **`dataset_names`**: List of dataset names to evaluate or `None` to evaluate all available datasets.
+- **`dataset_names`**: List of dataset names to evaluate or `None` to evaluate all available datasets. This can be the dataset name (BEIR, etc.) or language (MIRACL, etc.).
 
 - **`splits`**: Dataset splits to evaluate. Default is `test`.
 
@@ -33,41 +33,41 @@ In this section, we will first introduce the commonly used arguments across all 
 
 - **`output_dir`**: Directory to save evaluation results.
 
-- **`search_top_k`**: Top-K results for initial retrieval.
+- **`search_top_k`**: Top-K results for initial retrieval. Default is `1000`.
 
-- **`rerank_top_k`**: Top-K results for reranking.
+- **`rerank_top_k`**: Top-K results for reranking. Default is `100`.
 
-- **`cache_path`**: Cache directory for datasets.
+- **`cache_path`**: Cache directory for datasets. Default is `None`.
 
-- **`token`**: Token used for accessing the model.
+- **`token`**: Token used for accessing the private data (datasets/models) in HF. Default is `None`, which means it will use the environment variable `HF_TOKEN`.
 
-- **`overwrite`**: Set to `true` to overwrite existing evaluation results.
+- **`overwrite`**: Set to `True` to overwrite existing evaluation results. Default is `False`.
 
-- **`ignore_identical_ids`**: Set to `true` to ignore identical IDs in search results.
+- **`ignore_identical_ids`**: Set to `True` to ignore identical IDs in search results. Default is `False`.
 
-- **`k_values`**: List of K values for evaluation (e.g., [1, 3, 5, 10, 100, 1000]).
+- **`k_values`**: List of K values for evaluation (e.g., [1, 3, 5, 10, 100, 1000]). Default is `[1, 3, 5, 10, 100, 1000]`.
 
 - **`eval_output_method`**: Format for outputting evaluation results (options: 'json', 'markdown'). Default is `markdown`.
 
 - **`eval_output_path`**: Path to save the evaluation output.
 
-- **`eval_metrics`**: Metrics used for evaluation (e.g., ['ndcg_at_10', 'recall_at_10']).
+- **`eval_metrics`**: Metrics used for evaluation (e.g., ['ndcg_at_10', 'recall_at_10']). Default is `[ndcg_at_10, recall_at_100]`.
 
 ### 2. ModelArgs
 
 **Arguments for Model Configuration:**
 
 - **`embedder_name_or_path`**: The name or path to the embedder.
-- **`embedder_model_class`**: Class of the model used for embedding (options include 'auto', 'encoder-only-base', etc.). Default is `auto`.
-- **`normalize_embeddings`**: Set to `true` to normalize embeddings.
+- **`embedder_model_class`**: Class of the model used for embedding (current options include 'encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl'.). Default is None. For the custom model, you should set this argument.
+- **`normalize_embeddings`**: Set to `True` to normalize embeddings.
 - **`pooling_method`**: The pooling method for the embedder.
 - **`use_fp16`**: Use FP16 precision for inference.
 - **`devices`**: List of devices used for inference.
 - **`query_instruction_for_retrieval`**, **`query_instruction_format_for_retrieval`**: Instructions and format for query during retrieval.
 - **`examples_for_task`**, **`examples_instruction_format`**: Example tasks and their instructions format.
-- **`trust_remote_code`**: Set to `true` to trust remote code execution.
+- **`trust_remote_code`**: Set to `True` to trust remote code execution.
 - **`reranker_name_or_path`**: Name or path to the reranker.
-- **`reranker_model_class`**: Reranker model class (options include 'auto', 'decoder-only-base', etc.). Default is `auto`.
+- **`reranker_model_class`**: Reranker model class (options include 'encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight'). Default is None. For the custom model, you should set this argument.
 - **`reranker_peft_path`**: Path for portable encoder fine-tuning of the reranker.
 - **`use_bf16`**: Use BF16 precision for inference.
 - **`query_instruction_for_rerank`**, **`query_instruction_format_for_rerank`**: Instructions and format for query during reranking.
@@ -241,7 +241,7 @@ python -m FlagEmbedding.evaluation.mldr \
 
 ### 6. MKQA
 
-[MKQA](https://aclanthology.org/2021.tacl-1.82/) supports multi-language evaluation, using different languages as dataset names, including `en`, `ar`, `fi`, `ja`, `ko`, `ru`, `es`, `sv`, `he`, `th`, `da`, `de`, `fr`, `it`, `nl`, `pl`, `pt`, `hu`, `vi`, `ms`, `km`, `no`, `tr`, `zh_cn`, `zh_hk`, `zh_tw`. The supported split is `test`.
+[MKQA](https://github.com/apple/ml-mkqa) supports cross-lingual retrieval evaluation (from the [paper of BGE-M3](https://arxiv.org/pdf/2402.03216)), using different languages as dataset names, including `en`, `ar`, `fi`, `ja`, `ko`, `ru`, `es`, `sv`, `he`, `th`, `da`, `de`, `fr`, `it`, `nl`, `pl`, `pt`, `hu`, `vi`, `ms`, `km`, `no`, `tr`, `zh_cn`, `zh_hk`, `zh_tw`. The supported split is `test`.
 
 Here is an example for evaluation:
 

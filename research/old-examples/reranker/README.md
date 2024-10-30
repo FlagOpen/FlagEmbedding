@@ -10,8 +10,8 @@ pip install  .
 
 ## 2. Data format
 
-The data format for reranker is the same as [embedding fine-tune](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder#2-data-format).
-Besides, we strongly suggest to [mine hard negatives](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker#hard-negatives) to fine-tune reranker.
+The data format for reranker is the same as [embedding fine-tune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder#2-data-format).
+Besides, we strongly suggest to [mine hard negatives](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker#hard-negatives) to fine-tune reranker.
 
 
 ## 3. Train
@@ -44,9 +44,9 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
-### 4. Model merging via [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail) [optional]
+### 4. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail) [optional]
 
-For more details please refer to [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail).
+For more details please refer to [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail).
 
 Fine-tuning the base bge model can improve its performance on target task, 
 but maybe lead to severe degeneration of model’s general capabilities 
