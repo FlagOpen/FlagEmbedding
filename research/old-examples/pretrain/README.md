@@ -11,14 +11,8 @@ pip install -U FlagEmbedding
 * **from source**
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding
-pip install  .
+cd FlagEmbedding/research/old-examples/pretrain
 ```
-For development, install as editable:
-```
-pip install -e .
-```
-
 
 ## 2. Data format
 Train data should be a json file, where each line is a dict like this:
@@ -31,7 +25,7 @@ See [toy_pretrain_data.jsonl](https://github.com/FlagOpen/FlagEmbedding/blob/mas
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.baai_general_embedding.retromae_pretrain.run \
+-m retromae_pretrain.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/bge-large-en \
 --train_data toy_pretrain_data.jsonl \
@@ -46,5 +40,4 @@ torchrun --nproc_per_node {number of gpus} \
 
 More training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments). 
 After training, the encoder model will saved to `{output_dir}/encoder_model`
-
 

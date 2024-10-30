@@ -6,17 +6,17 @@ dataset_names="bn hi sw te th yo"
 
 eval_args="\
     --eval_name miracl \
-    --dataset_dir /share/jianlv/evaluation/miracl/data \
+    --dataset_dir ./miracl/data \
     --dataset_names $dataset_names \
     --splits dev \
-    --corpus_embd_save_dir /share/jianlv/evaluation/miracl/corpus_embd \
-    --output_dir /share/jianlv/evaluation/miracl/search_results \
+    --corpus_embd_save_dir ./miracl/corpus_embd \
+    --output_dir ./miracl/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
     --overwrite False \
     --k_values 10 100 \
     --eval_output_method markdown \
-    --eval_output_path /share/jianlv/evaluation/miracl/miracl_eval_results.md \
+    --eval_output_path ./miracl/miracl_eval_results.md \
     --eval_metrics ndcg_at_10 recall_at_100 \
 "
 

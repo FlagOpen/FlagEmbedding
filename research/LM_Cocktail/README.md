@@ -49,7 +49,7 @@ The merged model can be used to perform multiple tasks.
 Install the latest version from source (Recommended): 
 ```bash
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding/LM_Cocktail
+cd FlagEmbedding/research/LM_Cocktail
 pip install -e .
 ```
 Install by pip:
@@ -237,7 +237,7 @@ Merge 10 models fine-tuned on other tasks based on five examples for new tasks:
 - Examples Data for dataset from FLAN: [./llm_examples.json]()
 - MMLU dataset: https://huggingface.co/datasets/cais/mmlu (use the example in dev set to do in-context learning) 
 
-You can use these models and our code to produce a new model and evaluate its performance using the [llm-embedder script](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_embedder/docs/evaluation.md) as following: 
+You can use these models and our code to produce a new model and evaluate its performance using the [llm-embedder script](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/research/llm_embedder/docs/evaluation.md) as following: 
 ```
 # for 30 tasks from FLAN
 torchrun --nproc_per_node 8 -m evaluation.eval_icl \
@@ -260,6 +260,7 @@ torchrun --nproc_per_node 8 -m evaluation.eval_mmlu \
 - Models: we fine-tune the [bge-base-en-v1.5](https://huggingface.co/BAAI/bge-base-en-v1.5) on 9 tasks, and you can find the fine-tuned models at this [link](https://huggingface.co/Shitao).
 - Examples Data: [./embedder_examples.json]()
   
+
 Use [MTEB script](https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB) to evaluate the mixed embedding model:
 ```bash
 python eval_MTEB.py --model_name_or_path mixed_model --task_type Retrieval

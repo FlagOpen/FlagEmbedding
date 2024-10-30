@@ -198,6 +198,12 @@ class M3Embedder(AbsEmbedder):
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.passage_max_length
+        if return_dense is None: return_dense = self.return_dense
+        if return_sparse is None: return_sparse = self.return_sparse
+        if return_colbert_vecs is None: return_colbert_vecs = self.return_colbert_vecs
+
         return super().encode(
             queries,
             batch_size=batch_size,

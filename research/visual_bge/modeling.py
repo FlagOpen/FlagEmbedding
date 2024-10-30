@@ -9,7 +9,7 @@ from transformers import AutoModel, AutoTokenizer, AutoConfig
 from transformers.file_utils import ModelOutput
 
 
-from FlagEmbedding.visual.eva_clip import create_eva_vision_and_transforms
+from visual_bge.eva_clip import create_eva_vision_and_transforms
 from PIL import Image
 
 logger = logging.getLogger(__name__)

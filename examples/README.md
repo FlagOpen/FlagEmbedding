@@ -1,6 +1,6 @@
 # 1. Introduction
 
-In this example, we show how to **inference**, **finetune** and **evaluation** the baai-general-embedding.
+In this example, we show how to **inference**, **finetune** and **evaluate** the baai-general-embedding.
 
 # 2. Installation
 
@@ -22,7 +22,7 @@ pip install -e .
 
 # 3. Inference
 
-We have provided the inference code for two models, namely the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/reranker).
+We have provided the inference code for two types of models: the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/inference/reranker).
 
 ## 1. Embedder
 
@@ -67,7 +67,7 @@ print(scores)
 
 # 4. Finetune
 
-We support the finetune of various BGE series models, including bge-large-en-v1.5, bge-m3, bge-en-icl, bge-reranker-v2-m3, bge-reranker-v2-gemma, and bge-reranker-v2-minicpm-layerwise, etc. Here, we take the basic models bge-en-large-v1.5 and bge-reranker-large as examples. For more details, please see the [embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker) sections.
+We support fine-tuning a variety of BGE series models, including `bge-large-en-v1.5`, `bge-m3`, bge-`en-icl`, `bge-reranker-v2-m3`, `bge-reranker-v2-gemma`, and `bge-reranker-v2-minicpm-layerwise`, among others. As examples, we use the basic models `bge-large-en-v1.5` and `bge-reranker-large`. For more details, please refer to the [embedder](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder) and [reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker) sections.
 
 ## 1. Embedder
 
@@ -136,7 +136,7 @@ torchrun --nproc_per_node 2 \
 
 # 5. Evaluation
 
-We support evaluations on MTEB, BEIR, MSMARCO, MIRACL, MLDR, MKQA, and AIR-Bench. Here, we provide an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation).
+We support evaluations on MTEB, BEIR, MSMARCO, MIRACL, MLDR, MKQA, AIR-Bench, and custom datasets. Below is an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation).
 
 ```shell
 export HF_HUB_CACHE="$HOME/.cache/huggingface/hub"

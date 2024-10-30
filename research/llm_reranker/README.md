@@ -254,13 +254,13 @@ You can fine-tune the reranker with the following code:
 
 **For normal reranker** (bge-reranker-base / bge-reranker-large / bge-reranker-v2-m3 )
 
-Refer to: https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker
+Refer to: [reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker#1-standard-model)
 
 **For llm-based reranker** (bge-reranker-v2-gemma)
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.llm_reranker.finetune_for_instruction.run \
+-m finetune_for_instruction.run \
 --output_dir {path to save model} \
 --model_name_or_path google/gemma-2b \
 --train_data ./toy_finetune_data.jsonl \
@@ -291,7 +291,7 @@ torchrun --nproc_per_node {number of gpus} \
 
 ```shell
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.llm_reranker.finetune_for_layerwise.run \
+-m finetune_for_layerwise.run \
 --output_dir {path to save model} \
 --model_name_or_path openbmb/MiniCPM-2B-dpo-bf16 \
 --train_data ./toy_finetune_data.jsonl \

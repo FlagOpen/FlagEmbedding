@@ -4,18 +4,9 @@ In this example, we show how to perform unified fine-tuning based on [`BAAI/bge-
 
 ## 1. Installation
 
-- with pip
-
-```
-pip install -U FlagEmbedding
-```
-
-- from source
-
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding
-pip install -e .
+cd FlagEmbedding/research/BGE_M3
 ```
 
 
@@ -42,13 +33,13 @@ See [toy_train_data](./toy_train_data) for an example of training data.
 
 ## 3. Train
 
-> **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](../finetune/README.md).
+> **Note**: If you only want to fine-tune the dense embedding of `BAAI/bge-m3`, you can refer to [here](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder#1-standard-model).
 
 Here is an simple example of how to perform unified fine-tuning (dense embedding, sparse embedding and colbert) based on `BAAI/bge-m3`:
 
 ```bash
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.BGE_M3.run \
+-m run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/bge-m3 \
 --train_data ./toy_train_data \
@@ -72,9 +63,9 @@ torchrun --nproc_per_node {number of gpus} \
 You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for more details. In this script, we use `deepspeed` to perform distributed training. Learn more about `deepspeed` at https://www.deepspeed.ai/getting-started/. Note that there are some important parameters to be modified in this script:
 
 - `HOST_FILE_CONTENT`: Machines and GPUs for training. If you want to use multiple machines for training, please refer to https://www.deepspeed.ai/getting-started/#resource-configuration-multi-node (note that you should configure `pdsh` and `ssh` properly).
-- `DS_CONFIG_FILE`: Path of deepspeed config file. [Here](../finetune/ds_config.json) is an example of `ds_config.json`.
+- `DS_CONFIG_FILE`: Path of deepspeed config file. [Here](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/finetune/ds_stage0.json) is an example of `ds_config.json`.
 - `DATA_PATH`: One or more paths of training data. **Each path must be a directory containing one or more jsonl files**.
-- `DEFAULT_BATCH_SIZE`: Default batch size for training. If you use efficient batching strategy, which means you have split your data to different parts by sequence length, then the batch size for each part will be decided by the `get_file_batch_size()` function in [`BGE_M3/data.py`](../../FlagEmbedding/BGE_M3/data.py). Before starting training, you should set the corresponding batch size for each part in this function according to the GPU memory of your machines. `DEFAULT_BATCH_SIZE` will be used for the part whose sequence length is not in the `get_file_batch_size()` function.
+- `DEFAULT_BATCH_SIZE`: Default batch size for training. If you use efficient batching strategy, which means you have split your data to different parts by sequence length, then the batch size for each part will be decided by the `get_file_batch_size()` function in [`BGE_M3/data.py`](../../BGE_M3/data.py). Before starting training, you should set the corresponding batch size for each part in this function according to the GPU memory of your machines. `DEFAULT_BATCH_SIZE` will be used for the part whose sequence length is not in the `get_file_batch_size()` function.
 - `EPOCHS`: Number of training epochs.
 - `LEARNING_RATE`: The initial learning rate.
 - `SAVE_PATH`: Path of saving finetuned model.
@@ -82,4 +73,4 @@ You can also refer to [this script](./unified_finetune_bge-m3_exmaple.sh) for mo
  You should set these parameters appropriately.
 
 
-For more detailed arguments setting, please refer to [`BGE_M3/arguments.py`](../../FlagEmbedding/BGE_M3/arguments.py).
+For more detailed arguments setting, please refer to [`BGE_M3/arguments.py`](../../BGE_M3/arguments.py).

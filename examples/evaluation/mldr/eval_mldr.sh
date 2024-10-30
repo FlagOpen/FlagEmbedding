@@ -6,17 +6,17 @@ dataset_names="hi"
 
 eval_args="\
     --eval_name mldr \
-    --dataset_dir /share/jianlv/evaluation/mldr/data \
+    --dataset_dir ./mldr/data \
     --dataset_names $dataset_names \
     --splits test \
-    --corpus_embd_save_dir /share/jianlv/evaluation/mldr/corpus_embd \
-    --output_dir /share/jianlv/evaluation/mldr/search_results \
+    --corpus_embd_save_dir ./mldr/corpus_embd \
+    --output_dir ./mldr/search_results \
     --search_top_k 1000 --rerank_top_k 100 \
     --cache_path $HF_HUB_CACHE \
     --overwrite False \
     --k_values 10 100 \
     --eval_output_method markdown \
-    --eval_output_path /share/jianlv/evaluation/mldr/mldr_eval_results.md \
+    --eval_output_path ./mldr/mldr_eval_results.md \
     --eval_metrics ndcg_at_10 \
 "
 

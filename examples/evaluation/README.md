@@ -1,14 +1,18 @@
 # Evaluation
 
-After finetuning, the model needs to be evaluated. To facilitate this, we have provided scripts for assessing it on various datasets, including **MTEB**, **BEIR**, **MSMARCO**, **MIRACL**, **MLDR**, **MKQA**, and **AIR-Bench**. You can find the specific bash scripts in the respective folders. This document provides an overview of these evaluations.
+After fine-tuning the model, it is essential to evaluate its performance. To facilitate this process, we have provided scripts for assessing the model on various datasets. These datasets include: **MTEB**, **BEIR**, **MSMARCO**, **MIRACL**, **MLDR**, **MKQA**, **AIR-Bench**, and your **custom datasets**.
 
-First, we will introduce the commonly used parameters, followed by an introduction to the parameters for each dataset.
+To evaluate the model on a specific dataset, you can find the corresponding bash scripts in the respective folders dedicated to each dataset. These scripts contain the necessary commands and configurations to run the evaluation process.
+
+This document serves as an overview of the evaluation process and provides a brief introduction to each dataset.
+
+In this section, we will first introduce the commonly used arguments across all datasets. Then, we will provide a more detailed explanation of the specific arguments used for each individual dataset.
 
 ## Introduction
 
 ### 1. EvalArgs
 
-**Parameters for evaluation setup:**
+**Arguments for evaluation setup:**
 
 - **`eval_name`**: Name of the evaluation task (e.g., msmarco, beir, miracl).
   
@@ -51,7 +55,7 @@ First, we will introduce the commonly used parameters, followed by an introducti
 
 ### 2. ModelArgs
 
-**Parameters for Model Configuration:**
+**Arguments for Model Configuration:**
 
 - **`embedder_name_or_path`**: The name or path to the embedder.
 - **`embedder_model_class`**: Class of the model used for embedding (options include 'auto', 'encoder-only-base', etc.). Default is `auto`.
@@ -74,7 +78,7 @@ First, we will introduce the commonly used parameters, followed by an introducti
 - **`reranker_query_max_length`**, **`reranker_max_length`**: Maximum lengths for reranking queries and reranking in general.
 - **`normalize`**: Normalize the reranking scores.
 - **`prompt`**: Prompt for the reranker.
-- **`cutoff_layers`**, **`compress_ratio`**, **`compress_layers`**: Parameters for configuring the output and compression of layerwise or lightweight rerankers.
+- **`cutoff_layers`**, **`compress_ratio`**, **`compress_layers`**: arguments for configuring the output and compression of layerwise or lightweight rerankers.
 
 ***Notice:*** If you evaluate your own model, please set `embedder_model_class` and `reranker_model_class`.
 
@@ -82,7 +86,7 @@ First, we will introduce the commonly used parameters, followed by an introducti
 
 ### 1. MTEB
 
-In the evaluation of MTEB, we primarily utilize the official [MTEB](https://github.com/embeddings-benchmark/mteb) code, which supports only the assessment of embedders. Additionally, it restricts the output format of evaluation results to JSON. The following new parameters have been introduced:
+For MTEB, we primarily use the official [MTEB](https://github.com/embeddings-benchmark/mteb) code, which only supports the assessment of embedders. Moreover, it restricts the output format of the evaluation results to JSON. We have introduced the following new arguments:
 
 - **`languages`**: Languages to evaluate. Default: eng
 - **`tasks`**: Tasks to evaluate. Default: None
@@ -91,6 +95,10 @@ In the evaluation of MTEB, we primarily utilize the official [MTEB](https://gith
 - **`use_special_examples`**: Whether to use specific examples in `examples.py` for evaluation. Default: False
 
 Here is an example for evaluation:
+
+```shell
+pip install mteb==1.15.0
+```
 
 ```shell
 python -m FlagEmbedding.evaluation.mteb \
@@ -106,11 +114,15 @@ python -m FlagEmbedding.evaluation.mteb \
 
 ### 2. BEIR
 
-[BEIR](https://github.com/beir-cellar/beir/) supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new parameters have been introduced:
+[BEIR](https://github.com/beir-cellar/beir/) supports evaluations on datasets including `arguana`, `climate-fever`, `cqadupstack`, `dbpedia-entity`, `fever`, `fiqa`, `hotpotqa`, `msmarco`, `nfcorpus`, `nq`, `quora`, `scidocs`, `scifact`, `trec-covid`, `webis-touche2020`, with `msmarco` as the dev set and all others as test sets. The following new arguments have been introduced:
 
 - **`use_special_instructions`**: Whether to use specific instructions in `prompts.py` for evaluation. Default: False
 
 Here is an example for evaluation:
+
+```shell
+pip install beir
+```
 
 ```shell
 python -m FlagEmbedding.evaluation.beir \
@@ -258,7 +270,7 @@ python -m FlagEmbedding.evaluation.mkqa \
 
 ### 7. AIR-Bench
 
-The AIR-Bench is mainly based on the official [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench/tree/main) framework, and it necessitates the use of official evaluation metrics. Below are some important parameters:
+The AIR-Bench is primarily based on the official [AIR-Bench repository](https://github.com/AIR-Bench/AIR-Bench/tree/main) and requires the use of its official evaluation codes. Below are some important arguments:
 
 - **`benchmark_version`**: Benchmark version.
 - **`task_types`**: Task types.
@@ -266,6 +278,10 @@ The AIR-Bench is mainly based on the official [AIR-Bench](https://github.com/AIR
 - **`languages`**: Languages to evaluate.
 
 Here is an example for evaluation:
+
+```shell
+pip install air-benchmark
+```
 
 ```shell
 python -m FlagEmbedding.evaluation.air_bench \

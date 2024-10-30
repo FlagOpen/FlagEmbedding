@@ -39,22 +39,23 @@ class AbsEmbedder(ABC):
             Default: `True`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
+
     def __init__(
-        self,
-        model_name_or_path: str,
-        normalize_embeddings: bool = True,
-        use_fp16: bool = True,
-        query_instruction_for_retrieval: Optional[str] = None,
-        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_retrieval
-        devices: Optional[Union[str, int, List[str], List[int]]] = None,
-        # inference
-        batch_size: int = 256,
-        query_max_length: int = 512,
-        passage_max_length: int = 512,
-        instruction: Optional[str] = None,
-        instruction_format: str = "{}{}",
-        convert_to_numpy: bool = True,
-        **kwargs: Any,
+            self,
+            model_name_or_path: str,
+            normalize_embeddings: bool = True,
+            use_fp16: bool = True,
+            query_instruction_for_retrieval: Optional[str] = None,
+            query_instruction_format: str = "{}{}",  # specify the format of query_instruction_for_retrieval
+            devices: Optional[Union[str, int, List[str], List[int]]] = None,
+            # inference
+            batch_size: int = 256,
+            query_max_length: int = 512,
+            passage_max_length: int = 512,
+            instruction: Optional[str] = None,
+            instruction_format: str = "{}{}",
+            convert_to_numpy: bool = True,
+            **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
         self.normalize_embeddings = normalize_embeddings
@@ -78,6 +79,7 @@ class AbsEmbedder(ABC):
         # tokenizer and model are initialized in the child class
         self.tokenizer = None
         self.model = None
+        self.pool = None
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
@@ -109,12 +111,12 @@ class AbsEmbedder(ABC):
         return instruction_format.format(instruction, sentence)
 
     def encode_queries(
-        self,
-        queries: Union[List[str], str],
-        batch_size: Optional[int] = None,
-        max_length: Optional[int] = None,
-        convert_to_numpy: Optional[bool] = None,
-        **kwargs: Any
+            self,
+            queries: Union[List[str], str],
+            batch_size: Optional[int] = None,
+            max_length: Optional[int] = None,
+            convert_to_numpy: Optional[bool] = None,
+            **kwargs: Any
     ):
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.query_max_length
@@ -131,12 +133,12 @@ class AbsEmbedder(ABC):
         )
 
     def encode_corpus(
-        self,
-        corpus: Union[List[str], str],
-        batch_size: Optional[int] = None,
-        max_length: Optional[int] = None,
-        convert_to_numpy: Optional[bool] = None,
-        **kwargs: Any
+            self,
+            corpus: Union[List[str], str],
+            batch_size: Optional[int] = None,
+            max_length: Optional[int] = None,
+            convert_to_numpy: Optional[bool] = None,
+            **kwargs: Any
     ):
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
         passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
@@ -156,23 +158,27 @@ class AbsEmbedder(ABC):
         )
 
     def encode(
-        self,
-        sentences: Union[List[str], str],
-        batch_size: Optional[int] = None,
-        max_length: Optional[int] = None,
-        convert_to_numpy: Optional[bool] = None,
-        instruction: Optional[str] = None,
-        instruction_format: Optional[str] = None,
-        **kwargs: Any
+            self,
+            sentences: Union[List[str], str],
+            batch_size: Optional[int] = None,
+            max_length: Optional[int] = None,
+            convert_to_numpy: Optional[bool] = None,
+            instruction: Optional[str] = None,
+            instruction_format: Optional[str] = None,
+            **kwargs: Any
     ):
         if instruction is None: instruction = self.instruction
         if instruction_format is None: instruction_format = self.instruction_format
+        if batch_size is None: batch_size = self.batch_size
+        if max_length is None: max_length = self.passage_max_length
+        if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
 
         if instruction is not None:
             if isinstance(sentences, str):
                 sentences = self.get_detailed_instruct(instruction_format, instruction, sentences)
             else:
-                sentences = [self.get_detailed_instruct(instruction_format, instruction, sentence) for sentence in sentences]
+                sentences = [self.get_detailed_instruct(instruction_format, instruction, sentence) for sentence in
+                             sentences]
 
         if isinstance(sentences, str) or len(self.target_devices) == 1:
             return self.encode_single_device(
@@ -184,27 +190,31 @@ class AbsEmbedder(ABC):
                 **kwargs
             )
 
-        pool = self.start_multi_process_pool(AbsEmbedder._encode_multi_process_worker)
+        if self.pool is None:
+            self.pool = self.start_multi_process_pool(AbsEmbedder._encode_multi_process_worker)
         embeddings = self.encode_multi_process(
             sentences,
-            pool,
+            self.pool,
             batch_size=batch_size,
             max_length=max_length,
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-        self.stop_multi_process_pool(pool)
         return embeddings
+
+    def __del__(self):
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
 
     @abstractmethod
     def encode_single_device(
-        self,
-        sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
-        device: Optional[str] = None,
-        **kwargs: Any,
+            self,
+            sentences: Union[List[str], str],
+            batch_size: int = 256,
+            max_length: int = 512,
+            convert_to_numpy: bool = True,
+            device: Optional[str] = None,
+            **kwargs: Any,
     ):
         """
         This method should encode sentences and return embeddings on a single device.
@@ -213,8 +223,8 @@ class AbsEmbedder(ABC):
 
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L807
     def start_multi_process_pool(
-        self,
-        process_target_func: Any,
+            self,
+            process_target_func: Any,
     ) -> Dict[Literal["input", "output", "processes"], Any]:
         """
         Starts a multi-process pool to process the encoding with several independent processes
@@ -253,7 +263,7 @@ class AbsEmbedder(ABC):
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L976
     @staticmethod
     def _encode_multi_process_worker(
-        target_device: str, model: 'AbsEmbedder', input_queue: Queue, results_queue: Queue
+            target_device: str, model: 'AbsEmbedder', input_queue: Queue, results_queue: Queue
     ) -> None:
         """
         Internal working process to encode sentences in multi-process setup
@@ -297,10 +307,10 @@ class AbsEmbedder(ABC):
 
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L877
     def encode_multi_process(
-        self,
-        sentences: List[str],
-        pool: Dict[Literal["input", "output", "processes"], Any],
-        **kwargs
+            self,
+            sentences: List[str],
+            pool: Dict[Literal["input", "output", "processes"], Any],
+            **kwargs
     ):
         chunk_size = math.ceil(len(sentences) / len(pool["processes"]))
 
