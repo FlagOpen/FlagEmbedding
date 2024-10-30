@@ -140,6 +140,7 @@ python -m FlagEmbedding.evaluation.beir \
     --eval_output_method markdown \
     --eval_output_path ./beir/beir_eval_results.md \
     --eval_metrics ndcg_at_10 recall_at_100 \
+    --ignore_identical_ids True \
     --embedder_name_or_path BAAI/bge-m3 \
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
     --devices cuda:0 cuda:1 \

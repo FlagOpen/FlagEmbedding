@@ -18,6 +18,7 @@ eval_args="\
     --eval_output_method markdown \
     --eval_output_path ./beir/beir_eval_results.md \
     --eval_metrics ndcg_at_10 recall_at_100 \
+    --ignore_identical_ids True \
 "
 
 model_args="\
