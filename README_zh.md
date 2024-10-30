@@ -1,4 +1,4 @@
-![bge_logo](D:\python_file\project\FlagEmbedding_update\FlagEmbedding\imgs\bge_logo.jpg)
+![bge_logo](./imgs/bge_logo.jpg)
 
 <h1 align="center">⚡️BGE: One-Stop Retrieval Toolkit For Search and RAG</h1>
 <p align="center">

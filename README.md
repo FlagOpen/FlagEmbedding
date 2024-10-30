@@ -1,3 +1,5 @@
+![bge_logo](./imgs/bge_logo.jpg)
+
 <h1 align="center">⚡️BGE: One-Stop Retrieval Toolkit For Search and RAG</h1>
 <p align="center">
     <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
@@ -31,6 +33,8 @@
 </h4>
 
 [English](README.md) | [中文](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/README_zh.md)
+
+
 
 BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of the following projects currently:
 
