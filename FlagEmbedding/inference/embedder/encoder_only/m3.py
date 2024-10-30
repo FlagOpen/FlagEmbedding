@@ -304,7 +304,9 @@ class M3Embedder(AbsEmbedder):
                     return_colbert_vecs=return_colbert_vecs
                 )
                 flag = True
-            except (RuntimeError, torch.OutofMemoryError) as e:
+            except RuntimeError as e:
+                batch_size = batch_size * 3 // 4
+            except torch.OutofMemoryError as e:
                 batch_size = batch_size * 3 // 4
 
         # encode
