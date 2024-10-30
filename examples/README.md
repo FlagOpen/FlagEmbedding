@@ -117,7 +117,7 @@ torchrun --nproc_per_node 2 \
     --query_max_len 256 \
     --passage_max_len 256 \
     --pad_to_multiple_of 8 \
-    --knowledge_distillation True \
+    --knowledge_distillation False \
     --output_dir ./test_encoder_only_base_bge-reranker-large \
     --overwrite_output_dir \
     --learning_rate 6e-5 \
