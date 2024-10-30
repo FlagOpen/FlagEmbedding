@@ -1,3 +1,5 @@
+![bge_logo](D:\python_file\project\FlagEmbedding_update\FlagEmbedding\imgs\bge_logo.jpg)
+
 <h1 align="center">⚡️BGE: One-Stop Retrieval Toolkit For Search and RAG</h1>
 <p align="center">
     <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
