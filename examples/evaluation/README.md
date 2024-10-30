@@ -86,9 +86,10 @@ In this section, we will first introduce the commonly used arguments across all 
 
 ### Requirements
 
-You need install faiss for evaluation:
+You need install `pytrec_eval` and `faiss` for evaluation:
 
 ```shell
+pip install pytrec_eval
 pip install https://github.com/kyamagu/faiss-wheels/releases/download/v1.7.3/faiss_gpu-1.7.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 ```
 

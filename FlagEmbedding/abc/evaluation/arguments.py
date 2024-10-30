@@ -86,7 +86,7 @@ class AbsEvalModelArgs:
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
     )
-    pooling_method: bool = field(
+    pooling_method: str = field(
         default="cls", metadata={"help": "The pooling method fot the embedder."}
     )
     use_fp16: bool = field(
