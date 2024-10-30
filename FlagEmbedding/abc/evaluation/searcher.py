@@ -28,6 +28,7 @@ class EvalRetriever(ABC):
     def stop_multi_process_pool(self):
         if self.embedder.pool is not None:
             self.embedder.stop_multi_process_pool(self.embedder.pool)
+            self.embedder.pool = None
 
     @abstractmethod
     def __call__(
@@ -151,6 +152,7 @@ class EvalReranker:
     def stop_multi_process_pool(self):
         if self.reranker.pool is not None:
             self.reranker.stop_multi_process_pool(self.reranker.pool)
+            self.reranker.pool = None
 
     def __call__(
         self,
