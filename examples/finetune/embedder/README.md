@@ -294,7 +294,7 @@ Here are some new arguments:
 
 ```shell
 torchrun --nproc_per_node 2 \
-    -m FlagEmbedding.finetune.embedder.decoder_only.base \
+    -m FlagEmbedding.finetune.embedder.decoder_only.icl \
 	--model_name_or_path BAAI/bge-en-icl \
     --cache_dir ./cache/model \
     --use_lora True \

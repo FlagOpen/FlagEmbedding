@@ -176,7 +176,7 @@ torchrun --nproc_per_node 2 \
     --use_flash_attn True \
     --target_modules q_proj k_proj v_proj o_proj \
     --save_merged_lora_model True \
-    --model_type decoder
+    --model_type decoder \
     --cache_dir ./cache/model \
     --train_data ./example_data/prompt_based/examples.jsonl \
     --cache_path ./cache/data \
