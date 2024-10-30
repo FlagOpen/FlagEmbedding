@@ -168,20 +168,15 @@ torchrun --nproc_per_node 2 \
 
 ```shell
 torchrun --nproc_per_node 2 \
-	-m FlagEmbedding.finetune.reranker.encoder_only.base \
-    --model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
+	-m FlagEmbedding.finetune.reranker.decoder_only.base \
+	--model_name_or_path BAAI/bge-reranker-v2-gemma \
     --use_lora True \
     --lora_rank 32 \
     --lora_alpha 64 \
     --use_flash_attn True \
     --target_modules q_proj k_proj v_proj o_proj \
     --save_merged_lora_model True \
-    --model_type decoder \
-    --model_type from_finetuned_model \
-    --start_layer 8 \
-    --head_multi True \
-    --head_type simple \
-    --trust_remote_code True \
+    --model_type decoder
     --cache_dir ./cache/model \
     --train_data ./example_data/prompt_based/examples.jsonl \
     --cache_path ./cache/data \
@@ -194,7 +189,7 @@ torchrun --nproc_per_node 2 \
     --query_instruction_format '{}{}' \
     --passage_instruction_for_rerank 'B: ' \
     --passage_instruction_format '{}{}' \
-	--output_dir ./test_decoder_only_base_bge-reranker-v2-gemma \
+    --output_dir ./test_decoder_only_base_bge-reranker-v2-minicpm-layerwise \
     --overwrite_output_dir \
     --learning_rate 2e-4 \
     --fp16 \
@@ -227,15 +222,20 @@ Here are some new arguments:
 
 ```shell
 torchrun --nproc_per_node 2 \
-	-m FlagEmbedding.finetune.reranker.encoder_only.base \
-	--model_name_or_path BAAI/bge-reranker-v2-gemma \
+	-m FlagEmbedding.finetune.reranker.decoder_only.layerwise \
+    --model_name_or_path BAAI/bge-reranker-v2-minicpm-layerwise \
     --use_lora True \
     --lora_rank 32 \
     --lora_alpha 64 \
     --use_flash_attn True \
     --target_modules q_proj k_proj v_proj o_proj \
     --save_merged_lora_model True \
-    --model_type decoder
+    --model_type decoder \
+    --model_type from_finetuned_model \
+    --start_layer 8 \
+    --head_multi True \
+    --head_type simple \
+    --trust_remote_code True \
     --cache_dir ./cache/model \
     --train_data ./example_data/prompt_based/examples.jsonl \
     --cache_path ./cache/data \
@@ -248,7 +248,7 @@ torchrun --nproc_per_node 2 \
     --query_instruction_format '{}{}' \
     --passage_instruction_for_rerank 'B: ' \
     --passage_instruction_format '{}{}' \
-    --output_dir ./test_decoder_only_base_bge-reranker-v2-minicpm-layerwise \
+	--output_dir ./test_decoder_only_base_bge-reranker-v2-gemma \
     --overwrite_output_dir \
     --learning_rate 2e-4 \
     --fp16 \
