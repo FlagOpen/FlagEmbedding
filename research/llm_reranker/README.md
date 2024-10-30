@@ -254,7 +254,7 @@ You can fine-tune the reranker with the following code:
 
 **For normal reranker** (bge-reranker-base / bge-reranker-large / bge-reranker-v2-m3 )
 
-Refer to: https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker
+Refer to: [reranker](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/reranker#1-standard-model)
 
 **For llm-based reranker** (bge-reranker-v2-gemma)
 

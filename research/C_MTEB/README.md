@@ -30,7 +30,7 @@ pip install -U C_MTEB
 Or clone this repo and install as editable
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding/C_MTEB
+cd FlagEmbedding/research/C_MTEB
 pip install -e .
 ```
 
@@ -40,7 +40,7 @@ pip install -e .
 ```bash
 python eval_cross_encoder.py --model_name_or_path BAAI/bge-reranker-base
 ```
- 
+
 ### Evaluate embedding model
 * **With our scripts**
 
@@ -54,7 +54,7 @@ python eval_MTEB.py --model_name_or_path BAAI/bge-large-en
 ```
 
 * **With sentence-transformers** 
- 
+
 You can use C-MTEB easily in the same way as [MTEB](https://github.com/embeddings-benchmark/mteb).
 
 Note that the original sentence-transformers model doesn't support instruction. 

@@ -237,7 +237,7 @@ Merge 10 models fine-tuned on other tasks based on five examples for new tasks:
 - Examples Data for dataset from FLAN: [./llm_examples.json]()
 - MMLU dataset: https://huggingface.co/datasets/cais/mmlu (use the example in dev set to do in-context learning) 
 
-You can use these models and our code to produce a new model and evaluate its performance using the [llm-embedder script](https://github.com/FlagOpen/FlagEmbedding/blob/master/FlagEmbedding/llm_embedder/docs/evaluation.md) as following: 
+You can use these models and our code to produce a new model and evaluate its performance using the [llm-embedder script](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/research/llm_embedder/docs/evaluation.md) as following: 
 ```
 # for 30 tasks from FLAN
 torchrun --nproc_per_node 8 -m evaluation.eval_icl \

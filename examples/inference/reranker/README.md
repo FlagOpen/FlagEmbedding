@@ -389,6 +389,36 @@ with torch.no_grad():
     print(scores)
 ```
 
+## Load model in local
+
+### Load llm-based layerwise reranker in local
+
+If you download reranker-v2-minicpm-layerwise, you can load it with the following method:
+
+1. make sure `configuration_minicpm_reranker.py` and `modeling_minicpm_reranker.py` in `/path/bge-reranker-v2-minicpm-layerwise`.
+2. modify the following part of `config.json`:
+
+```
+"auto_map": {
+    "AutoConfig": "configuration_minicpm_reranker.LayerWiseMiniCPMConfig",
+    "AutoModel": "modeling_minicpm_reranker.LayerWiseMiniCPMModel",
+    "AutoModelForCausalLM": "modeling_minicpm_reranker.LayerWiseMiniCPMForCausalLM"
+  },
+```
+
+### Load llm-based lightweight reranker in local
+
+1. make sure `gemma_config.py` and `gemma_model.py` from [BAAI/bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight/tree/main) in your local path.
+2. modify the following part of config.json:
+
+```
+"auto_map": {
+    "AutoConfig": "gemma_config.CostWiseGemmaConfig",
+    "AutoModel": "gemma_model.CostWiseGemmaModel",
+    "AutoModelForCausalLM": "gemma_model.CostWiseGemmaForCausalLM"
+  },
+```
+
 ## Citation
 
 If you find this repository useful, please consider giving a star :star: and citation
