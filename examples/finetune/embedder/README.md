@@ -309,7 +309,7 @@ torchrun --nproc_per_node 2 \
     			 ./example_data/clustering-no_in_batch_neg \
     --cache_path ./cache/data \
     --train_group_size 8 \
-    --query_max_len 512 \
+    --query_max_len 2048 \
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
     --query_instruction_for_retrieval 'Given a query, retrieve passages that are relevant to the query.' \
@@ -318,8 +318,8 @@ torchrun --nproc_per_node 2 \
     --same_dataset_within_batch True \
     --small_threshold 0 \
     --drop_threshold 0 \
-    --example_query_max_len 64 \
-    --example_passage_max_len 96 \
+    --example_query_max_len 256 \
+    --example_passage_max_len 256 \
     --retrieval_use_examples True \
     --icl_suffix_str '\n<response>' \
     --output_dir ./test_decoder_only_base_bge-en-icl_sd \

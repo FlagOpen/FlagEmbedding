@@ -23,6 +23,7 @@ setup(
         'deepspeed',
         'flash-attn==2.5.6',
         'ir-datasets',
-        'sentencepiece'
+        'sentencepiece',
+        'protobuf'
     ],
 )
