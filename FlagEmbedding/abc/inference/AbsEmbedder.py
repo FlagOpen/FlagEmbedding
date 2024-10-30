@@ -83,6 +83,17 @@ class AbsEmbedder(ABC):
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
+        """
+
+        Args:
+            devices (Union[str, int, List[str], List[int]]): specified devices, can be `str`, `int`, list of `str`, or list of `int`.
+
+        Raises:
+            ValueError: devices should be a string or an integer or a list of strings or a list of integers.
+
+        Returns:
+            List[str]: a list of target devices in format
+        """
         if devices is None:
             if torch.cuda.is_available():
                 return [f"cuda:{i}" for i in range(torch.cuda.device_count())]
@@ -108,6 +119,16 @@ class AbsEmbedder(ABC):
 
     @staticmethod
     def get_detailed_instruct(instruction_format: str, instruction: str, sentence: str):
+        """Combine the instruction and sentence along with the instruction format.
+
+        Args:
+            instruction_format (str): Format for instruction.
+            instruction (str): The text of instruction.
+            sentence (str): The sentence to concatenate with.
+
+        Returns:
+            str: the complete sentence with instruction
+        """
         return instruction_format.format(instruction, sentence)
 
     def encode_queries(
@@ -118,6 +139,18 @@ class AbsEmbedder(ABC):
             convert_to_numpy: Optional[bool] = None,
             **kwargs: Any
     ):
+        """encode the queries using the instruction if provided.
+
+        Args:
+            queries (Union[List[str], str]): Input queries to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to None.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to None.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to None.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.query_max_length
         if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
@@ -140,6 +173,18 @@ class AbsEmbedder(ABC):
             convert_to_numpy: Optional[bool] = None,
             **kwargs: Any
     ):
+        """encode the corpus using the instruction if provided.
+
+        Args:
+            corpus (Union[List[str], str]): Input corpus to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to None.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to None.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to None.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
         passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")
 
@@ -167,6 +212,20 @@ class AbsEmbedder(ABC):
             instruction_format: Optional[str] = None,
             **kwargs: Any
     ):
+        """encode the input sentences with the embedding model.
+
+        Args:
+            sentences (Union[List[str], str]): Input sentences to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to None.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to None.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to None.
+            instruction (Optional[str], optional): The text of instruction. Defaults to None.
+            instruction_format (Optional[str], optional): Format for instruction. Defaults to None.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.passage_max_length
         if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
@@ -338,6 +397,17 @@ class AbsEmbedder(ABC):
         return embeddings
 
     def _concatenate_results_from_multi_process(self, results_list: List[Union[torch.Tensor, np.ndarray, Any]]):
+        """concatenate and return the results from all the processes
+
+        Args:
+            results_list (List[Union[torch.Tensor, np.ndarray, Any]]): a list of results from all the processes
+
+        Raises:
+            NotImplementedError: Unsupported type for results_list
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         if isinstance(results_list[0], torch.Tensor):
             return torch.cat(results_list, dim=0)
         elif isinstance(results_list[0], np.ndarray):
