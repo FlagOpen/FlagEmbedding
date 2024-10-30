@@ -145,6 +145,8 @@ class BEIREvaluator(AbsEvaluator):
             retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
             self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
+            retriever.stop_multi_process_pool()
+
             # Reranking Stage
             if reranker is not None:
                 reranker_search_results_save_dir = os.path.join(
@@ -314,7 +316,8 @@ class BEIREvaluator(AbsEvaluator):
                     eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
                     reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
                     self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
-
+            if reranker is not None:
+                reranker.stop_multi_process_pool()
     def evaluate_results(
         self,
         search_results_save_dir: str,
