@@ -26,11 +26,12 @@
         <a href=#community>Community</a> |
         <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/research">Projects</a> |
         <a href=#model-list>Model List</a> |
-        <a href="#contributor">Contributor</a> |
+        <a href="#contributors">Contributor</a> |
         <a href="#citation">Citation</a> |
         <a href="#license">License</a> 
     <p>
 </h4>
+
 
 [English](README.md) | [中文](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/README_zh.md)
 
