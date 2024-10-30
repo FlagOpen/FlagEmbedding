@@ -25,6 +25,10 @@ class EvalRetriever(ABC):
         """
         return os.path.basename(self.embedder.model.config._name_or_path)
 
+    def stop_multi_process_pool(self):
+        if self.embedder.pool is not None:
+            self.embedder.stop_multi_process_pool(self.embedder.pool)
+
     @abstractmethod
     def __call__(
         self,
@@ -143,6 +147,10 @@ class EvalReranker:
         Returns: str: Name of the reranker.
         """
         return os.path.basename(self.reranker.model.config._name_or_path)
+
+    def stop_multi_process_pool(self):
+        if self.reranker.pool is not None:
+            self.reranker.stop_multi_process_pool(self.reranker.pool)
 
     def __call__(
         self,

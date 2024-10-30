@@ -45,19 +45,33 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
             corpus_dict = {}
             with open(save_path, "w", encoding="utf-8") as f:
                 for data in tqdm(corpus, desc="Loading and Saving corpus"):
-                    _data = {
-                        "id": data["docid"],
-                        "title": data["title"],
-                        "text": data.get("text", data.get("body", ""))
-                    }
-                    corpus_dict[data["docid"]] = {
-                        "title": data["title"],
-                        "text": data.get("text", data.get("body", ""))
-                    }
+                    if dataset_name == 'passage':
+                        _data = {
+                            "id": data["docid"],
+                            "title": data["title"],
+                            "text": data["text"]
+                        }
+                        corpus_dict[data["docid"]] = {
+                            "title": data["title"],
+                            "text": data["text"]
+                        }
+                    else:
+                        _data = {
+                            "id": data["doc_id"],
+                            "title": data["title"],
+                            "text": data["body"]
+                        }
+                        corpus_dict[data["doc_id"]] = {
+                            "title": data["title"],
+                            "text": data["body"]
+                        }
                     f.write(json.dumps(_data, ensure_ascii=False) + "\n")
             logging.info(f"{self.eval_name} {dataset_name} corpus saved to {save_path}")
         else:
-            corpus_dict = {data["docid"]: {"title": data["title"], "text": data.get("text", data.get("body", ""))} for data in tqdm(corpus, desc="Loading corpus")}
+            if dataset_name == 'passage':
+                corpus_dict = {data["docid"]: {"title": data["title"], "text": data["text"]} for data in tqdm(corpus, desc="Loading corpus")}
+            else:
+                corpus_dict = {data["doc_id"]: {"title": data["title"], "text": data["body"]} for data in tqdm(corpus, desc="Loading corpus")}
         return datasets.DatasetDict(corpus_dict)
 
     def _load_remote_qrels(
