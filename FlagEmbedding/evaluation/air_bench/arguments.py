@@ -9,8 +9,14 @@ class AIRBenchEvalModelArgs:
     embedder_name_or_path: str = field(
         metadata={"help": "The embedder name or path.", "required": True}
     )
+    embedder_model_class: Optional[str] = field(
+        default=None, metadata={"help": "The embedder model class. Available classes: ['encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: None. For the custom model, you need to specifiy the model class.", "choices": ["encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
+    )
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
+    )
+    pooling_method: str = field(
+        default="cls", metadata={"help": "The pooling method fot the embedder."}
     )
     use_fp16: bool = field(
         default=True, metadata={"help": "whether to use fp16 for inference"}
@@ -35,6 +41,9 @@ class AIRBenchEvalModelArgs:
     )
     reranker_name_or_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker name or path."}
+    )
+    reranker_model_class: Optional[str] = field(
+        default=None, metadata={"help": "The reranker model class. Available classes: ['encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: None. For the custom model, you need to specify the model class.", "choices": ["encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
     )
     reranker_peft_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker peft path."}
