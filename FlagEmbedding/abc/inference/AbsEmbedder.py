@@ -89,10 +89,10 @@ class AbsEmbedder(ABC):
             devices (Union[str, int, List[str], List[int]]): specified devices, can be `str`, `int`, list of `str`, or list of `int`.
 
         Raises:
-            ValueError: devices should be a string or an integer or a list of strings or a list of integers.
+            ValueError: Devices should be a string or an integer or a list of strings or a list of integers.
 
         Returns:
-            List[str]: a list of target devices in format
+            List[str]: A list of target devices in format
         """
         if devices is None:
             if torch.cuda.is_available():
@@ -127,7 +127,7 @@ class AbsEmbedder(ABC):
             sentence (str): The sentence to concatenate with.
 
         Returns:
-            str: the complete sentence with instruction
+            str: The complete sentence with instruction
         """
         return instruction_format.format(instruction, sentence)
 
@@ -149,7 +149,7 @@ class AbsEmbedder(ABC):
                 be a Torch Tensor. Defaults to None.
 
         Returns:
-            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+            Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
         """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.query_max_length
@@ -183,7 +183,7 @@ class AbsEmbedder(ABC):
                 be a Torch Tensor. Defaults to None.
 
         Returns:
-            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+            Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
         """
         passage_instruction_for_retrieval = self.kwargs.get("passage_instruction_for_retrieval", None)
         passage_instruction_format = self.kwargs.get("passage_instruction_format", "{}{}")

@@ -82,13 +82,13 @@ class AbsReranker(ABC):
         """
 
         Args:
-            devices (Union[str, int, List[str], List[int]]): specified devices, can be `str`, `int`, list of `str`, or list of `int`.
+            devices (Union[str, int, List[str], List[int]]): Specified devices, can be `str`, `int`, list of `str`, or list of `int`.
 
         Raises:
-            ValueError: devices should be a string or an integer or a list of strings or a list of integers.
+            ValueError: Devices should be a string or an integer or a list of strings or a list of integers.
 
         Returns:
-            List[str]: a list of target devices in format
+            List[str]: A list of target devices in format
         """
         if devices is None:
             if torch.cuda.is_available():
@@ -122,11 +122,19 @@ class AbsReranker(ABC):
             sentence (str): The sentence to concatenate with.
 
         Returns:
-            str: the complete sentence with instruction
+            str: The complete sentence with instruction
         """
         return instruction_format.format(instruction, sentence)
     
     def get_detailed_inputs(self, sentence_pairs: Union[str, List[str]]):
+        """get detailed instruct for all the inputs
+
+        Args:
+            sentence_pairs (Union[str, List[str]]): Input sentence pairs
+
+        Returns:
+            list[list[str]]: The complete sentence pairs with instruction
+        """
         if isinstance(sentence_pairs, str):
             sentence_pairs = [sentence_pairs]
 
@@ -166,6 +174,14 @@ class AbsReranker(ABC):
         sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
         **kwargs
     ):
+        """Compute score for each sentence pair
+
+        Args:
+            sentence_pairs (Union[List[Tuple[str, str]], Tuple[str, str]]): Input sentence pairs to compute.
+
+        Returns:
+            numpy.ndarray: scores of all the sentence pairs.
+        """
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
         sentence_pairs = self.get_detailed_inputs(sentence_pairs)
