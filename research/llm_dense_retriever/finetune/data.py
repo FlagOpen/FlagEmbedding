@@ -267,8 +267,8 @@ class SameDatasetTrainDataset(Dataset):
                                    truncation=True,
                                    add_special_tokens=False)['input_ids']
                 )
-                if self.args.use_special_tokens:
-                    for i in range(len(tmp_passages)):
+                for i in range(len(tmp_passages)):
+                    if self.args.use_special_tokens:
                         tmp_passages[i] = tmp_passages[i] + '\n<response>'
                     else:
                         tmp_passages[i] = tmp_passages[i] + '\nResponse:'
