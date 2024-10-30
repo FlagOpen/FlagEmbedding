@@ -16,8 +16,26 @@ logger = logging.getLogger(__name__)
 
 class AbsReranker(ABC):
     """
-    Base class for embedder.
+    Base class for Reranker.
     Extend this class and implement `compute_score_single_gpu` for custom rerankers.
+
+    Args:
+        model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+            load a model from HuggingFace Hub with the name.
+        use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+            degradation. Default: `False`.
+        query_instruction_for_rerank: (Optional[str], optional): Query instruction for reranking, which will be used with
+            with `query_instruction_format`. Default: `None`.
+        query_instruction_format: (str, optional): The template for `query_instruction_for_rerank`. Default: `"{}{}"`.
+        passage_instruction_for_rerank (Optional[str], optional): Passage instruction for reranking. Default: `None`.
+        passage_instruction_format (str, optional): Passage instruction format when using `passage_instruction_for_rerank`. 
+            Default: `"{}{}"`.
+        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Default: `None`.
+        batch_size (int, optional): Batch size for inference. Default: `128`.
+        query_max_length (int, optional): Maximum length for query. Default: `None`.
+        passage_max_length (int, optional): Maximum length for passage. Default: `512`.
+        normalize (bool, optional): If true, normalize the result. Default: `False`.
+        kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
 
     def __init__(
@@ -61,6 +79,17 @@ class AbsReranker(ABC):
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
+        """
+
+        Args:
+            devices (Union[str, int, List[str], List[int]]): specified devices, can be `str`, `int`, list of `str`, or list of `int`.
+
+        Raises:
+            ValueError: devices should be a string or an integer or a list of strings or a list of integers.
+
+        Returns:
+            List[str]: a list of target devices in format
+        """
         if devices is None:
             if torch.cuda.is_available():
                 return [f"cuda:{i}" for i in range(torch.cuda.device_count())]
@@ -85,6 +114,16 @@ class AbsReranker(ABC):
             raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
 
     def get_detailed_instruct(self, instruction_format: str, instruction: str, sentence: str):
+        """Combine the instruction and sentence along with the instruction format.
+
+        Args:
+            instruction_format (str): Format for instruction.
+            instruction (str): The text of instruction.
+            sentence (str): The sentence to concatenate with.
+
+        Returns:
+            str: the complete sentence with instruction
+        """
         return instruction_format.format(instruction, sentence)
     
     def get_detailed_inputs(self, sentence_pairs: Union[str, List[str]]):
