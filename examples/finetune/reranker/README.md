@@ -184,7 +184,7 @@ torchrun --nproc_per_node 2 \
     --query_max_len 512 \
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
-    --knowledge_distillation True \
+    --knowledge_distillation False \
     --query_instruction_for_rerank 'A: ' \
     --query_instruction_format '{}{}' \
     --passage_instruction_for_rerank 'B: ' \
@@ -243,7 +243,7 @@ torchrun --nproc_per_node 2 \
     --query_max_len 512 \
     --passage_max_len 512 \
     --pad_to_multiple_of 8 \
-    --knowledge_distillation True \
+    --knowledge_distillation False \
     --query_instruction_for_rerank 'A: ' \
     --query_instruction_format '{}{}' \
     --passage_instruction_for_rerank 'B: ' \
