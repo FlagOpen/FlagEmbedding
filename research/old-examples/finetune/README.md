@@ -2,24 +2,10 @@
 In this example, we show how to finetune the baai-general-embedding with your data.
 
 ## 1. Installation
-* **with pip**
-```
-pip install -U FlagEmbedding
-```
-
-* **from source**
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding
-pip install  .
+cd FlagEmbedding/research/baai_general_embedding
 ```
-For development, install as editable:
-```
-pip install -e .
-```
-
- 
-
 ## 2. Data format
 Train data should be a json file, where each line is a dict like this:
 
@@ -36,6 +22,12 @@ See [toy_finetune_data.jsonl](https://github.com/FlagOpen/FlagEmbedding/blob/mas
 
 Hard negatives is a widely used method to improve the quality of sentence embedding. 
 You can mine hard negatives following this command:
+
+```shell
+git clone https://github.com/FlagOpen/FlagEmbedding.git
+cd FlagEmbedding/scripts
+```
+
 ```bash
 python -m FlagEmbedding.baai_general_embedding.finetune.hn_mine \
 --model_name_or_path BAAI/bge-base-en-v1.5 \
@@ -59,7 +51,7 @@ The format of this file is the same as [pretrain data](https://github.com/FlagOp
 ## 3. Train
 ```
 torchrun --nproc_per_node {number of gpus} \
--m FlagEmbedding.baai_general_embedding.finetune.run \
+-m finetune.run \
 --output_dir {path to save model} \
 --model_name_or_path BAAI/bge-large-zh-v1.5 \
 --train_data ./toy_finetune_data.jsonl \
@@ -97,9 +89,9 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
-### 4. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail) [optional]
+### 4. Model merging via [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail) [optional]
 
-For more details please refer to [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/LM_Cocktail).
+For more details please refer to [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail).
 
 Fine-tuning the base bge model can improve its performance on target task, 
 but maybe lead to severe degeneration of model’s general capabilities 
@@ -144,14 +136,15 @@ You can fine-tune the base model on more tasks and merge them to achieve better 
 
 
 ### 5. Load your model
-After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding#usage) 
+After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding#usage) 
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.
 
 
 ### 6. Evaluate model
-We provide [a simple script](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance.
+We provide [a simple script](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/research/baai_general_embedding/finetune/eval_msmarco.py) to evaluate the model's performance.
 A brief summary of how the script works:
+
 1. Load the model on all available GPUs through [DataParallel](https://pytorch.org/docs/stable/generated/torch.nn.DataParallel.html). 
 2. Encode the corpus and offload the embeddings in `faiss` Flat index. By default, `faiss` also dumps the index on all available GPUs.
 3. Encode the queries and search `100` nearest neighbors for each query.
@@ -170,7 +163,7 @@ You can check the data formats for the [msmarco corpus](https://huggingface.co/d
 Run the following command:
 
 ```bash
-python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
+python -m finetune.eval_msmarco \
 --encoder BAAI/bge-base-en-v1.5 \
 --fp16 \
 --add_instruction \
@@ -222,5 +215,4 @@ python -m FlagEmbedding.baai_general_embedding.finetune.eval_msmarco \
 --corpus_data ./toy_evaluation_data/toy_corpus.json \
 --query_data ./toy_evaluation_data/toy_query.json 
 ```
-
 
