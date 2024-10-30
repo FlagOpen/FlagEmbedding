@@ -136,6 +136,8 @@ class BaseReranker(AbsReranker):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
+            except torch.OutOfMemoryError as e:
+                batch_size = batch_size * 3 // 4
 
         all_scores = []
         for start_index in tqdm(range(0, len(all_inputs_sorted), batch_size), desc="Compute Scores",

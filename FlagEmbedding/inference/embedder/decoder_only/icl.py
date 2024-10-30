@@ -280,6 +280,8 @@ class ICLLLMEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
+            except torch.OutOfMemoryError as e:
+                batch_size = batch_size * 3 // 4
 
         # encode
         all_embeddings = []
@@ -390,6 +392,8 @@ class ICLLLMEmbedder(AbsEmbedder):
                 embeddings = last_token_pool(last_hidden_state, test_inputs_batch['attention_mask'])
                 flag = True
             except RuntimeError as e:
+                batch_size = batch_size * 3 // 4
+            except torch.OutOfMemoryError as e:
                 batch_size = batch_size * 3 // 4
 
         # encode

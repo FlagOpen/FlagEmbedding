@@ -302,7 +302,9 @@ class LightweightLLMReranker(AbsReranker):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-        
+            except torch.OutOfMemoryError as e:
+                batch_size = batch_size * 3 // 4
+
         all_scores = []
         for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
             queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
