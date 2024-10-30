@@ -5,19 +5,22 @@ from FlagEmbedding.evaluation.miracl import (
     MIRACLEvalRunner
 )
 
+def main():
+    parser = HfArgumentParser((
+        MIRACLEvalArgs,
+        MIRACLEvalModelArgs
+    ))
 
-parser = HfArgumentParser((
-    MIRACLEvalArgs,
-    MIRACLEvalModelArgs
-))
+    eval_args, model_args = parser.parse_args_into_dataclasses()
+    eval_args: MIRACLEvalArgs
+    model_args: MIRACLEvalModelArgs
 
-eval_args, model_args = parser.parse_args_into_dataclasses()
-eval_args: MIRACLEvalArgs
-model_args: MIRACLEvalModelArgs
+    runner = MIRACLEvalRunner(
+        eval_args=eval_args,
+        model_args=model_args
+    )
 
-runner = MIRACLEvalRunner(
-    eval_args=eval_args,
-    model_args=model_args
-)
+    runner.run()
 
-runner.run()
+if __name__ == "__main__":
+    main()
