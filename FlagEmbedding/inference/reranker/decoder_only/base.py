@@ -317,9 +317,7 @@ class BaseLLMReranker(AbsReranker):
 
                 self.model(**batch_inputs, output_hidden_states=True)
                 flag = True
-            except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.OutOfMemoryError as e:
+            except:
                 batch_size = batch_size * 3 // 4
 
         dataset, dataloader = None, None
