@@ -134,7 +134,7 @@ class BaseReranker(AbsReranker):
                 ).to(device)
                 scores = self.model(**test_inputs_batch, return_dict=True).logits.view(-1, ).float()
                 flag = True
-            except:
+            except (RuntimeError, torch.OutofMemoryError) as e:
                 batch_size = batch_size * 3 // 4
 
         all_scores = []

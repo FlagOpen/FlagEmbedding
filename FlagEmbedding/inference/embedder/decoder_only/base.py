@@ -180,7 +180,7 @@ class BaseLLMEmbedder(AbsEmbedder):
                 last_hidden_state = self.model(**test_inputs_batch, return_dict=True).last_hidden_state
                 embeddings = last_token_pool(last_hidden_state, test_inputs_batch['attention_mask'])
                 flag = True
-            except:
+            except (RuntimeError, torch.OutofMemoryError) as e:
                 batch_size = batch_size * 3 // 4
 
         # encode

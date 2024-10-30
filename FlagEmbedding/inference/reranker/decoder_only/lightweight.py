@@ -300,7 +300,7 @@ class LightweightLLMReranker(AbsReranker):
                     cutoff_layers=cutoff_layers
                 )
                 flag = True
-            except:
+            except (RuntimeError, torch.OutofMemoryError) as e:
                 batch_size = batch_size * 3 // 4
 
         all_scores = []
