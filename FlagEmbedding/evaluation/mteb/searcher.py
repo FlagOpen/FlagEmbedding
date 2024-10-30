@@ -19,22 +19,30 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         self.embedder.normalize_embeddings = normalize_embeddings
     
     def encode_queries(self, queries: List[str], **kwargs):
-        return self.embedder.encode_queries(queries)
+        emb = self.embedder.encode_queries(queries)
+        if isinstance(emb, dict):
+            emb = emb["dense_vecs"]
+        return emb
     
     def encode_corpus(self, corpus: List[Dict[str, str]], **kwargs):
         if isinstance(corpus[0], dict):
             input_texts = ['{} {}'.format(doc.get('title', ''), doc['text']).strip() for doc in corpus]
         else:
             input_texts = corpus
-        return self.embedder.encode_corpus(input_texts)
+        emb = self.embedder.encode_corpus(input_texts)
+        if isinstance(emb, dict):
+            emb = emb["dense_vecs"]
+        return emb
     
     def encode(self, corpus: List[Dict[str, str]], **kwargs):
         if isinstance(corpus[0], dict):
             input_texts = ['{} {}'.format(doc.get('title', ''), doc['text']).strip() for doc in corpus]
         else:
             input_texts = corpus
-        return self.embedder.encode_corpus(input_texts)
-
+        emb = self.embedder.encode_corpus(input_texts)
+        if isinstance(emb, dict):
+            emb = emb["dense_vecs"]
+        return emb
 
 class MTEBEvalReranker(EvalReranker):
     def __init__(self, reranker, **kwargs):
