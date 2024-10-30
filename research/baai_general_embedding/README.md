@@ -13,12 +13,12 @@ Therefore, make sure to use the correct method to obtain sentence vectors. You c
 
 **1. How to fine-tune bge embedding model?**
 
-Following this [example](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder) to prepare data and fine-tune your model. 
+Following this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder) to prepare data and fine-tune your model. 
 Some suggestions:
 
-- Mine hard negatives following this [example](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/finetune/embedder#hard-negatives), which can improve the retrieval performance.
+- Mine hard negatives following this [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder#hard-negatives), which can improve the retrieval performance.
 - In general, larger hyper-parameter `per_device_train_batch_size` brings better performance. You can expand it by enabling `--fp16`, `--deepspeed df_config.json` (df_config.json can refer to [ds_config.json](https://github.com/hanhainebula/FlagEmbedding/blob/new-flagembedding-v1/examples/finetune/ds_stage0.json), `--gradient_checkpointing`, etc.
-- If you want to maintain the performance on other tasks when fine-tuning on your data, you can use [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail) to merge the fine-tuned model and the original bge model. Besides, if you want to fine-tune on multiple tasks, you also can approximate the multi-task learning via model merging as [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail).
+- If you want to maintain the performance on other tasks when fine-tuning on your data, you can use [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail) to merge the fine-tuned model and the original bge model. Besides, if you want to fine-tune on multiple tasks, you also can approximate the multi-task learning via model merging as [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail).
 - If you pre-train bge on your data, the pre-trained model cannot be directly used to calculate similarity, and it must be fine-tuned with contrastive learning before computing similarity.
 - If the accuracy of the fine-tuned model is still not high, it is recommended to use/fine-tune the cross-encoder model (bge-reranker) to re-rank top-k results. Hard negatives also are needed to fine-tune reranker.
 
@@ -193,9 +193,9 @@ print("Sentence embeddings:", sentence_embeddings)
 ## Evaluation  
 
 `baai-general-embedding` models achieve **state-of-the-art performance on both MTEB and C-MTEB leaderboard!**
-For more details and evaluation tools see our [scripts](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/C_MTEB) 
+For more details and evaluation tools see our [scripts](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/C_MTEB) 
 
-If you want to evaluate the model(or your model) on **your data**, you can refer to this [tool](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/examples/evaluation#8-custom-dataset).
+If you want to evaluate the model(or your model) on **your data**, you can refer to this [tool](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation#8-custom-dataset).
 
 
 - **MTEB**:   

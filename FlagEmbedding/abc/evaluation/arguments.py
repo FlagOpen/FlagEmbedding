@@ -81,7 +81,7 @@ class AbsEvalModelArgs:
         metadata={"help": "The embedder name or path.", "required": True}
     )
     embedder_model_class: Optional[str] = field(
-        default="auto", metadata={"help": "The embedder model class. Available classes: ['auto', 'encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: auto.", "choices": ["auto", "encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
+        default=None, metadata={"help": "The embedder model class. Available classes: ['encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: None. For the custom model, you need to specifiy the model class.", "choices": ["encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
     )
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
@@ -114,7 +114,7 @@ class AbsEvalModelArgs:
         default=None, metadata={"help": "The reranker name or path."}
     )
     reranker_model_class: Optional[str] = field(
-        default="auto", metadata={"help": "The reranker model class. Available classes: ['auto', 'encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: auto.", "choices": ["auto", "encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
+        default=None, metadata={"help": "The reranker model class. Available classes: ['encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: None. For the custom model, you need to specify the model class.", "choices": ["encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
     )
     reranker_peft_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker peft path."}

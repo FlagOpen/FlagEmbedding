@@ -89,9 +89,9 @@ Besides the negatives in this group, the in-batch negatives also will be used in
 For more training arguments please refer to [transformers.TrainingArguments](https://huggingface.co/docs/transformers/main_classes/trainer#transformers.TrainingArguments)
 
 
-### 4. Model merging via [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail) [optional]
+### 4. Model merging via [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail) [optional]
 
-For more details please refer to [LM-Cocktail](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/LM_Cocktail).
+For more details please refer to [LM-Cocktail](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/LM_Cocktail).
 
 Fine-tuning the base bge model can improve its performance on target task, 
 but maybe lead to severe degeneration of model’s general capabilities 
@@ -136,7 +136,7 @@ You can fine-tune the base model on more tasks and merge them to achieve better 
 
 
 ### 5. Load your model
-After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/hanhainebula/FlagEmbedding/tree/new-flagembedding-v1/research/baai_general_embedding#usage) 
+After fine-tuning BGE model, you can load it easily in the same way as [here](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/baai_general_embedding#usage) 
 
 Please replace the `query_instruction_for_retrieval` with your instruction if you set a different value for hyper-parameter `--query_instruction_for_retrieval` when fine-tuning.
 
