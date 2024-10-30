@@ -102,10 +102,13 @@ def index(
     faiss_index = faiss.index_factory(corpus_embeddings.shape[-1], index_factory, faiss.METRIC_INNER_PRODUCT)
     
     if device is None and torch.cuda.is_available():
-        co = faiss.GpuMultipleClonerOptions()
-        co.shard = True
-        co.useFloat16 = True
-        faiss_index = faiss.index_cpu_to_all_gpus(faiss_index, co)
+        try:
+            co = faiss.GpuMultipleClonerOptions()
+            co.shard = True
+            co.useFloat16 = True
+            faiss_index = faiss.index_cpu_to_all_gpus(faiss_index, co)
+        except:
+            print('faiss do not support GPU, please uninstall faiss-cpu, faiss-gpu and install faiss-gpu again.')
 
     logger.info('Adding embeddings ...')
     corpus_embeddings = corpus_embeddings.astype(np.float32)
