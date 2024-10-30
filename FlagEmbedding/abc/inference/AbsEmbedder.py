@@ -167,8 +167,6 @@ class AbsEmbedder(ABC):
             instruction_format: Optional[str] = None,
             **kwargs: Any
     ):
-        if instruction is None: instruction = self.instruction
-        if instruction_format is None: instruction_format = self.instruction_format
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.passage_max_length
         if convert_to_numpy is None: convert_to_numpy = self.convert_to_numpy
