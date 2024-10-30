@@ -22,6 +22,7 @@ setup(
         'peft',
         'deepspeed',
         'flash-attn==2.5.6',
-        'ir-datasets'
+        'ir-datasets',
+        'sentencepiece'
     ],
 )
