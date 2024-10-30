@@ -5,22 +5,19 @@ from FlagEmbedding.evaluation.mkqa import (
     MKQAEvalRunner
 )
 
-def main():
-    parser = HfArgumentParser((
-        MKQAEvalArgs,
-        MKQAEvalModelArgs
-    ))
 
-    eval_args, model_args = parser.parse_args_into_dataclasses()
-    eval_args: MKQAEvalArgs
-    model_args: MKQAEvalModelArgs
+parser = HfArgumentParser((
+    MKQAEvalArgs,
+    MKQAEvalModelArgs
+))
 
-    runner = MKQAEvalRunner(
-        eval_args=eval_args,
-        model_args=model_args
-    )
+eval_args, model_args = parser.parse_args_into_dataclasses()
+eval_args: MKQAEvalArgs
+model_args: MKQAEvalModelArgs
 
-    runner.run()
+runner = MKQAEvalRunner(
+    eval_args=eval_args,
+    model_args=model_args
+)
 
-if __name__ == "__main__":
-    main()
+runner.run()

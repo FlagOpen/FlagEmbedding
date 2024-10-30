@@ -1,8 +1,6 @@
 from dataclasses import dataclass, field
 from typing import List, Optional
 
-from air_benchmark import EvalArgs as AIRBenchEvalArgs
-
 
 @dataclass
 class AIRBenchEvalModelArgs:

@@ -5,22 +5,19 @@ from FlagEmbedding.evaluation.beir import (
     BEIREvalRunner
 )
 
-def main():
-    parser = HfArgumentParser((
-        BEIREvalArgs,
-        BEIREvalModelArgs
-    ))
 
-    eval_args, model_args = parser.parse_args_into_dataclasses()
-    eval_args: BEIREvalArgs
-    model_args: BEIREvalModelArgs
+parser = HfArgumentParser((
+    BEIREvalArgs,
+    BEIREvalModelArgs
+))
 
-    runner = BEIREvalRunner(
-        eval_args=eval_args,
-        model_args=model_args
-    )
+eval_args, model_args = parser.parse_args_into_dataclasses()
+eval_args: BEIREvalArgs
+model_args: BEIREvalModelArgs
 
-    runner.run()
+runner = BEIREvalRunner(
+    eval_args=eval_args,
+    model_args=model_args
+)
 
-if __name__ == "__main__":
-    main()
+runner.run()

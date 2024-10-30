@@ -1,7 +1,4 @@
-import os
-import json
 import logging
-import datasets
 from tqdm import tqdm
 from typing import List, Optional
 
@@ -15,4 +12,4 @@ class CustomEvalDataLoader(AbsEvalDataLoader):
         return []
 
     def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
-        return ["train", "dev", "test"]
+        return ["test"]

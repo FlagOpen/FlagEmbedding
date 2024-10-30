@@ -5,22 +5,19 @@ from FlagEmbedding.evaluation.custom import (
     CustomEvalRunner
 )
 
-def main():
-    parser = HfArgumentParser((
-        CustomEvalArgs,
-        CustomEvalModelArgs
-    ))
 
-    eval_args, model_args = parser.parse_args_into_dataclasses()
-    eval_args: CustomEvalArgs
-    model_args: CustomEvalModelArgs
+parser = HfArgumentParser((
+    CustomEvalArgs,
+    CustomEvalModelArgs
+))
 
-    runner = CustomEvalRunner(
-        eval_args=eval_args,
-        model_args=model_args
-    )
+eval_args, model_args = parser.parse_args_into_dataclasses()
+eval_args: CustomEvalArgs
+model_args: CustomEvalModelArgs
 
-    runner.run()
+runner = CustomEvalRunner(
+    eval_args=eval_args,
+    model_args=model_args
+)
 
-if __name__ == "__main__":
-    main()
+runner.run()
