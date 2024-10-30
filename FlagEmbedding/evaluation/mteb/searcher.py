@@ -39,7 +39,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
             input_texts = ['{} {}'.format(doc.get('title', ''), doc['text']).strip() for doc in corpus]
         else:
             input_texts = corpus
-        emb = self.embedder.encode_corpus(input_texts)
+        emb = self.embedder.encode_queries(input_texts)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
         return emb
