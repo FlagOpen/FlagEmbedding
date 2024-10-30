@@ -61,7 +61,7 @@ class AbsRerankerModel(ABC, nn.Module):
             if teacher_scores is not None:
                 teacher_targets = teacher_targets.to(grouped_logits.device)
                 # print(teacher_targets, torch.mean(torch.sum(torch.log_softmax(grouped_logits, dim=-1) * teacher_targets, dim=-1)))
-                loss += torch.mean(torch.sum(torch.log_softmax(grouped_logits, dim=-1) * teacher_targets, dim=-1))
+                loss += - torch.mean(torch.sum(torch.log_softmax(grouped_logits, dim=-1) * teacher_targets, dim=-1))
         else:
             loss = None
 

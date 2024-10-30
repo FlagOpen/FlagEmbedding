@@ -248,7 +248,7 @@ torchrun --nproc_per_node 2 \
     --query_instruction_format '{}{}' \
     --passage_instruction_for_rerank 'B: ' \
     --passage_instruction_format '{}{}' \
-	--output_dir ./test_decoder_only_base_bge-reranker-v2-gemma \
+	--output_dir ./test_decoder_only_base_bge-reranker-v2-minicpm-layerwise \
     --overwrite_output_dir \
     --learning_rate 2e-4 \
     --fp16 \
