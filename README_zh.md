@@ -85,8 +85,13 @@ BGE (BAAI General Embedding) 专注于检索增强llm领域，目前包括以下
 
 ## 安装
 ### 使用pip:
+如果你不想微调模型，你可以直接安装包，不用finetune依赖：
 ```
 pip install -U FlagEmbedding
+```
+如果你想微调模型，你可以用finetune依赖安装：
+```
+pip install -U FlagEmbedding[finetune]
 ```
 ### 从源文件安装部署:
 
@@ -94,11 +99,17 @@ pip install -U FlagEmbedding
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
+# 如果你不想微调模型，你可以直接安装包，不用finetune依赖：
 pip install  .
+# 如果你想微调模型，你可以用finetune依赖安装：
+# pip install  .[finetune]
 ```
 在可编辑模式下安装:
 ```
+# 如果你不想微调模型，你可以直接安装包，不用finetune依赖：
 pip install -e .
+# 如果你想微调模型，你可以用finetune依赖安装：
+# pip install -e .[finetune]
 ```
 
 ## 快速开始
