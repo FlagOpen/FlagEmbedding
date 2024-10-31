@@ -111,6 +111,18 @@ class AbsEvaluator:
         dataset_name: Optional[str] = None,
         **kwargs,
     ):
+        """Called to the whole evaluation process.
+
+        Args:
+            splits (Union[str, List[str]]): Splits of datasets.
+            search_results_save_dir (str): Directory to save the search results.
+            retriever (EvalRetriever): object of :class:EvalRetriever
+            reranker (Optional[EvalReranker], optional): Object of :class:EvalReranker. Defaults to None.
+            corpus_embd_save_dir (Optional[str], optional): Directory to save the embedded corpus. Defaults to None.
+            ignore_identical_ids (bool, optional): If True, will ignore identical ids in search results. Defaults to False.
+            k_values (List[int], optional): Cutoffs. Defaults to [1, 3, 5, 10, 100, 1000].
+            dataset_name (Optional[str], optional): Name of the datasets. Defaults to None.
+        """
         # Check Splits
         checked_splits = self.data_loader.check_splits(splits, dataset_name=dataset_name)
         if len(checked_splits) == 0:
@@ -263,7 +275,7 @@ class AbsEvaluator:
             eval_name (str): The experiment name of current evaluation.
             model_name (str): Name of model used.
             reranker_name (str): Name of reranker used.
-            search_results (Dict[str, Dict[str, float]]): The search results.
+            search_results (Dict[str, Dict[str, float]]): Dictionary of search results.
             output_path (str): Output path to write the results.
             split (str): Split used in searching.
             dataset_name (Optional[str], optional): Name of dataset used. Defaults to None.
@@ -304,6 +316,16 @@ class AbsEvaluator:
         search_results: Dict[str, Dict[str, float]],
         k_values: List[int],
     ):
+        """Evaluate the model with metrics.
+
+        Args:
+            qrels (Dict[str, Dict[str, int]]): Ground truth relevance of queries and documents.
+            search_results (Dict[str, Dict[str, float]]): Dictionary of search results
+            k_values (List[int]): Cutoffs.
+
+        Returns:
+            dict: The results of the metrics.
+        """
         ndcg, _map, recall, precision = evaluate_metrics(
             qrels=qrels,
             results=search_results,
@@ -328,6 +350,15 @@ class AbsEvaluator:
         search_results_save_dir: str,
         k_values: List[int] = [1, 3, 5, 10, 100, 1000]
     ):
+        """Compute metrics according to the results in the directory.
+
+        Args:
+            search_results_save_dir (str): Path to the search results.
+            k_values (List[int], optional): Cutoffs. Defaults to [1, 3, 5, 10, 100, 1000].
+
+        Returns:
+            _type_: _description_
+        """
         eval_results_dict = {}
 
         for file in os.listdir(search_results_save_dir):
