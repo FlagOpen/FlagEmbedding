@@ -130,7 +130,7 @@ similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
 
-For more details, you can refer to [embedder inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder), [reranker inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker), [embedder finetune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder), [reranker fintune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker), [evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation), [reasearch](https://github.com/FlagOpen/FlagEmbedding/tree/master/research).
+For more details, you can refer to [embedder inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder), [reranker inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker), [embedder finetune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder), [reranker fintune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker), [evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation), [research](https://github.com/FlagOpen/FlagEmbedding/tree/master/research).
 
 ## Community
 
