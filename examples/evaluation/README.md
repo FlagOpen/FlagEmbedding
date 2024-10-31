@@ -8,6 +8,20 @@ This document serves as an overview of the evaluation process and provides a bri
 
 In this section, we will first introduce the commonly used arguments across all datasets. Then, we will provide a more detailed explanation of the specific arguments used for each individual dataset.
 
+- [1. Introduction](#1-Introduction)
+  - [(1) EvalArgs](#1-EvalArgs)
+  - [(2) ModelArgs](#2-ModelArgs)
+- [2. Usage](#2-Usage)
+  - [Requirements](#Requirements)
+  - [(1) MTEB](#1-MTEB)
+  - [(2) BEIR](#2-BEIR)
+  - [(3) MSMARCO](#3-MSMARCO)
+  - [(4) MIRACL](#4-MIRACL)
+  - [(5) MLDR](#5-MLDR)
+  - [(6) MKQA](#6-MKQA)
+  - [(7) AIR-Bench](#7-Air-Bench)
+  - [(8) Custom Dataset](#8-Custom-Dataset)
+
 ## Introduction
 
 ### 1. EvalArgs
@@ -15,14 +29,14 @@ In this section, we will first introduce the commonly used arguments across all 
 **Arguments for evaluation setup:**
 
 - **`eval_name`**: Name of the evaluation task (e.g., msmarco, beir, miracl).
-  
+
 - **`dataset_dir`**: Path to the dataset directory. This can be:
-    1. A local path to perform evaluation on your dataset (must exist). It should contain:
-        - `corpus.jsonl`
-        - `<split>_queries.jsonl`
-        - `<split>_qrels.jsonl`
-    2. Path to store datasets downloaded via API. Provide `None` to use the cache directory.
-  
+  1. A local path to perform evaluation on your dataset (must exist). It should contain:
+     - `corpus.jsonl`
+     - `<split>_queries.jsonl`
+     - `<split>_qrels.jsonl`
+  2. Path to store datasets downloaded via API. Provide `None` to use the cache directory.
+
 - **`force_redownload`**: Set to `True` to force redownload of the dataset. Default is `False`.
 
 - **`dataset_names`**: List of dataset names to evaluate or `None` to evaluate all available datasets. This can be the dataset name (BEIR, etc.) or language (MIRACL, etc.).
@@ -107,11 +121,8 @@ Here is an example for evaluation:
 
 ```shell
 pip install mteb==1.15.0
-```
-
-```shell
 python -m FlagEmbedding.evaluation.mteb \
-	--eval_name mteb \
+    --eval_name mteb \
     --output_dir ./data/mteb/search_results \
     --languages eng \
     --tasks NFCorpus BiorxivClusteringS2S SciDocsRR \
@@ -133,11 +144,8 @@ Here is an example for evaluation:
 pip install beir
 mkdir eval_beir
 cd eavl_beir
-```
-
-```shell
 python -m FlagEmbedding.evaluation.beir \
-	--eval_name beir \
+    --eval_name beir \
     --dataset_dir ./beir/data \
     --dataset_names fiqa arguana cqadupstack \
     --splits test dev \
@@ -168,7 +176,7 @@ Here is an example for evaluation:
 
 ```shell
 python -m FlagEmbedding.evaluation.msmarco \
-	--eval_name msmarco \
+    --eval_name msmarco \
     --dataset_dir ./msmarco/data \
     --dataset_names passage \
     --splits dev dl19 dl20 \
@@ -198,7 +206,7 @@ Here is an example for evaluation:
 
 ```shell
 python -m FlagEmbedding.evaluation.miracl \
-	--eval_name miracl \
+    --eval_name miracl \
     --dataset_dir ./miracl/data \
     --dataset_names bn hi sw te th yo \
     --splits dev \
@@ -228,7 +236,7 @@ Here is an example for evaluation:
 
 ```shell
 python -m FlagEmbedding.evaluation.mldr \
-	--eval_name mldr \
+    --eval_name mldr \
     --dataset_dir ./mldr/data \
     --dataset_names hi \
     --splits test \
@@ -258,7 +266,7 @@ Here is an example for evaluation:
 
 ```shell
 python -m FlagEmbedding.evaluation.mkqa \
-	--eval_name mkqa \
+    --eval_name mkqa \
     --dataset_dir ./mkqa/data \
     --dataset_names en zh_cn \
     --splits test \
@@ -293,11 +301,8 @@ Here is an example for evaluation:
 
 ```shell
 pip install air-benchmark
-```
-
-```shell
 python -m FlagEmbedding.evaluation.air_bench \
-	--benchmark_version AIR-Bench_24.05 \
+    --benchmark_version AIR-Bench_24.05 \
     --task_types qa long-doc \
     --domains arxiv \
     --languages en \
@@ -352,7 +357,7 @@ Please put the above file (`corpus.jsonl`, `test_queries.jsonl`, `test_qrels.jso
 
 ```shell
 python -m FlagEmbedding.evaluation.custom \
-	--eval_name your_data_name \
+    --eval_name your_data_name \
     --dataset_dir ./your_data_path \
     --splits test \
     --corpus_embd_save_dir ./your_data_name/corpus_embd \

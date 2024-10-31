@@ -1,30 +1,42 @@
-# 1. Introduction
+# Examples
+
+- [1. Introduction](#1-Introduction)
+- [2. Installation](#2-Installation)
+- [3. Inference](#3-Inference)
+- [4. Finetune](#4-Finetune)
+- [5. Evaluation](#5-Evaluation)
+
+## 1. Introduction
 
 In this example, we show how to **inference**, **finetune** and **evaluate** the baai-general-embedding.
 
-# 2. Installation
+## 2. Installation
 
 * **with pip**
+
 ```shell
 pip install -U FlagEmbedding
 ```
 
 * **from source**
+
 ```shell
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
 pip install  .
 ```
+
 For development, install as editable:
+
 ```shell
 pip install -e .
 ```
 
-# 3. Inference
+## 3. Inference
 
 We have provided the inference code for two types of models: the **embedder** and the **reranker**. These can be loaded using `FlagAutoModel` and `FlagAutoReranker`, respectively. For more detailed instructions on their use, please refer to the documentation for the [embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder) and [reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker).
 
-## 1. Embedder
+### 1. Embedder
 
 ```python
 from FlagEmbedding import FlagAutoModel
@@ -49,7 +61,7 @@ scores = q_embeddings @ p_embeddings.T
 print(scores)
 ```
 
-## 2. Reranker
+### 2. Reranker
 
 ```python
 from FlagEmbedding import FlagAutoReranker
@@ -65,7 +77,7 @@ scores = model.compute_score(pairs)
 print(scores)
 ```
 
-# 4. Finetune
+## 4. Finetune
 
 We support fine-tuning a variety of BGE series models, including `bge-large-en-v1.5`, `bge-m3`, `bge-en-icl`, `bge-multilingual-gemma2`, `bge-reranker-v2-m3`, `bge-reranker-v2-gemma`, and `bge-reranker-v2-minicpm-layerwise`, among others. As examples, we use the basic models `bge-large-en-v1.5` and `bge-reranker-large`. For more details, please refer to the [embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder) and [reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker) sections.
 
@@ -74,7 +86,7 @@ pip install deepspeed
 pip install flash-attn --no-build-isolation
 ```
 
-## 1. Embedder
+### 1. Embedder
 
 ```shell
 torchrun --nproc_per_node 2 \
@@ -109,7 +121,7 @@ torchrun --nproc_per_node 2 \
     --kd_loss_type kl_div
 ```
 
-## 2. Reranker
+### 2. Reranker
 
 ```shell
 torchrun --nproc_per_node 2 \
@@ -139,16 +151,13 @@ torchrun --nproc_per_node 2 \
     --save_steps 1000
 ```
 
-# 5. Evaluation
+## 5. Evaluation
 
 We support evaluations on [MTEB](https://github.com/embeddings-benchmark/mteb), [BEIR](https://github.com/beir-cellar/beir), [MSMARCO](https://microsoft.github.io/msmarco/), [MIRACL](https://github.com/project-miracl/miracl), [MLDR](https://huggingface.co/datasets/Shitao/MLDR), [MKQA](https://github.com/apple/ml-mkqa), [AIR-Bench](https://github.com/AIR-Bench/AIR-Bench), and custom datasets. Below is an example of evaluating MSMARCO passages. For more details, please refer to the [evaluation examples](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation).
 
 ```shell
 pip install pytrec_eval
 pip install https://github.com/kyamagu/faiss-wheels/releases/download/v1.7.3/faiss_gpu-1.7.3-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-```
-
-```shell
 python -m FlagEmbedding.evaluation.msmarco \
     --eval_name msmarco \
     --dataset_dir ./data/msmarco \

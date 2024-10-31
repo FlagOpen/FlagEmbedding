@@ -2,6 +2,16 @@
 
 In this example, we show how to finetune the embedder with your data.
 
+- [1. Installation](#1-Installation)
+- [2. Data format](#2-Data-format)
+  - [Hard Negatives](#Hard-Negatives)
+  - [Teacher Scores](#Teacher-Scores)
+- [3. Train](#3-Train)
+  - [(1) standard model](#1-standard-model)
+  - [(2) bge-m3](#2-bge-m3)
+  - [(3) bge-multilingual-gemma2](#3-bge-multilingual-gemma2)
+  - [(4) bge-en-icl](#4-bge-en-icl)
+
 ## 1. Installation
 
 - **with pip**
