@@ -92,8 +92,13 @@ It is the first embedding model which supports all three retrieval methods, achi
 
 ## Installation
 ### Using pip:
+If you do not want to finetune the models, you can install the package without the finetune dependency:
 ```
 pip install -U FlagEmbedding
+```
+If you want to finetune the models, you can install the package with the finetune dependency:
+```
+pip install -U FlagEmbedding[finetune]
 ```
 ### Install from sources:
 
@@ -101,11 +106,17 @@ Clone the repository and install
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
+# If you do not want to finetune the models, you can install the package without the finetune dependency:
 pip install  .
+# If you want to finetune the models, you can install the package with the finetune dependency:
+# pip install  .[finetune]
 ```
 For development in editable mode:
 ```
+# If you do not want to finetune the models, you can install the package without the finetune dependency:
 pip install -e .
+# If you want to finetune the models, you can install the package with the finetune dependency:
+# pip install -e .[finetune]
 ```
 
 ## Quick Start
