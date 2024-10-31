@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 class AbsReranker(ABC):
     """
     Base class for Reranker.
-    Extend this class and implement `compute_score_single_gpu` for custom rerankers.
+    Extend this class and implement :meth:`compute_score_single_gpu` for custom rerankers.
 
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
@@ -25,8 +25,8 @@ class AbsReranker(ABC):
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
             degradation. Default: `False`.
         query_instruction_for_rerank: (Optional[str], optional): Query instruction for reranking, which will be used with
-            with `query_instruction_format`. Default: `None`.
-        query_instruction_format: (str, optional): The template for `query_instruction_for_rerank`. Default: `"{}{}"`.
+            with :attr:`query_instruction_format`. Default: `None`.
+        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_rerank`. Default: `"{}{}"`.
         passage_instruction_for_rerank (Optional[str], optional): Passage instruction for reranking. Default: `None`.
         passage_instruction_format (str, optional): Passage instruction format when using `passage_instruction_for_rerank`. 
             Default: `"{}{}"`.
