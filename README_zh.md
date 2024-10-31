@@ -123,16 +123,17 @@ similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
 
+关于更多细节，可以参考[embedder推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder), [reranker推理](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker), [embedder微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder), [reranker微调](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker), [评估](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation), [研究](https://github.com/FlagOpen/FlagEmbedding/tree/master/research).
+
 ## 社区
 
 我们将持续维护BGE及FlagEmbedding社区，有任何想法建议都欢迎告诉我们！
 
 近期会持续更新[教学](./Tutorials/)中的内容，希望为文本检索以及RAG打造出完整且详细的教学，欢迎持续关注！
 
-在未来两周左右将会更新以下内容：
+在未来将会更新以下内容：
 
-- BGE模型介绍
-- 在MTEB的任务中的评测
+- RAG
 
 <details>
   <summary>教程规划</summary>
