@@ -1,10 +1,10 @@
 # Examples
 
-- [1. Introduction](#1. Introduction)
-- [2. Installation](#2. Installation)
-- [3. Inference](#3. Inference)
-- [4. Finetune](#4. Finetune)
-- [5. Evaluation](#5. Evaluation)
+- [1. Introduction](#1-Introduction)
+- [2. Installation](#2-Installation)
+- [3. Inference](#3-Inference)
+- [4. Finetune](#4-Finetune)
+- [5. Evaluation](#5-Evaluation)
 
 ## 1. Introduction
 
