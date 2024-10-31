@@ -33,7 +33,7 @@
         <a href="#license">License</a> 
     <p>
 </h4>
-[English](README.md) | [中文](README_zh.md)
+[English](./README.md) | [中文](./README_zh.md)
 
 BGE (BAAI General Embedding) 专注于检索增强llm领域，目前包括以下项目:
 
