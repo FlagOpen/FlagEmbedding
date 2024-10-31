@@ -12,7 +12,8 @@ logger = logging.getLogger(__name__)
 
 
 class AbsEvalDataLoader(ABC):
-    """_summary_
+    """
+    Base class of data loader for evaluation.
 
     Args:
         eval_name (str): The experiment name of current evaluation.

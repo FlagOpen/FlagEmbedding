@@ -9,7 +9,7 @@ from typing import List, Optional
 @dataclass
 class AbsEvalArgs:
     """
-    Arguments for running evaluation.
+    Base class for evaluation arguments.
     """
     eval_name: str = field(
         default=None,
@@ -81,7 +81,7 @@ class AbsEvalArgs:
 @dataclass
 class AbsEvalModelArgs:
     """
-    Arguments for model during evaluation.
+    Base class for model arguments during evaluation.
     """
     embedder_name_or_path: str = field(
         metadata={"help": "The embedder name or path.", "required": True}
