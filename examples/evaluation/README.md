@@ -9,18 +9,18 @@ This document serves as an overview of the evaluation process and provides a bri
 In this section, we will first introduce the commonly used arguments across all datasets. Then, we will provide a more detailed explanation of the specific arguments used for each individual dataset.
 
 - [1. Introduction](#1-Introduction)
-  - [EvalArgs](#EvalArgs)
-  - [ModelArgs](#ModelArgs)
+  - [(1) EvalArgs](#1-EvalArgs)
+  - [(2) ModelArgs](#2-ModelArgs)
 - [2. Usage](#2-Usage)
   - [Requirements](#Requirements)
-  - [MTEB](#MTEB)
-  - [BEIR](#BEIR)
-  - [MSMARCO](#MSMARCO)
-  - [MIRACL](#MIRACL)
-  - [MLDR](#MLDR)
-  - [MKQA](#MKQA)
-  - [AIR-Bench](#Air-Bench)
-  - [Custom Dataset](#Custom-Dataset)
+  - [(1) MTEB](#1-MTEB)
+  - [(2) BEIR](#2-BEIR)
+  - [(3) MSMARCO](#3-MSMARCO)
+  - [(4) MIRACL](#4-MIRACL)
+  - [(5) MLDR](#5-MLDR)
+  - [(6) MKQA](#6-MKQA)
+  - [(7) AIR-Bench](#7-Air-Bench)
+  - [(8) Custom Dataset](#8-Custom-Dataset)
 
 ## Introduction
 
