@@ -20,8 +20,6 @@ setup(
         'accelerate>=0.20.1',
         'sentence_transformers',
         'peft',
-        'deepspeed',
-        'flash-attn==2.5.6',
         'ir-datasets',
         'sentencepiece',
         'protobuf'

@@ -8,6 +8,8 @@ In this example, we show how to finetune the reranker with your data.
 
 ```shell
 pip install -U FlagEmbedding
+pip install deepspeed
+pip install flash-attn --no-build-isolation
 ```
 
 - **from source**
@@ -16,12 +18,16 @@ pip install -U FlagEmbedding
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
 pip install  .
+pip install deepspeed
+pip install flash-attn --no-build-isolation
 ```
 
 For development, install as editable:
 
 ```shell
 pip install -e .
+pip install deepspeed
+pip install flash-attn --no-build-isolation
 ```
 
 ## 2. Data format

@@ -69,6 +69,11 @@ print(scores)
 
 We support fine-tuning a variety of BGE series models, including `bge-large-en-v1.5`, `bge-m3`, `bge-en-icl`, `bge-multilingual-gemma2`, `bge-reranker-v2-m3`, `bge-reranker-v2-gemma`, and `bge-reranker-v2-minicpm-layerwise`, among others. As examples, we use the basic models `bge-large-en-v1.5` and `bge-reranker-large`. For more details, please refer to the [embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder) and [reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker) sections.
 
+```shell
+pip install deepspeed
+pip install flash-attn --no-build-isolation
+```
+
 ## 1. Embedder
 
 ```shell
