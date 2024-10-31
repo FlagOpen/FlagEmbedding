@@ -140,3 +140,7 @@ pic2.py
 
 # MacOS associated
 .DS_Store
+
+# results
+en_results
+zh_results
