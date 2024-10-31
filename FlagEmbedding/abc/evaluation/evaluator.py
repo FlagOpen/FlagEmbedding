@@ -16,6 +16,14 @@ logger = logging.getLogger(__name__)
 
 
 class AbsEvaluator:
+    """
+    Base class of Evaluator.
+    
+    Args:
+        eval_name (str): The experiment name of current evaluation.
+        data_loader (AbsEvalDataLoader): The data_loader to deal with data.
+        overwrite (bool): If true, will overwrite the existing results.
+    """
     def __init__(
         self,
         eval_name: str,
@@ -34,6 +42,21 @@ class AbsEvaluator:
         split: str,
         dataset_name: Optional[str] = None,
     ):
+        """Check the validity of data info.
+
+        Args:
+            data_info (Dict[str, str]): The loaded data info to be check.
+            model_name (str): Name of model used.
+            reranker_name (str): Name of reranker used.
+            split (str): Split used in searching.
+            dataset_name (Optional[str], optional): Name of dataset used. Defaults to None.
+
+        Raises:
+            ValueError: eval_name mismatch
+            ValueError: model_name or reranker_name mismatch
+            ValueError: split mismatch
+            ValueError: dataset_name mismatch
+        """
         if data_info["eval_name"] != self.eval_name:
             raise ValueError(
                 f'eval_name mismatch: {data_info["eval_name"]} vs {self.eval_name}'
@@ -61,7 +84,13 @@ class AbsEvaluator:
         dataset_name: Optional[str] = None
     ):
         """
-        If corpus_embd_save_dir is not None, then it will be used as the base directory to save the corpus embeddings. For dataset such as MKQA, the corpus for all languages is the same, so the subclass can override this method to save the corpus embeddings in the same directory.
+        If corpus_embd_save_dir is not None, then it will be used as the base directory to save the corpus embeddings. For dataset such as MKQA, 
+            the corpus for all languages is the same, so the subclass can override this method to save the corpus embeddings in the same directory.
+        
+        Args:
+            retriever_name (str): Name of the retriever.
+            corpus_embd_save_dir (str, optional): Directory that saving the corpus embedding.
+            dataset_name (str, optional): 
         """
         if corpus_embd_save_dir is not None:
             if dataset_name is not None:
@@ -228,6 +257,17 @@ class AbsEvaluator:
         split: str,
         dataset_name: Optional[str] = None,
     ):
+        """Save the metadata and search results into a file.
+
+        Args:
+            eval_name (str): The experiment name of current evaluation.
+            model_name (str): Name of model used.
+            reranker_name (str): Name of reranker used.
+            search_results (Dict[str, Dict[str, float]]): The search results.
+            output_path (str): Output path to write the results.
+            split (str): Split used in searching.
+            dataset_name (Optional[str], optional): Name of dataset used. Defaults to None.
+        """
         data = {
             "eval_name": eval_name,
             "model_name": model_name,
@@ -244,6 +284,14 @@ class AbsEvaluator:
 
     @staticmethod
     def load_search_results(input_path: str):
+        """Load search results from path.
+
+        Args:
+            input_path (str): Path to load from.
+
+        Returns:
+            dict, dict: data info that contains metadata and search results.
+        """
         with open(input_path, "r", encoding="utf-8") as f:
             data_info = json.load(f)
         
@@ -312,6 +360,12 @@ class AbsEvaluator:
 
     @staticmethod
     def output_eval_results_to_json(eval_results_dict: dict, output_path: str):
+        """Write the evaluation results into a json file.
+
+        Args:
+            eval_results_dict (dict): Dictionary of the evaluation results.
+            output_path (str): Output path to write the json file.
+        """
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         with open(output_path, 'w', encoding='utf-8') as f:
@@ -320,6 +374,15 @@ class AbsEvaluator:
 
     @staticmethod
     def get_results_df(metric: str, eval_results_dict: dict):
+        """Get the results from dictionary to a DataFrame.
+
+        Args:
+            metric (str): Selected metric.
+            eval_results_dict (dict): Dictionary of the evaluation results.
+
+        Returns:
+            DataFrame: DataFrame of the results.
+        """
         results_dict = {}
 
         for model_name, model_results in eval_results_dict.items():
@@ -361,6 +424,13 @@ class AbsEvaluator:
 
     @staticmethod
     def output_eval_results_to_markdown(eval_results_dict: dict, output_path: str, metrics: Union[List[str], str]):
+        """Write the evaluation results to a markdown file.
+
+        Args:
+            eval_results_dict (dict): Dictionary that contains evaluation results.
+            output_path (str): Path to write the output to.
+            metrics (Union[List[str], str]): The metrics that will be written in the markdown file.
+        """
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         if isinstance(metrics, str):
