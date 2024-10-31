@@ -16,9 +16,7 @@ In this example, we show how to finetune the reranker with your data.
 - **with pip**
 
 ```shell
-pip install -U FlagEmbedding
-pip install deepspeed
-pip install flash-attn --no-build-isolation
+pip install -U FlagEmbedding[finetune]
 ```
 
 - **from source**
@@ -26,17 +24,13 @@ pip install flash-attn --no-build-isolation
 ```shell
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
-pip install  .
-pip install deepspeed
-pip install flash-attn --no-build-isolation
+pip install  .[finetune]
 ```
 
 For development, install as editable:
 
 ```shell
-pip install -e .
-pip install deepspeed
-pip install flash-attn --no-build-isolation
+pip install -e .[finetune]
 ```
 
 ## 2. Data format
