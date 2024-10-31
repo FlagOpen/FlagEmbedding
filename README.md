@@ -15,7 +15,7 @@
         <img alt="Build" src="https://img.shields.io/badge/C_MTEB-🤗-yellow">
     </a>
     <a href="https://github.com/FlagOpen/FlagEmbedding/tree/master/research/baai_general_embedding">
-        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.1-red">
+        <img alt="Build" src="https://img.shields.io/badge/FlagEmbedding-1.3.0-red">
     </a>
 </p>
 <h4 align="center">
