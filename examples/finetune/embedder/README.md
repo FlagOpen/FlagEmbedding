@@ -7,10 +7,10 @@ In this example, we show how to finetune the embedder with your data.
   - [Hard Negatives](#Hard-Negatives)
   - [Teacher Scores](#Teacher-Scores)
 - [3. Train](#3-Train)
-  - [(1) standard model](#(1)-standard-model)
-  - [(2) bge-m3](#(2)-bge-m3)
-  - [(3) bge-multilingual-gemma2](#(3)-bge-multilingual-gemma2)
-  - [(4) bge-en-icl](#(4)-bge-en-icl)
+  - [(1) standard model](#1-standard-model)
+  - [(2) bge-m3](#2-bge-m3)
+  - [(3) bge-multilingual-gemma2](#3-bge-multilingual-gemma2)
+  - [(4) bge-en-icl](#4-bge-en-icl)
 
 ## 1. Installation
 

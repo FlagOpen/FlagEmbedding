@@ -7,9 +7,9 @@ In this example, we show how to finetune the reranker with your data.
   - [Hard Negatives](#Hard-Negatives)
   - [Teacher Scores](#Teacher-Scores)
 - [3. Train](#3-Train)
-  - [(1) standard model](#(1)-standard-model)
-  - [(2) bge-reranker-v2-gemma](#(2)-bge-reranker-v2-gemma)
-  - [(3) bge-reranker-v2-layerwise-minicpm](#(3)-bge-reranker-v2-layerwise-minicpm)
+  - [(1) standard model](#1-standard-model)
+  - [(2) bge-reranker-v2-gemma](#2-bge-reranker-v2-gemma)
+  - [(3) bge-reranker-v2-layerwise-minicpm](#3-bge-reranker-v2-layerwise-minicpm)
 
 ## 1. Installation
 
