@@ -5,7 +5,7 @@ with open("README.md", mode="r", encoding="utf-8") as readme_file:
 
 setup(
     name='FlagEmbedding',
-    version='1.3.0',
+    version='1.3.2',
     description='FlagEmbedding',
     long_description=readme,
     long_description_content_type="text/markdown",
@@ -20,10 +20,11 @@ setup(
         'accelerate>=0.20.1',
         'sentence_transformers',
         'peft',
-        'deepspeed',
-        'flash-attn==2.5.6',
         'ir-datasets',
         'sentencepiece',
         'protobuf'
     ],
+    extras_require={
+        'finetune': ['deepspeed', 'flash-attn'],
+    },
 )

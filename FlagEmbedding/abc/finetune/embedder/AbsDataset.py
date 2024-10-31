@@ -416,8 +416,9 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
 
             passages.extend(tmp_passages)
 
-            if len(teacher_scores) > 0 and len(passages) > 0:
-                assert len(teacher_scores) == len(passages)
+            if teacher_scores is not None:
+                if len(teacher_scores) > 0 and len(passages) > 0:
+                    assert len(teacher_scores) == len(passages)
 
         return queries, passages, teacher_scores
 
