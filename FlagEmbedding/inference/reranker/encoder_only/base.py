@@ -8,7 +8,7 @@ from FlagEmbedding.abc.inference import AbsReranker
 
 
 def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+    return float(1 / (1 + np.exp(-x)))
 
 
 class BaseReranker(AbsReranker):
