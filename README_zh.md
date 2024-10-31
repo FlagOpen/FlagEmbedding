@@ -33,6 +33,7 @@
         <a href="#license">License</a> 
     <p>
 </h4>
+
 [English](https://github.com/FlagOpen/FlagEmbedding/blob/master/README.md) | [中文](https://github.com/FlagOpen/FlagEmbedding/blob/master/README_zh.md)
 
 BGE (BAAI General Embedding) 专注于检索增强llm领域，目前包括以下项目:
