@@ -8,6 +8,9 @@ from typing import List, Optional
 
 @dataclass
 class AbsEvalArgs:
+    """
+    Base class for evaluation arguments.
+    """
     eval_name: str = field(
         default=None,
         metadata={"help": "The name of the evaluation task, such as msmarco, beir, miracl, etc."}
@@ -77,6 +80,9 @@ class AbsEvalArgs:
 
 @dataclass
 class AbsEvalModelArgs:
+    """
+    Base class for model arguments during evaluation.
+    """
     embedder_name_or_path: str = field(
         metadata={"help": "The embedder name or path.", "required": True}
     )

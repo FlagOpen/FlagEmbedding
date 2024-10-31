@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 class AbsEmbedder(ABC):
     """
     Base class for embedder.
-    Extend this class and implement `encode_queries`, `encode_passages`, `encode` for custom embedders.
+    Extend this class and implement :meth:`encode_queries`, :meth:`encode_passages`, :meth:`encode` for custom embedders.
 
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
@@ -27,14 +27,14 @@ class AbsEmbedder(ABC):
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
             degradation. Default: `True`.
         query_instruction_for_retrieval: (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
-            with `query_instruction_format`. Default: `None`.
-        query_instruction_format: (str, optional): The template for `query_instruction_for_retrieval`. Default: `"{}{}"`.
+            with :attr:`query_instruction_format`. Default: `None`.
+        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_retrieval`. Default: `"{}{}"`.
         devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Default: `None`.
         batch_size (int, optional): Batch size for inference. Default: `256`.
         query_max_length (int, optional): Maximum length for query. Default: `512`.
         passage_max_length (int, optional): Maximum length for passage. Default: `512`.
-        instruction (Optional[str], optional): Instruction for embedding. Default: `None`.
-        instruction_format (str, optional): Instruction format when using `instruction`. Default: `"{}{}"`.
+        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Default: `None`.
+        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Default: `"{}{}"`.
         convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
             Default: `True`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
@@ -88,7 +88,7 @@ class AbsEmbedder(ABC):
             ValueError: Devices should be a string or an integer or a list of strings or a list of integers.
 
         Returns:
-            List[str]: A list of target devices in format
+            List[str]: A list of target devices in format.
         """
         if devices is None:
             if torch.cuda.is_available():

@@ -14,6 +14,13 @@ logger = logging.getLogger(__name__)
 
 
 class AbsEvalRunner:
+    """
+    Abstract class of evaluation runner.
+    
+    Args:
+        eval_args (AbsEvalArgs): :class:AbsEvalArgs object with the evaluation arguments.
+        model_args (AbsEvalModelArgs): :class:AbsEvalModelArgs object with the model arguments.
+    """
     def __init__(
         self,
         eval_args: AbsEvalArgs,
@@ -28,6 +35,15 @@ class AbsEvalRunner:
 
     @staticmethod
     def get_models(model_args: AbsEvalModelArgs) -> Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]:
+        """Get the embedding and reranker model
+
+        Args:
+            model_args (AbsEvalModelArgs): :class:AbsEvalModelArgs object with the model arguments.
+
+        Returns:
+            Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]: A :class:FlagAutoModel object of embedding model, and 
+                :class:FlagAutoReranker object of reranker model if path provided.
+        """
         embedder = FlagAutoModel.from_finetuned(
             model_name_or_path=model_args.embedder_name_or_path,
             model_class=model_args.embedder_model_class,
@@ -74,6 +90,12 @@ class AbsEvalRunner:
         return embedder, reranker
 
     def load_retriever_and_reranker(self) -> Tuple[EvalDenseRetriever, Union[EvalReranker, None]]:
+        """Load retriever and reranker for evaluation
+
+        Returns:
+            Tuple[EvalDenseRetriever, Union[EvalReranker, None]]: A :class:EvalDenseRetriever object for retrieval, and a
+                :class:EvalReranker object if reranker provided.
+        """
         embedder, reranker = self.get_models(self.model_args)
         retriever = EvalDenseRetriever(
             embedder,
@@ -85,6 +107,11 @@ class AbsEvalRunner:
         return retriever, reranker
 
     def load_data_loader(self) -> AbsEvalDataLoader:
+        """Load the data loader
+
+        Returns:
+            AbsEvalDataLoader: Data loader object for that specific task.
+        """
         data_loader = AbsEvalDataLoader(
             eval_name=self.eval_args.eval_name,
             dataset_dir=self.eval_args.dataset_dir,
@@ -95,6 +122,11 @@ class AbsEvalRunner:
         return data_loader
 
     def load_evaluator(self) -> AbsEvaluator:
+        """Load the evaluator for evaluation
+
+        Returns:
+            AbsEvaluator: the evaluator to run the evaluation.
+        """
         evaluator = AbsEvaluator(
             eval_name=self.eval_args.eval_name,
             data_loader=self.data_loader,
@@ -109,6 +141,18 @@ class AbsEvalRunner:
         output_path: str = "./eval_dev_results.md",
         metrics: Union[str, List[str]] = ["ndcg_at_10", "recall_at_10"]
     ):
+        """Evaluate the provided metrics and write the results.
+
+        Args:
+            search_results_save_dir (str): Path to save the search results.
+            output_method (str, optional): Output results to `json` or `markdown`. Defaults to "markdown".
+            output_path (str, optional): Path to write the output. Defaults to "./eval_dev_results.md".
+            metrics (Union[str, List[str]], optional): metrics to use. Defaults to ["ndcg_at_10", "recall_at_10"].
+
+        Raises:
+            FileNotFoundError: Eval results not found
+            ValueError: Invalid output method
+        """
         eval_results_dict = {}
         for model_name in sorted(os.listdir(search_results_save_dir)):
             model_search_results_save_dir = os.path.join(search_results_save_dir, model_name)
@@ -136,6 +180,9 @@ class AbsEvalRunner:
             raise ValueError(f"Invalid output method: {output_method}. Available methods: ['json', 'markdown']")
 
     def run(self):
+        """
+        Run the whole evaluation.
+        """
         if self.eval_args.dataset_names is None:
             dataset_names = self.data_loader.available_dataset_names()
         else:
