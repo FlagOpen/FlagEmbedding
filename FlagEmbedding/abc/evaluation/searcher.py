@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 
 
 class EvalRetriever(ABC):
+    """
+    This is the base class for retriever.
+    """
     def __init__(self, embedder: AbsEmbedder, search_top_k: int = 1000, overwrite: bool = False):
         self.embedder = embedder
         self.search_top_k = search_top_k
@@ -45,7 +48,7 @@ class EvalRetriever(ABC):
         **kwargs,
     ) -> Dict[str, Dict[str, float]]:
         """
-        This is called during the retrieval process.
+        Abstract method to be overrode. This is called during the retrieval process.
         
         Parameters:
             corpus: Dict[str, Dict[str, Any]]: Corpus of documents. 
@@ -63,6 +66,9 @@ class EvalRetriever(ABC):
 
 
 class EvalDenseRetriever(EvalRetriever):
+    """
+    Child class of :class:EvalRetriever for dense retrieval.
+    """
     def __call__(
         self,
         corpus: Dict[str, Dict[str, Any]],
@@ -144,6 +150,9 @@ class EvalDenseRetriever(EvalRetriever):
 
 
 class EvalReranker:
+    """
+    Class for reranker during evaluation.
+    """
     def __init__(self, reranker: AbsReranker, rerank_top_k: int = 100):
         self.reranker = reranker
         self.rerank_top_k = rerank_top_k

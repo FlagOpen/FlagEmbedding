@@ -16,6 +16,16 @@ def evaluate_mrr(
     results: Dict[str, Dict[str, float]],
     k_values: List[int],
 ) -> Tuple[Dict[str, float]]:
+    """Compute mean reciprocal rank (MRR).
+
+    Args:
+        qrels (Dict[str, Dict[str, int]]): Ground truth relevance.
+        results (Dict[str, Dict[str, float]]): Search results to evaluate.
+        k_values (List[int]): Cutoffs.
+
+    Returns:
+        Tuple[Dict[str, float]]: MRR results at provided k values.
+    """
     mrr = defaultdict(list)
 
     k_max, top_hits = max(k_values), {}
@@ -53,6 +63,17 @@ def evaluate_metrics(
     Dict[str, float],
     Dict[str, float],
 ]:
+    """Evaluate the main metrics.
+
+    Args:
+        qrels (Dict[str, Dict[str, int]]): Ground truth relevance.
+        results (Dict[str, Dict[str, float]]): Search results to evaluate.
+        k_values (List[int]): Cutoffs.
+
+    Returns:
+        Tuple[ Dict[str, float], Dict[str, float], Dict[str, float], Dict[str, float], ]: Results of different metrics at 
+            different provided k values.
+    """
     all_ndcgs, all_aps, all_recalls, all_precisions = defaultdict(list), defaultdict(list), defaultdict(list), defaultdict(list)
 
     map_string = "map_cut." + ",".join([str(k) for k in k_values])
@@ -93,6 +114,17 @@ def index(
     load_path: Optional[str] = None,
     device: Optional[str] = None
 ):
+    """Create and add embeddings into a Faiss index.
+
+    Args:
+        index_factory (str, optional): Type of Faiss index to create. Defaults to "Flat".
+        corpus_embeddings (Optional[np.ndarray], optional): The embedding vectors of the corpus. Defaults to None.
+        load_path (Optional[str], optional): Path to load embeddings from. Defaults to None.
+        device (Optional[str], optional): Device to hold Faiss index. Defaults to None.
+
+    Returns:
+        faiss.Index: The Faiss index that contains all the corpus embeddings.
+    """
     if corpus_embeddings is None:
         corpus_embeddings = np.load(load_path)
     
@@ -127,6 +159,15 @@ def search(
     """
     1. Encode queries into dense embeddings;
     2. Search through faiss index
+
+    Args:
+        faiss_index (faiss.Index): The Faiss index that contains all the corpus embeddings.
+        k (int, optional): Top k numbers of closest neighbours. Defaults to 100.
+        query_embeddings (Optional[np.ndarray], optional): The embedding vectors of queries. Defaults to None.
+        load_path (Optional[str], optional): Path to load embeddings from. Defaults to None.
+
+    Returns:
+        Tuple[np.ndarray, np.ndarray]: The scores of search results and their corresponding indices.
     """
     if query_embeddings is None:
         query_embeddings = np.load(load_path)

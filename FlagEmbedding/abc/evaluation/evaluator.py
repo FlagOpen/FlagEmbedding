@@ -111,7 +111,7 @@ class AbsEvaluator:
         dataset_name: Optional[str] = None,
         **kwargs,
     ):
-        """Called to the whole evaluation process.
+        """This is called during the evaluation process.
 
         Args:
             splits (Union[str, List[str]]): Splits of datasets.
