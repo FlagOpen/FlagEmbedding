@@ -28,12 +28,12 @@ class AbsReranker(ABC):
             with :attr:`query_instruction_format`. Defaults to :data:`None`.
         query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_rerank`. Defaults to :data:`"{}{}"`.
         passage_instruction_for_rerank (Optional[str], optional): Passage instruction for reranking. Defaults to :data:`None`.
-        passage_instruction_format (str, optional): Passage instruction format when using `passage_instruction_for_rerank`. 
+        passage_instruction_format (str, optional): Passage instruction format when using :attr:`passage_instruction_for_rerank`. 
             Defaults to :data:`"{}{}"`.
         devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
         batch_size (int, optional): Batch size for inference. Defaults to :data:`128`.
         query_max_length (int, optional): Maximum length for query. Defaults to :data:`None`.
-        passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        max_length (int, optional): Maximum length. Defaults to :data:`512`.
         normalize (bool, optional): If true, normalize the result. Defaults to :data:`False`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """

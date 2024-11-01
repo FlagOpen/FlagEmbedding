@@ -44,7 +44,7 @@ class FlagAutoReranker:
             ValueError
 
         Returns:
-            AbsReranker: The reranker class to load model, which is child class of :clsss:`AbsReranker`.
+            AbsReranker: The reranker class to load model, which is child class of :class:`AbsReranker`.
         """
         model_name = os.path.basename(model_name_or_path)
         if model_name.startswith("checkpoint-"):

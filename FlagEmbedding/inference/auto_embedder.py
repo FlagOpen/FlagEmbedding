@@ -55,7 +55,7 @@ class FlagAutoModel:
             ValueError
 
         Returns:
-            AbsEmbedder: The model class to load model, which is child class of :clsss:`AbsEmbedder`.
+            AbsEmbedder: The model class to load model, which is child class of :class:`AbsEmbedder`.
         """
         model_name = os.path.basename(model_name_or_path)
         if model_name.startswith("checkpoint-"):
