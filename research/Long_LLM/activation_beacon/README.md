@@ -77,10 +77,10 @@ For any path specified for `train_data` and `eval_data`: if it is prefixed with 
 
 
 ## Training
-See [training section](./docs/training.md).
+See [training section](./examples/training.md).
 
 ## Evaluation
-See [evaluation section](./docs/evaluation.md). 
+See [evaluation section](./examples/evaluation.md). 
 
 
 ## Citation
