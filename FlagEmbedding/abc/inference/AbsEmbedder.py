@@ -18,25 +18,25 @@ logger = logging.getLogger(__name__)
 class AbsEmbedder(ABC):
     """
     Base class for embedder.
-    Extend this class and implement :meth:`encode_queries`, :meth:`encode_passages`, :meth:`encode` for custom embedders.
+    Extend this class and implement :meth:`encode_queries`, :meth:`encode_corpus`, :meth:`encode` for custom embedders.
 
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
             load a model from HuggingFace Hub with the name.
-        normalize_embeddings (bool, optional): If True, normalize the embedding vector. Default: `True`.
+        normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to :data:`True`.
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
-            degradation. Default: `True`.
+            degradation. Defaults to :data:`True`.
         query_instruction_for_retrieval: (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
-            with :attr:`query_instruction_format`. Default: `None`.
-        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_retrieval`. Default: `"{}{}"`.
-        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Default: `None`.
-        batch_size (int, optional): Batch size for inference. Default: `256`.
-        query_max_length (int, optional): Maximum length for query. Default: `512`.
-        passage_max_length (int, optional): Maximum length for passage. Default: `512`.
-        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Default: `None`.
-        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Default: `"{}{}"`.
+            with :attr:`query_instruction_format`. Defaults to :data:`None`.
+        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
+        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
+        query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
+        passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
+        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
         convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
-            Default: `True`.
+            Defaults to :data:`True`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
 

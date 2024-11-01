@@ -23,18 +23,18 @@ class AbsReranker(ABC):
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
             load a model from HuggingFace Hub with the name.
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
-            degradation. Default: `False`.
+            degradation. Defaults to :data:`False`.
         query_instruction_for_rerank: (Optional[str], optional): Query instruction for reranking, which will be used with
-            with :attr:`query_instruction_format`. Default: `None`.
-        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_rerank`. Default: `"{}{}"`.
-        passage_instruction_for_rerank (Optional[str], optional): Passage instruction for reranking. Default: `None`.
+            with :attr:`query_instruction_format`. Defaults to :data:`None`.
+        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_rerank`. Defaults to :data:`"{}{}"`.
+        passage_instruction_for_rerank (Optional[str], optional): Passage instruction for reranking. Defaults to :data:`None`.
         passage_instruction_format (str, optional): Passage instruction format when using `passage_instruction_for_rerank`. 
-            Default: `"{}{}"`.
-        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Default: `None`.
-        batch_size (int, optional): Batch size for inference. Default: `128`.
-        query_max_length (int, optional): Maximum length for query. Default: `None`.
-        passage_max_length (int, optional): Maximum length for passage. Default: `512`.
-        normalize (bool, optional): If true, normalize the result. Default: `False`.
+            Defaults to :data:`"{}{}"`.
+        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`128`.
+        query_max_length (int, optional): Maximum length for query. Defaults to :data:`None`.
+        passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        normalize (bool, optional): If true, normalize the result. Defaults to :data:`False`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
 

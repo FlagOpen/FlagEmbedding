@@ -145,9 +145,9 @@ class AbsEvalRunner:
 
         Args:
             search_results_save_dir (str): Path to save the search results.
-            output_method (str, optional): Output results to `json` or `markdown`. Defaults to "markdown".
-            output_path (str, optional): Path to write the output. Defaults to "./eval_dev_results.md".
-            metrics (Union[str, List[str]], optional): metrics to use. Defaults to ["ndcg_at_10", "recall_at_10"].
+            output_method (str, optional): Output results to `json` or `markdown`. Defaults to :data:`"markdown"`.
+            output_path (str, optional): Path to write the output. Defaults to :data:`"./eval_dev_results.md"`.
+            metrics (Union[str, List[str]], optional): metrics to use. Defaults to :data:`["ndcg_at_10", "recall_at_10"]`.
 
         Raises:
             FileNotFoundError: Eval results not found

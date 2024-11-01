@@ -57,6 +57,8 @@ class EvalRetriever(ABC):
             queries: Dict[str, str]: Queries to search for.
                 Structure: {<qid>: <query>}.
                 Example: {"q-0": "This is a query."}
+            corpus_embd_save_dir (Optional[str]): Defaults to :data:`None`.
+            ignore_identical_ids (bool): Defaults to :data:`False`.
             **kwargs: Any: Additional arguments.
         
         Returns: Dict[str, Dict[str, float]]: Top-k search results for each query. k is specified by search_top_k.
@@ -87,6 +89,8 @@ class EvalDenseRetriever(EvalRetriever):
             queries: Dict[str, str]: Queries to search for.
                 Structure: {<qid>: <query>}.
                 Example: {"q-0": "This is a query."}
+            corpus_embd_save_dir (Optional[str]): Defaults to :data:`None`.
+            ignore_identical_ids (bool): Defaults to :data:`False`.
             **kwargs: Any: Additional arguments.
         
         Returns: Dict[str, Dict[str, float]]: Top-k search results for each query. k is specified by search_top_k.

@@ -116,12 +116,12 @@ class AbsEvaluator:
         Args:
             splits (Union[str, List[str]]): Splits of datasets.
             search_results_save_dir (str): Directory to save the search results.
-            retriever (EvalRetriever): object of :class:EvalRetriever
-            reranker (Optional[EvalReranker], optional): Object of :class:EvalReranker. Defaults to None.
-            corpus_embd_save_dir (Optional[str], optional): Directory to save the embedded corpus. Defaults to None.
-            ignore_identical_ids (bool, optional): If True, will ignore identical ids in search results. Defaults to False.
-            k_values (List[int], optional): Cutoffs. Defaults to [1, 3, 5, 10, 100, 1000].
-            dataset_name (Optional[str], optional): Name of the datasets. Defaults to None.
+            retriever (EvalRetriever): object of :class:EvalRetriever.
+            reranker (Optional[EvalReranker], optional): Object of :class:EvalReranker. Defaults to :data:`None`.
+            corpus_embd_save_dir (Optional[str], optional): Directory to save the embedded corpus. Defaults to :data:`None`.
+            ignore_identical_ids (bool, optional): If True, will ignore identical ids in search results. Defaults to :data:`False`.
+            k_values (List[int], optional): Cutoffs. Defaults to :data:`[1, 3, 5, 10, 100, 1000]`.
+            dataset_name (Optional[str], optional): Name of the datasets. Defaults to :data:`None`.
         """
         # Check Splits
         checked_splits = self.data_loader.check_splits(splits, dataset_name=dataset_name)
@@ -278,7 +278,7 @@ class AbsEvaluator:
             search_results (Dict[str, Dict[str, float]]): Dictionary of search results.
             output_path (str): Output path to write the results.
             split (str): Split used in searching.
-            dataset_name (Optional[str], optional): Name of dataset used. Defaults to None.
+            dataset_name (Optional[str], optional): Name of dataset used. Defaults to :data:`None`.
         """
         data = {
             "eval_name": eval_name,
@@ -354,7 +354,7 @@ class AbsEvaluator:
 
         Args:
             search_results_save_dir (str): Path to the search results.
-            k_values (List[int], optional): Cutoffs. Defaults to [1, 3, 5, 10, 100, 1000].
+            k_values (List[int], optional): Cutoffs. Defaults to :data:`[1, 3, 5, 10, 100, 1000]`.
 
         Returns:
             _type_: _description_
