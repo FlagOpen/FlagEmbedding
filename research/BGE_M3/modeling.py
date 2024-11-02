@@ -221,7 +221,7 @@ class BGEM3Model(nn.Module):
             if teacher_scores is not None:
                 # print("Use soft-label distillation...")
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # B N
-                group_size = p_sparse_vecs.size(0) // q_sparse_vecs.size(0)
+                group_size = p_dense_vecs.size(0) // q_dense_vecs.size(0)
 
                 # dense loss
                 dense_scores = self.dense_score(q_dense_vecs, p_dense_vecs)  # B, B * N
