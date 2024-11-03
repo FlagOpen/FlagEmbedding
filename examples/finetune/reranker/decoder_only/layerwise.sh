@@ -51,7 +51,7 @@ training_args="\
     --output_dir ./test_decoder_only_base_bge-reranker-v2-minicpm-layerwise \
     --overwrite_output_dir \
     --learning_rate 2e-4 \
-    --fp16 \
+    --bf16 \
     --num_train_epochs $num_train_epochs \
     --per_device_train_batch_size $per_device_train_batch_size \
     --gradient_accumulation_steps $gradient_accumulation_steps \
