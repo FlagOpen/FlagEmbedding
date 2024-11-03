@@ -394,7 +394,7 @@ class AbsEmbedder(ABC):
         """concatenate and return the results from all the processes
 
         Args:
-            results_list (List[Union[torch.Tensor, np.ndarray, Any]]): a list of results from all the processes
+            results_list (List[Union[torch.Tensor, np.ndarray, Any]]): A list of results from all the processes.
 
         Raises:
             NotImplementedError: Unsupported type for results_list

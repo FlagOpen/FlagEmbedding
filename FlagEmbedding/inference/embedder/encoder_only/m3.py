@@ -18,6 +18,35 @@ logger = logging.getLogger(__name__)
 
 
 class M3Embedder(AbsEmbedder):
+    """ 
+    Embedder for BGE-M3
+
+    Args:
+        model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+            load a model from HuggingFace Hub with the name.
+        normalize_embeddings (bool, optional): If True, normalize the dense embedding vector. Defaults to :data:`True`.
+        use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+            degradation. Defaults to :data:`True`.
+        query_instruction_for_retrieval: (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
+            with :attr:`query_instruction_format`. Defaults to :data:`None`.
+        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
+        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+        pooling_method (str, optional): Pooling method to get embedding vector from the last hidden state. Defaults to :data:`"cls"`.
+        trust_remote_code (bool, optional): trust_remote_code for HF datasets or models. Defaults to :data:`False`.
+        cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.
+        cobert_dim (int, optional): Dimension of colbert linear. Return the hidden_size if -1. Defaults to :data:`-1`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
+        query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
+        passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
+        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
+        return_dense (bool, optional): If true, will return the dense embedding. Defaults to :data:`True`.
+        return_sparse (bool, optional): If true, will return the sparce embedding. Defaults to :data:`False`.
+        return_colbert_vecs (bool, optional): If true, will return the colbert vectors. Defaults to :data:`False`.
+        
+    Attributes:
+        DEFAULT_POOLING_METHOD: The default pooling method when running the model.
+    """
     DEFAULT_POOLING_METHOD = "cls"
 
     def __init__(
@@ -81,6 +110,14 @@ class M3Embedder(AbsEmbedder):
         )
 
     def convert_id_to_token(self, lexical_weights: List[Dict]):
+        """Convert the ids back to tokens.
+
+        Args:
+            lexical_weights (List[Dict]): A list of dictionaries of id & weights.
+
+        Returns:
+            List[Dict]: A list of dictionaries of tokens & weights.
+        """
         if isinstance(lexical_weights, dict):
             lexical_weights = [lexical_weights]
         new_lexical_weights = []
@@ -100,6 +137,15 @@ class M3Embedder(AbsEmbedder):
         lexical_weights_1: Union[Dict[str, float], List[Dict[str, float]]],
         lexical_weights_2: Union[Dict[str, float], List[Dict[str, float]]]
     ) -> Union[np.ndarray, float]:
+        """Compute the laxical matching score of two given lexical weights.
+
+        Args:
+            lexical_weights_1 (Union[Dict[str, float], List[Dict[str, float]]]): First array of lexical weights.
+            lexical_weights_2 (Union[Dict[str, float], List[Dict[str, float]]]): Second array of lexical weights.
+
+        Returns:
+            Union[np.ndarray, float]: The computed lexical weights across the two arries of lexical weights.
+        """
         def _compute_single_lexical_matching_score(lw1: Dict[str, float], lw2: Dict[str, float]):
             scores = 0
             for token, weight in lw1.items():
@@ -121,6 +167,15 @@ class M3Embedder(AbsEmbedder):
             raise ValueError("The input format of lexical_weights is not correct.")
 
     def colbert_score(self, q_reps, p_reps):
+        """Compute colbert scores of input queries and passages.
+
+        Args:
+            q_reps (np.ndarray): Multi-vector embeddings for queries.
+            p_reps (np.ndarray): Multi-vector embeddings for passages/corpus.
+
+        Returns:
+            torch.Tensor: Computed colbert scores.
+        """
         q_reps, p_reps = torch.from_numpy(q_reps), torch.from_numpy(p_reps)
         token_scores = torch.einsum('in,jn->ij', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
@@ -140,6 +195,20 @@ class M3Embedder(AbsEmbedder):
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        """Encode the queries using the specified way.
+
+        Args:
+            queries (Union[List[str], str]): The input queries to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            return_dense (Optional[bool], optional): If True, compute and return dense embedding. Defaults to :data:`None`.
+            return_sparse (Optional[bool], optional): If True, compute and return sparce embedding. Defaults to :data:`None`.
+            return_colbert_vecs (Optional[bool], optional): If True, compute and return cobert vectors. Defaults to :data:`None`.
+
+        Returns:
+            Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+    ]
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.query_max_length
         if return_dense is None: return_dense = self.return_dense
@@ -158,7 +227,7 @@ class M3Embedder(AbsEmbedder):
 
     def encode_corpus(
         self,
-        queries: Union[List[str], str],
+        corpus: Union[List[str], str],
         batch_size: Optional[int] = None,
         max_length: Optional[int] = None,
         return_dense: Optional[bool] = None,
@@ -169,6 +238,19 @@ class M3Embedder(AbsEmbedder):
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        """Encode the corpus using the specified way.
+
+        Args:
+            corpus (Union[List[str], str]): The input corpus to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            return_dense (Optional[bool], optional): If True, compute and return dense embedding. Defaults to :data:`None`.
+            return_sparse (Optional[bool], optional): If True, compute and return sparce embedding. Defaults to :data:`None`.
+            return_colbert_vecs (Optional[bool], optional): If True, compute and return cobert vectors. Defaults to :data:`None`.
+
+        Returns:
+            Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.passage_max_length
         if return_dense is None: return_dense = self.return_dense
@@ -176,7 +258,7 @@ class M3Embedder(AbsEmbedder):
         if return_colbert_vecs is None: return_colbert_vecs = self.return_colbert_vecs
 
         return super().encode_corpus(
-            queries,
+            corpus,
             batch_size=batch_size,
             max_length=max_length,
             return_dense=return_dense,
@@ -187,7 +269,7 @@ class M3Embedder(AbsEmbedder):
 
     def encode(
         self,
-        queries: Union[List[str], str],
+        sentences: Union[List[str], str],
         batch_size: Optional[int] = None,
         max_length: Optional[int] = None,
         return_dense: Optional[bool] = None,
@@ -198,6 +280,19 @@ class M3Embedder(AbsEmbedder):
         Literal["dense_vecs", "lexical_weights", "colbert_vecs"],
         Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
     ]:
+        """Encode the sentences using the specified way.
+
+        Args:
+            sentences (Union[List[str], str]): The input sentences to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            return_dense (Optional[bool], optional): If True, compute and return dense embedding. Defaults to :data:`None`.
+            return_sparse (Optional[bool], optional): If True, compute and return sparce embedding. Defaults to :data:`None`.
+            return_colbert_vecs (Optional[bool], optional): If True, compute and return cobert vectors. Defaults to :data:`None`.
+
+        Returns:
+            Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.passage_max_length
         if return_dense is None: return_dense = self.return_dense
@@ -205,7 +300,7 @@ class M3Embedder(AbsEmbedder):
         if return_colbert_vecs is None: return_colbert_vecs = self.return_colbert_vecs
 
         return super().encode(
-            queries,
+            sentences,
             batch_size=batch_size,
             max_length=max_length,
             return_dense=return_dense,
@@ -225,7 +320,21 @@ class M3Embedder(AbsEmbedder):
         return_colbert_vecs: bool = False,
         device: Optional[str] = None,
         **kwargs: Any
-    ):        
+    ):
+        """Using single device to encode the input sentences.
+
+        Args:
+            sentences (Union[List[str], str]): The input sentences to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`256`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`512`.
+            return_dense (Optional[bool], optional): If True, compute and return dense embedding. Defaults to :data:`True`.
+            return_sparse (Optional[bool], optional): If True, compute and return sparce embedding. Defaults to :data:`False`.
+            return_colbert_vecs (Optional[bool], optional): If True, compute and return cobert vectors. Defaults to :data:`False`.
+            device (Optional[str], optional): _description_. Defaults to :data:`None`.
+
+        Returns:
+            Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
+        """
         # pop convert_to_numpy from kwargs
         kwargs.pop("convert_to_numpy", None)
 
@@ -391,6 +500,18 @@ class M3Embedder(AbsEmbedder):
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
         List[float]
     ]:
+        """Compute the relevance score of different attributes.
+
+        Args:
+            sentence_pairs (Union[List[Tuple[str, str]], Tuple[str, str]]): _description_
+            batch_size (Optional[int], optional): _description_. Defaults to None.
+            max_query_length (Optional[int], optional): _description_. Defaults to None.
+            max_passage_length (Optional[int], optional): _description_. Defaults to None.
+            weights_for_different_modes (Optional[List[float]], optional): _description_. Defaults to None.
+
+        Returns:
+            Dict[Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"], List[float]]
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_query_length is None: max_query_length = self.query_max_length
         if max_passage_length is None: max_passage_length = self.passage_max_length
@@ -491,6 +612,19 @@ class M3Embedder(AbsEmbedder):
         Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"],
         List[float]
     ]:
+        """Compute the relevance score of different attributes.
+
+        Args:
+            sentence_pairs (Union[List[Tuple[str, str]], Tuple[str, str]]): Pairs of sentences to compute the score.
+            batch_size (Optional[int], optional): _description_. Defaults to :data:`None`.
+            max_query_length (Optional[int], optional): _description_. Defaults to :data:`None`.
+            max_passage_length (Optional[int], optional): _description_. Defaults to :data:`None`.
+            weights_for_different_modes (Optional[List[float]], optional): The weights for different methods. Defaults to :data:`None`.
+            device (Optional[str], optional): The device to use. Defaults to :data:`None`.
+
+        Returns:
+            Dict[Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"], List[float]]
+        """
         def _tokenize(texts: list, max_length: int):
             return self.tokenizer(
                 texts,
@@ -595,6 +729,15 @@ class M3Embedder(AbsEmbedder):
         self,
         results_list: List[Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Any]]
     ):
+        """Concatenate and return the results from all the processes.
+
+        Args:
+            results_list (List[Dict[Literal[&quot;dense_vecs&quot;, &quot;lexical_weights&quot;, &quot;colbert_vecs&quot;], Any]]): 
+                A list of results from all the processes.
+
+        Returns:
+            Dict: The merged encoding results from the multi processes.
+        """
         merged_results = {
             "dense_vecs": [],
             "lexical_weights": [],
@@ -620,6 +763,15 @@ class M3Embedder(AbsEmbedder):
         self,
         results_list: List[Dict[Literal["colbert", "sparse", "dense", "sparse+dense", "colbert+sparse+dense"], List[float]]]
     ):
+        """Concatenate and return the results from all the processes.
+
+        Args:
+            results_list (List[Dict[Literal[&quot;colbert&quot;, &quot;sparse&quot;, &quot;dense&quot;, &quot;sparse): 
+                A list of computed scores.
+
+        Returns:
+            Dict: The merged computed scores from the multi processes.
+        """
         merged_results = {
             "colbert": [],
             "sparse": [],
