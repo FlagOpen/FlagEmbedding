@@ -47,8 +47,6 @@ class BaseLLMEmbedder(AbsEmbedder):
         batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
         query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
-        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
-        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
         convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
             Defaults to :data:`True`.
     
@@ -72,8 +70,6 @@ class BaseLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: Optional[str] = None,
-        instruction_format: str = "{}{}",
         convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
@@ -87,8 +83,6 @@ class BaseLLMEmbedder(AbsEmbedder):
             batch_size=batch_size,
             query_max_length=query_max_length,
             passage_max_length=passage_max_length,
-            instruction=instruction,
-            instruction_format=instruction_format,
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )

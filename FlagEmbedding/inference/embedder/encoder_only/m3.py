@@ -38,8 +38,6 @@ class M3Embedder(AbsEmbedder):
         batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
         query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
-        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
-        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
         return_dense (bool, optional): If true, will return the dense embedding. Defaults to :data:`True`.
         return_sparse (bool, optional): If true, will return the sparce embedding. Defaults to :data:`False`.
         return_colbert_vecs (bool, optional): If true, will return the colbert vectors. Defaults to :data:`False`.
@@ -66,8 +64,6 @@ class M3Embedder(AbsEmbedder):
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: Optional[str] = None,
-        instruction_format: str = "{}{}",
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
@@ -83,8 +79,6 @@ class M3Embedder(AbsEmbedder):
             batch_size=batch_size,
             query_max_length=query_max_length,
             passage_max_length=passage_max_length,
-            instruction=instruction,
-            instruction_format=instruction_format,
             return_dense=return_dense,
             return_sparse=return_sparse,
             return_colbert_vecs=return_colbert_vecs,

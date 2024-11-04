@@ -54,6 +54,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
         query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
+            Defaults to :data:`True`.
     
     Attributes:
         DEFAULT_POOLING_METHOD: The default pooling method when running the model.
@@ -77,8 +79,6 @@ class ICLLLMEmbedder(AbsEmbedder):
         batch_size: int = 256,
         query_max_length: int = 512,
         passage_max_length: int = 512,
-        instruction: Optional[str] = None,
-        instruction_format: str = "{}{}",
         convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
@@ -92,10 +92,8 @@ class ICLLLMEmbedder(AbsEmbedder):
             batch_size=batch_size,
             query_max_length=query_max_length,
             passage_max_length=passage_max_length,
-            instruction=instruction,
-            instruction_format=instruction_format,
             convert_to_numpy=convert_to_numpy,
-            kwargs=kwargs
+            **kwargs
         )
 
         self.tokenizer = AutoTokenizer.from_pretrained(
