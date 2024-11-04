@@ -134,7 +134,7 @@ class AbsEmbedder(ABC):
         """
         if not device.startswith("cuda"):
             return
-        torch.set_device(torch.device(device))
+        torch.cuda.set_device(torch.device(device))
         torch.cuda.empty_cache()
 
     def encode_queries(

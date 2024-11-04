@@ -122,7 +122,7 @@ class AbsReranker(ABC):
         """
         if not device.startswith("cuda"):
             return
-        torch.set_device(torch.device(device))
+        torch.cuda.set_device(torch.device(device))
         torch.cuda.empty_cache()
 
     def get_detailed_instruct(self, instruction_format: str, instruction: str, sentence: str):
