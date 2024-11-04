@@ -11,6 +11,15 @@ from FlagEmbedding.abc.inference import AbsEmbedder
 # Pooling function for LLM-based embedding models
 def last_token_pool(last_hidden_states: torch.Tensor,
                     attention_mask: torch.Tensor) -> torch.Tensor:
+    """Last token pooling method.
+
+    Args:
+        last_hidden_state (torch.Tensor): The last hidden state of the model.
+        attention_mask (torch.Tensor): Attention mask. Defaults to :data:`None`.
+
+    Returns:
+        torch.Tensor: The embedding vectors after pooling.
+    """
     left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
     if left_padding:
         return last_hidden_states[:, -1]
@@ -21,6 +30,31 @@ def last_token_pool(last_hidden_states: torch.Tensor,
 
 
 class BaseLLMEmbedder(AbsEmbedder):
+    """Base embedder for LLM like decoder only models.
+
+    Args:
+        model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+            load a model from HuggingFace Hub with the name.
+        normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to :data:`True`.
+        use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+            degradation. Defaults to :data:`True`.
+        query_instruction_for_retrieval (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
+            with :attr:`query_instruction_format`. Defaults to :data:`None`.
+        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
+        devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+        trust_remote_code (bool, optional): trust_remote_code for HF datasets or models. Defaults to :data:`False`.
+        cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
+        query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
+        passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
+        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
+        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
+        convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
+            Defaults to :data:`True`.
+    
+    Attributes:
+        DEFAULT_POOLING_METHOD: The default pooling method when running the model.
+    """
     DEFAULT_POOLING_METHOD = "last_token"
 
     def __init__(
@@ -81,6 +115,18 @@ class BaseLLMEmbedder(AbsEmbedder):
         convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
+        """Encode the queries.
+
+        Args:
+            queries (Union[List[str], str]): Input queries to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to :data:`None`.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
+        """
         return super().encode_queries(
             queries,
             batch_size=batch_size,
@@ -97,6 +143,18 @@ class BaseLLMEmbedder(AbsEmbedder):
         convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
+        """Encode the corpus.
+
+        Args:
+            corpus (Union[List[str], str]): Input corpus to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to :data:`None`.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
+        """
         return super().encode_corpus(
             corpus,
             batch_size=batch_size,
@@ -113,6 +171,18 @@ class BaseLLMEmbedder(AbsEmbedder):
         convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
+        """Encode the input sentences with the embedding model.
+
+        Args:
+            sentences (Union[List[str], str]): Input sentences to encode.
+            batch_size (Optional[int], optional): Number of sentences for each iter. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            convert_to_numpy (Optional[bool], optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to :data:`None`.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         return super().encode(
             sentences,
             batch_size=batch_size,
@@ -131,6 +201,19 @@ class BaseLLMEmbedder(AbsEmbedder):
         device: Optional[str] = None,
         **kwargs: Any   # add `pad_to_multiple_of=8` for bge-multilingual-gemmma2
     ):
+        """Encode input sentences by a single device.
+
+        Args:
+            sentences (Union[List[str], str]): Input sentences to encode.
+            batch_size (int, optional): Number of sentences for each iter. Defaults to :data:`256`.
+            max_length (int, optional): Maximum length of tokens. Defaults to :data:`512`.
+            convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to :data:`True`.
+            device (Optional[str], optional): Device to use for encoding. Defaults to None.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         if device is None:
             device = self.target_devices[0]
 

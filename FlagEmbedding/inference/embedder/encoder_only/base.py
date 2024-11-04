@@ -18,9 +18,9 @@ class BaseEmbedder(AbsEmbedder):
         normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to :data:`True`.
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
             degradation. Defaults to :data:`True`.
-        query_instruction_for_retrieval: (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
+        query_instruction_for_retrieval (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
             with :attr:`query_instruction_format`. Defaults to :data:`None`.
-        query_instruction_format: (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
+        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
         devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
         pooling_method (str, optional): Pooling method to get embedding vector from the last hidden state. Defaults to :data:`"cls"`.
         trust_remote_code (bool, optional): trust_remote_code for HF datasets or models. Defaults to :data:`False`.
@@ -96,7 +96,7 @@ class BaseEmbedder(AbsEmbedder):
         convert_to_numpy: Optional[bool] = None,
         **kwargs: Any
     ) -> Union[np.ndarray, torch.Tensor]:
-        """Encode the queries using the instruction if provided.
+        """Encode the queries.
 
         Args:
             queries (Union[List[str], str]): Input queries to encode.
@@ -182,7 +182,7 @@ class BaseEmbedder(AbsEmbedder):
         device: Optional[str] = None,
         **kwargs: Any
     ):
-        """Encode input sentences on a single device.
+        """Encode input sentences by a single device.
 
         Args:
             sentences (Union[List[str], str]): Input sentences to encode.
