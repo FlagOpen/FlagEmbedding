@@ -162,9 +162,9 @@ def search(
 
     Args:
         faiss_index (faiss.Index): The Faiss index that contains all the corpus embeddings.
-        k (int, optional): Top k numbers of closest neighbours. Defaults to 100.
-        query_embeddings (Optional[np.ndarray], optional): The embedding vectors of queries. Defaults to None.
-        load_path (Optional[str], optional): Path to load embeddings from. Defaults to None.
+        k (int, optional): Top k numbers of closest neighbours. Defaults to :data:`100`.
+        query_embeddings (Optional[np.ndarray], optional): The embedding vectors of queries. Defaults to :data:`None`.
+        load_path (Optional[str], optional): Path to load embeddings from. Defaults to :data:`None`.
 
     Returns:
         Tuple[np.ndarray, np.ndarray]: The scores of search results and their corresponding indices.

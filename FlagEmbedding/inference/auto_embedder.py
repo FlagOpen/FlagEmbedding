@@ -11,6 +11,9 @@ logger = logging.getLogger(__name__)
 
 
 class FlagAutoModel:
+    """
+    Automatically choose the appropriate class to load the embedding model.
+    """
     def __init__(self):
         raise EnvironmentError(
             "FlagAutoModel is designed to be instantiated using the `FlagAutoModel.from_finetuned(model_name_or_path)` method."
@@ -30,6 +33,30 @@ class FlagAutoModel:
         query_instruction_format: Optional[str] = None,
         **kwargs,
     ):
+        """
+        Load a finetuned model according to the provided vars.
+
+        Args:
+            model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+                load a model from HuggingFace Hub with the name.
+            model_class (Optional[Union[str, EmbedderModelClass]], optional): The embedder class to use. Defaults to :data:`None`.
+            normalize_embeddings (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
+                Defaults to :data:`True`.
+            use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+                degradation. Defaults to :data:`True`.
+            query_instruction_for_retrieval (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
+                :attr:`query_instruction_format`. Defaults to :data:`None`.
+            devices (Optional[Union[str, List[str]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+            pooling_method (Optional[str], optional): Pooling method to get embedding vector from the last hidden state. Defaults to :data:`None`.
+            trust_remote_code (Optional[bool], optional): trust_remote_code for HF datasets or models. Defaults to :data:`None`.
+            query_instruction_format (Optional[str], optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`None`.
+
+        Raises:
+            ValueError
+
+        Returns:
+            AbsEmbedder: The model class to load model, which is child class of :class:`AbsEmbedder`.
+        """
         model_name = os.path.basename(model_name_or_path)
         if model_name.startswith("checkpoint-"):
             model_name = os.path.basename(os.path.dirname(model_name_or_path))

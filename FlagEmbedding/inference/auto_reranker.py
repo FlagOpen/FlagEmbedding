@@ -12,6 +12,9 @@ logger = logging.getLogger(__name__)
 
 
 class FlagAutoReranker:
+    """
+    Automatically choose the appropriate class to load the reranker model.
+    """
     def __init__(self):
         raise EnvironmentError(
             "FlagAutoReranker is designed to be instantiated using the `FlagAutoReranker.from_finetuned(model_name_or_path)` method."
@@ -26,6 +29,23 @@ class FlagAutoReranker:
         trust_remote_code: Optional[bool] = None,
         **kwargs,
     ):
+        """
+        Load a finetuned model according to the provided vars.
+
+        Args:
+            model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+                load a model from HuggingFace Hub with the name.
+            model_class (Optional[Union[str, RerankerModelClass]], optional): The reranker class to use.. Defaults to :data:`None`.
+            use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+                degradation. Defaults to :data:`False`.
+            trust_remote_code (Optional[bool], optional): trust_remote_code for HF datasets or models. Defaults to :data:`None`.
+
+        Raises:
+            ValueError
+
+        Returns:
+            AbsReranker: The reranker class to load model, which is child class of :class:`AbsReranker`.
+        """
         model_name = os.path.basename(model_name_or_path)
         if model_name.startswith("checkpoint-"):
             model_name = os.path.basename(os.path.dirname(model_name_or_path))
