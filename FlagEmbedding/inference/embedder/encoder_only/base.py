@@ -231,6 +231,7 @@ class BaseEmbedder(AbsEmbedder):
             **kwargs
         ).to(device)
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 test_inputs_batch = {}
                 for k, v in max_length_inputs.items():
@@ -247,6 +248,7 @@ class BaseEmbedder(AbsEmbedder):
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
                                 disable=len(sentences) < 256):
+            self.empty_cuda_cache(device)
             inputs_batch = all_inputs_sorted[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
@@ -271,6 +273,8 @@ class BaseEmbedder(AbsEmbedder):
 
         # adjust the order of embeddings
         all_embeddings = all_embeddings[np.argsort(length_sorted_idx)]
+
+        self.empty_cuda_cache(device)
 
         # return the embeddings
         if input_was_string:

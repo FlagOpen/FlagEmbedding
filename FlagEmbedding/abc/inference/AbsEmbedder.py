@@ -125,6 +125,18 @@ class AbsEmbedder(ABC):
         """
         return instruction_format.format(instruction, sentence)
 
+    @staticmethod
+    def empty_cuda_cache(device: str):
+        """Empty the cache of the specified device.
+
+        Args:
+            device (str): The device to empty the cache.
+        """
+        if not device.startswith("cuda"):
+            return
+        torch.set_device(torch.device(device))
+        torch.cuda.empty_cache()
+
     def encode_queries(
         self,
         queries: Union[List[str], str],

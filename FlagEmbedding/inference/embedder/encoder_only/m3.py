@@ -396,6 +396,7 @@ class M3Embedder(AbsEmbedder):
             **kwargs
         ).to(device)
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 test_inputs_batch = {}
                 for k, v in max_length_inputs.items():
@@ -416,6 +417,7 @@ class M3Embedder(AbsEmbedder):
         all_dense_embeddings, all_lexical_weights, all_colbert_vecs = [], [], []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
                                 disable=len(sentences) < 256):
+            self.empty_cuda_cache(device)
             inputs_batch = all_inputs_sorted[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer.pad(
                 inputs_batch,
@@ -474,6 +476,8 @@ class M3Embedder(AbsEmbedder):
                 all_colbert_vecs = all_colbert_vecs[0]
         else:
             all_colbert_vecs = None
+
+        self.empty_cuda_cache(device)
 
         # return the embeddings
         return {
@@ -656,6 +660,7 @@ class M3Embedder(AbsEmbedder):
         }
         for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
                                 disable=len(sentence_pairs) < 128):
+            self.empty_cuda_cache(device)
             sentences_batch = sentence_pairs[start_index:start_index + batch_size]
 
             queries_batch = [pair[0] for pair in sentences_batch]
@@ -714,6 +719,8 @@ class M3Embedder(AbsEmbedder):
             all_scores['colbert+sparse+dense'].extend(
                 ((colbert_scores * weights_for_different_modes[2] + sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/weight_sum).cpu().numpy().tolist()
             )
+
+        self.empty_cuda_cache(device)
 
         if one_input_pair:
             return {k: v[0] for k, v in all_scores.items()}

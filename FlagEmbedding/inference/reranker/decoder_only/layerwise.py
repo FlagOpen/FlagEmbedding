@@ -191,6 +191,7 @@ class LayerWiseLLMReranker(AbsReranker):
         # adjust batch size
         flag = False
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(
@@ -252,6 +253,7 @@ class LayerWiseLLMReranker(AbsReranker):
         all_scores = []
         if dataloader is not None:
             for inputs in tqdm(dataloader):
+                self.empty_cuda_cache(device)
                 inputs = inputs.to(device)
 
                 outputs = self.model(**inputs, output_hidden_states=True, cutoff_layers=cutoff_layers)
@@ -269,6 +271,7 @@ class LayerWiseLLMReranker(AbsReranker):
                     all_scores[i].extend(tmp_all_scores[i].cpu().float().tolist())
         else:
             for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
+                self.empty_cuda_cache(device)
                 queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
                 passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
 
@@ -318,8 +321,10 @@ class LayerWiseLLMReranker(AbsReranker):
             all_scores[i] = [all_scores[i][idx] for idx in np.argsort(length_sorted_idx)]
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
-        
+
         if isinstance(all_scores[0], list):
             all_scores = all_scores[0]
-            
+
+        self.empty_cuda_cache(device)
+
         return all_scores

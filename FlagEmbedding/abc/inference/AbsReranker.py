@@ -113,6 +113,18 @@ class AbsReranker(ABC):
         else:
             raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
 
+    @staticmethod
+    def empty_cuda_cache(device: str):
+        """Empty the cache of the specified device.
+
+        Args:
+            device (str): The device to empty the cache.
+        """
+        if not device.startswith("cuda"):
+            return
+        torch.set_device(torch.device(device))
+        torch.cuda.empty_cache()
+
     def get_detailed_instruct(self, instruction_format: str, instruction: str, sentence: str):
         """Combine the instruction and sentence along with the instruction format.
 

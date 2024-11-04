@@ -283,6 +283,7 @@ class BaseLLMReranker(AbsReranker):
         # adjust batch size
         flag = False
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(
@@ -344,6 +345,7 @@ class BaseLLMReranker(AbsReranker):
         all_scores = []
         if dataloader is not None:
             for inputs in tqdm(dataloader):
+                self.empty_cuda_cache(device)
                 inputs = inputs.to(device)
 
                 outputs = self.model(**inputs, output_hidden_states=True)
@@ -353,6 +355,7 @@ class BaseLLMReranker(AbsReranker):
                 all_scores.extend(scores.cpu().float().tolist())
         else:
             for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
+                self.empty_cuda_cache(device)
                 queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
                 passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
 
@@ -397,5 +400,7 @@ class BaseLLMReranker(AbsReranker):
 
         # if len(all_scores) == 1:
         #     return all_scores[0]
+
+        self.empty_cuda_cache(device)
 
         return all_scores

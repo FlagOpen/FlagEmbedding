@@ -251,6 +251,7 @@ class LightweightLLMReranker(AbsReranker):
         # adjust batch size
         flag = False
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 batch_inputs = []
                 query_lengths = []
@@ -307,6 +308,7 @@ class LightweightLLMReranker(AbsReranker):
 
         all_scores = []
         for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
+            self.empty_cuda_cache(device)
             queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
             passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
 
@@ -371,5 +373,7 @@ class LightweightLLMReranker(AbsReranker):
     
         if isinstance(all_scores[0], list):
             all_scores = all_scores[0]
+
+        self.empty_cuda_cache(device)
 
         return all_scores

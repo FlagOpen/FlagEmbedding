@@ -125,6 +125,7 @@ class BaseReranker(AbsReranker):
         # adjust batch size
         flag = False
         while flag is False:
+            self.empty_cuda_cache(device)
             try:
                 test_inputs_batch = self.tokenizer.pad(
                     all_inputs_sorted[:min(len(all_inputs_sorted), batch_size)],
@@ -142,6 +143,7 @@ class BaseReranker(AbsReranker):
         all_scores = []
         for start_index in tqdm(range(0, len(all_inputs_sorted), batch_size), desc="Compute Scores",
                                 disable=len(all_inputs_sorted) < 128):
+            self.empty_cuda_cache(device)
             sentences_batch = all_inputs_sorted[start_index:start_index + batch_size]
             inputs = self.tokenizer.pad(
                 sentences_batch,
@@ -158,5 +160,7 @@ class BaseReranker(AbsReranker):
 
         if normalize:
             all_scores = [sigmoid(score) for score in all_scores]
+
+        self.empty_cuda_cache(device)
 
         return all_scores
