@@ -14,6 +14,15 @@ from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
 
 def last_logit_pool(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
+    """Pool the last logit.
+
+    Args:
+        logits (torch.Tensor): The output logits of the model.
+        attention_mask (torch.Tensor): Attention mask.
+
+    Returns:
+        torch.Tensor: The tensor after pooling.
+    """
     left_padding = (attention_mask[:, -1].sum() == attention_mask.shape[0])
     if left_padding:
         return logits[:, -1, :]
@@ -24,6 +33,17 @@ def last_logit_pool(logits: Tensor,
 
 
 class DatasetForReranker(Dataset):
+    """Prepare the dataset for dataloader.
+
+    Args:
+        all_queries_inputs (_type_): All the input queries.
+        all_passages_inputs (_type_): All the input passages.
+        tokenizer_path (str): Path to the tokenizer to use.
+        max_len (int, optional): Maximum length of tokens. Defaults to :data:`512`.
+        cache_dir (Optional[str], optional): Cache directory for the tokenzier. Defaults to :data:`None`.
+        prompt (Optional[str], optional): Prompt for the specific task, will use the default if not provided.
+            Defaults to `None`.
+    """
     def __init__(
         self,
         all_queries_inputs,
@@ -88,6 +108,13 @@ class DatasetForReranker(Dataset):
 
 
 class Collater:
+    """
+    Collator of the reranker.
+    
+    Args:
+        tokenizer (transformers.AutoTokenizer): The tokenizer for reranker.
+        max_len (int): Maximum length of tokens.
+    """
     def __init__(self, tokenizer, max_len):
         self.tokenizer = tokenizer
         self.max_len = max_len
@@ -131,6 +158,32 @@ class Collater:
 
 
 class BaseLLMReranker(AbsReranker):
+    """Base reranker class for LLM like decoder only models.
+
+    Args:
+        model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+            load a model from HuggingFace Hub with the name.
+        peft_path (Optional[str], optional): _description_. Defaults to :data:`None`.
+        use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+            degradation. Defaults to :data:`False`. Defaults to :data:`False`.
+        use_bf16 (bool, optional): _description_. Defaults to :data:False.
+        query_instruction_for_rerank (str, optional): Query instruction for retrieval tasks, which will be used with
+            with :attr:`query_instruction_format`. Defaults to :data:`"A: "`.
+        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_rerank`. Defaults to :data:`"{}{}"`.
+        passage_instruction_for_rerank (str, optional): Passage instruction for retrieval tasks, which will be used with
+            with :attr:`passage_instruction_format`. Defaults to :data:`"B: "`.
+        passage_instruction_format (str, optional): The template for passage. Defaults to "{}{}".
+        cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.
+        trust_remote_code (bool, optional): trust_remote_code. Defaults to :data:`False`.
+        devices (Union[str, List[str], List[int]], optional): Devices to use for model inference, such as ["cuda:0"] or ["0"].
+            Defaults to :data:`None`.
+        prompt (Optional[str], optional): Prompt for the specific task. Defaults to :data:`None`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`128`.
+        query_max_length (int, optional): Maximum length for queries. If not specified, will be 3/4 of :attr:`max_length`.
+            Defaults to :data:`None`.
+        max_length (int, optional): Maximum length of passages. Defaults to :data`512`.
+        normalize (bool, optional): If True, use Sigmoid to normalize the results. Defaults to :data:`False`.
+    """
     def __init__(
         self,
         model_name_or_path: str,
@@ -152,7 +205,6 @@ class BaseLLMReranker(AbsReranker):
         normalize: bool = False,
         **kwargs: Any,
     ) -> None:
-
         super().__init__(
             model_name_or_path=model_name_or_path,
             use_fp16=use_fp16,
@@ -203,6 +255,22 @@ class BaseLLMReranker(AbsReranker):
         device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
+        """Compute the relevance scores using a single GPU.
+
+        Args:
+            sentence_pairs (Union[List[Tuple[str, str]], Tuple[str, str]]): Input sentence pairs to compute scores.
+            batch_size (Optional[int], optional): Number of inputs for each iter. Defaults to :data:`None`.
+            query_max_length (Optional[int], optional): Maximum length of tokens of queries. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            prompt (Optional[str], optional): Prompt for the specific task. Defaults to :data:`None`.
+            normalize (Optional[bool], optional): If True, use Sigmoid to normalize the results. Defaults to :data:`None`.
+            use_dataloader (bool, optional): If True, will use the dataloader to load the datasets. Defaults to :data:`False`.
+            num_workers (int, optional): Number of workers for dataloader. Defaults to :data:`None`.
+            device (Optional[str], optional): Device to use for computation. Defaults to :data:`None`.
+
+        Returns:
+            List[float]: The computed scores.
+        """
         if prompt is None: prompt = self.prompt
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.max_length

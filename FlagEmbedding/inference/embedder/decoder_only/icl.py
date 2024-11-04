@@ -33,8 +33,9 @@ def last_token_pool(last_hidden_states: torch.Tensor,
 
 
 class ICLLLMEmbedder(AbsEmbedder):
-    """_summary_
-
+    """
+    Embedder class for BGE-EN-icl.
+    
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
             load a model from HuggingFace Hub with the name.
@@ -45,19 +46,14 @@ class ICLLLMEmbedder(AbsEmbedder):
             with :attr:`query_instruction_format`. Defaults to :data:`None`.
         query_instruction_format (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
         devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
-        examples_for_task (Optional[List[dict]], optional): Few-shot examples for the model to enhance model's ability. Defaults to 
-            :data:`None`.
-        examples_instruction_format (str, optional): Example format when using :attr:`examples_for_task`. Defaults to 
-            :data:`"<instruct>{}\n<query>{}\n<response>{}"`.
+        examples_for_task (Optional[List[dict]], optional): Few-shot examples for the model to enhance model's ability. 
+            Defaults to :data:`None`.
+        examples_instruction_format (str, optional): Example format when using :attr:`examples_for_task`.
         trust_remote_code (bool, optional): trust_remote_code for HF datasets or models. Defaults to :data:`False`.
         cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.
         batch_size (int, optional): Batch size for inference. Defaults to :data:`256`.
         query_max_length (int, optional): Maximum length for query. Defaults to :data:`512`.
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
-        instruction (Optional[str], optional): Instruction for embedding with :attr:`instruction_format`. Defaults to :data:`None`.
-        instruction_format (str, optional): Instruction format when using :attr:`instruction`. Defaults to :data:`"{}{}"`.
-        convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
-            Defaults to :data:`True`.
     
     Attributes:
         DEFAULT_POOLING_METHOD: The default pooling method when running the model.
