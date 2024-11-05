@@ -27,7 +27,7 @@ class AbsEmbedderTrainer(ABC, Trainer):
                 returns only the loss.
         
         Returns:
-            Union[torch.Tensor, tuple(torch.Tensor, ModelOutput)]: The computed loss. If ``return_outputs`` is ``True``, 
+            Union[torch.Tensor, tuple(torch.Tensor, EmbedderOutput)]: The computed loss. If ``return_outputs`` is ``True``, 
                 also returns the model's outputs in a tuple ``(loss, outputs)``.
         """
 

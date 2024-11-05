@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 class AbsRerankerRunner(ABC):
+    """Abstract class to run reranker model fine-tuning.
+
+    Args:
+        model_args (AbsRerankerModelArguments): Model arguments
+        data_args (AbsRerankerDataArguments): Data arguments.
+        training_args (AbsRerankerTrainingArguments): Training arguments.
+    """
     def __init__(
         self,
         model_args: AbsRerankerModelArguments,
@@ -70,13 +77,28 @@ class AbsRerankerRunner(ABC):
 
     @abstractmethod
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
+        """Abstract method to load the tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsRerankerModel]: Loaded tokenizer and model instances.
+        """
         pass
 
     @abstractmethod
     def load_trainer(self) -> AbsRerankerTrainer:
+        """Abstract method to load the trainer.
+
+        Returns:
+            AbsRerankerTrainer: The loaded trainer instance.
+        """
         pass
 
     def load_train_dataset(self) -> AbsRerankerTrainDataset:
+        """Loads the training dataset based on data arguments.
+
+        Returns:
+            AbsRerankerTrainDataset: The loaded dataset instance.
+        """
         if self.model_args.model_type == 'encoder':
             train_dataset = AbsRerankerTrainDataset(
                 args=self.data_args,
@@ -90,6 +112,11 @@ class AbsRerankerRunner(ABC):
         return train_dataset
 
     def load_data_collator(self) -> AbsRerankerCollator:
+        """Loads the appropriate data collator.
+
+        Returns:
+            AbsRerankerCollator: Loaded data collator.
+        """
         if self.model_args.model_type == 'encoder':
             RerankerCollator = AbsRerankerCollator
         else:
@@ -106,6 +133,9 @@ class AbsRerankerRunner(ABC):
         return data_collator
 
     def run(self):
+        """
+        Executes the training process.
+        """
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
         # Training

@@ -18,6 +18,13 @@ class RerankerOutput(ModelOutput):
 
 
 class AbsRerankerModel(ABC, nn.Module):
+    """Abstract class of embedding model for training.
+
+    Args:
+        base_model: The base model to train on.
+        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        train_batch_size (int, optional): Batch size used for training. Defaults to ``4``.
+    """
     def __init__(
         self,
         base_model: None,
@@ -38,16 +45,36 @@ class AbsRerankerModel(ABC, nn.Module):
         self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][-1]
 
     def gradient_checkpointing_enable(self, **kwargs):
+        """
+        Activates gradient checkpointing for the current model.
+        """
         self.model.gradient_checkpointing_enable(**kwargs)
 
     def enable_input_require_grads(self, **kwargs):
+        """
+        Enables the gradients for the input embeddings.
+        """
         self.model.enable_input_require_grads(**kwargs)
 
     @abstractmethod
     def encode(self, features):
+        """Abstract method of encode.
+
+        Args:
+            features (dict): Teatures to pass to the model.
+        """
         pass
 
     def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
+        """The computation performed at every call.
+
+        Args:
+            pair (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): The query-document pair. Defaults to ``None``.
+            teacher_scores (Optional[Tensor], optional): Teacher scores of knowledge distillation. Defaults to None.
+
+        Returns:
+            RerankerOutput: Output of reranker model.
+        """
         ranker_logits = self.encode(pair) # (batch_size * num, dim)
         if teacher_scores is not None:
             teacher_scores = torch.Tensor(teacher_scores)
@@ -72,9 +99,23 @@ class AbsRerankerModel(ABC, nn.Module):
         )
 
     def compute_loss(self, scores, target):
+        """Compute the loss.
+
+        Args:
+            scores (torch.Tensor): Computed scores.
+            target (torch.Tensor): The target value.
+
+        Returns:
+            torch.Tensor: The computed loss.
+        """
         return self.cross_entropy(scores, target)
 
     def save(self, output_dir: str):
+        """Save the model.
+
+        Args:
+            output_dir (str): Directory for saving the model.
+        """
         # self.model.save_pretrained(output_dir)
         state_dict = self.model.state_dict()
         state_dict = type(state_dict)(
@@ -84,5 +125,8 @@ class AbsRerankerModel(ABC, nn.Module):
         self.model.save_pretrained(output_dir, state_dict=state_dict)
 
     def save_pretrained(self, *args, **kwargs):
+        """
+        Save the tokenizer and model.
+        """
         self.tokenizer.save_pretrained(*args, **kwargs)
         return self.model.save_pretrained(*args, **kwargs)
