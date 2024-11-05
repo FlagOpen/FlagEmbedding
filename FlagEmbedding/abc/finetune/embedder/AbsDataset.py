@@ -503,10 +503,12 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
 @dataclass
 class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
     """
-    EmbedCollator for SameDataset
+    EmbedCollator for SameDataset.
     Note that after using this collator, the training_args should be set as:
-        training_args.per_device_train_batch_size = 1
-        training_args.dataloader_num_workers = 0    # avoid multi-processing
+    
+    ``training_args.per_device_train_batch_size = 1``
+    
+    ``training_args.dataloader_num_workers = 0    # avoid multi-processing``
     """
     query_max_len: int = 32
     passage_max_len: int = 128
