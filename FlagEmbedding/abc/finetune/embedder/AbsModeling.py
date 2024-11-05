@@ -15,6 +15,9 @@ logger = logging.getLogger(__name__)
 
 @dataclass
 class EmbedderOutput(ModelOutput):
+    """
+    Output information returned by the model.
+    """
     q_reps: Optional[Tensor] = None
     p_reps: Optional[Tensor] = None
     loss: Optional[Tensor] = None
@@ -22,6 +25,17 @@ class EmbedderOutput(ModelOutput):
 
 
 class AbsEmbedderModel(ABC, nn.Module):
+    """Abstract class of embedding model for training.
+
+    Args:
+        base_model: The base model to train on.
+        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
+        temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
+        sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
+            Defaults to ``-1``.
+        kd_loss_type (str, optional): Knowledge distillation type. Defaults to ``"kl_div"``.
+    """
     def __init__(
         self,
         base_model,
@@ -48,21 +62,53 @@ class AbsEmbedderModel(ABC, nn.Module):
 
     @abstractmethod
     def encode(self, features):
+        """Abstract method encode and get the embedding.
+
+        Args:
+            features (Union[list, dict]): Features feed to the model.
+        """
         pass
 
     @abstractmethod
     def compute_loss(self, scores, target):
+        """Abstract method compute the loss.
+
+        Args:
+            scores (torch.Tensor): Computed score.
+            target (torch.Tensor): The target value.
+        """
         pass
 
     @abstractmethod
     def compute_score(self, q_reps, p_reps):
+        """Abstract method to compute the score.
+
+        Args:
+            q_reps (torch.Tensor): Queries representations.
+            p_reps (torch.Tensor): Passages rerpresentations.
+        """
         pass
 
     @abstractmethod
     def save(self, output_dir: str):
+        """Abstract method to save the model.
+
+        Args:
+            output_dir (str): Directory for saving the model.
+        """
         pass
 
     def get_local_score(self, q_reps, p_reps, all_scores):
+        """Get the local score of queries and passages.
+
+        Args:
+            q_reps (torch.Tensor): Queries representations.
+            p_reps (torch.Tensor): Passages rerpresentations.
+            all_scores (torch.Tensor): All the query-passage scores computed.
+
+        Returns:
+            torch.Tensor: Local scores to compute loss.
+        """
         group_size = p_reps.size(0) // q_reps.size(0)
         indices = torch.arange(0, q_reps.size(0), device=q_reps.device) * group_size
         specific_scores = []
@@ -73,6 +119,17 @@ class AbsEmbedderModel(ABC, nn.Module):
         return torch.stack(specific_scores, dim=1).view(q_reps.size(0), -1)
 
     def compute_local_score(self, q_reps, p_reps, compute_score_func=None, **kwargs):
+        """Compute the local score of queries and passages.
+
+        Args:
+            q_reps (torch.Tensor): Queries representations.
+            p_reps (torch.Tensor): Passages rerpresentations.
+            compute_score_func (function, optional): Function to compute score. Defaults to ``None``, which will use the
+                :meth:`self.compute_score`.
+
+        Returns:
+            torch.Tensor: Local scores to compute loss.
+        """
         if compute_score_func is None:
             all_scores = self.compute_score(q_reps, p_reps)
         else:
@@ -181,6 +238,17 @@ class AbsEmbedderModel(ABC, nn.Module):
         teacher_scores: Union[None, List[float]] = None,
         no_in_batch_neg_flag: bool = False,
     ):
+        """The computation performed at every call.
+
+        Args:
+            queries (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): Input queries. Defaults to ``None``.
+            passages (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): Input passages. Defaults to ``None``.
+            teacher_scores (Union[None, List[float]], optional): Teacher scores for distillation. Defaults to ``None``.
+            no_in_batch_neg_flag (bool, optional): If True, use no in-batch negatives and no cross-device negatives. Defaults to ``False``.
+
+        Returns:
+            EmbedderOutput: Output of the forward call of model.
+        """
         q_reps = self.encode(queries) # (batch_size, dim)
         p_reps = self.encode(passages) # (batch_size * group_size, dim)
 
@@ -210,6 +278,20 @@ class AbsEmbedderModel(ABC, nn.Module):
 
     @staticmethod
     def distill_loss(kd_loss_type, teacher_targets, student_scores, group_size=None):
+        """Compute the distillation loss.
+
+        Args:
+            kd_loss_type (str): Type of knowledge distillation loss, supports "kl_div" and "m3_kd_loss".
+            teacher_targets (torch.Tensor): Targets from the teacher model.
+            student_scores (torch.Tensor): Score of student model.
+            group_size (int, optional): Number of groups for . Defaults to ``None``.
+
+        Raises:
+            ValueError: Invalid kd_loss_type
+
+        Returns:
+            torch.Tensor: A scalar of computed distillation loss.
+        """
         if kd_loss_type == 'kl_div':
             # teacher_targets: (batch_size, group_size) / (world_size * batch_size, group_size)
             # student_scores: (batch_size, group_size) / (world_size * batch_size, group_size)
@@ -236,6 +318,15 @@ class AbsEmbedderModel(ABC, nn.Module):
             raise ValueError(f"Invalid kd_loss_type: {kd_loss_type}")
 
     def _dist_gather_tensor(self, t: Optional[torch.Tensor]):
+        """Gather a tensor from all processes in a distributed setting.
+
+        Args:
+            t (Optional[torch.Tensor]): The input tensor to be gathered. If `None`, no gathering is performed.
+
+        Returns:
+            Union[torch.Tensor, None]: A concatenated tensor from all processes if ``t`` is not ``None``, 
+                otherwise returns ``None``.
+        """
         if t is None:
             return None
         t = t.contiguous()

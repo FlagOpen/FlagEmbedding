@@ -95,10 +95,11 @@ class LightweightLLMReranker(AbsReranker):
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
             load a model from HuggingFace Hub with the name.
-        peft_path (Optional[str], optional): _description_. Defaults to :data:`None`.
+        peft_path (Optional[str], optional): Path to the PEFT config. Defaults to :data:`None`.
         use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
             degradation. Defaults to :data:`False`. Defaults to :data:`False`.
-        use_bf16 (bool, optional): _description_. Defaults to :data:False.
+        use_bf16 (bool, optional): Another type of half-precision floating-point, you can use bf16 if the hardware supports. 
+            Defaults to :data:False.
         query_instruction_for_rerank (str, optional): Query instruction for retrieval tasks, which will be used with
             with :attr:`query_instruction_format`. Defaults to :data:`"A: "`.
         query_instruction_format (str, optional): The template for :attr:`query_instruction_for_rerank`. Defaults to :data:`"{}{}"`.

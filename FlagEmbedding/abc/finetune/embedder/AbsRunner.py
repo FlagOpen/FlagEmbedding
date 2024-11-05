@@ -22,6 +22,13 @@ logger = logging.getLogger(__name__)
 
 
 class AbsEmbedderRunner(ABC):
+    """Abstract class to run embedding model fine-tuning.
+
+    Args:
+        model_args (AbsEmbedderModelArguments): Model arguments
+        data_args (AbsEmbedderDataArguments): Data arguments.
+        training_args (AbsEmbedderTrainingArguments): Training arguments.
+    """
     def __init__(
         self,
         model_args: AbsEmbedderModelArguments,
@@ -70,13 +77,28 @@ class AbsEmbedderRunner(ABC):
 
     @abstractmethod
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
+        """Abstract method to load the tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Loaded tokenizer and model instances.
+        """
         pass
 
     @abstractmethod
     def load_trainer(self) -> AbsEmbedderTrainer:
+        """Abstract method to load the trainer.
+
+        Returns:
+            AbsEmbedderTrainer: The loaded trainer instance.
+        """
         pass
 
     def load_train_dataset(self) -> AbsEmbedderTrainDataset:
+        """Loads the training dataset based on data arguments.
+
+        Returns:
+            AbsEmbedderTrainDataset: The loaded dataset instance.
+        """
         if self.data_args.same_dataset_within_batch:
             train_dataset = AbsEmbedderSameDatasetTrainDataset(
                 args=self.data_args,
@@ -96,6 +118,11 @@ class AbsEmbedderRunner(ABC):
         return train_dataset
 
     def load_data_collator(self) -> AbsEmbedderCollator:
+        """Loads the appropriate data collator.
+
+        Returns:
+            AbsEmbedderCollator: Loaded data collator.
+        """
         if self.data_args.same_dataset_within_batch:
             EmbedCollator = AbsEmbedderSameDatasetCollator
         else:
@@ -113,6 +140,9 @@ class AbsEmbedderRunner(ABC):
         return data_collator
 
     def run(self):
+        """
+        Executes the training process.
+        """
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
         # Training
