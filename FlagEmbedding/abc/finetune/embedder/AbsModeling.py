@@ -34,7 +34,7 @@ class AbsEmbedderModel(ABC, nn.Module):
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
-        kd_loss_type (str, optional): Knowledge distillation type. Defaults to ``"kl_div"``.
+        kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``"kl_div"``.
     """
     def __init__(
         self,

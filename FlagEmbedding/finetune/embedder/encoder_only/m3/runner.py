@@ -20,6 +20,14 @@ logger = logging.getLogger(__name__)
 
 
 class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
+    """
+    M3 model runner for finetuning.
+    
+    Args:
+        model_args (EncoderOnlyEmbedderM3ModelArguments): Model arguments
+        data_args (AbsEmbedderDataArguments): Data arguments.
+        training_args (EncoderOnlyEmbedderM3TrainingArguments): Training arguments.
+    """
     def __init__(
         self,
         model_args: EncoderOnlyEmbedderM3ModelArguments,
@@ -38,6 +46,18 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         colbert_dim: int = -1,
         cache_dir: str = None
     ):
+        """Get the model.
+
+        Args:
+            model_name_or_path (str):  If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+                load a model from HuggingFace Hub with the name.
+            trust_remote_code (bool, optional): trust_remote_code to use when loading models from HF. Defaults to ``False``.
+            colbert_dim (int, optional): Colbert dim to set. Defaults to ``-1``.
+            cache_dir (str, optional): HF cache dir to store the model. Defaults to ``None``.
+
+        Returns:
+            dict: A dictionary containing the model, colbert linear and sparse linear.
+        """
         cache_folder = os.getenv('HF_HUB_CACHE', None) if cache_dir is None else cache_dir
         if not os.path.exists(model_name_or_path):
             model_name_or_path = snapshot_download(
@@ -78,6 +98,11 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         }
 
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
+        """Load the tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Tokenizer and model instances.
+        """
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
             cache_dir=self.model_args.cache_dir,
@@ -119,6 +144,11 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         return tokenizer, model
 
     def load_trainer(self) -> EncoderOnlyEmbedderM3Trainer:
+        """Load the M3 trainer.
+
+        Returns:
+            EncoderOnlyEmbedderM3Trainer: M3 Trainer instance.
+        """
         trainer = EncoderOnlyEmbedderM3Trainer(
             model=self.model,
             args=self.training_args,
