@@ -21,6 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 class AbsRerankerTrainDataset(Dataset):
+    """Abstract class for reranker training dataset.
+
+    Args:
+        args (AbsRerankerDataArguments): Data arguments.
+        tokenizer (PreTrainedTokenizer): Tokenizer to use.
+    """
     def __init__(
         self,
         args: AbsRerankerDataArguments,
@@ -47,6 +53,17 @@ class AbsRerankerTrainDataset(Dataset):
         self.max_length = self.args.query_max_len + self.args.passage_max_len
 
     def _load_dataset(self, file_path: str):
+        """Load dataset from path.
+
+        Args:
+            file_path (str): Path to load the datasets from.
+
+        Raises:
+            ValueError: `pos_scores` and `neg_scores` not found in the features of training data
+
+        Returns:
+            datasets.Dataset: Loaded HF dataset.
+        """
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
 
@@ -64,6 +81,14 @@ class AbsRerankerTrainDataset(Dataset):
         return temp_dataset
 
     def _shuffle_text(self, text):
+        """shuffle the input text.
+
+        Args:
+            text (str): Input text.
+
+        Returns:
+            str: Shuffled text.
+        """
         if self.args.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.args.shuffle_ratio:
             split_text = []
             chunk_size = len(text)//3 + 1
@@ -78,6 +103,15 @@ class AbsRerankerTrainDataset(Dataset):
         return len(self.dataset)
 
     def create_one_example(self, qry_encoding: str, doc_encoding: str):
+        """Creates a single input example by encoding and preparing a query and document pair for the model.
+
+        Args:
+            qry_encoding (str): Query to be encoded.
+            doc_encoding (str): Document to be encoded.
+
+        Returns:
+            dict: A dictionary containing tokenized and prepared inputs, ready for model consumption.
+        """
         qry_inputs = self.tokenizer.encode(qry_encoding, truncation=True, max_length=self.args.query_max_len + self.args.passage_max_len // 4, add_special_tokens=False)
         doc_inputs = self.tokenizer.encode(doc_encoding, truncation=True, max_length=self.args.passage_max_len + self.args.query_max_len // 2, add_special_tokens=False)
         item = self.tokenizer.prepare_for_model(
@@ -143,6 +177,9 @@ class AbsRerankerTrainDataset(Dataset):
 
 @dataclass
 class AbsRerankerCollator(DataCollatorWithPadding):
+    """
+    The abstract reranker collator.
+    """
     query_max_len: int = 32
     passage_max_len: int = 128
 
@@ -171,6 +208,12 @@ class AbsRerankerCollator(DataCollatorWithPadding):
         }
 
 class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
+    """Abstract class for LLM reranker training dataset.
+
+    Args:
+        args (AbsRerankerDataArguments): Data arguments.
+        tokenizer (PreTrainedTokenizer): Tokenizer to use.
+    """
     def __init__(
         self,
         args: AbsRerankerDataArguments,

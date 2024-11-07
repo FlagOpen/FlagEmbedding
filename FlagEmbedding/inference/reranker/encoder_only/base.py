@@ -12,6 +12,25 @@ def sigmoid(x):
 
 
 class BaseReranker(AbsReranker):
+    """Base reranker class for encoder only models.
+
+    Args:
+        model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
+            load a model from HuggingFace Hub with the name.
+        use_fp16 (bool, optional): If true, use half-precision floating-point to speed up computation with a slight performance 
+            degradation. Defaults to :data:`False`.
+        query_instruction_for_rerank (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
+            with :attr:`query_instruction_format`. Defaults to :data:`None`.
+        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_rerank`. Defaults to :data:`"{}{}"`.
+        passage_instruction_format (str, optional): The template for passage. Defaults to "{}{}".
+        cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.
+        devices (Optional[Union[str, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
+        batch_size (int, optional): Batch size for inference. Defaults to :data:`128`.
+        query_max_length (Optional[int], optional): Maximum length for queries. If not specified, will be 3/4 of :attr:`max_length`.
+            Defaults to :data:`None`.
+        max_length (int, optional): Maximum length of passages. Defaults to :data`512`.
+        normalize (bool, optional): If True, use Sigmoid to normalize the results. Defaults to :data:`False`.
+    """
     def __init__(
         self,
         model_name_or_path: str,
@@ -65,6 +84,19 @@ class BaseReranker(AbsReranker):
         device: Optional[str] = None,
         **kwargs: Any
     ) -> List[float]:
+        """_summary_
+
+        Args:
+            sentence_pairs (Union[List[Tuple[str, str]], Tuple[str, str]]): Input sentence pairs to compute scores.
+            batch_size (Optional[int], optional): Number of inputs for each iter. Defaults to :data:`None`.
+            query_max_length (Optional[int], optional): Maximum length of tokens of queries. Defaults to :data:`None`.
+            max_length (Optional[int], optional): Maximum length of tokens. Defaults to :data:`None`.
+            normalize (Optional[bool], optional): If True, use Sigmoid to normalize the results. Defaults to :data:`None`.
+            device (Optional[str], optional): Device to use for computation. Defaults to :data:`None`.
+
+        Returns:
+            List[float]: Computed scores of queries and passages.
+        """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.max_length
         if query_max_length is None:

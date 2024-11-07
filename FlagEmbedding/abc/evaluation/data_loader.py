@@ -374,7 +374,7 @@ class AbsEvalDataLoader(ABC):
             save_dir (str): Path to the directory to save the gzip file.
 
         Raises:
-            FileNotFoundError: _description_
+            FileNotFoundError
 
         Returns:
             str: The path to the file after unzip.

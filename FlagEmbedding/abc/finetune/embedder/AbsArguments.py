@@ -38,6 +38,9 @@ class AbsEmbedderModelArguments:
 
 @dataclass
 class AbsEmbedderDataArguments:
+    """
+    Abstract class for data arguments.
+    """
     train_data: str = field(
         default=None, metadata={
             "help": "One or more paths to training data. `query: str`, `pos: List[str]`, `neg: List[str]` are required in the training data.",

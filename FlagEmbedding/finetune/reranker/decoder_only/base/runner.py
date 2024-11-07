@@ -17,6 +17,14 @@ logger = logging.getLogger(__name__)
 
 
 class DecoderOnlyRerankerRunner(AbsRerankerRunner):
+    """
+    Decoder only reranker runner for finetuning.
+    
+    Args:
+        model_args (RerankerModelArguments): Model arguments instance.
+        data_args (AbsRerankerDataArguments): Data arguments instance.
+        training_args (AbsRerankerTrainingArguments): Trainer arguments.
+    """
     def __init__(
         self,
         model_args: RerankerModelArguments,
@@ -26,6 +34,11 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
         super().__init__(model_args, data_args, training_args)
 
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
+        """Load the tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Tokenizer and model instances.
+        """
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.tokenizer_name if self.model_args.tokenizer_name else self.model_args.model_name_or_path,
             token=self.model_args.token,
@@ -66,6 +79,11 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
         return tokenizer, model
 
     def load_trainer(self) -> DecoderOnlyRerankerTrainer:
+        """Load the trainer.
+
+        Returns:
+            DecoderOnlyRerankerTrainer: Loaded trainer instance.
+        """
         trainer = DecoderOnlyRerankerTrainer(
             model=self.model,
             args=self.training_args,
@@ -76,6 +94,9 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
         return trainer
 
     def run(self):
+        """
+        Run the finetuning.
+        """
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
         # Training

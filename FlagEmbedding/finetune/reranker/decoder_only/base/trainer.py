@@ -11,7 +11,18 @@ logger = logging.getLogger(__name__)
 
 
 class DecoderOnlyRerankerTrainer(AbsRerankerTrainer):
+    """
+    Trainer class for encoder only base reranker models.
+    """
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
+        """Save the model to directory.
+
+        Args:
+            output_dir (Optional[str], optional): Output directory to save the model. Defaults to ``None``.
+
+        Raises:
+            NotImplementedError
+        """
         output_dir = output_dir if output_dir is not None else self.args.output_dir
         os.makedirs(output_dir, exist_ok=True)
         logger.info("Saving model checkpoint to %s", output_dir)

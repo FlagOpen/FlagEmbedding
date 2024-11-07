@@ -30,7 +30,7 @@ def last_token_pool(last_hidden_states: torch.Tensor,
 
 
 class BaseLLMEmbedder(AbsEmbedder):
-    """Base embedder for LLM like decoder only models.
+    """Base embedder class for LLM like decoder only models.
 
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and

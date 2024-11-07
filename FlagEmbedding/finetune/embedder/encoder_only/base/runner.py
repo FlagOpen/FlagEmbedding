@@ -13,7 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
+    """
+    Finetune Runner for base embedding models.
+    """
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
+        """Load tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Tokenizer and model instances.
+        """
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
             cache_dir=self.model_args.cache_dir,
@@ -58,6 +66,11 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
         return tokenizer, model
 
     def load_trainer(self) -> EncoderOnlyEmbedderTrainer:
+        """Load the trainer.
+
+        Returns:
+            EncoderOnlyEmbedderTrainer: Loaded trainer instance.
+        """
         trainer = EncoderOnlyEmbedderTrainer(
             model=self.model,
             args=self.training_args,

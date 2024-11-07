@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 class M3Embedder(AbsEmbedder):
     """ 
-    Embedder for BGE-M3
+    Embedder class for BGE-M3.
 
     Args:
         model_name_or_path (str): If it's a path to a local model, it loads the model from the path. Otherwise tries to download and
@@ -201,7 +201,6 @@ class M3Embedder(AbsEmbedder):
 
         Returns:
             Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
-    ]
         """
         if batch_size is None: batch_size = self.batch_size
         if max_length is None: max_length = self.query_max_length

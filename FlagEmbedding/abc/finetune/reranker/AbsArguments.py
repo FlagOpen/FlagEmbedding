@@ -8,7 +8,7 @@ from transformers import TrainingArguments
 @dataclass
 class AbsRerankerModelArguments:
     """
-    Abstract class for model arguments.
+    Abstract class for reranker model arguments.
     """
 
     model_name_or_path: str = field(
@@ -46,6 +46,9 @@ class AbsRerankerModelArguments:
 
 @dataclass
 class AbsRerankerDataArguments:
+    """
+    Abstract class for reranker data arguments.
+    """
     train_data: str = field(
         default=None, metadata={
             "help": "One or more paths to training data. `query: str`, `pos: List[str]`, `neg: List[str]` are required in the training data.",

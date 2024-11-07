@@ -13,6 +13,22 @@ logger = logging.getLogger(__name__)
 
 
 class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
+    """Embedder class for M3 model.
+
+    Args:
+        base_model (AutoModel): The base model to train on.
+        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
+        temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
+        sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
+            Defaults to ``-1``.
+        kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``'m3_kd_loss'``.
+        sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to ``'cls'``.
+        normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to ``False``.
+        unified_finetuning (bool, optional): If True, will finetune colbert vector and sparce embedding. Defaults to ``True``.
+        use_self_distill (bool, optional): If True, will do self distillation. Defaults to ``False``.
+        self_distill_start_step (int, optional): Step num to start self distillation. Defaults to ``-1``.
+    """
     def __init__(
         self,
         base_model: Dict[str, Any],
@@ -57,6 +73,18 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         self.step = 0
 
     def _dense_embedding(self, last_hidden_state, attention_mask):
+        """Use the pooling method to get the dense embedding.
+
+        Args:
+            last_hidden_state (torch.Tensor): The model output's last hidden state.
+            attention_mask (torch.Tensor): Mask out padding tokens during pooling.
+
+        Raises:
+            NotImplementedError: Specified pooling method not implemented.
+
+        Returns:
+            torch.Tensor: The dense embeddings.
+        """
         if self.sentence_pooling_method == "cls":
             return last_hidden_state[:, 0]
         elif self.sentence_pooling_method == "mean":
@@ -80,6 +108,17 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             raise NotImplementedError(f"pooling method {self.sentence_pooling_method} not implemented")
 
     def _sparse_embedding(self, hidden_state, input_ids, return_embedding: bool = True):
+        """Compute and return the sparse embedding.
+
+        Args:
+            hidden_state (torch.Tensor): The model output's last hidden state.
+            input_ids (_type_): Ids from input features.
+            return_embedding (bool, optional): If True, return the computed embedding, otherwise just return the token weights. 
+                Defaults to ``True``.
+
+        Returns:
+            torch.Tensor: The sparse embedding or just the token weights.
+        """
         token_weights = torch.relu(self.sparse_linear(hidden_state))
         if not return_embedding: return token_weights
 
@@ -99,6 +138,15 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         return sparse_embedding
 
     def _colbert_embedding(self, last_hidden_state, mask):
+        """Get the colbert vectors.
+
+        Args:
+            last_hidden_state (torch.Tensor): The model output's last hidden state.
+            attention_mask (torch.Tensor): Mask out padding tokens during pooling.
+
+        Returns:
+            torch.Tensor: The colbert vectors.
+        """
         colbert_vecs = self.colbert_linear(last_hidden_state[:, 1:])
         colbert_vecs = colbert_vecs * mask[:, 1:][:, :, None].float()
         return colbert_vecs
@@ -107,22 +155,62 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         self, q_reps, p_reps, q_mask: torch.Tensor,
         dense_weight: float = 1.0, sparse_weight: float = 0.3, colbert_weight: float = 1.0
     ):
+        """_summary_
+
+        Args:
+            q_reps (_type_): Query representations.
+            p_reps (_type_): Passage representations.
+            q_mask (torch.Tensor): _description_
+            dense_weight (float, optional): _description_. Defaults to 1.0.
+            sparse_weight (float, optional): _description_. Defaults to 0.3.
+            colbert_weight (float, optional): _description_. Defaults to 1.0.
+
+        Returns:
+            _type_: _description_
+        """
         dense_score = self.compute_dense_score(q_reps, p_reps)
         sparse_score = self.compute_sparse_score(q_reps, p_reps)
         colbert_score = self.compute_colbert_score(q_reps, p_reps, q_mask=q_mask)
         return dense_score * dense_weight + sparse_score * sparse_weight + colbert_score * colbert_weight
 
     def compute_dense_score(self, q_reps, p_reps):
+        """Compute the dense score.
+
+        Args:
+            q_reps (torch.Tensor): Query representations.
+            p_reps (torch.Tensor): Passage representations.
+
+        Returns:
+            torch.Tensor: The computed dense scores, adjusted by temperature.
+        """
         scores = self._compute_similarity(q_reps, p_reps) / self.temperature
         scores = scores.view(q_reps.size(0), -1)
         return scores
 
     def compute_sparse_score(self, q_reps, p_reps):
+        """Compute the sparse score.
+
+        Args:
+            q_reps (torch.Tensor): Query representations.
+            p_reps (torch.Tensor): Passage representations.
+
+        Returns:
+            torch.Tensor: The computed sparse scores, adjusted by temperature.
+        """
         scores = self._compute_similarity(q_reps, p_reps) / self.temperature
         scores = scores.view(q_reps.size(0), -1)
         return scores
 
     def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
+        """Compute the colbert score.
+
+        Args:
+            q_reps (torch.Tensor): Query representations.
+            p_reps (torch.Tensor): Passage representations.
+
+        Returns:
+            torch.Tensor: The computed colber scores, adjusted by temperature.
+        """
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
         scores, _ = token_scores.max(-1)
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
@@ -130,11 +218,36 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         return scores
 
     def ensemble_score(self, q_reps, p_reps, dense_scores=None, sparse_scores=None, colbert_scores=None):
+        """Compute the ensemble score of the three methods.
+
+        Args:
+            q_reps (torch.Tensor): Query representations.
+            p_reps (torch.Tensor): Passage representations.
+            dense_scores (torch.Tensor, optional): The dense scores. Defaults to ``None``.
+            sparse_scores (torch.Tensor, optional): The sparse scores. Defaults to ``None``.
+            colbert_scores (torch.Tensor, optional): The colbert scores. Defaults to ``None``.
+
+        Raises:
+            ValueError: dense_scores, sparse_scores, colbert_scores must be provided
+
+        Returns:
+            _type_: The ensemble score of the three methods.
+        """
         if dense_scores is None or sparse_scores is None or colbert_scores is None:
             raise ValueError("dense_scores, sparse_scores, colbert_scores must be provided!")
         return dense_scores + 0.3 * sparse_scores + colbert_scores
 
     def _encode(self, features):
+        """Helper function to encode using input features.
+
+        Args:
+            features (Union[list, dict]): Features feed to the model.
+
+        Returns:
+            torch.Tensor: Dense embedding.
+            torch.Tensor: Sparce embedding.
+            torch.Tensor: Colbert vector.
+        """
         dense_vecs, sparse_vecs, colbert_vecs = None, None, None
         last_hidden_state = self.model(**features, return_dict=True).last_hidden_state
         dense_vecs = self._dense_embedding(last_hidden_state, features['attention_mask'])
@@ -148,6 +261,16 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         return dense_vecs, sparse_vecs, colbert_vecs
 
     def encode(self, features):
+        """Encode and get the embedding.
+
+        Args:
+            features (Union[list, dict]): Features feed to the model.
+
+        Returns:
+            torch.Tensor: Dense embeddings.
+            torch.Tensor: Sparce embeddings.
+            torch.Tensor: Colbert vectors.
+        """
         if features is None:
             return None
 
@@ -190,12 +313,28 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             return dense_vecs.contiguous(), None, None
 
     def _compute_similarity(self, q_reps, p_reps):
+        """Computes the similarity between query and passage representations using inner product.
+
+        Args:
+            q_reps (torch.Tensor): Query representations.
+            p_reps (torch.Tensor): Passage representations.
+
+        Returns:
+            torch.Tensor: The computed similarity matrix.
+        """
         if len(p_reps.size()) == 2:
             return torch.matmul(q_reps, p_reps.transpose(0, 1))
         return torch.matmul(q_reps, p_reps.transpose(-2, -1))
 
     def _get_queries_attention_mask(self, queries: Union[Dict[str, Tensor], List[Dict[str, Tensor]]]):
-        # padding attention mask for colbert
+        """padding attention mask for colbert
+
+        Args:
+            queries (Union[Dict[str, Tensor], List[Dict[str, Tensor]]]): Input queries.
+
+        Returns:
+            torch.Tensor: The query attention mask.
+        """
         if not isinstance(queries, list):
             q_mask = queries['attention_mask']
         else:
@@ -220,6 +359,17 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         teacher_scores: Union[None, List[float]] = None,
         no_in_batch_neg_flag: bool = False,
     ):
+        """The computation performed at every call.
+
+        Args:
+            queries (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): Input queries. Defaults to ``None``.
+            passages (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): Input passages. Defaults to ``None``.
+            teacher_scores (Union[None, List[float]], optional): Teacher scores for distillation. Defaults to ``None``.
+            no_in_batch_neg_flag (bool, optional): If True, use no in-batch negatives and no cross-device negatives. Defaults to ``False``.
+
+        Returns:
+            EmbedderOutput: Output of the forward call of model.
+        """
         q_dense_vecs, q_sparse_vecs, q_colbert_vecs = self.encode(queries)  # (batch_size, dim)
         p_dense_vecs, p_sparse_vecs, p_colbert_vecs = self.encode(passages) # (batch_size * group_size, dim)
 
@@ -301,15 +451,35 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         )
 
     def compute_loss(self, scores, target):
+        """Compute the loss using cross entropy.
+
+        Args:
+            scores (torch.Tensor): Computed score.
+            target (torch.Tensor): The target value.
+
+        Returns:
+            torch.Tensor: The computed cross entropy loss.
+        """
         return self.cross_entropy(scores, target)
 
     def gradient_checkpointing_enable(self, **kwargs):
+        """
+        Activates gradient checkpointing for the current model.
+        """
         self.model.gradient_checkpointing_enable(**kwargs)
 
     def enable_input_require_grads(self, **kwargs):
+        """
+        Enables the gradients for the input embeddings.
+        """
         self.model.enable_input_require_grads(**kwargs)
 
     def save(self, output_dir: str):
+        """Save the model to the directory.
+
+        Args:
+            output_dir (str): Directory for saving the model.
+        """
         def _trans_state_dict(state_dict):
             state_dict = type(state_dict)(
                 {k: v.clone().cpu()
@@ -327,12 +497,28 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
 
 
 class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
+    """
+    Inference class of M3 model.
+    """
     def forward(self,
                 text_input: Dict[str, Tensor] = None,
                 return_dense: bool = True,
                 return_sparse: bool = False,
                 return_colbert_vecs: bool = False,
                 return_sparse_embedding: bool = False):
+        """Encode the text input using the selected way.
+
+        Args:
+            text_input (Dict[str, Tensor], optional): Text inputs. Defaults to ``None``.
+            return_dense (bool, optional): If True, return the dense embedding. Defaults to ``True``.
+            return_sparse (bool, optional): If True, return the sparse embedding. Defaults to ``False``.
+            return_colbert_vecs (bool, optional): If True, return the colbert vectors. Defaults to ``False``.
+            return_sparse_embedding (bool, optional): Parameter for :meth:`_sparse_embedding()`. If True, will return sparse embedding.
+                Otherwise, return the token weights. Defaults to ``False``.
+
+        Returns:
+            dict: A dictionary containing the three types of embeddings.
+        """
         assert return_dense or return_sparse or return_colbert_vecs, 'Must choose one or more from `return_colbert_vecs`, `return_sparse`, `return_dense` to set `True`!'
 
         last_hidden_state = self.model(**text_input, return_dict=True).last_hidden_state

@@ -21,6 +21,12 @@ logger = logging.getLogger(__name__)
 
 
 class AbsEmbedderTrainDataset(Dataset):
+    """Abstract class for training dataset.
+
+    Args:
+        args (AbsEmbedderDataArguments): Data arguments.
+        tokenizer (PreTrainedTokenizer): Tokenizer to use.
+    """
     def __init__(
         self,
         args: AbsEmbedderDataArguments,
@@ -46,6 +52,17 @@ class AbsEmbedderTrainDataset(Dataset):
         self.dataset = datasets.concatenate_datasets(train_datasets)
 
     def _load_dataset(self, file_path: str):
+        """Load dataset from path.
+
+        Args:
+            file_path (str): Path to load the datasets from.
+
+        Raises:
+            ValueError: `pos_scores` and `neg_scores` not found in the features of training data
+
+        Returns:
+            datasets.Dataset: Loaded HF dataset.
+        """
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
 
@@ -63,6 +80,14 @@ class AbsEmbedderTrainDataset(Dataset):
         return temp_dataset
 
     def _shuffle_text(self, text):
+        """shuffle the input text.
+
+        Args:
+            text (str): Input text.
+
+        Returns:
+            str: Shuffled text.
+        """
         if self.shuffle_ratio > 0 and len(text) > 100 and random.random() < self.shuffle_ratio:
             split_text = []
             chunk_size = len(text)//3 + 1
@@ -126,6 +151,9 @@ class AbsEmbedderTrainDataset(Dataset):
 
 @dataclass
 class AbsEmbedderCollator(DataCollatorWithPadding):
+    """
+    The abstract embedder collator.
+    """
     query_max_len: int = 32
     passage_max_len: int = 128
     sub_batch_size: int = -1
@@ -214,6 +242,16 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
 
 
 class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
+    """Abstract class for training dataset that samples batches from same dataset.
+
+    Args:
+        args (AbsEmbedderDataArguments): Data arguments.
+        default_batch_size (int): The default batch size for training.
+        seed (int): Random seed.
+        tokenizer (PreTrainedTokenizer): Tokenizer to use.
+        process_index (int, optional): Current process index. Defaults to 0.
+        num_processes (int, optional): Total number of processes. Defaults to 1.
+    """
     def __init__(
         self,
         args: AbsEmbedderDataArguments,
@@ -296,6 +334,14 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         self.refresh_epoch()
 
     def _load_dataset(self, file_path: str):
+        """Load datset from given path.
+
+        Args:
+            file_path (str): The path to load or download from HF hub.
+
+        Returns:
+            datasets.Dataset: The loaded dataset.
+        """
         if dist.get_rank() == 0:
             logger.info(f'loading data from {file_path} ...')
 
@@ -311,6 +357,15 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
 
     @staticmethod
     def _get_file_batch_size(temp_dataset: datasets.Dataset, default_batch_size: int):
+        """Get the appropriate batch size for the dataset.
+
+        Args:
+            temp_dataset (datasets.Dataset): Loaded :data:`datasets.Dataset` object.
+            default_batch_size (int): The default batch size to use if not specified in the dataset.
+
+        Returns:
+            int: The final batch size to use.
+        """
         if 'batch_size' in temp_dataset.column_names:
             return temp_dataset['batch_size'][0]
         if 'type' in temp_dataset.column_names:
@@ -320,6 +375,9 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         return default_batch_size
 
     def refresh_epoch(self):
+        """
+        Refresh data for epoch.
+        """
         logger.info(f'-- Rank {self.process_index}: refresh data --')
         self.deterministic_generator.shuffle(self.datasets_inxs)
 
@@ -353,6 +411,15 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         return queries, passages, teacher_scores, no_in_batch_neg_flag
 
     def _get_train_group_size(self, batch_raw_data):
+        """Get the training group size and data type.
+
+        Args:
+            batch_raw_data (datasets.Dataset): One batch of raw data.
+
+        Returns:
+            int: The training group size.
+            str: The type of data for the task.
+        """
         if 'type' in batch_raw_data:
             data_type = batch_raw_data['type'][0]
             if data_type in ['only_1neg']:
@@ -362,6 +429,16 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         return self.args.train_group_size, None
 
     def _create_batch_data(self, batch_raw_data):
+        """Create a comple batch of data with queries, documents and teacher scores.
+
+        Args:
+            batch_raw_data (datasets.Dataset): One batch of raw data.
+
+        Returns:
+            List[str]: Queries with instruction format.
+            List[str]: Documents with instruction format.
+            List[float]: Teacher scores for model distillation.
+        """
         queries, passages, teacher_scores = [], [], []
 
         train_group_size, data_type = self._get_train_group_size(batch_raw_data)
@@ -426,10 +503,12 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
 @dataclass
 class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
     """
-    EmbedCollator for SameDataset
+    EmbedCollator for SameDataset.
     Note that after using this collator, the training_args should be set as:
-        training_args.per_device_train_batch_size = 1
-        training_args.dataloader_num_workers = 0    # avoid multi-processing
+    
+    ``training_args.per_device_train_batch_size = 1``
+    
+    ``training_args.dataloader_num_workers = 0    # avoid multi-processing``
     """
     query_max_len: int = 32
     passage_max_len: int = 128
@@ -516,6 +595,9 @@ class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
 
 
 class EmbedderTrainerCallbackForDataRefresh(TrainerCallback):
+    """
+    Callback class to inspect the state of the training loop and take decision.
+    """
     def __init__(self, train_dataset: AbsEmbedderSameDatasetTrainDataset):
         self.train_dataset = train_dataset
 

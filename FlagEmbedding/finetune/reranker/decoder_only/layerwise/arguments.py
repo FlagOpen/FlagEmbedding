@@ -10,6 +10,9 @@ def default_target_modules() -> List[int]:
 
 @dataclass
 class RerankerModelArguments(AbsRerankerModelArguments):
+    """
+    Model argument class for decoder only reranker.
+    """
     use_lora: bool = field(
         default=True,
         metadata={"help": "If passed, will use LORA (low-rank parameter-efficient training) to train the model."}

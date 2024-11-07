@@ -15,6 +15,16 @@ logger = logging.getLogger(__name__)
 
 
 class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainDataset):
+    """Dataset class for icl model.
+
+    Args:
+        args (DecoderOnlyEmbedderICLDataArguments): Data argument class for icl model.
+        default_batch_size (int): The default batch size.
+        seed (int): Random seed to use.
+        tokenizer (PreTrainedTokenizer): Tokenzier.
+        process_index (int, optional): Current process index. Defaults to 0.
+        num_processes (int, optional): Total number of processes. Defaults to 1.
+    """
     def __init__(
         self,
         args: DecoderOnlyEmbedderICLDataArguments,
@@ -39,6 +49,16 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
         self.prefix = self.tokenizer(f"{self.tokenizer.bos_token}", add_special_tokens=False)['input_ids']
 
     def _create_batch_data(self, batch_raw_data):
+        """Create a comple batch of data with queries, documents and teacher scores.
+
+        Args:
+            batch_raw_data (datasets.Dataset): One batch of raw data.
+
+        Returns:
+            List[str]: Queries with instruction format.
+            List[str]: Documents with instruction format.
+            List[float]: Teacher scores for model distillation.
+        """
         queries, passages, teacher_scores = [], [], []
 
         train_group_size, data_type = self._get_train_group_size(batch_raw_data)
@@ -179,10 +199,12 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
 @dataclass
 class AbsEmbedderSameDatasetCollator(DataCollatorWithPadding):
     """
-    EmbedCollator for SameDataset
+    EmbedCollator for SameDataset.
     Note that after using this collator, the training_args should be set as:
-        training_args.per_device_train_batch_size = 1
-        training_args.dataloader_num_workers = 0    # avoid multi-processing
+    
+    ``training_args.per_device_train_batch_size = 1``
+    
+    ``training_args.dataloader_num_workers = 0    # avoid multi-processing``
     """
     query_max_len: int = 32
     passage_max_len: int = 128

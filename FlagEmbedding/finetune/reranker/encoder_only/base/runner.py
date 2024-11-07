@@ -13,7 +13,15 @@ logger = logging.getLogger(__name__)
 
 
 class EncoderOnlyRerankerRunner(AbsRerankerRunner):
+    """
+    Encoder only reranker runner for finetuning.
+    """
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsRerankerModel]:
+        """Load the tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Tokenizer and model instances.
+        """
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.model_name_or_path,
             cache_dir=self.model_args.cache_dir,
@@ -51,6 +59,11 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
         return tokenizer, model
 
     def load_trainer(self) -> EncoderOnlyRerankerTrainer:
+        """Load the trainer.
+
+        Returns:
+            EncoderOnlyRerankerTrainer: Loaded trainer instance.
+        """
         trainer = EncoderOnlyRerankerTrainer(
             model=self.model,
             args=self.training_args,

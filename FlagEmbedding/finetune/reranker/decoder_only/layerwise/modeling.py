@@ -10,6 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class CrossDecoderModel(AbsRerankerModel):
+    """
+    Model class for decoder only reranker.
+
+    Args:
+        base_model (PreTrainedModel): The underlying pre-trained model used for encoding and scoring input pairs.
+        tokenizer (AutoTokenizer, optional): The tokenizer for encoding input text. Defaults to ``None``.
+        train_batch_size (int, optional): The batch size to use. Defaults to ``4``.
+        start_layer (int, optional): Starting layer for layerwise. Defaults to ``8``.
+    """
     def __init__(
         self,
         base_model: PreTrainedModel,
