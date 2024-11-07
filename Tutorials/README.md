@@ -25,7 +25,7 @@ This module includes tutorials and demos showing how to use BGE and Sentence Tra
 In this part, we show popular similarity functions and techniques about searching.
 
 - [x] Similarity metrics
-- [ ] Evaluation metrics
+- [x] Evaluation metrics
 - [ ] ...
 
 ## [Indexing](./3_Indexing)
@@ -47,7 +47,8 @@ In this module, we'll show the full pipeline of evaluating an embedding model, a
 - [x] Evaluate MSMARCO
 - [x] Intro to MTEB
 - [x] MTEB Leaderboard Eval
-- [ ] C-MTEB
+- [x] C-MTEB intro
+- [x] C-MTEB leaderboard
 - [ ] ...
 
 ## [Reranking](./5_Reranking/)
