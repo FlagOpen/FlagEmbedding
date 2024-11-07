@@ -141,7 +141,11 @@ similarity = embeddings_1 @ embeddings_2.T
 print(similarity)
 ```
 
-For more details, you can refer to [embedder inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder), [reranker inference](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/reranker), [embedder finetune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/embedder), [reranker fintune](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker), [evaluation](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/evaluation), [research](https://github.com/FlagOpen/FlagEmbedding/tree/master/research).
+For more details, you can refer to [embedder inference](./examples/inference/embedder), [reranker inference](./examples/inference/reranker), [embedder finetune](./examples/finetune/embedder), [reranker fintune](./examples/finetune/reranker), [evaluation](./examples/evaluation).
+
+If you're unfamiliar with any of related concepts, please check out the [tutorial](./Tutorials/). If it's not there, let us know.
+
+For more interesting topics related to BGE, take a look at [research](./research).
 
 ## Community
 
