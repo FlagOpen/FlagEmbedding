@@ -205,6 +205,11 @@ AUTO_EMBEDDER_MAPPING = OrderedDict([
     (
         'Linq-Embed-Mistral',
         EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
-    )
+    ),
+    # ============================== BCE ==============================
+    (
+        'bce-embedding-base_v1',
+        EmbedderConfig(FlagModel, PoolingMethod.CLS)
+    ),
     # TODO: Add more models, such as Jina, Stella_v5, NV-Embed, etc.
 ])
