@@ -102,7 +102,7 @@ class DecoderOnlyEmbedderICLRunner(AbsEmbedderRunner):
         """Load the trainer.
 
         Returns:
-            EncoderOnlyEmbedderTrainer: Loaded trainer instance.
+            DecoderOnlyEmbedderICLTrainer: Loaded trainer instance.
         """
         trainer = DecoderOnlyEmbedderICLTrainer(
             model=self.model,

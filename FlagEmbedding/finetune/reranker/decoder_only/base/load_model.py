@@ -10,6 +10,14 @@ logger = logging.getLogger(__name__)
 
 
 def find_largest_checkpoint(checkpoint_dir):
+    """Find the largest checkpoint from directory.
+
+    Args:
+        checkpoint_dir (str): Directory to the checkpoint.
+
+    Returns:
+        str: Directory to the checkpoint, None no matching found.
+    """
     checkpoint_pattern = re.compile(r'checkpoint-(\d+)')
     max_number = -1
     max_checkpoint_file = None
@@ -27,6 +35,14 @@ def find_largest_checkpoint(checkpoint_dir):
 
 
 def get_model(model_args: RerankerModelArguments):
+    """Get the model.
+
+    Args:
+        model_args (RerankerModelArguments): Model arguments instance.
+
+    Returns:
+        transformers.PreTrainedModel or PeftModel: The loaded model.
+    """
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,
@@ -88,6 +104,13 @@ def get_model(model_args: RerankerModelArguments):
 
 
 def save_merged_model(model_args: RerankerModelArguments, output_dir: str):
+    """
+    Loads and save a model with specified configurations, merges it with PEFT layers if available.
+
+    Args:
+        model_args (RerankerModelArguments): Model arguments instance.
+        output_dir (str): Directory to save the model.
+    """
     if model_args.config_name:
         config = AutoConfig.from_pretrained(
             model_args.config_name,

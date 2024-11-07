@@ -98,7 +98,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         """Load the trainer.
 
         Returns:
-            EncoderOnlyEmbedderTrainer: Loaded trainer instance.
+            DecoderOnlyEmbedderTrainer: Loaded trainer instance.
         """
         trainer = DecoderOnlyEmbedderTrainer(
             model=self.model,

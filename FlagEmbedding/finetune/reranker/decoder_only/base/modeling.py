@@ -8,6 +8,14 @@ logger = logging.getLogger(__name__)
 
 
 class CrossDecoderModel(AbsRerankerModel):
+    """
+    Model class for decoder only reranker.
+
+    Args:
+        base_model (PreTrainedModel): The underlying pre-trained model used for encoding and scoring input pairs.
+        tokenizer (AutoTokenizer, optional): The tokenizer for encoding input text. Defaults to ``None``.
+        train_batch_size (int, optional): The batch size to use. Defaults to ``4``.
+    """
     def __init__(
         self,
         base_model: PreTrainedModel,
@@ -21,6 +29,14 @@ class CrossDecoderModel(AbsRerankerModel):
         )
 
     def encode(self, features):
+        """Encodes input features to logits.
+
+        Args:
+            features (dict): Dictionary with input features.
+
+        Returns:
+            torch.Tensor: The logits output from the model.
+        """
         if features is None:
             return None
         outputs = self.model(input_ids=features['input_ids'],
