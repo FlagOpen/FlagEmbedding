@@ -19,7 +19,7 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
         kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``"kl_div"``.
-        sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to '`cls`'.
+        sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to ``'cls'``.
         normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to ``False``.
     """
     TRANSFORMER_CLS = AutoModel

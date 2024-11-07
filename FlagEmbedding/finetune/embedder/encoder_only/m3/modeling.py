@@ -22,8 +22,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
-        kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to '`m3_kd_loss`'.
-        sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to '`cls`'.
+        kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``'m3_kd_loss'``.
+        sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to ``'cls'``.
         normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to ``False``.
         unified_finetuning (bool, optional): If True, will finetune colbert vector and sparce embedding. Defaults to ``True``.
         use_self_distill (bool, optional): If True, will do self distillation. Defaults to ``False``.

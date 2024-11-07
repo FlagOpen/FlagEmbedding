@@ -13,6 +13,9 @@ def default_target_modules() -> List[int]:
 
 @dataclass
 class DecoderOnlyEmbedderICLModelArguments(AbsEmbedderModelArguments):
+    """
+    Model argument class for decoder only icl model.
+    """
     peft_model_path: str = field(
         default='', metadata={"help": "The peft model checkpoint for initialization."}
     )
@@ -73,6 +76,9 @@ class DecoderOnlyEmbedderICLModelArguments(AbsEmbedderModelArguments):
 
 @dataclass
 class DecoderOnlyEmbedderICLDataArguments(AbsEmbedderDataArguments):
+    """
+    Data argument class for decoder only icl model.
+    """
     example_query_max_len: int = field(
         default=64,
         metadata={"help": "The max length of example query."}

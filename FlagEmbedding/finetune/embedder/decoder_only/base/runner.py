@@ -15,6 +15,13 @@ logger = logging.getLogger(__name__)
 
 
 class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
+    """Runner class for decoder only embedding model.
+
+    Args:
+        model_args (DecoderOnlyEmbedderModelArguments): Model arguments instance.
+        data_args (AbsEmbedderDataArguments): Data arguments instance.
+        training_args (AbsEmbedderTrainingArguments): Trainer arguments.
+    """
     def __init__(
         self,
         model_args: DecoderOnlyEmbedderModelArguments,
@@ -24,6 +31,11 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         super().__init__(model_args, data_args, training_args)
 
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
+        """Load tokenizer and model.
+
+        Returns:
+            Tuple[PreTrainedTokenizer, AbsEmbedderModel]: Tokenizer and model instances.
+        """
         tokenizer = AutoTokenizer.from_pretrained(
             self.model_args.tokenizer_name if self.model_args.tokenizer_name else self.model_args.model_name_or_path,
             token=self.model_args.token,
@@ -83,6 +95,11 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         return tokenizer, model
 
     def load_trainer(self) -> DecoderOnlyEmbedderTrainer:
+        """Load the trainer.
+
+        Returns:
+            EncoderOnlyEmbedderTrainer: Loaded trainer instance.
+        """
         trainer = DecoderOnlyEmbedderTrainer(
             model=self.model,
             args=self.training_args,
@@ -95,6 +112,9 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         return trainer
 
     def run(self):
+        """
+        Run the finetune.
+        """
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
         # Training

@@ -10,6 +10,9 @@ def default_target_modules() -> List[int]:
 
 @dataclass
 class DecoderOnlyEmbedderModelArguments(AbsEmbedderModelArguments):
+    """
+    Model argument class for decoder only base model.
+    """
     peft_model_path: str = field(
         default='', metadata={"help": "The peft model checkpoint for initialization."}
     )
