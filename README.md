@@ -1,6 +1,9 @@
-![bge_logo](./imgs/bge_logo.jpg)
+[<img src="./imgs/FlagOpen.png">](https://flagopen.baai.ac.cn/)
 
 <h1 align="center">⚡️BGE: One-Stop Retrieval Toolkit For Search and RAG</h1>
+
+![bge_logo](./imgs/bge_logo.jpg)
+
 <p align="center">
     <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
         <img alt="Build" src="https://img.shields.io/badge/BGE_series-🤗-yellow">
