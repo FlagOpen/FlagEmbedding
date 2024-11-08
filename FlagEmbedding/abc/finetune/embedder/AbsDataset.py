@@ -130,7 +130,7 @@ class AbsEmbedderTrainDataset(Dataset):
             passages.append(data['neg'][neg_idx])
 
         if self.args.knowledge_distillation:
-            assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores', list])
+            assert isinstance(data['pos_scores'], list) and isinstance(data['neg_scores'], list)
             teacher_scores.append(data['pos_scores'][pos_idx])
             for neg_idx in neg_idxs:
                 teacher_scores.append(data['neg_scores'][neg_idx])
