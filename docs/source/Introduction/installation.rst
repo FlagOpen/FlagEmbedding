@@ -7,11 +7,13 @@ Using pip:
 ----------
 
 If you do not want to finetune the models, you can install the package without the finetune dependency:
+
 .. code:: bash
 
     pip install -U FlagEmbedding
 
 If you want to finetune the models, you can install the package with the finetune dependency:
+
 .. code:: bash
 
     pip install -U FlagEmbedding[finetune]
