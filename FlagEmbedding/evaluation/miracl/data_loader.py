@@ -11,10 +11,28 @@ logger = logging.getLogger(__name__)
 
 
 class MIRACLEvalDataLoader(AbsEvalDataLoader):
+    """
+    Data loader class for MIRACL.
+    """
     def available_dataset_names(self) -> List[str]:
+        """
+        Get the available dataset names.
+
+        Returns:
+            List[str]: All the available dataset names.
+        """
         return ["ar", "bn", "en", "es", "fa", "fi", "fr", "hi", "id", "ja", "ko", "ru", "sw", "te", "th", "zh", "de", "yo"]
 
     def available_splits(self, dataset_name: str) -> List[str]:
+        """
+        Get the avaialble splits.
+
+        Args:
+            dataset_name (str): Dataset name.
+
+        Returns:
+            List[str]: All the available splits for the dataset.
+        """
         if dataset_name in ["de", "yo"]:
             return ["dev"]
         else:
@@ -25,6 +43,15 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         dataset_name: str,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the corpus dataset from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of corpus.
+        """
         corpus = datasets.load_dataset(
             "miracl/miracl-corpus", dataset_name,
             cache_dir=self.cache_dir,
@@ -60,6 +87,16 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the qrels from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'dev'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrel.
+        """
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/miracl/miracl"
         qrels_download_url = f"{endpoint}/resolve/main/miracl-v1.0-{dataset_name}/qrels/qrels.miracl-v1.0-{dataset_name}-{split}.tsv"
 
@@ -101,6 +138,16 @@ class MIRACLEvalDataLoader(AbsEvalDataLoader):
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the queries from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'dev'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of queries.
+        """
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/miracl/miracl"
         queries_download_url = f"{endpoint}/resolve/main/miracl-v1.0-{dataset_name}/topics/topics.miracl-v1.0-{dataset_name}-{split}.tsv"
 

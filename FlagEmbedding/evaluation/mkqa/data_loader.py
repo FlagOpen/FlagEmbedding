@@ -13,13 +13,39 @@ logger = logging.getLogger(__name__)
 
 
 class MKQAEvalDataLoader(AbsEvalDataLoader):
+    """
+    Data loader class for MKQA.
+    """
     def available_dataset_names(self) -> List[str]:
+        """
+        Get the available dataset names.
+
+        Returns:
+            List[str]: All the available dataset names.
+        """
         return ['en', 'ar', 'fi', 'ja', 'ko', 'ru', 'es', 'sv', 'he', 'th', 'da', 'de', 'fr', 'it', 'nl', 'pl', 'pt', 'hu', 'vi', 'ms', 'km', 'no', 'tr', 'zh_cn', 'zh_hk', 'zh_tw']
 
     def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Get the avaialble splits.
+
+        Args:
+            dataset_name (str): Dataset name.
+
+        Returns:
+            List[str]: All the available splits for the dataset.
+        """
         return ["test"]
 
     def load_corpus(self, dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        """Load the corpus.
+
+        Args:
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to None.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of corpus.
+        """
         if self.dataset_dir is not None:
             # same corpus for all languages
             save_dir = self.dataset_dir
@@ -28,6 +54,19 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
             return self._load_remote_corpus(dataset_name=dataset_name)
 
     def _load_local_qrels(self, save_dir: str, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        """Try to load qrels from local datasets.
+
+        Args:
+            save_dir (str): Directory that save the data files.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+
+        Raises:
+            ValueError: No local qrels found, will try to download from remote.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrels.
+        """
         checked_split = self.check_splits(split)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
@@ -96,6 +135,16 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load remote qrels from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrel.
+        """
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/Shitao/bge-m3-data"
         queries_download_url = f"{endpoint}/resolve/main/MKQA_test-data.zip"
 
@@ -137,6 +186,16 @@ class MKQAEvalDataLoader(AbsEvalDataLoader):
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the queries from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of queries.
+        """
         endpoint = f"{os.getenv('HF_ENDPOINT', 'https://huggingface.co')}/datasets/Shitao/bge-m3-data"
         queries_download_url = f"{endpoint}/resolve/main/MKQA_test-data.zip"
 

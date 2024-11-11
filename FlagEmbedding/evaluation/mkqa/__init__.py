@@ -4,6 +4,7 @@ from FlagEmbedding.abc.evaluation import (
 )
 
 from .data_loader import MKQAEvalDataLoader
+from .evaluator import MKQAEvaluator
 from .runner import MKQAEvalRunner
 
 __all__ = [
@@ -11,4 +12,5 @@ __all__ = [
     "MKQAEvalModelArgs",
     "MKQAEvalRunner",
     "MKQAEvalDataLoader",
+    "MKQAEvaluator"
 ]

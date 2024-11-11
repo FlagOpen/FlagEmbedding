@@ -8,12 +8,25 @@ from .utils.compute_metrics import evaluate_qa_recall
 
 
 class MKQAEvaluator(AbsEvaluator):
+    """
+    The evaluator class of MKQA.
+    """
     def get_corpus_embd_save_dir(
         self,
         retriever_name: str,
         corpus_embd_save_dir: Optional[str] = None,
         dataset_name: Optional[str] = None
     ):
+        """Get the directory to save the corpus embedding.
+
+        Args:
+            retriever_name (str): Name of the retriever.
+            corpus_embd_save_dir (Optional[str], optional): Directory to save the corpus embedding. Defaults to ``None``.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+
+        Returns:
+            str: The final directory to save the corpus embedding.
+        """
         if corpus_embd_save_dir is not None:
             # Save the corpus embeddings in the same directory for all dataset_name
             corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, retriever_name)
@@ -24,6 +37,15 @@ class MKQAEvaluator(AbsEvaluator):
         search_results_save_dir: str,
         k_values: List[int] = [1, 3, 5, 10, 100, 1000]
     ):
+        """Compute the metrics and get the eval results.
+
+        Args:
+            search_results_save_dir (str): Directory that saves the search results.
+            k_values (List[int], optional): Cutoffs. Defaults to ``[1, 3, 5, 10, 100, 1000]``.
+
+        Returns:
+            dict: The evaluation results.
+        """
         eval_results_dict = {}
 
         corpus = self.data_loader.load_corpus()
@@ -70,6 +92,14 @@ class MKQAEvaluator(AbsEvaluator):
     ):
         """
         Compute Recall@k for QA task. The definition of recall in QA task is different from the one in IR task. Please refer to the paper of RocketQA: https://aclanthology.org/2021.naacl-main.466.pdf.
+        
+        Args:
+            corpus_dict (Dict[str, str]): Dictionary of the corpus with doc id and contents.
+            qrels (Dict[str, List[str]]): Relevances of queries and passage.
+            search_results (Dict[str, Dict[str, float]]): Search results of the model to evaluate.
+        
+        Returns:
+            dict: The model's scores of the metrics.
         """
         contexts = []
         answers = []

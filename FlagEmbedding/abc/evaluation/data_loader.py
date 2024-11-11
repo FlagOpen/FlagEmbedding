@@ -113,7 +113,7 @@ class AbsEvalDataLoader(ABC):
             return self._load_remote_corpus(dataset_name=dataset_name)
 
     def load_qrels(self, dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
-        """Load the corpus from the dataset.
+        """Load the qrels from the dataset.
 
         Args:
             dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
