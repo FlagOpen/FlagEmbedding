@@ -29,7 +29,7 @@ class ModelArgs:
         default=None, metadata={"help": "The reranker name or path."}
     )
     reranker_model_class: Optional[str] = field(
-        default=None, metadata={"help": "The reranker model class. Available classes: ['auto', 'encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: auto.", "choices": ["encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
+        default=None, metadata={"help": "The reranker model class. Available classes: ['encoder-only-base', 'decoder-only-base', 'decoder-only-layerwise', 'decoder-only-lightweight']. Default: None. For the custom model, you need to specify the model class.", "choices": ["encoder-only-base", "decoder-only-base", "decoder-only-layerwise", "decoder-only-lightweight"]}
     )
     reranker_peft_path: Optional[str] = field(
         default=None, metadata={"help": "The reranker peft path."}
