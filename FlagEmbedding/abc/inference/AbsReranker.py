@@ -96,7 +96,7 @@ class AbsReranker(ABC):
             elif is_torch_npu_available():
                 return [f"npu:{i}" for i in range(torch.npu.device_count())]
             elif torch.backends.mps.is_available():
-                return [f"mps:{i}" for i in range(torch.mps.device_count())]
+                return ["mps"]
             else:
                 return ["cpu"]
         elif isinstance(devices, str):
