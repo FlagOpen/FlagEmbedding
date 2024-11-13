@@ -357,7 +357,7 @@ class AbsEvaluator:
             k_values (List[int], optional): Cutoffs. Defaults to :data:`[1, 3, 5, 10, 100, 1000]`.
 
         Returns:
-            _type_: _description_
+            dict: Evaluation results.
         """
         eval_results_dict = {}
 

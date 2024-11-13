@@ -17,10 +17,10 @@ class AbsEvalDataLoader(ABC):
 
     Args:
         eval_name (str): The experiment name of current evaluation.
-        dataset_dir (str, optional): path to the datasets. Defaults to :data:`None`.
-        cache_dir (str, optional): Path to HuggingFace cache directory. Defaults to :data:`None`.
-        token (str, optional): HF_TOKEN to access the private datasets/models in HF. Defaults to :data:`None`.
-        force_redownload: If True, will force redownload the dataset to cover the local dataset. Defaults to :data:`False`.
+        dataset_dir (str, optional): path to the datasets. Defaults to ``None``.
+        cache_dir (str, optional): Path to HuggingFace cache directory. Defaults to ``None``.
+        token (str, optional): HF_TOKEN to access the private datasets/models in HF. Defaults to ``None``.
+        force_redownload: If True, will force redownload the dataset to cover the local dataset. Defaults to ``False``.
     """
     def __init__(
         self,
@@ -78,7 +78,7 @@ class AbsEvalDataLoader(ABC):
 
         Args:
             splits (Union[str, List[str]]): Splits to check.
-            dataset_name (Optional[str], optional): Name of dataset to check. Defaults to None.
+            dataset_name (Optional[str], optional): Name of dataset to check. Defaults to ``None``.
 
         Returns:
             List[str]: The available splits.
@@ -98,7 +98,7 @@ class AbsEvalDataLoader(ABC):
         """Load the corpus from the dataset.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
 
         Returns:
             datasets.DatasetDict: A dict of corpus with id as key, title and text as value.
@@ -116,8 +116,8 @@ class AbsEvalDataLoader(ABC):
         """Load the qrels from the dataset.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            split (str, optional): The split to load relevance from. Defaults to :data:'test'.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): The split to load relevance from. Defaults to ``'test'``.
 
         Raises:
             ValueError
@@ -144,8 +144,8 @@ class AbsEvalDataLoader(ABC):
         """Load the queries from the dataset.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            split (str, optional): The split to load queries from. Defaults to :data:`'test'`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): The split to load queries from. Defaults to ``'test'``.
 
         Raises:
             ValueError
@@ -176,8 +176,8 @@ class AbsEvalDataLoader(ABC):
         """Abstract method to load corpus from remote dataset, to be overrode in child class.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            save_dir (Optional[str], optional): Path to save the new downloaded corpus. Defaults to :data:`None`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            save_dir (Optional[str], optional): Path to save the new downloaded corpus. Defaults to ``None``.
 
         Raises:
             NotImplementedError: Loading remote corpus is not implemented.
@@ -196,9 +196,9 @@ class AbsEvalDataLoader(ABC):
         """Abstract method to load relevance from remote dataset, to be overrode in child class.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            split (str, optional): Split to load from the remote dataset. Defaults to :data:`'test'`.
-            save_dir (Optional[str], optional): Path to save the new downloaded relevance. Defaults to :data:`None`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the remote dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Path to save the new downloaded relevance. Defaults to ``None``.
 
         Raises:
             NotImplementedError: Loading remote qrels is not implemented.
@@ -217,9 +217,9 @@ class AbsEvalDataLoader(ABC):
         """Abstract method to load queries from remote dataset, to be overrode in child class.
 
         Args:
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            split (str, optional): Split to load from the remote dataset. Defaults to :data:`'test'`.
-            save_dir (Optional[str], optional): Path to save the new downloaded queries. Defaults to :data:`None`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the remote dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Path to save the new downloaded queries. Defaults to ``None``.
 
         Raises:
             NotImplementedError
@@ -234,7 +234,7 @@ class AbsEvalDataLoader(ABC):
 
         Args:
             save_dir (str): Path to save the loaded corpus.
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
 
         Returns:
             datasets.DatasetDict: A dict of corpus with id as key, title and text as value.
@@ -257,8 +257,8 @@ class AbsEvalDataLoader(ABC):
 
         Args:
             save_dir (str):  Path to save the loaded relevance.
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to :data:`None`.
-            split (str, optional): Split to load from the local dataset. Defaults to :data:`'test'`.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the local dataset. Defaults to ``'test'``.
 
         Raises:
             ValueError
@@ -292,8 +292,8 @@ class AbsEvalDataLoader(ABC):
 
         Args:
             save_dir (str):  Path to save the loaded queries.
-            dataset_name (Optional[str], optional): Name of the dataset. Defaults to None.
-            split (str, optional): Split to load from the local dataset. Defaults to 'test'.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the local dataset. Defaults to ``'test'``.
 
         Raises:
             ValueError
