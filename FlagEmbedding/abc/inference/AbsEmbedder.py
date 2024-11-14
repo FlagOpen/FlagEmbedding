@@ -8,6 +8,7 @@ import multiprocessing as mp
 from multiprocessing import Queue
 
 import math
+import gc
 import torch
 import numpy as np
 from transformers import is_torch_npu_available
@@ -53,6 +54,7 @@ class AbsEmbedder(ABC):
         convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
+        query_instruction_format = query_instruction_format.replace('\\n', '\n')
         self.model_name_or_path = model_name_or_path
         self.normalize_embeddings = normalize_embeddings
         self.use_fp16 = use_fp16
@@ -74,6 +76,14 @@ class AbsEmbedder(ABC):
         self.tokenizer = None
         self.model = None
         self.pool = None
+    
+    def stop_self_pool(self):
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
+            self.pool = None
+        self.model.to('cpu')
+        gc.collect()
+        torch.cuda.empty_cache()
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
@@ -355,6 +365,7 @@ class AbsEmbedder(ABC):
 
         pool["input"].close()
         pool["output"].close()
+        pool = None
 
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L877
     def encode_multi_process(

@@ -31,12 +31,13 @@ class EvalRetriever(ABC):
         return os.path.basename(self.embedder.model.config._name_or_path)
 
     def stop_multi_process_pool(self):
-        if self.embedder.pool is not None:
-            self.embedder.stop_multi_process_pool(self.embedder.pool)
-            self.embedder.pool = None
-            self.embedder.model.to('cpu')
-            gc.collect()
-            torch.cuda.empty_cache()
+        self.embedder.stop_self_pool()
+        # if self.embedder.pool is not None:
+        #     self.embedder.stop_multi_process_pool(self.embedder.pool)
+        #     self.embedder.pool = None
+        #     self.embedder.model.to('cpu')
+        #     gc.collect()
+        #     torch.cuda.empty_cache()
 
     @abstractmethod
     def __call__(
@@ -168,12 +169,13 @@ class EvalReranker:
         return os.path.basename(self.reranker.model.config._name_or_path)
 
     def stop_multi_process_pool(self):
-        if self.reranker.pool is not None:
-            self.reranker.stop_multi_process_pool(self.reranker.pool)
-            self.reranker.pool = None
-            self.reranker.model.to('cpu')
-            gc.collect()
-            torch.cuda.empty_cache()
+        self.reranker.stop_self_pool()
+        # if self.reranker.pool is not None:
+        #     self.reranker.stop_multi_process_pool(self.reranker.pool)
+        #     self.reranker.pool = None
+        #     self.reranker.model.to('cpu')
+        #     gc.collect()
+        #     torch.cuda.empty_cache()
 
     def __call__(
         self,

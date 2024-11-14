@@ -6,6 +6,7 @@ import multiprocessing as mp
 from multiprocessing import Queue
 
 import math
+import gc
 import torch
 import numpy as np
 from tqdm import tqdm, trange
@@ -76,6 +77,14 @@ class AbsReranker(ABC):
         self.model = None
         self.tokenizer = None
         self.pool = None
+
+    def stop_self_pool(self):
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
+            self.pool = None
+        self.model.to('cpu')
+        gc.collect()
+        torch.cuda.empty_cache()
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:

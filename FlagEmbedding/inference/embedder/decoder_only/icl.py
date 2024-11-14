@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from tqdm import tqdm, trange
 from typing import cast, Any, List, Union, Optional
 
 import queue
@@ -69,6 +69,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         use_fp16: bool = True,
         query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "<instruct>{}\n<query>{}", # specify the format of query_instruction_for_retrieval
+        suffix: str = '\n<response>',
         devices: Optional[Union[str, List[str]]] = None, # specify devices, such as "cuda:0" or ["cuda:0", "cuda:1"]
         # Additional parameters for ICLLLMEmbedder
         examples_for_task: Optional[List[dict]] = None,
@@ -82,6 +83,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         convert_to_numpy: bool = True,
         **kwargs: Any,
     ):
+        query_instruction_format = query_instruction_format.replace('\\n', '\n')
+        examples_instruction_format = examples_instruction_format.replace('\\n', '\n')
         super().__init__(
             model_name_or_path,
             normalize_embeddings=normalize_embeddings,
@@ -113,7 +116,15 @@ class ICLLLMEmbedder(AbsEmbedder):
             raise ValueError("Pooling method must be 'last_token' for LLM-based models.")
 
         self.set_examples()
-        self.suffix = '\n<response>'
+        self.suffix = suffix
+
+        self.query_pool = None
+    
+    def __del__(self):
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
+        if self.query_pool is not None:
+            self.stop_multi_process_pool(self.query_pool)
 
     def set_examples(self, examples_for_task: Optional[List[dict]] = None):
         """Set the prefix to the provided examples.
@@ -198,16 +209,19 @@ class ICLLLMEmbedder(AbsEmbedder):
                 **kwargs
             )
 
-        pool = self.start_multi_process_pool(ICLLLMEmbedder._encode_queries_multi_process_worker)
+        if self.pool is not None:
+            self.stop_multi_process_pool(self.pool)
+            self.pool = None
+        if self.query_pool is None:
+            self.query_pool = self.start_multi_process_pool(ICLLLMEmbedder._encode_queries_multi_process_worker)
         embeddings = self.encode_multi_process(
             queries,
-            pool,
+            self.query_pool,
             batch_size=batch_size,
             max_length=max_length,
             convert_to_numpy=convert_to_numpy,
             **kwargs
         )
-        self.stop_multi_process_pool(pool)
         return embeddings
 
     def encode_corpus(
@@ -230,6 +244,9 @@ class ICLLLMEmbedder(AbsEmbedder):
         Returns:
             Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
         """
+        if self.query_pool is not None:
+            self.stop_multi_process_pool(self.query_pool)
+            self.query_pool = None
         return super().encode_corpus(
             corpus,
             batch_size=batch_size,
@@ -338,16 +355,27 @@ class ICLLLMEmbedder(AbsEmbedder):
         suffix_ids = self.tokenizer(self.suffix, add_special_tokens=False)['input_ids']
 
         _len_1 = len(self.tokenizer('<s>', add_special_tokens=False)['input_ids'])
-        _len_2 = len(self.tokenizer('\n<response></s>', add_special_tokens=False)['input_ids'])
+        _len_2 = len(self.tokenizer(f'{self.suffix}</s>', add_special_tokens=False)['input_ids'])
+        new_max_length = (len(prefix_ids) + len(suffix_ids) + max_length + 8) // 8 * 8 + 8
 
         # tokenize without padding to get the correct length
         all_inputs = []
-        for start_index in range(0, len(input_texts), batch_size):
+        for start_index in trange(0, len(input_texts), batch_size, desc='pre tokenize'):
             sentences_batch = input_texts[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer(
                 sentences_batch,
                 truncation=True,
-                max_length=max_length,
+                max_length=max_length - _len_1 - _len_2,
+                add_special_tokens=False,
+                **kwargs
+            )
+            sentences_batch = self.tokenizer.batch_decode(inputs_batch['input_ids'])
+            for i in range(len(sentences_batch)):
+                sentences_batch[i] = self.prefix + sentences_batch[i] + self.suffix
+            inputs_batch = self.tokenizer(
+                sentences_batch,
+                truncation=True,
+                max_length=new_max_length,
                 **kwargs
             )
             inputs_batch = [{
@@ -385,30 +413,16 @@ class ICLLLMEmbedder(AbsEmbedder):
         all_embeddings = []
         for start_index in tqdm(range(0, len(sentences_sorted), batch_size), desc="Inference Embeddings",
                                 disable=len(sentences_sorted) < 256):
-            sentences_batch = sentences_sorted[start_index:start_index + batch_size]
-            inputs = self.tokenizer(
-                sentences_batch,
-                max_length=max_length - _len_1 - _len_2,
-                return_token_type_ids=False,
-                truncation=True,
-                return_tensors=None,
-                add_special_tokens=False
-            )
-            new_max_length = (len(prefix_ids) + len(suffix_ids) + max_length + 8) // 8 * 8 + 8
-            sentences_batch = self.tokenizer.batch_decode(inputs['input_ids'])
-            for i in range(len(sentences_batch)):
-                sentences_batch[i] = self.prefix + sentences_batch[i] + self.suffix
-            inputs = self.tokenizer(
-                sentences_batch,
+            inputs_batch = all_inputs_sorted[start_index:start_index + batch_size]
+            inputs_batch = self.tokenizer.pad(
+                inputs_batch,
                 padding=True,
-                truncation=True,
                 return_tensors='pt',
-                max_length=new_max_length,
-                add_special_tokens=True
+                **kwargs
             ).to(device)
 
-            last_hidden_state = self.model(**inputs, return_dict=True).last_hidden_state
-            embeddings = last_token_pool(last_hidden_state, inputs['attention_mask'])
+            last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
+            embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
             if self.normalize_embeddings:
                 embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
             embeddings = cast(torch.Tensor, embeddings)
@@ -469,7 +483,7 @@ class ICLLLMEmbedder(AbsEmbedder):
 
         # tokenize without padding to get the correct length
         all_inputs = []
-        for start_index in range(0, len(sentences), batch_size):
+        for start_index in trange(0, len(sentences), batch_size, desc='pre tokenize'):
             sentences_batch = sentences[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer(
                 sentences_batch,
