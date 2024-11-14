@@ -9,7 +9,13 @@ logger = logging.getLogger(__name__)
 
 
 class BEIREvalRunner(AbsEvalRunner):
+    """
+    Runner class of BEIR evaluation.
+    """
     def run(self):
+        """
+        Run the whole evaluation.
+        """
         if self.eval_args.dataset_names is None:
             dataset_names = self.data_loader.available_dataset_names()
         else:
@@ -54,6 +60,11 @@ class BEIREvalRunner(AbsEvalRunner):
         )
         
     def load_data_loader(self) -> BEIREvalDataLoader:
+        """Load the data loader
+
+        Returns:
+            BEIREvalDataLoader: BEIR data loader object.
+        """
         data_loader = BEIREvalDataLoader(
             eval_name=self.eval_args.eval_name,
             dataset_dir=self.eval_args.dataset_dir,
@@ -64,6 +75,11 @@ class BEIREvalRunner(AbsEvalRunner):
         return data_loader
 
     def load_evaluator(self) -> BEIREvaluator:
+        """Load the evaluator for evaluation
+
+        Returns:
+            BEIREvaluator: The BEIR evaluator to run the evaluation.
+        """
         evaluator = BEIREvaluator(
             eval_name=self.eval_args.eval_name,
             data_loader=self.data_loader,

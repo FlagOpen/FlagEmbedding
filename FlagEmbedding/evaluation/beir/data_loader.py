@@ -13,15 +13,42 @@ logger = logging.getLogger(__name__)
 
 
 class BEIREvalDataLoader(AbsEvalDataLoader):
+    """
+    Data loader class for BEIR.
+    """
     def available_dataset_names(self) -> List[str]:
+        """
+        Get the available dataset names.
+
+        Returns:
+            List[str]: All the available dataset names.
+        """
         return ['arguana', 'climate-fever', 'cqadupstack', 'dbpedia-entity', 'fever', 'fiqa', 'hotpotqa', 'msmarco', 'nfcorpus', 'nq', 'quora', 'scidocs', 'scifact', 'trec-covid', 'webis-touche2020']
 
     def available_sub_dataset_names(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Get the available sub-dataset names.
+
+        Args:
+            dataset_name (Optional[str], optional): All the available sub-dataset names. Defaults to ``None``.
+
+        Returns:
+            List[str]: All the available sub-dataset names.
+        """
         if dataset_name == 'cqadupstack':
             return ['android', 'english', 'gaming', 'gis', 'mathematica', 'physics', 'programmers', 'stats', 'tex', 'unix', 'webmasters', 'wordpress']
         return None
 
     def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Get the avaialble splits.
+
+        Args:
+            dataset_name (str): Dataset name.
+
+        Returns:
+            List[str]: All the available splits for the dataset.
+        """
         if dataset_name == 'msmarco':
             return ['dev']
         return ['test']
@@ -32,6 +59,16 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         sub_dataset_name: Optional[str] = None,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the corpus dataset from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            sub_dataset_name (Optional[str]): Name of the sub-dataset. Defaults to ``None``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of corpus.
+        """
         if dataset_name != 'cqadupstack':
             corpus = datasets.load_dataset(
                 'BeIR/{d}'.format(d=dataset_name),
@@ -94,6 +131,17 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the qrels from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            sub_dataset_name (Optional[str]): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): Split of the dataset. Defaults to ``'dev'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrel.
+        """
         if dataset_name != 'cqadupstack':
             qrels = datasets.load_dataset(
                 'BeIR/{d}-qrels'.format(d=dataset_name),
@@ -168,6 +216,17 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the queries from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            sub_dataset_name (Optional[str]): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): Split of the dataset. Defaults to ``'dev'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of queries.
+        """
         qrels = self.load_qrels(dataset_name=dataset_name, sub_dataset_name=sub_dataset_name, split=split)
 
         if dataset_name != 'cqadupstack':
@@ -230,6 +289,15 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         return datasets.DatasetDict(queries_dict)
 
     def load_corpus(self, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        """Load the corpus from the dataset.
+
+        Args:
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: A dict of corpus with id as key, title and text as value.
+        """
         if self.dataset_dir is not None:
             if dataset_name is None:
                 save_dir = self.dataset_dir
@@ -240,6 +308,19 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
             return self._load_remote_corpus(dataset_name=dataset_name, sub_dataset_name=sub_dataset_name)
 
     def load_qrels(self, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        """Load the qrels from the dataset.
+
+        Args:
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): The split to load relevance from. Defaults to ``'test'``.
+
+        Raises:
+            ValueError
+
+        Returns:
+            datasets.DatasetDict: A dict of relevance of query and document.
+        """
         if self.dataset_dir is not None:
             if dataset_name is None:
                 save_dir = self.dataset_dir
@@ -256,6 +337,19 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
             return self._load_remote_qrels(dataset_name=dataset_name, sub_dataset_name=sub_dataset_name, split=split)
 
     def load_queries(self, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        """Load the queries from the dataset.
+
+        Args:
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): The split to load queries from. Defaults to ``'test'``.
+
+        Raises:
+            ValueError
+
+        Returns:
+            datasets.DatasetDict: A dict of queries with id as key, query text as value.
+        """
         if self.dataset_dir is not None:
             if dataset_name is None:
                 save_dir = self.dataset_dir
@@ -272,6 +366,16 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
             return self._load_remote_queries(dataset_name=dataset_name, sub_dataset_name=sub_dataset_name, split=split)
 
     def _load_local_corpus(self, save_dir: str, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None) -> datasets.DatasetDict:
+        """Load corpus from local dataset.
+
+        Args:
+            save_dir (str): Path to save the loaded corpus.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: A dict of corpus with id as key, title and text as value.
+        """
         if sub_dataset_name is None:
             corpus_path = os.path.join(save_dir, 'corpus.jsonl')
         else:
@@ -291,6 +395,20 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
             return datasets.DatasetDict(corpus)
 
     def _load_local_qrels(self, save_dir: str, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        """Load relevance from local dataset.
+
+        Args:
+            save_dir (str):  Path to save the loaded relevance.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the local dataset. Defaults to ``'test'``.
+
+        Raises:
+            ValueError
+
+        Returns:
+            datasets.DatasetDict: A dict of relevance of query and document.
+        """
         checked_split = self.check_splits(split)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
@@ -318,6 +436,20 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
             return datasets.DatasetDict(qrels)
 
     def _load_local_queries(self, save_dir: str, dataset_name: Optional[str] = None, sub_dataset_name: Optional[str] = None, split: str = 'test') -> datasets.DatasetDict:
+        """Load queries from local dataset.
+
+        Args:
+            save_dir (str):  Path to save the loaded queries.
+            dataset_name (Optional[str], optional): Name of the dataset. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+            split (str, optional): Split to load from the local dataset. Defaults to ``'test'``.
+
+        Raises:
+            ValueError
+
+        Returns:
+            datasets.DatasetDict: A dict of queries with id as key, query text as value.
+        """
         checked_split = self.check_splits(split)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")

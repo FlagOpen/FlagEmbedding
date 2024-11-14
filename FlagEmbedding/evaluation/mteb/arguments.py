@@ -6,6 +6,9 @@ from FlagEmbedding.abc.evaluation.arguments import AbsEvalArgs
 
 @dataclass
 class MTEBEvalArgs(AbsEvalArgs):
+    """
+    Argument class for MTEB evaluation.
+    """
     languages: List[str] = field(
         default=None, metadata={"help": "Languages to evaluate. Default: eng"}
     )

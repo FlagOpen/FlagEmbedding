@@ -11,10 +11,28 @@ logger = logging.getLogger(__name__)
 
 
 class MSMARCOEvalDataLoader(AbsEvalDataLoader):
+    """
+    Data loader class for MSMARCO.
+    """
     def available_dataset_names(self) -> List[str]:
+        """
+        Get the available dataset names.
+
+        Returns:
+            List[str]: All the available dataset names.
+        """
         return ["passage", "document"]
 
     def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Get the avaialble splits.
+
+        Args:
+            dataset_name (Optional[str], optional): Dataset name. Defaults to ``None``.
+
+        Returns:
+            List[str]: All the available splits for the dataset.
+        """
         return ["dev", "dl19", "dl20"]
 
     def _load_remote_corpus(
@@ -22,6 +40,15 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
         dataset_name: str,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the corpus dataset from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of corpus.
+        """
         if dataset_name == 'passage':
             corpus = datasets.load_dataset(
                 'Tevatron/msmarco-passage-corpus', 
@@ -80,6 +107,16 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
         split: str = 'dev',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the qrels from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'dev'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrel.
+        """
         if dataset_name == 'passage':
             if split == 'dev':
                 qrels = datasets.load_dataset(
@@ -164,6 +201,16 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
         split: str = 'test',
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the queries from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of queries.
+        """
         if split == 'dev':
             if dataset_name == 'passage':
                 queries = datasets.load_dataset(

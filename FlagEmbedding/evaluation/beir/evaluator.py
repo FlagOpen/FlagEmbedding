@@ -10,6 +10,9 @@ logger = logging.getLogger(__name__)
 
 
 class BEIREvaluator(AbsEvaluator):
+    """
+    Evaluator class of BEIR 
+    """
     def check_data_info(
         self,
         data_info: Dict[str, str],
@@ -19,6 +22,23 @@ class BEIREvaluator(AbsEvaluator):
         dataset_name: Optional[str] = None,
         sub_dataset_name: Optional[str] = None,
     ):
+        """Check the validity of data info.
+
+        Args:
+            data_info (Dict[str, str]): The loaded data info to be check.
+            model_name (str): Name of model used.
+            reranker_name (str): Name of reranker used.
+            split (str): Split used in searching.
+            dataset_name (Optional[str], optional): Name of dataset used. Defaults to None.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+
+        Raises:
+            ValueError: eval_name mismatch
+            ValueError: model_name or reranker_name mismatch
+            ValueError: split mismatch
+            ValueError: dataset_name mismatch
+            ValueError: sub_dataset_name mismatch
+        """
         if data_info["eval_name"] != self.eval_name:
             raise ValueError(
                 f'eval_name mismatch: {data_info["eval_name"]} vs {self.eval_name}'
@@ -317,11 +337,21 @@ class BEIREvaluator(AbsEvaluator):
                     self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
             if reranker is not None:
                 reranker.stop_multi_process_pool()
+                
     def evaluate_results(
         self,
         search_results_save_dir: str,
         k_values: List[int] = [1, 3, 5, 10, 100, 1000]
     ):
+        """Compute metrics according to the results in the directory.
+
+        Args:
+            search_results_save_dir (str): Path to the search results.
+            k_values (List[int], optional): Cutoffs. Defaults to :data:`[1, 3, 5, 10, 100, 1000]`.
+
+        Returns:
+            dict: Evaluation results.
+        """
         eval_results_dict = {}
         cqadupstack_results = None
         cqadupstack_num = 0
@@ -386,6 +416,18 @@ class BEIREvaluator(AbsEvaluator):
         dataset_name: Optional[str] = None,
         sub_dataset_name: Optional[str] = None,
     ):
+        """Save the metadata and search results into a file.
+
+        Args:
+            eval_name (str): The experiment name of current evaluation.
+            model_name (str): Name of model used.
+            reranker_name (str): Name of reranker used.
+            search_results (Dict[str, Dict[str, float]]): Dictionary of search results.
+            output_path (str): Output path to write the results.
+            split (str): Split used in searching.
+            dataset_name (Optional[str], optional): Name of dataset used. Defaults to ``None``.
+            sub_dataset_name (Optional[str], optional): Name of the sub-dataset. Defaults to ``None``.
+        """
         data = {
             "eval_name": eval_name,
             "model_name": model_name,

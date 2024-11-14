@@ -20,6 +20,9 @@ def ensure_dir(file_path):
         os.makedirs(directory)
 
 class MTEBEvalRunner(AbsEvalRunner):
+    """
+    Evaluation runner of MTEB.
+    """
     def __init__(
         self,
         eval_args: MTEBEvalArgs,
@@ -31,6 +34,11 @@ class MTEBEvalRunner(AbsEvalRunner):
         self.retriever, self.reranker = self.load_retriever_and_reranker()
 
     def load_retriever_and_reranker(self) -> Tuple[MTEBEvalDenseRetriever, Union[MTEBEvalReranker, None]]:
+        """Load the retriever and reranker
+
+        Returns:
+            Tuple[MTEBEvalDenseRetriever, Union[MTEBEvalReranker, None]]: The retriever and reranker instances.
+        """
         embedder, reranker = self.get_models(self.model_args)
         retriever = MTEBEvalDenseRetriever(
             embedder,
@@ -42,6 +50,15 @@ class MTEBEvalRunner(AbsEvalRunner):
         return retriever, reranker
 
     def read_results(self, output_folder, tasks):
+        """Read the evaluation results from directory.
+
+        Args:
+            output_folder (str): Path to the directory with results.
+            tasks (list): List of MTEB tasks.
+
+        Returns:
+            dict: The results of all the tasks.
+        """
         tasks_results = {}
         task_types = list(set([t.metadata.type for t in tasks]))
         for t_type in task_types:
@@ -77,6 +94,12 @@ class MTEBEvalRunner(AbsEvalRunner):
         return tasks_results
 
     def output_json(self, tasks_results, save_file):
+        """Save the tasks results into a json file.
+
+        Args:
+            tasks_results (dict): The task results.
+            save_file (str): Path to a file to save the results.
+        """
         all_results = 0
         all_results_num = 0
         cqa_results = 0
@@ -110,6 +133,9 @@ class MTEBEvalRunner(AbsEvalRunner):
             json.dump(new_results, f)
 
     def run(self):
+        """
+        Run the evaluation.
+        """
         task_types = self.eval_args.task_types
         tasks = self.eval_args.tasks
         languages = self.eval_args.languages

@@ -4,6 +4,9 @@ from typing import List, Optional
 
 @dataclass
 class AIRBenchEvalModelArgs:
+    """
+    Evaluation Model arguments for AIR Bench.
+    """
     embedder_name_or_path: str = field(
         metadata={"help": "The embedder name or path.", "required": True}
     )

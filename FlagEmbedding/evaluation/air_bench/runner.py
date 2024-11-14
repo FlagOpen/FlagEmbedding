@@ -10,6 +10,13 @@ from .arguments import AIRBenchEvalArgs, AIRBenchEvalModelArgs
 
 
 class AIRBenchEvalRunner:
+    """
+    Evaluation runner for AIR Bench.
+    
+    Args:
+        eval_args (AIRBenchEvalArgs): :class:AIRBenchEvalArgs object with the evaluation arguments.
+        model_args (AIRBenchEvalModelArgs): :class:AIRBenchEvalModelArgs object with the model arguments.
+    """
     def __init__(
         self,
         eval_args: AIRBenchEvalArgs,
@@ -22,6 +29,12 @@ class AIRBenchEvalRunner:
         self.retriever, self.reranker = self.load_retriever_and_reranker()
 
     def load_retriever_and_reranker(self) -> Tuple[EvalDenseRetriever, Union[EvalReranker, None]]:
+        """Load retriever and reranker for evaluation
+
+        Returns:
+            Tuple[EvalDenseRetriever, Union[EvalReranker, None]]: A :class:EvalDenseRetriever object for retrieval, and a
+                :class:EvalReranker object if reranker provided.
+        """
         embedder, reranker = AbsEvalRunner.get_models(self.model_args)
         retriever = EvalDenseRetriever(
             embedder,
@@ -33,6 +46,9 @@ class AIRBenchEvalRunner:
         return retriever, reranker
 
     def run(self):
+        """
+        Run the whole evaluation.
+        """
         evaluation = AIRBench(
             benchmark_version=self.eval_args.benchmark_version,
             task_types=self.eval_args.task_types,

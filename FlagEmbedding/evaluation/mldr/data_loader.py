@@ -11,10 +11,28 @@ logger = logging.getLogger(__name__)
 
 
 class MLDREvalDataLoader(AbsEvalDataLoader):
+    """
+    Data loader class for MLDR.
+    """
     def available_dataset_names(self) -> List[str]:
+        """
+        Get the available dataset names.
+
+        Returns:
+            List[str]: All the available dataset names.
+        """
         return ["ar", "de", "en", "es", "fr", "hi", "it", "ja", "ko", "pt", "ru", "th", "zh"]
 
     def available_splits(self, dataset_name: Optional[str] = None) -> List[str]:
+        """
+        Get the avaialble splits.
+
+        Args:
+            dataset_name (Optional[str], optional): Dataset name. Defaults to ``None``.
+
+        Returns:
+            List[str]: All the available splits for the dataset.
+        """
         return ["train", "dev", "test"]
 
     def _load_remote_corpus(
@@ -22,6 +40,15 @@ class MLDREvalDataLoader(AbsEvalDataLoader):
         dataset_name: str,
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the corpus dataset from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of corpus.
+        """
         corpus = datasets.load_dataset(
             "Shitao/MLDR", f"corpus-{dataset_name}",
             cache_dir=self.cache_dir,
@@ -53,6 +80,16 @@ class MLDREvalDataLoader(AbsEvalDataLoader):
         split: str = "test",
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the qrels from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of qrel.
+        """
         qrels_data = datasets.load_dataset(
             "Shitao/MLDR", dataset_name,
             cache_dir=self.cache_dir,
@@ -108,6 +145,16 @@ class MLDREvalDataLoader(AbsEvalDataLoader):
         split: str = "test",
         save_dir: Optional[str] = None
     ) -> datasets.DatasetDict:
+        """Load the queries from HF.
+
+        Args:
+            dataset_name (str): Name of the dataset.
+            split (str, optional): Split of the dataset. Defaults to ``'test'``.
+            save_dir (Optional[str], optional): Directory to save the dataset. Defaults to ``None``.
+
+        Returns:
+            datasets.DatasetDict: Loaded datasets instance of queries.
+        """
         queries_data = datasets.load_dataset(
             "Shitao/MLDR", dataset_name,
             cache_dir=self.cache_dir,
