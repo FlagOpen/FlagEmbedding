@@ -369,7 +369,7 @@ class M3Embedder(AbsEmbedder):
 
         # tokenize without padding to get the correct length
         all_inputs = []
-        for start_index in range(0, len(sentences), batch_size):
+        for start_index in trange(0, len(sentences), batch_size, desc='pre tokenize'):
             sentences_batch = sentences[start_index:start_index + batch_size]
             inputs_batch = self.tokenizer(
                 sentences_batch,

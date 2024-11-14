@@ -14,6 +14,10 @@ from  .examples import examples_dict
 
 logger = logging.getLogger(__name__)
 
+def ensure_dir(file_path):
+    directory = os.path.dirname(file_path)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 class MTEBEvalRunner(AbsEvalRunner):
     def __init__(
@@ -147,6 +151,7 @@ class MTEBEvalRunner(AbsEvalRunner):
             evaluation = mteb.MTEB(tasks=[task])
             results = evaluation.run(self.retriever, output_folder=f"{output_folder}/{str(self.retriever)}")
 
+        ensure_dir(self.eval_args.eval_output_path)
         logger.info("Start computing metrics. Only save results as json.")
         tasks_results = self.read_results(f"{output_folder}/{str(self.retriever)}/no_model_name_available/no_revision_available", new_tasks)
         self.output_json(tasks_results, self.eval_args.eval_output_path)
