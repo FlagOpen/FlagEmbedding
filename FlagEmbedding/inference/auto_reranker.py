@@ -54,9 +54,9 @@ class FlagAutoReranker:
             _model_class = RERANKER_CLASS_MAPPING[RerankerModelClass(model_class)]
             if trust_remote_code is None:
                 trust_remote_code = False
-            logging.warning(
-                f"`trust_remote_code` is not specified, set to default value '{trust_remote_code}'."
-            )
+                logging.warning(
+                    f"`trust_remote_code` is not specified, set to default value '{trust_remote_code}'."
+                )
         else:
             if model_name not in AUTO_RERANKER_MAPPING:
                 raise ValueError(
