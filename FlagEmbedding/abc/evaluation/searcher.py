@@ -138,6 +138,9 @@ class EvalDenseRetriever(EvalRetriever):
             (not os.path.exists(os.path.join(corpus_embd_save_dir, "doc.npy")) or self.overwrite):
             os.makedirs(corpus_embd_save_dir, exist_ok=True)
             np.save(os.path.join(corpus_embd_save_dir, "doc.npy"), corpus_emb)
+        
+        gc.collect()
+        torch.cuda.empty_cache()
 
         faiss_index = index(corpus_embeddings=corpus_emb)
         all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
