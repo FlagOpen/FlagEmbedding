@@ -1,3 +1,5 @@
+import numpy as np
+
 from typing import List, Dict, Optional
 from FlagEmbedding.abc.evaluation import EvalDenseRetriever, EvalReranker
 
@@ -22,7 +24,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_queries(queries)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
     
     def encode_corpus(self, corpus: List[Dict[str, str]], **kwargs):
         if isinstance(corpus[0], dict):
@@ -32,7 +34,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_corpus(input_texts)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
     
     def encode(self, corpus: List[Dict[str, str]], **kwargs):
         if isinstance(corpus[0], dict):
@@ -42,7 +44,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_queries(input_texts)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
 
 class MTEBEvalReranker(EvalReranker):
     def __init__(self, reranker, **kwargs):

@@ -66,13 +66,8 @@ class MTEBEvalRunner(AbsEvalRunner):
                         break
 
                     temp_data = data['scores'][split][0]
+                    tasks_results[t_type][task_name] = round(temp_data['main_score'] * 100, 2)
 
-                    if metric == 'ap':
-                        tasks_results[t_type][task_name] = round(temp_data['cos_sim']['ap'] * 100, 2)
-                    elif metric == 'cosine_spearman':
-                        tasks_results[t_type][task_name] = round(temp_data['cos_sim']['spearman'] * 100, 2)
-                    else:
-                        tasks_results[t_type][task_name] = round(temp_data[metric] * 100, 2)
         print(f"tasks_results: {tasks_results}")
         return tasks_results
 
