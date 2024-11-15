@@ -82,14 +82,15 @@ class MTEBEvalRunner(AbsEvalRunner):
                         print('ERROR')
                         break
 
-                    temp_data = data['scores'][split][0]
+                    temp_datas = data['scores'][split][0]
+                    temp_data = None
+                    for td in temp_datas:
+                        if td['hf_subset'] == 'default':
+                            temp_data = td
+                    if temp_data is None:
+                        temp_data = temp_datas[0]
+                    tasks_results[t_type][task_name] = round(temp_data['main_score'] * 100, 2)
 
-                    if metric == 'ap':
-                        tasks_results[t_type][task_name] = round(temp_data['cos_sim']['ap'] * 100, 2)
-                    elif metric == 'cosine_spearman':
-                        tasks_results[t_type][task_name] = round(temp_data['cos_sim']['spearman'] * 100, 2)
-                    else:
-                        tasks_results[t_type][task_name] = round(temp_data[metric] * 100, 2)
         print(f"tasks_results: {tasks_results}")
         return tasks_results
 
@@ -145,15 +146,12 @@ class MTEBEvalRunner(AbsEvalRunner):
             task_types=task_types
         )
         output_folder = self.eval_args.output_dir
-        new_tasks = []
-        for task in tasks:
-            if task.languages is not None:
-                if len(task.languages) == len([e for e in languages if e in task.languages]):
-                    new_tasks.append(task)
 
-        for task in new_tasks:
+        for task in tasks:
             task_name = task.metadata.name
             task_type = task.metadata.type
+
+            self.retriever.stop_pool()
 
             if self.eval_args.use_special_instructions:
                 try:

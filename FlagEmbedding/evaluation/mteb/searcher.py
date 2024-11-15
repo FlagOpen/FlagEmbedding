@@ -1,3 +1,5 @@
+import numpy as np
+
 from typing import List, Dict, Optional
 from FlagEmbedding.abc.evaluation import EvalDenseRetriever, EvalReranker
 
@@ -41,6 +43,13 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         """
         self.embedder.normalize_embeddings = normalize_embeddings
     
+    def stop_pool(self):
+        self.embedder.stop_self_pool()
+        try:
+            self.embedder.stop_self_query_pool()
+        except:
+            pass
+
     def encode_queries(self, queries: List[str], **kwargs):
         """Encode input queries.
 
@@ -53,7 +62,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_queries(queries)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
     
     def encode_corpus(self, corpus: List[Dict[str, str]], **kwargs):
         """Encode input corpus.
@@ -71,7 +80,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_corpus(input_texts)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
     
     def encode(self, corpus: List[Dict[str, str]], **kwargs):
         """Encode the imput.
@@ -89,7 +98,7 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
         emb = self.embedder.encode_queries(input_texts)
         if isinstance(emb, dict):
             emb = emb["dense_vecs"]
-        return emb
+        return emb.astype(np.float32)
 
 class MTEBEvalReranker(EvalReranker):
     """
