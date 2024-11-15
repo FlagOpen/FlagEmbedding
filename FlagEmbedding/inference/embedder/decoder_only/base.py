@@ -243,19 +243,16 @@ class BaseLLMEmbedder(AbsEmbedder):
 
         # adjust batch size
         flag = False
-        max_length_inputs = self.tokenizer.pad(
-            all_inputs_sorted[:1],
-            padding=True,
-            return_tensors='pt',
-            **kwargs
-        ).to(device)
         while flag is False:
             try:
-                test_inputs_batch = {}
-                for k, v in max_length_inputs.items():
-                    test_inputs_batch[k] = v.repeat(batch_size, 1)
-                last_hidden_state = self.model(**test_inputs_batch, return_dict=True).last_hidden_state
-                embeddings = last_token_pool(last_hidden_state, test_inputs_batch['attention_mask'])
+                inputs_batch = self.tokenizer.pad(
+                    all_inputs_sorted[: batch_size],
+                    padding=True,
+                    return_tensors='pt',
+                    **kwargs
+                ).to(device)
+                last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
+                embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
