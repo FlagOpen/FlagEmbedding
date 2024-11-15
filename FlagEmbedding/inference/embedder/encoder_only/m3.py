@@ -388,19 +388,16 @@ class M3Embedder(AbsEmbedder):
 
         # adjust batch size
         flag = False
-        max_length_inputs = self.tokenizer.pad(
-            all_inputs_sorted[:1],
-            padding=True,
-            return_tensors='pt',
-            **kwargs
-        ).to(device)
         while flag is False:
             try:
-                test_inputs_batch = {}
-                for k, v in max_length_inputs.items():
-                    test_inputs_batch[k] = v.repeat(batch_size, 1)
+                inputs_batch = self.tokenizer.pad(
+                    all_inputs_sorted[: batch_size],
+                    padding=True,
+                    return_tensors='pt',
+                    **kwargs
+                ).to(device)
                 outputs = self.model(
-                    test_inputs_batch,
+                    inputs_batch,
                     return_dense=return_dense,
                     return_sparse=return_sparse,
                     return_colbert_vecs=return_colbert_vecs
