@@ -20,6 +20,13 @@ class MTEBEvalDenseRetriever(EvalDenseRetriever):
     def set_normalize_embeddings(self, normalize_embeddings: bool = True):
         self.embedder.normalize_embeddings = normalize_embeddings
     
+    def stop_pool(self):
+        self.embedder.stop_self_pool()
+        try:
+            self.embedder.stop_self_query_pool()
+        except:
+            pass
+
     def encode_queries(self, queries: List[str], **kwargs):
         emb = self.embedder.encode_queries(queries)
         if isinstance(emb, dict):

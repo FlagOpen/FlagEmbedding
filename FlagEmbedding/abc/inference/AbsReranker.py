@@ -210,8 +210,7 @@ class AbsReranker(ABC):
         return scores
 
     def __del__(self):
-        if self.pool is not None:
-            self.stop_multi_process_pool(self.pool)
+        self.stop_self_pool()
 
     @abstractmethod
     def compute_score_single_gpu(

@@ -114,15 +114,12 @@ class MTEBEvalRunner(AbsEvalRunner):
             task_types=task_types
         )
         output_folder = self.eval_args.output_dir
-        new_tasks = []
-        for task in tasks:
-            if task.languages is not None:
-                if len(task.languages) == len([e for e in languages if e in task.languages]):
-                    new_tasks.append(task)
 
-        for task in new_tasks:
+        for task in tasks:
             task_name = task.metadata.name
             task_type = task.metadata.type
+
+            self.retriever.stop_pool()
 
             if self.eval_args.use_special_instructions:
                 try:

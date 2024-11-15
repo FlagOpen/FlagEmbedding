@@ -4,6 +4,7 @@ from typing import cast, Any, List, Union, Optional
 import queue
 from multiprocessing import Queue
 
+import gc
 import torch
 import numpy as np
 from transformers import AutoModel, AutoTokenizer
@@ -121,10 +122,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         self.query_pool = None
     
     def __del__(self):
-        if self.pool is not None:
-            self.stop_multi_process_pool(self.pool)
-        if self.query_pool is not None:
-            self.stop_multi_process_pool(self.query_pool)
+        self.stop_self_pool()
+        self.stop_self_query_pool()
 
     def set_examples(self, examples_for_task: Optional[List[dict]] = None):
         """Set the prefix to the provided examples.
@@ -175,6 +174,14 @@ class ICLLLMEmbedder(AbsEmbedder):
         """
         return instruction_format.format(instruction, query, response)
 
+    def stop_self_query_pool(self):
+        if self.query_pool is not None:
+            self.stop_multi_process_pool(self.query_pool)
+            self.query_pool = None
+        self.model.to('cpu')
+        gc.collect()
+        torch.cuda.empty_cache()
+
     def encode_queries(
         self,
         queries: Union[List[str], str],
@@ -209,9 +216,7 @@ class ICLLLMEmbedder(AbsEmbedder):
                 **kwargs
             )
 
-        if self.pool is not None:
-            self.stop_multi_process_pool(self.pool)
-            self.pool = None
+        self.stop_self_pool()
         if self.query_pool is None:
             self.query_pool = self.start_multi_process_pool(ICLLLMEmbedder._encode_queries_multi_process_worker)
         embeddings = self.encode_multi_process(
@@ -244,9 +249,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         Returns:
             Union[torch.Tensor, np.ndarray]: Return the embedding vectors in a numpy array or tensor.
         """
-        if self.query_pool is not None:
-            self.stop_multi_process_pool(self.query_pool)
-            self.query_pool = None
+        self.stop_self_query_pool()
         return super().encode_corpus(
             corpus,
             batch_size=batch_size,
