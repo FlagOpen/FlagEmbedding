@@ -6,5 +6,6 @@ from .trainer import DecoderOnlyRerankerTrainer
 __all__ = [
     "CrossDecoderModel",
     "DecoderOnlyRerankerRunner",
-    "DecoderOnlyRerankerTrainer"
+    "DecoderOnlyRerankerTrainer",
+    "RerankerModelArguments",
 ]

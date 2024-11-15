@@ -29,7 +29,6 @@ class EncoderOnlyRerankerTrainer(AbsRerankerTrainer):
         if not hasattr(self.model, 'save_pretrained'):
             raise NotImplementedError(f'MODEL {self.model.__class__.__name__} ' f'does not support save_pretrained interface')
         else:
-            print(self.model)
             self.model.save_pretrained(output_dir)
         if self.tokenizer is not None and self.is_world_process_zero():
             self.tokenizer.save_pretrained(output_dir)
