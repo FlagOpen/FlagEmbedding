@@ -34,7 +34,6 @@ Or by running:
     --embedder_name_or_path BAAI/bge-large-en-v1.5 \
     --reranker_name_or_path BAAI/bge-reranker-v2-m3 \
     --devices cuda:0 cuda:1 \
-    --cache_dir \
     --reranker_max_length 1024 \
 
 change the embedder, devices and cache directory to your preference.
