@@ -151,5 +151,5 @@ class MTEBEvalRunner(AbsEvalRunner):
 
         ensure_dir(self.eval_args.eval_output_path)
         logger.info("Start computing metrics. Only save results as json.")
-        tasks_results = self.read_results(f"{output_folder}/{str(self.retriever)}/no_model_name_available/no_revision_available", new_tasks)
+        tasks_results = self.read_results(f"{output_folder}/{str(self.retriever)}/no_model_name_available/no_revision_available", tasks)
         self.output_json(tasks_results, self.eval_args.eval_output_path)
