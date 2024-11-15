@@ -65,7 +65,13 @@ class MTEBEvalRunner(AbsEvalRunner):
                         print('ERROR')
                         break
 
-                    temp_data = data['scores'][split][0]
+                    temp_datas = data['scores'][split][0]
+                    temp_data = None
+                    for td in temp_datas:
+                        if td['hf_subset'] == 'default':
+                            temp_data = td
+                    if temp_data is None:
+                        temp_data = temp_datas[0]
                     tasks_results[t_type][task_name] = round(temp_data['main_score'] * 100, 2)
 
         print(f"tasks_results: {tasks_results}")
