@@ -113,8 +113,8 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
                         add_special_tokens=False,
                     )['input_ids']
                 )
-                for i in range(len(tmp_passages)):
-                    tmp_passages[i] += self.args.icl_suffix_str
+                for j in range(len(tmp_passages)):
+                    tmp_passages[j] += self.args.icl_suffix_str
             else:
                 if self.args.passage_instruction_for_retrieval is not None:
                     tmp_passages = [
