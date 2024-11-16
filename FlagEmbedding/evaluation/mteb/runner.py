@@ -160,10 +160,9 @@ class MTEBEvalRunner(AbsEvalRunner):
                 except:
                     logger.logger.info(f"No instruction found for {task_name}")
 
-            if self.eval_args.use_special_examples:
+            if self.eval_args.examples_path is not None:
                 try:
-                    eg_pairs = examples_dict[task_name]
-                    self.retriever.set_examples(eg_pairs)
+                    eg_pairs = json.load(open(os.path.join(self.eval_args.examples_path, task_name + '.json')))
                 except:
                     logger.logger.info(f"No examples found for {task_name}")
 
