@@ -115,7 +115,7 @@ For MTEB, we primarily use the official [MTEB](https://github.com/embeddings-ben
 - **`tasks`**: Tasks to evaluate. Default: None
 - **`task_types`**: The task types to evaluate. Default: None
 - **`use_special_instructions`**: Whether to use specific instructions in `prompts.py` for evaluation. Default: False
-- **`use_special_examples`**: Whether to use specific examples in `examples.py` for evaluation. Default: False
+- **`examples_path`**: Use specific examples in the path. Default: None
 
 Here is an example for evaluation:
 

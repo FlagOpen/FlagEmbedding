@@ -18,6 +18,6 @@ class MTEBEvalArgs(AbsEvalArgs):
     use_special_instructions: bool = field(
         default=False, metadata={"help": "Whether to use specific instructions in `prompts.py` for evaluation. Default: False"}
     )
-    use_special_examples: bool = field(
-        default=False, metadata={"help": "Whether to use specific examples in `examples` for evaluation. Default: False"}
+    examples_path: str = field(
+        default=None, metadata={"help": "Use specific examples in the path. Default: None"}
     )
