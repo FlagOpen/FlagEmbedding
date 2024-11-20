@@ -35,6 +35,7 @@ class EncoderOnlyRerankerRunner(AbsRerankerRunner):
             num_labels=num_labels,
             cache_dir=self.model_args.cache_dir,
             token=self.model_args.token,
+            trust_remote_code=self.model_args.trust_remote_code,
         )
         logger.info('Config: %s', config)
 
