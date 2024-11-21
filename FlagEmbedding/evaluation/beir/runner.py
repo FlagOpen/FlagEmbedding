@@ -37,7 +37,8 @@ class BEIREvalRunner(AbsEvalRunner):
             logger.info(f"Running {self.eval_args.eval_name} evaluation on the following dataset names: {dataset_names}")
             for dataset_name in dataset_names:
                 if self.eval_args.use_special_instructions:
-                    self.retriever.embedder.instruction = BEIRInstructions[dataset_name]
+                    self.retriever.stop_multi_process_pool()
+                    self.retriever.embedder.query_instruction_for_retrieval = BEIRInstructions[dataset_name]
                 logger.info(f"Running {self.eval_args.eval_name} evaluation on: {dataset_name}")
                 self.evaluator(
                     splits=self.eval_args.splits,
