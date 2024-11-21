@@ -2,6 +2,7 @@ MKQA
 ====
 
 `MKQA <https://github.com/apple/ml-mkqa>`_ is an open-domain question answering evaluation set comprising 10k question-answer pairs aligned across 26 typologically diverse languages.
+The queries are sampled from the [Google Natural Questions Dataset](https://github.com/google-research-datasets/natural-questions). 
 
 Each example in the dataset has the following structure:
 
