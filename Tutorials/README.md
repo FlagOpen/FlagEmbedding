@@ -49,6 +49,11 @@ In this module, we'll show the full pipeline of evaluating an embedding model, a
 - [x] MTEB Leaderboard Eval
 - [x] C-MTEB intro
 - [x] C-MTEB leaderboard
+- [x] Evaluation using Sentence Transformers
+- [x] BEIR benchmark
+- [x] MIRACL
+- [x] MLDR
+- [ ] MKQA
 - [ ] ...
 
 ## [Reranking](./5_Reranking/)

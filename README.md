@@ -158,6 +158,7 @@ Currently we are updating the [tutorials](./Tutorials/), we aim to create a comp
 
 The following contents are releasing in the upcoming weeks:
 
+- Evaluation
 - RAG
 
 <details>
