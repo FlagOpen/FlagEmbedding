@@ -262,7 +262,8 @@ class LightweightLLMReranker(AbsReranker):
         # tokenize without padding to get the correct length
         all_queries_inputs = []
         all_passages_inputs = []
-        for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize"):
+        for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize",
+                                  disable=len(sentence_pairs) < 128):
             sentences_batch = sentence_pairs[start_index:start_index + batch_size]
             queries = [s[0] for s in sentences_batch]
             passages = [s[1] for s in sentences_batch]

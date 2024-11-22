@@ -81,9 +81,12 @@ class AbsEmbedder(ABC):
         if self.pool is not None:
             self.stop_multi_process_pool(self.pool)
             self.pool = None
-        self.model.to('cpu')
+        try:
+            self.model.to('cpu')
+            torch.cuda.empty_cache()
+        except:
+            pass
         gc.collect()
-        torch.cuda.empty_cache()
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
