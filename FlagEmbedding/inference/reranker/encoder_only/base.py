@@ -178,7 +178,6 @@ class BaseReranker(AbsReranker):
             inputs = self.tokenizer.pad(
                 sentences_batch,
                 padding=True,
-                max_length=max_length,
                 return_tensors='pt',
                 **kwargs
             ).to(device)
