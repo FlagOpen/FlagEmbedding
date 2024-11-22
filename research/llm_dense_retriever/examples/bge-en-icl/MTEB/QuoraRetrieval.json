@@ -1,1 +1,14 @@
-[{"query": "Why do people say Dhanush (South Indian actor) is ugly? I don't think so.?", "response": "Why do people say Dhanush (South Indian actor) is ugly? I don't think so.?"}, {"query": "What are some hit and nice ideas about architecture dissertation topics?", "response": "What are some hit and nice ideas about architecture dissertation topics?"}, {"query": "Could someone please motivate me?", "response": "Could someone please motivate me?"}]
+[
+    {
+        "query": "Why do people say Dhanush (South Indian actor) is ugly? I don't think so.?",
+        "response": "Why do people say Dhanush (South Indian actor) is ugly? I don't think so?"
+    },
+    {
+        "query": "What are some hit and nice ideas about architecture dissertation topics?",
+        "response": "What are some interesting undergraduate architecture thesis topics?"
+    },
+    {
+        "query": "Could someone please motivate me?",
+        "response": "Can you motivate me?"
+    }
+]
