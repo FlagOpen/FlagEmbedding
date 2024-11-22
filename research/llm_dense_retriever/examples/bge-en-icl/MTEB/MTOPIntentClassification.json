@@ -1,1 +1,30 @@
-[{"query": "When will my next alarm start", "response": "When will my next alarm start"}, {"query": "I need you to message Zachary Fletcher", "response": "I need you to message Zachary Fletcher"}, {"query": "show me video messages from Atlas", "response": "show me video messages from Atlas"}, {"query": "I want to listen to AC/DC please", "response": "I want to listen to AC/DC please"}, {"query": "Make an alarm for the next 7 weeks for Thursday at 6pm", "response": "Make an alarm for the next 7 weeks for Thursday at 6pm"}, {"query": "fairs happening in ann arbor next week", "response": "fairs happening in ann arbor next week"}, {"query": "Will we get a frost this week?", "response": "Will we get a frost this week?"}]
+[
+    {
+        "query": "When will my next alarm start",
+        "response": "GET_ALARM"
+    },
+    {
+        "query": "I need you to message Zachary Fletcher",
+        "response": "SEND_MESSAGE"
+    },
+    {
+        "query": "show me video messages from Atlas",
+        "response": "GET_MESSAGE"
+    },
+    {
+        "query": "I want to listen to AC/DC please",
+        "response": "PLAY_MUSIC"
+    },
+    {
+        "query": "Make an alarm for the next 7 weeks for Thursday at 6pm",
+        "response": "CREATE_ALARM"
+    },
+    {
+        "query": "fairs happening in ann arbor next week",
+        "response": "GET_EVENT"
+    },
+    {
+        "query": "Will we get a frost this week?",
+        "response": "GET_WEATHER"
+    }
+]

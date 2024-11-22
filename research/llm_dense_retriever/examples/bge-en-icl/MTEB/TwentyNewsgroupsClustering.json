@@ -1,1 +1,18 @@
-[{"query": "Major flaw discovered in widely-used encryption protocol", "response": "Major flaw discovered in widely-used encryption protocol"}, {"query": "Bruins' Unstoppable Winning Streak", "response": "Bruins' Unstoppable Winning Streak"}, {"query": "Comparing Windows File Systems: NTFS vs. FAT32 vs. exFAT", "response": "Comparing Windows File Systems: NTFS vs. FAT32 vs. exFAT"}, {"query": "Troubleshooting a Digital Multimeter Calibration Issue", "response": "Troubleshooting a Digital Multimeter Calibration Issue"}, {"query": "Understanding DPI Scaling in X Window Systems", "response": "Understanding DPI Scaling in X Window Systems"}]
+[
+    {
+        "query": "Major flaw discovered in widely-used encryption protocol",
+        "response": "sci.crypt"
+    },
+    {
+        "query": "Bruins' Unstoppable Winning Streak",
+        "response": "rec.sport.hockey"
+    },
+    {
+        "query": "Troubleshooting a Digital Multimeter Calibration Issue",
+        "response": "sci.electronics"
+    },
+    {
+        "query": "Understanding DPI Scaling in X Window Systems",
+        "response": "comp.windows.x"
+    }
+]
