@@ -81,7 +81,6 @@ class Collater_for_lightweight:
         collected = self.tokenizer.pad(
             features,
             padding=True,
-            max_length=self.max_len,
             pad_to_multiple_of=8,
             return_tensors='pt',
         )
