@@ -1,28 +1,98 @@
-import argparse
 import json
 import random
 import numpy as np
-import faiss
 from tqdm import tqdm
+from typing import Optional
+from dataclasses import dataclass, field
 
-from FlagEmbedding import FlagModel
-
-
-def get_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name_or_path', default="BAAI/bge-base-en", type=str)
-    parser.add_argument('--input_file', default=None, type=str)
-    parser.add_argument('--candidate_pool', default=None, type=str)
-    parser.add_argument('--output_file', default=None, type=str)
-    parser.add_argument('--range_for_sampling', default="10-210", type=str, help="range to sample negatives")
-    parser.add_argument('--use_gpu_for_searching', action='store_true', help='use faiss-gpu')
-    parser.add_argument('--negative_number', default=15, type=int, help='the number of negatives')
-    parser.add_argument('--query_instruction_for_retrieval', default="")
-
-    return parser.parse_args()
+import faiss
+from transformers import HfArgumentParser
+from FlagEmbedding import FlagAutoModel
+from FlagEmbedding.abc.inference import AbsEmbedder
 
 
-def create_index(embeddings, use_gpu):
+@dataclass
+class DataArgs:
+    """
+    Data arguments for hard negative mining.
+    """
+    input_file: str = field(
+        metadata={"help": "The input file for hard negative mining."}
+    )
+    output_file: str = field(
+        metadata={"help": "The output file for hard negative mining."}
+    )
+    candidate_pool: Optional[str] = field(
+        default=None, metadata={"help": "The candidate pool for hard negative mining. If provided, it should be a jsonl file, each line is a dict with a key 'text'."}
+    )
+    range_for_sampling: str = field(
+        default="10-210", metadata={"help": "The range to sample negatives."}
+    )
+    negative_number: int = field(
+        default=15, metadata={"help": "The number of negatives."}
+    )
+    use_gpu_for_searching: bool = field(
+        default=False, metadata={"help": "Whether to use faiss-gpu for searching."}
+    )
+    search_batch_size: int = field(
+        default=64, metadata={"help": "The batch size for searching."}
+    )
+
+
+@dataclass
+class ModelArgs:
+    """
+    Model arguments for embedder.
+    """
+    embedder_name_or_path: str = field(
+        metadata={"help": "The embedder name or path.", "required": True}
+    )
+    embedder_model_class: Optional[str] = field(
+        default=None, metadata={"help": "The embedder model class. Available classes: ['encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: None. For the custom model, you need to specifiy the model class.", "choices": ["encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
+    )
+    normalize_embeddings: bool = field(
+        default=True, metadata={"help": "whether to normalize the embeddings"}
+    )
+    pooling_method: str = field(
+        default="cls", metadata={"help": "The pooling method fot the embedder."}
+    )
+    use_fp16: bool = field(
+        default=True, metadata={"help": "whether to use fp16 for inference"}
+    )
+    devices: Optional[str] = field(
+        default=None, metadata={"help": "Devices to use for inference.", "nargs": "+"}
+    )
+    query_instruction_for_retrieval: Optional[str] = field(
+        default=None, metadata={"help": "Instruction for query"}
+    )
+    query_instruction_format_for_retrieval: str = field(
+        default="{}{}", metadata={"help": "Format for query instruction"}
+    )
+    examples_for_task: Optional[str] = field(
+        default=None, metadata={"help": "Examples for task"}
+    )
+    examples_instruction_format: str = field(
+        default="{}{}", metadata={"help": "Format for examples instruction"}
+    )
+    trust_remote_code: bool = field(
+        default=False, metadata={"help": "Trust remote code"}
+    )
+    cache_dir: str = field(
+        default=None, metadata={"help": "Cache directory for models."}
+    )
+    # ================ for inference ===============
+    batch_size: int = field(
+        default=3000, metadata={"help": "Batch size for inference."}
+    )
+    embedder_query_max_length: int = field(
+        default=512, metadata={"help": "Max length for query."}
+    )
+    embedder_passage_max_length: int = field(
+        default=512, metadata={"help": "Max length for passage."}
+    )
+
+
+def create_index(embeddings: np.ndarray, use_gpu: bool = False):
     index = faiss.IndexFlatIP(len(embeddings[0]))
     embeddings = np.asarray(embeddings, dtype=np.float32)
     if use_gpu:
@@ -34,10 +104,12 @@ def create_index(embeddings, use_gpu):
     return index
 
 
-def batch_search(index,
-                 query,
-                 topk: int = 200,
-                 batch_size: int = 64):
+def batch_search(
+    index: faiss.Index,
+    query: np.ndarray,
+    topk: int = 200,
+    batch_size: int = 64
+):
     all_scores, all_inxs = [], []
     for start_index in tqdm(range(0, len(query), batch_size), desc="Batches", disable=len(query) < 256):
         batch_query = query[start_index:start_index + batch_size]
@@ -47,15 +119,24 @@ def batch_search(index,
     return all_scores, all_inxs
 
 
-def get_corpus(candidate_pool):
+def get_corpus(candidate_pool: str):
     corpus = []
-    for line in open(candidate_pool):
-        line = json.loads(line.strip())
-        corpus.append(line['text'])
+    with open(candidate_pool, "r", encoding="utf-8") as f:
+        for line in f.readlines():
+            line = json.loads(line.strip())
+            corpus.append(line['text'])
     return corpus
 
 
-def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, negative_number, use_gpu):
+def find_knn_neg(
+    model: AbsEmbedder,
+    input_file: str,
+    output_file: str,
+    candidate_pool: Optional[str] = None,
+    sample_range: str = "10-210",
+    negative_number: int = 15,
+    use_gpu: bool = False
+):
     corpus = []
     queries = []
     train_data = []
@@ -75,9 +156,9 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
         corpus = list(set(corpus))
 
     print(f'inferencing embedding for corpus (number={len(corpus)})--------------')
-    p_vecs = model.encode(corpus, batch_size=256)
+    p_vecs = model.encode(corpus)
     print(f'inferencing embedding for queries (number={len(queries)})--------------')
-    q_vecs = model.encode_queries(queries, batch_size=256)
+    q_vecs = model.encode_queries(queries)
 
     print('create index and search------------------')
     index = create_index(p_vecs, use_gpu=use_gpu)
@@ -106,17 +187,47 @@ def find_knn_neg(model, input_file, candidate_pool, output_file, sample_range, n
             f.write(json.dumps(data, ensure_ascii=False) + '\n')
 
 
-if __name__ == '__main__':
-    args = get_args()
-    sample_range = args.range_for_sampling.split('-')
-    sample_range = [int(x) for x in sample_range]
+def load_model(model_args: ModelArgs):
+    model = FlagAutoModel.from_finetuned(
+        model_name_or_path=model_args.embedder_name_or_path,
+        model_class=model_args.embedder_model_class,
+        normalize_embeddings=model_args.normalize_embeddings,
+        pooling_method=model_args.pooling_method,
+        use_fp16=model_args.use_fp16,
+        query_instruction_for_retrieval=model_args.query_instruction_for_retrieval,
+        query_instruction_format=model_args.query_instruction_format_for_retrieval,
+        devices=model_args.devices,
+        examples_for_task=model_args.examples_for_task,
+        examples_instruction_format=model_args.examples_instruction_format,
+        trust_remote_code=model_args.trust_remote_code,
+        cache_dir=model_args.cache_dir,
+        batch_size=model_args.batch_size,
+        query_max_length=model_args.embedder_query_max_length,
+        passage_max_length=model_args.embedder_passage_max_length,
+    )
+    return model
 
-    model = FlagModel(args.model_name_or_path, query_instruction_for_retrieval=args.query_instruction_for_retrieval)
 
-    find_knn_neg(model,
-                 input_file=args.input_file,
-                 candidate_pool=args.candidate_pool,
-                 output_file=args.output_file,
-                 sample_range=sample_range,
-                 negative_number=args.negative_number,
-                 use_gpu=args.use_gpu_for_searching)
+def main(data_args: DataArgs, model_args: ModelArgs):
+    model = load_model(model_args)
+
+    find_knn_neg(
+        model=model,
+        input_file=data_args.input_file,
+        output_file=data_args.output_file,
+        candidate_pool=data_args.candidate_pool,
+        sample_range=[int(x) for x in data_args.range_for_sampling.split('-')],
+        negative_number=data_args.negative_number,
+        use_gpu=data_args.use_gpu_for_searching
+    )
+
+
+if __name__ == "__main__":
+    parser = HfArgumentParser((
+        DataArgs,
+        ModelArgs
+    ))
+    data_args, model_args = parser.parse_args_into_dataclasses()
+    data_args: DataArgs
+    model_args: ModelArgs
+    main(data_args, model_args)

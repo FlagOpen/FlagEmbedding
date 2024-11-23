@@ -17,12 +17,12 @@ Hard negatives is a widely used method to improve the quality of sentence embedd
 
 ```shell
 python hn_mine.py \
---model_name_or_path BAAI/bge-base-en-v1.5 \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
 --range_for_sampling 2-200 \
 --negative_number 15 \
---use_gpu_for_searching 
+--use_gpu_for_searching \
+--embedder_name_or_path BAAI/bge-base-en-v1.5
 ```
 
 - **`input_file`**: json data for finetuning. This script will retrieve top-k documents for each query, and random sample negatives from the top-k documents (not including the positive documents).
@@ -31,6 +31,19 @@ python hn_mine.py \
 - **`range_for_sampling`**: where to sample negative. For example, `2-100` means sampling `negative_number` negatives from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top60-300 passages)**
 - **`candidate_pool`**: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
 - **`use_gpu_for_searching`**: whether to use faiss-gpu to retrieve negatives.
+- **`search_batch_size`**: batch size for searching. Default is 64.
+- **`embedder_name_or_path`**: The name or path to the embedder.
+- **`embedder_model_class`**: Class of the model used for embedding (current options include 'encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl'.). Default is None. For the custom model, you should set this argument.
+- **`normalize_embeddings`**: Set to `True` to normalize embeddings.
+- **`pooling_method`**: The pooling method for the embedder.
+- **`use_fp16`**: Use FP16 precision for inference.
+- **`devices`**: List of devices used for inference.
+- **`query_instruction_for_retrieval`**, **`query_instruction_format_for_retrieval`**: Instructions and format for query during retrieval.
+- **`examples_for_task`**, **`examples_instruction_format`**: Example tasks and their instructions format. This is only used when `embedder_model_class` is set to `decoder-only-icl`.
+- **`trust_remote_code`**: Set to `True` to trust remote code execution.
+- **`cache_dir`**: Cache directory for models.
+- **`embedder_batch_size`**: Batch sizes for embedding and reranking.
+- **`embedder_query_max_length`**, **`embedder_passage_max_length`**: Maximum length for embedding queries and passages.
 
 ### Teacher Scores
 
@@ -40,9 +53,7 @@ Teacher scores can be used for model distillation. You can obtain the scores usi
 python add_reranker_score.py \
 --input_file toy_finetune_data_minedHN.jsonl \
 --output_file toy_finetune_data_score.jsonl \
---range_for_sampling 2-200 \
---negative_number 15 \
---use_gpu_for_searching 
+--reranker_name_or_path BAAI/bge-reranker-v2-m3
 ```
 
 - **`input_file`**: path to save JSON data with mined hard negatives for finetuning
@@ -80,12 +91,11 @@ python split_data_by_length.py \
 --log_name .split_log \
 --length_list 0 500 1000 2000 3000 4000 5000 6000 7000 \
 --model_name_or_path BAAI/bge-m3 \
---num_proc 16 \
---overwrite False
+--num_proc 16
 ```
 
-- **`input_path`**: The path of input data. (Required)
-- **`output_dir`**: The directory of output data. (Required)
+- **`input_path`**: The path of input data. It can be a file or a directory containing multiple files.
+- **`output_dir`**: The directory of output data. The split data files will be saved to this directory.
 - **`cache_dir`**: The cache directory. Default: None
 - **`log_name`**: The name of the log file. Default: `.split_log`, which will be saved to `output_dir`
 - **`length_list`**: The length list to split. Default: [0, 500, 1000, 2000, 3000, 4000, 5000, 6000, 7000]
