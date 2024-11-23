@@ -1,9 +1,10 @@
 import json
 from typing import Optional, List
 
-from FlagEmbedding import FlagAutoReranker
 from dataclasses import dataclass, field
 from transformers import HfArgumentParser
+from FlagEmbedding import FlagAutoReranker
+
 
 @dataclass
 class ScoreArgs:
@@ -13,6 +14,7 @@ class ScoreArgs:
     output_file: str = field(
         default=None, metadata={"help": "The output jsonl file, it includes query, pos, neg, pos_scores and neg_scores."}
     )
+
 
 @dataclass
 class ModelArgs:
@@ -78,7 +80,8 @@ class ModelArgs:
         default=None, metadata={"help": "The compress layers of lightweight reranker.", "nargs": "+"}
     )
 
-def main(score_args, model_args):
+
+def main(score_args: ScoreArgs, model_args: ModelArgs):
     reranker = FlagAutoReranker.from_finetuned(
         model_name_or_path=model_args.reranker_name_or_path,
         model_class=model_args.reranker_model_class,
@@ -130,7 +133,7 @@ def main(score_args, model_args):
             f.write(json.dumps(d) + '\n')
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = HfArgumentParser((
         ScoreArgs,
         ModelArgs
@@ -139,4 +142,3 @@ if __name__ == '__main__':
     score_args: ScoreArgs
     model_args: ModelArgs
     main(score_args, model_args)
-

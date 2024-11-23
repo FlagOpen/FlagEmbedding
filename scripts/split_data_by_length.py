@@ -187,8 +187,7 @@ class SplitByLengthHandler:
                 f.write('\n')
 
 
-if __name__ == '__main__':
-    args = get_args()
+def main(args):
     input_path = args.input_path
     output_dir = args.output_dir
     log_name = args.log_name
@@ -207,3 +206,8 @@ if __name__ == '__main__':
         log_name=log_name
     )
     print('\nDONE!')
+
+
+if __name__ == "__main__":
+    args = get_args()
+    main(args)
