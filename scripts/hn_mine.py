@@ -93,6 +93,8 @@ class ModelArgs:
 
 
 def create_index(embeddings: np.ndarray, use_gpu: bool = False):
+    print(f"embeddings.shape: {embeddings.shape}")
+    print(f"use_gpu: {use_gpu}")
     index = faiss.IndexFlatIP(len(embeddings[0]))
     embeddings = np.asarray(embeddings, dtype=np.float32)
     if use_gpu:
@@ -103,6 +105,22 @@ def create_index(embeddings: np.ndarray, use_gpu: bool = False):
     index.add(embeddings)
     return index
 
+# def create_index(embeddings: np.ndarray, use_gpu: bool = False, batch_size: int = 256):
+#     assert use_gpu is True
+#     print(f"embeddings.shape: {embeddings.shape}")
+#     index_flat = faiss.IndexFlatIP(len(embeddings[0]))
+#     embeddings = np.asarray(embeddings, dtype=np.float32)
+    
+#     res = faiss.StandardGpuResources()
+#     gpu_index_flat = faiss.index_cpu_to_gpu(res, 0, index_flat)
+    
+#     # Add embeddings in smaller batches
+#     for i in range(0, len(embeddings), batch_size):
+#         batch = embeddings[i:i + batch_size]
+#         gpu_index_flat.add(batch)
+    
+#     print(f"gpu_index_flat.ntotal: {gpu_index_flat.ntotal}")
+#     return gpu_index_flat
 
 def batch_search(
     index: faiss.Index,

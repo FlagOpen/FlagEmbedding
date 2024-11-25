@@ -5,8 +5,13 @@ In this example, we show how to use scripts to make your fine-tuning process mor
 # 2. Installation
 
 ```shell
-git clone https://github.com/FlagOpen/FlagEmbedding.git
-cd FlagEmbedding/scripts
+conda create -n bge-finetune python=3.10
+conda activate bge-finetune
+cd FlagEmbedding
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+pip install flash-attn --no-build-isolation
+pip install faiss-gpu
+pip install -e .[finetune]
 ```
 
 # 3. Usage
@@ -25,14 +30,13 @@ python hn_mine.py \
 --embedder_name_or_path BAAI/bge-base-en-v1.5
 
 python hn_mine.py \
-    --embedder_name_or_path BAAI/bge-large-en-v1.5 \
-    --input_file finetune_data.jsonl \
-    --output_file finetune_data_minedHN.jsonl \
-    --candidate_pool candidate_pool.jsonl \
-    --range_for_sampling 5-200 \
-    --negative_number 15 \
-    --query_instruction_for_retrieval "You are a Mathematics teacher. Given a Question from certain Subject, identify the Misconception behind the Incorrect Answer with the Question." \
-    --use_gpu_for_searching 
+--embedder_name_or_path BAAI/bge-large-en-v1.5 \
+--input_file finetune_data.jsonl \
+--output_file finetune_data_minedHN.jsonl \
+--candidate_pool candidate_pool.jsonl \
+--range_for_sampling 5-200 \
+--negative_number 15 \
+--query_instruction_for_retrieval "You are a Mathematics teacher. Given a Question from certain Subject, identify the Misconception behind the Incorrect Answer with the Question." 
 ```
 
 - **`input_file`**: json data for finetuning. This script will retrieve top-k documents for each query, and random sample negatives from the top-k documents (not including the positive documents).
