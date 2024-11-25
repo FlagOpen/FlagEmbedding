@@ -31,12 +31,11 @@ python hn_mine.py \
 
 python hn_mine.py \
 --embedder_name_or_path BAAI/bge-large-en-v1.5 \
---input_file data/finetune_data.jsonl \
---output_file data/finetune_data_minedHN.jsonl \
---candidate_pool data/candidate_pool.jsonl \
+--input_file ../examples/finetune/embedder/my_data/finetune_data.jsonl \
+--output_file ../examples/finetune/embedder/my_data/finetune_data_minedHN.jsonl \
+--candidate_pool ../examples/finetune/embedder/my_data/candidate_pool.jsonl \
 --range_for_sampling 5-200 \
---negative_number 15 \
---query_instruction_for_retrieval "You are a Mathematics teacher. Given a Question from certain Subject, identify the Misconception behind the Incorrect Answer with the Question." 
+--negative_number 15
 ```
 
 - **`input_file`**: json data for finetuning. This script will retrieve top-k documents for each query, and random sample negatives from the top-k documents (not including the positive documents).

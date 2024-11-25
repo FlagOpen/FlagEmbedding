@@ -2,15 +2,16 @@
 
 In this example, we show how to finetune the embedder with your data.
 
-- [1. Installation](#1-Installation)
-- [2. Data format](#2-Data-format)
-  - [Hard Negatives](#Hard-Negatives)
-  - [Teacher Scores](#Teacher-Scores)
-- [3. Train](#3-Train)
-  - [(1) standard model](#1-standard-model)
-  - [(2) bge-m3](#2-bge-m3)
-  - [(3) bge-multilingual-gemma2](#3-bge-multilingual-gemma2)
-  - [(4) bge-en-icl](#4-bge-en-icl)
+- [Finetune](#finetune)
+  - [1. Installation](#1-installation)
+  - [2. Data format](#2-data-format)
+    - [Hard Negatives](#hard-negatives)
+    - [Teacher Scores](#teacher-scores)
+  - [3. Train](#3-train)
+    - [(1) standard model](#1-standard-model)
+    - [(2) bge-m3](#2-bge-m3)
+    - [(3) bge-multilingual-gemma2](#3-bge-multilingual-gemma2)
+    - [(4) bge-en-icl](#4-bge-en-icl)
 
 ## 1. Installation
 
@@ -152,6 +153,37 @@ Here are some import arguments:
 - **`kd_loss_type`**: The loss type for knowledge distillation. Available options: kl_div, m3_kd_loss. Default: kl_div.
 
 ### (1) standard model
+
+```bash
+torchrun --nproc_per_node 1 \
+	-m FlagEmbedding.finetune.embedder.encoder_only.base \
+	--model_name_or_path BAAI/bge-large-en-v1.5 \
+    --cache_dir ./cache/model \
+    --train_data ./my_data/finetune_data_minedHN.jsonl \
+    --cache_path ./cache/data \
+    --train_group_size 8 \
+    --query_max_len 512 \
+    --passage_max_len 512 \
+    --pad_to_multiple_of 8 \
+    --knowledge_distillation False \
+	--output_dir ./FT-1125-bge-large-en-v1.5 \
+    --overwrite_output_dir \
+    --learning_rate 1e-5 \
+    --fp16 \
+    --num_train_epochs 2 \
+    --per_device_train_batch_size 2 \
+    --dataloader_drop_last True \
+    --warmup_ratio 0.1 \
+    --gradient_checkpointing \
+    --deepspeed ../ds_stage0.json \
+    --logging_steps 1 \
+    --save_steps 1000 \
+    --negatives_cross_device \
+    --temperature 0.02 \
+    --sentence_pooling_method cls \
+    --normalize_embeddings True \
+    --kd_loss_type kl_div
+```
 
 ```shell
 torchrun --nproc_per_node 2 \
