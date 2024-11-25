@@ -1,9 +1,9 @@
 torchrun --nproc_per_node 1 \
 	-m FlagEmbedding.finetune.embedder.encoder_only.base \
 	--model_name_or_path BAAI/bge-large-en-v1.5 \
-    --train_data ./my_data/finetune_data_minedHN.jsonl \
+    --train_data ./my_data/finetune_data_submission_minedHN.jsonl \
     --temperature 0.02 \
-    --output_dir ./FT-1125-bge-large-en-v1.5 \
+    --output_dir ./FT-1125-bge-large-en-v1.5-submission \
     --save_steps 250 \
     --per_device_train_batch_size 4 \
     --logging_steps 50 \
