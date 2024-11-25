@@ -146,5 +146,7 @@ en_results
 zh_results
 
 # ft results
-FT-1125-bge-large-en-v1.5/
+FT-1125-bge-large-en-v1.5-submission-v1
+FT-1125-bge-large-en-v1.5-submission-v2
+FT-1125-bge-large-en-v1.5-validation-v2
 cache/
