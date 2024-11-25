@@ -34,7 +34,7 @@ python hn_mine.py \
 --input_file ../examples/finetune/embedder/my_data/finetune_data.jsonl \
 --output_file ../examples/finetune/embedder/my_data/finetune_data_minedHN.jsonl \
 --candidate_pool ../examples/finetune/embedder/my_data/candidate_pool.jsonl \
---range_for_sampling 5-200 \
+--range_for_sampling 4-200 \
 --negative_number 15
 ```
 

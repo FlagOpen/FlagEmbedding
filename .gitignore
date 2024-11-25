@@ -144,3 +144,7 @@ pic2.py
 # results
 en_results
 zh_results
+
+# ft results
+FT-1125-bge-large-en-v1.5/
+cache/
