@@ -8,6 +8,10 @@
         "response": "rec.sport.hockey"
     },
     {
+        "query": "Comparing Windows File Systems: NTFS vs. FAT32 vs. exFAT",
+        "response": "comp.os.ms-windows.misc"
+    },
+    {
         "query": "Troubleshooting a Digital Multimeter Calibration Issue",
         "response": "sci.electronics"
     },

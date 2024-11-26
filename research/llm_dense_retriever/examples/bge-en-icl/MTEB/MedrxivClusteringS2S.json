@@ -1,22 +1,22 @@
 [
     {
-        "query": "Evaluating the Efficacy of New Therapeutic Agents in the Management of Hypertension-Induced Kidney Damage",
-        "response": "nephrology"
+        "query": "Longitudinal Analysis of SARS-CoV-2 Neutralizing Antibody Titers and Viral Load in Asymptomatic and Symptomatic Patients",
+        "response": "infectious diseases"
     },
     {
-        "query": "Exploring the Relationship Between ICU Staffing Levels and Patient Outcomes in Severe Trauma Cases",
-        "response": "intensive care and critical care medicine"
+        "query": "Impact of Public Health Messaging and Community Engagement on Vaccination Uptake During the COVID-19 Pandemic",
+        "response": "epidemiology"
     },
     {
-        "query": "The Impact of Environmental Allergens on Pediatric Asthma and Ear Infections",
-        "response": "otolaryngology"
+        "query": "Long-term Effects of Ambient Temperature on COPD Hospitalizations: A Population-based Analysis in Northern Europe",
+        "response": "public and global health"
     },
     {
-        "query": "Patient-Reported Outcomes in Rehabilitation: The Importance of Psychosocial Factors in Recovery",
-        "response": "rehabilitation medicine and physical therapy"
+        "query": "Genomic Landscape of Rare Genetic Disorders Revealed through Whole-Exome Sequencing in Pediatric Populations",
+        "response": "genetic and genomic medicine"
     },
     {
-        "query": "The Role of Micronutrients in Supporting Immune Function During Viral Infections",
-        "response": "nutrition"
+        "query": "Impact of Gut Microbiota on Neuroinflammation and Cognitive Function in Multiple Sclerosis Patients: A Prospective Study",
+        "response": "neurology"
     }
 ]
