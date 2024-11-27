@@ -1,3 +1,4 @@
+#!/bin/bash
 # validation v2: 
 set -e
 mkdir -p logs
@@ -16,9 +17,9 @@ echo "Error logging to $ERROR_LOG"
 
 
 OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v3"
-START_EPOCH=4  # Set this to your desired starting epoch
+START_EPOCH=1  # Set this to your desired starting epoch
 epoch=$START_EPOCH
-NUM_EPOCHS=3
+NUM_EPOCHS=5
 TOTAL_EPOCHS=$((START_EPOCH + NUM_EPOCHS - 1))
 
 while [ $epoch -le $TOTAL_EPOCHS ]; do
@@ -77,9 +78,27 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
 done
 echo "Script completed at $(date)"
 
+
+# Print summary of all epochs' metrics
+echo -e "\n=== Training Summary ==="
+echo "Metrics for all epochs:"
+for e in $(seq $START_EPOCH $TOTAL_EPOCHS); do
+    # Get the eth occurrence of the metrics line
+    METRICS=$(grep "On validation_v2" "${LOG_FILE}" | sed -n "${e}p")
+    if [ ! -z "$METRICS" ]; then
+        RECALL=$(echo "$METRICS" | grep -o "Recall@25: [0-9.]*" | awk '{print $2}')
+        MAP=$(echo "$METRICS" | grep -o "MAP@25: [0-9.]*" | awk '{print $2}')
+        echo "epoch $e: Recall@25: $RECALL, MAP@25: $MAP"
+    fi
+done
+echo "=== End Summary ==="
+
 # epoch 1: On validation_v2 Recall@25: 0.7154, MAP@25: 0.2637
 # epoch 2: On validation_v2 Recall@25: 0.7401, MAP@25: 0.2713
 # epoch 3: On validation_v2 Recall@25: 0.7454, MAP@25: 0.2785
+# epoch 4: On validation_v2 Recall@25: 0.7481, MAP@25: 0.2835
+# epoch 5: On validation_v2 Recall@25: 0.7540, MAP@25: 0.2850
+# epoch 6: On validation_v2 Recall@25: 0.7540, MAP@25: 0.2842
 
 
 # # submission v1: 9.5G VRAM
