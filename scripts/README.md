@@ -5,10 +5,10 @@ In this example, we show how to use scripts to make your fine-tuning process mor
 # 2. Installation
 
 ```shell
-conda create -n bge-finetune python=3.10
-conda activate bge-finetune
+# conda create -n bge-finetune python=3.10
+# conda activate bge-finetune
 cd FlagEmbedding
-pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 pip install flash-attn --no-build-isolation
 pip install faiss-gpu
 pip install -e .[finetune]

@@ -17,10 +17,12 @@ echo "Error logging to $ERROR_LOG"
 
 
 OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v3"
-START_EPOCH=1  # Set this to your desired starting epoch
+START_EPOCH=7  # Set this to your desired starting epoch
 epoch=$START_EPOCH
-NUM_EPOCHS=5
+NUM_EPOCHS=2
 TOTAL_EPOCHS=$((START_EPOCH + NUM_EPOCHS - 1))
+
+PREV_MAP=0
 
 while [ $epoch -le $TOTAL_EPOCHS ]; do
     echo "Starting epoch $epoch/$TOTAL_EPOCHS"
@@ -46,8 +48,8 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         --per_device_train_batch_size 16 \
         --logging_steps 50 \
         --query_max_len 512 \
-        --passage_max_len 64 \
-        --train_group_size 8 \
+        --passage_max_len 128 \
+        --train_group_size 12 \
         --cache_dir ./cache/model \
         --cache_path ./cache/data \
         --pad_to_multiple_of 8 \
@@ -72,7 +74,27 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         --query_text_version v1 || exit 1
 
     echo "Finished evaluation for epoch $epoch"
-    
+
+    # Get the current epoch's MAP metric
+    METRICS=$(grep "On validation_v2" "${LOG_FILE}" | tail -n1)
+    CURRENT_MAP=$(echo "$METRICS" | grep -o "MAP@25: [0-9.]*" | awk '{print $2}')
+
+    # Compare with previous MAP
+    if (( $(echo "$CURRENT_MAP < $PREV_MAP" | bc -l) )); then
+        echo "MAP decreased from $PREV_MAP to $CURRENT_MAP. Exiting training."
+        break
+    fi
+
+    # Update previous MAP
+    PREV_MAP=$CURRENT_MAP
+
+    # Clean up old checkpoints - keep only the latest one
+    CHECKPOINTS=($(ls -d $OUTPUT_DIR/checkpoint-*/ | sort -V))
+    if [ ${#CHECKPOINTS[@]} -gt 1 ]; then
+        echo "Removing older checkpoint: ${CHECKPOINTS[0]}"
+        rm -rf "${CHECKPOINTS[0]}"
+    fi
+
     # Increment epoch counter
     epoch=$((epoch + 1))
 done
@@ -82,23 +104,25 @@ echo "Script completed at $(date)"
 # Print summary of all epochs' metrics
 echo -e "\n=== Training Summary ==="
 echo "Metrics for all epochs:"
+# Print metrics for epochs START_EPOCH through TOTAL_EPOCHS
+LINE_NUM=1
 for e in $(seq $START_EPOCH $TOTAL_EPOCHS); do
-    # Get the eth occurrence of the metrics line
-    METRICS=$(grep "On validation_v2" "${LOG_FILE}" | sed -n "${e}p")
-    if [ ! -z "$METRICS" ]; then
-        RECALL=$(echo "$METRICS" | grep -o "Recall@25: [0-9.]*" | awk '{print $2}')
-        MAP=$(echo "$METRICS" | grep -o "MAP@25: [0-9.]*" | awk '{print $2}')
-        echo "epoch $e: Recall@25: $RECALL, MAP@25: $MAP"
-    fi
+    echo "epoch $e: $(grep "On validation_v2" "${LOG_FILE}" | sed -n "${LINE_NUM}p")"
+    LINE_NUM=$((LINE_NUM + 1))
 done
 echo "=== End Summary ==="
 
-# epoch 1: On validation_v2 Recall@25: 0.7154, MAP@25: 0.2637
-# epoch 2: On validation_v2 Recall@25: 0.7401, MAP@25: 0.2713
-# epoch 3: On validation_v2 Recall@25: 0.7454, MAP@25: 0.2785
-# epoch 4: On validation_v2 Recall@25: 0.7481, MAP@25: 0.2835
-# epoch 5: On validation_v2 Recall@25: 0.7540, MAP@25: 0.2850
-# epoch 6: On validation_v2 Recall@25: 0.7540, MAP@25: 0.2842
+# === Training Summary ===
+# Metrics for all epochs: [train_group_size=12]
+# epoch 1: Recall@25: 0.7181, MAP@25: 0.2680
+# epoch 2: Recall@25: 0.7449, MAP@25: 0.2762
+# epoch 3: Recall@25: 0.7465, MAP@25: 0.2812
+# epoch 4: Recall@25: 0.7551, MAP@25: 0.2865
+# epoch 5: Recall@25: 0.7540, MAP@25: 0.2868
+# epoch 6: Recall@25: 0.7540, MAP@25: 0.2884
+# epoch 7: Recall@25: 0.7535, MAP@25: 0.2876
+# epoch 8: Recall@25: 0.7567, MAP@25: 0.2913
+# === End Summary ===
 
 
 # # submission v1: 9.5G VRAM
