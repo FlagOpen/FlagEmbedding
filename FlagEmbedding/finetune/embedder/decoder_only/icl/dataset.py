@@ -125,7 +125,7 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
 
             passages.extend(tmp_passages)
             
-            if len(teacher_scores) > 0 and len(passages) > 0:
+            if teacher_scores and len(teacher_scores) > 0 and len(passages) > 0:
                 assert len(teacher_scores) == len(passages)
 
             # add icl pairs
