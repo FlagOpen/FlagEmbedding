@@ -146,5 +146,8 @@ class AbsEmbedderRunner(ABC):
         Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
         # Training
+        # handle 'True'
+        if self.training_args.resume_from_checkpoint and self.training_args.resume_from_checkpoint == 'True':
+            self.training_args.resume_from_checkpoint = True
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()
