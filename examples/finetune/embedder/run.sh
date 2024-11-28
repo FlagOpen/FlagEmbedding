@@ -19,7 +19,7 @@ echo "Error logging to $ERROR_LOG"
 OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v4"
 START_EPOCH=1  # Set this to your desired starting epoch
 epoch=$START_EPOCH
-NUM_EPOCHS=
+NUM_EPOCHS=5
 TOTAL_EPOCHS=$((START_EPOCH + NUM_EPOCHS - 1))
 
 PREV_MAP=0
