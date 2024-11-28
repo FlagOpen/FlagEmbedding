@@ -1,0 +1,1 @@
+python script.py --query_text_version v1 --with_instruction False --filter_na_misconception False
