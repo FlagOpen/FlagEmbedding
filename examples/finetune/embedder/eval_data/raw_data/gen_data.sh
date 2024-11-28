@@ -1,0 +1,2 @@
+mkdir validation_v1 validation_v2
+python prepare_val_data.py

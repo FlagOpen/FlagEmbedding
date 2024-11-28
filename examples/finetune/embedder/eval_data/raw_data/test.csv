@@ -1,0 +1,13 @@
+QuestionId,ConstructId,ConstructName,SubjectId,SubjectName,CorrectAnswer,QuestionText,AnswerAText,AnswerBText,AnswerCText,AnswerDText
+1869,856,Use the order of operations to carry out calculations involving powers,33,BIDMAS,A,"\[
+3 \times 2+4-5
+\]
+Where do the brackets need to go to make the answer equal \( 13 \) ?",\( 3 \times(2+4)-5 \),\( 3 \times 2+(4-5) \),\( 3 \times(2+4-5) \),Does not need brackets
+1870,1612,Simplify an algebraic fraction by factorising the numerator,1077,Simplifying Algebraic Fractions,D,"Simplify the following, if possible: \( \frac{m^{2}+2 m-3}{m-3} \)",\( m+1 \),\( m+2 \),\( m-1 \),Does not simplify
+1871,2774,Calculate the range from a list of data,339,Range and Interquartile Range from a List of Data,B,"Tom and Katie are discussing the \( 5 \) plants with these heights:
+\( 24 \mathrm{~cm}, 17 \mathrm{~cm}, 42 \mathrm{~cm}, 26 \mathrm{~cm}, 13 \mathrm{~cm} \)
+Tom says if all the plants were cut in half, the range wouldn't change.
+Katie says if all the plants grew by \( 3 \mathrm{~cm} \) each, the range wouldn't change.
+Who do you agree with?","Only
+Tom","Only
+Katie",Both Tom and Katie,Neither is correct
