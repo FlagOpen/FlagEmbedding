@@ -149,7 +149,8 @@ zh_results
 FT-1125-bge-large-en-v1.5-submission-v1
 FT-1125-bge-large-en-v1.5-submission-v2
 FT-1125-bge-large-en-v1.5-validation-v2
-FT-1125-bge-large-en-v1.5-validation-v3
+FT-1125-bge-large-en-v1.5-validation-v*/
+
 cache/
 
 # wandb

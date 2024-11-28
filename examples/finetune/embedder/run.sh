@@ -16,10 +16,10 @@ echo "Error logging to $ERROR_LOG"
 
 
 
-OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v3"
-START_EPOCH=7  # Set this to your desired starting epoch
+OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v4"
+START_EPOCH=1  # Set this to your desired starting epoch
 epoch=$START_EPOCH
-NUM_EPOCHS=2
+NUM_EPOCHS=
 TOTAL_EPOCHS=$((START_EPOCH + NUM_EPOCHS - 1))
 
 PREV_MAP=0
@@ -27,12 +27,11 @@ PREV_MAP=0
 while [ $epoch -le $TOTAL_EPOCHS ]; do
     echo "Starting epoch $epoch/$TOTAL_EPOCHS"
     
-    # Get latest checkpoint if not first epoch
-    if [ $epoch -eq 1 ]; then
-        RESUME_CHECKPOINT_ARG=""
+    # Check if there is a checkpoint file
+    if [ -d "$OUTPUT_DIR" ] && ls "$OUTPUT_DIR"/checkpoint-*/trainer_state.json 1>/dev/null 2>&1; then
+        RESUME_CHECKPOINT_ARG="--resume_from_checkpoint True"
     else
-        LATEST_CHECKPOINT=$(ls -d $OUTPUT_DIR/checkpoint-*/ | sort -V | tail -n1)
-        RESUME_CHECKPOINT_ARG="--resume_from_checkpoint $LATEST_CHECKPOINT"
+        RESUME_CHECKPOINT_ARG=""
     fi
     
     # Training
@@ -42,6 +41,7 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         --train_data ./my_data/finetune_data_validation_minedHN.jsonl \
         --num_train_epochs $epoch \
         $RESUME_CHECKPOINT_ARG \
+        --save_total_limit 2 \
         --temperature 0.03 \
         --output_dir $OUTPUT_DIR \
         --save_steps 1000 \
@@ -75,25 +75,18 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
 
     echo "Finished evaluation for epoch $epoch"
 
-    # Get the current epoch's MAP metric
-    METRICS=$(grep "On validation_v2" "${LOG_FILE}" | tail -n1)
-    CURRENT_MAP=$(echo "$METRICS" | grep -o "MAP@25: [0-9.]*" | awk '{print $2}')
+    # # Get the current epoch's MAP metric
+    # METRICS=$(grep "On validation_v2" "${LOG_FILE}" | tail -n1)
+    # CURRENT_MAP=$(echo "$METRICS" | grep -o "MAP@25: [0-9.]*" | awk '{print $2}')
 
-    # Compare with previous MAP
-    if (( $(echo "$CURRENT_MAP < $PREV_MAP" | bc -l) )); then
-        echo "MAP decreased from $PREV_MAP to $CURRENT_MAP. Exiting training."
-        break
-    fi
+    # # Compare with previous MAP
+    # if (( $(echo "$CURRENT_MAP < $PREV_MAP" | bc -l) )); then
+    #     echo "MAP decreased from $PREV_MAP to $CURRENT_MAP. Exiting training."
+    #     break
+    # fi
 
-    # Update previous MAP
-    PREV_MAP=$CURRENT_MAP
-
-    # Clean up old checkpoints - keep only the latest one
-    CHECKPOINTS=($(ls -d $OUTPUT_DIR/checkpoint-*/ | sort -V))
-    if [ ${#CHECKPOINTS[@]} -gt 1 ]; then
-        echo "Removing older checkpoint: ${CHECKPOINTS[0]}"
-        rm -rf "${CHECKPOINTS[0]}"
-    fi
+    # # Update previous MAP
+    # PREV_MAP=$CURRENT_MAP
 
     # Increment epoch counter
     epoch=$((epoch + 1))
