@@ -31,17 +31,17 @@ python hn_mine.py \
 
 python hn_mine.py \
 --embedder_name_or_path BAAI/bge-large-en-v1.5 \
---input_file ../examples/finetune/embedder/my_data/finetune_data_validation.jsonl \
---output_file ../examples/finetune/embedder/my_data/finetune_data_minedHN_validation.jsonl \
---candidate_pool ../examples/finetune/embedder/my_data/candidate_pool_validation.jsonl \
+--input_file ../examples/finetune/embedder/bge_finetune_data/finetune_data_validation.jsonl \
+--output_file ../examples/finetune/embedder/bge_finetune_data/finetune_data_minedHN_validation.jsonl \
+--candidate_pool ../examples/finetune/embedder/bge_finetune_data/candidate_pool_validation.jsonl \
 --range_for_sampling 4-200 \
 --negative_number 15
 
 python hn_mine.py \
 --embedder_name_or_path BAAI/bge-large-en-v1.5 \
---input_file ../examples/finetune/embedder/my_data/finetune_data_submission.jsonl \
---output_file ../examples/finetune/embedder/my_data/finetune_data_submission_minedHNjsonl \
---candidate_pool ../examples/finetune/embedder/my_data/candidate_pool_submission.jsonl \
+--input_file ../examples/finetune/embedder/bge_finetune_data/finetune_data_submission.jsonl \
+--output_file ../examples/finetune/embedder/bge_finetune_data/finetune_data_submission_minedHNjsonl \
+--candidate_pool ../examples/finetune/embedder/bge_finetune_data/candidate_pool_submission.jsonl \
 --range_for_sampling 4-200 \
 --negative_number 15
 ```

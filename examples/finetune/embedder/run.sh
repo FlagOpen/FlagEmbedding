@@ -38,7 +38,7 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
     torchrun --nproc_per_node 1 \
         -m FlagEmbedding.finetune.embedder.encoder_only.base \
         --model_name_or_path BAAI/bge-large-en-v1.5 \
-        --train_data ./my_data/finetune_data_validation_minedHN.jsonl \
+        --train_data ./bge_finetune_data/finetune_data_validation_minedHN.jsonl \
         --num_train_epochs $epoch \
         $RESUME_CHECKPOINT_ARG \
         --save_total_limit 2 \
@@ -122,7 +122,7 @@ echo "=== End Summary ==="
 # torchrun --nproc_per_node 1 \
 # 	-m FlagEmbedding.finetune.embedder.encoder_only.base \
 # 	--model_name_or_path BAAI/bge-large-en-v1.5 \
-#     --train_data ./my_data/finetune_data_submission_minedHN.jsonl \
+#     --train_data ./bge_finetune_data/finetune_data_submission_minedHN.jsonl \
 #     --temperature 0.02 \
 #     --output_dir ./FT-1125-bge-large-en-v1.5-submission-v1 \
 #     --save_steps 250 \
