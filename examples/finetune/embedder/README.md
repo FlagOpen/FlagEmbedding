@@ -57,7 +57,7 @@ cd FlagEmbedding/scripts
 
 ```shell
 python hn_mine.py \
---model_name_or_path BAAI/bge-base-en-v1.5 \
+--embedder_name_or_path BAAI/bge-base-en-v1.5 \
 --input_file toy_finetune_data.jsonl \
 --output_file toy_finetune_data_minedHN.jsonl \
 --range_for_sampling 2-200 \
