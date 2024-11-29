@@ -7,6 +7,7 @@ import numpy as np
 import torch.distributed as dist
 from dataclasses import dataclass
 from torch.utils.data import Dataset
+import torch
 from transformers import (
     PreTrainedTokenizer, 
     DataCollatorWithPadding,
@@ -148,6 +149,29 @@ class AbsEmbedderTrainDataset(Dataset):
             ]
 
         return query, passages, teacher_scores
+
+@dataclass
+class AbsEmbedderEvalCollator(DataCollatorWithPadding):
+    """
+    The abstract embedder collator for evaluation.
+    """
+    max_len: int = 32
+    
+    def __call__(self, features):
+        return_batch = {}
+        texts = [f['text'] for f in features]
+        texts_inputs = self.tokenizer(
+            texts,
+            truncation=True,
+            max_length=self.max_len,
+            padding=True,
+            return_tensors='pt'
+        )
+        return_batch['text_inputs'] = texts_inputs
+        if "correct_id" in features[0]:
+            correct_ids = [f['correct_id'] for f in features]
+            return_batch['correct_id'] = correct_ids
+        return return_batch
 
 @dataclass
 class AbsEmbedderCollator(DataCollatorWithPadding):

@@ -19,7 +19,7 @@ echo "Error logging to $ERROR_LOG"
 OUTPUT_DIR="./FT-1125-bge-large-en-v1.5-validation-v4"
 START_EPOCH=1  # Set this to your desired starting epoch
 epoch=$START_EPOCH
-NUM_EPOCHS=5
+NUM_EPOCHS=1
 TOTAL_EPOCHS=$((START_EPOCH + NUM_EPOCHS - 1))
 
 PREV_MAP=0
@@ -39,6 +39,8 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         -m FlagEmbedding.finetune.embedder.encoder_only.base \
         --model_name_or_path BAAI/bge-large-en-v1.5 \
         --train_data ./bge_finetune_data/finetune_data_validation_minedHN.jsonl \
+        --corpus_path ./eval_data/corpus.jsonl \
+        --eval_data ./eval_data/queries_v2.jsonl \
         --num_train_epochs $epoch \
         $RESUME_CHECKPOINT_ARG \
         --save_total_limit 2 \
@@ -46,6 +48,7 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         --output_dir $OUTPUT_DIR \
         --save_steps 1000 \
         --per_device_train_batch_size 16 \
+        --per_device_eval_batch_size 16 \
         --logging_steps 50 \
         --query_max_len 512 \
         --passage_max_len 128 \
@@ -63,17 +66,17 @@ while [ $epoch -le $TOTAL_EPOCHS ]; do
         --deepspeed ../ds_stage0.json \
         --negatives_cross_device || exit 1
 
-    echo "Finished training epoch $epoch, starting evaluation"
+    # echo "Finished training epoch $epoch, starting evaluation"
 
     # Evaluation after each epoch
-    python /root/autodl-tmp/github/kaggle-eedi-math/kernels/bge-instruction/bge-instruction.py \
-        --model $OUTPUT_DIR \
-        --output_file /root/autodl-tmp/github/kaggle-eedi-math/submission_inst.csv \
-        --filter_na_misconception=False \
-        --with_instruction=False \
-        --query_text_version v1 || exit 1
+    # python /root/autodl-tmp/github/kaggle-eedi-math/kernels/bge-instruction/bge-instruction.py \
+    #     --model $OUTPUT_DIR \
+    #     --output_file /root/autodl-tmp/github/kaggle-eedi-math/submission_inst.csv \
+    #     --filter_na_misconception=False \
+    #     --with_instruction=False \
+    #     --query_text_version v1 || exit 1
 
-    echo "Finished evaluation for epoch $epoch"
+    # echo "Finished evaluation for epoch $epoch"
 
     # # Get the current epoch's MAP metric
     # METRICS=$(grep "On validation_v2" "${LOG_FILE}" | tail -n1)
@@ -95,15 +98,15 @@ echo "Script completed at $(date)"
 
 
 # Print summary of all epochs' metrics
-echo -e "\n=== Training Summary ==="
-echo "Metrics for all epochs:"
-# Print metrics for epochs START_EPOCH through TOTAL_EPOCHS
-LINE_NUM=1
-for e in $(seq $START_EPOCH $TOTAL_EPOCHS); do
-    echo "epoch $e: $(grep "On validation_v2" "${LOG_FILE}" | sed -n "${LINE_NUM}p")"
-    LINE_NUM=$((LINE_NUM + 1))
-done
-echo "=== End Summary ==="
+# echo -e "\n=== Training Summary ==="
+# echo "Metrics for all epochs:"
+# # Print metrics for epochs START_EPOCH through TOTAL_EPOCHS
+# LINE_NUM=1
+# for e in $(seq $START_EPOCH $TOTAL_EPOCHS); do
+#     echo "epoch $e: $(grep "On validation_v2" "${LOG_FILE}" | sed -n "${LINE_NUM}p")"
+#     LINE_NUM=$((LINE_NUM + 1))
+# done
+# echo "=== End Summary ==="
 
 # === Training Summary ===
 # Metrics for all epochs: [train_group_size=12]

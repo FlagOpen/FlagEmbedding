@@ -1,9 +1,10 @@
 import os
 import logging
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, List
 from abc import ABC, abstractmethod
 from transformers import set_seed, PreTrainedTokenizer
+import datasets
 
 
 from .AbsArguments import (
@@ -14,7 +15,7 @@ from .AbsArguments import (
 from .AbsTrainer import AbsEmbedderTrainer
 from .AbsModeling import AbsEmbedderModel
 from .AbsDataset import (
-    AbsEmbedderTrainDataset, AbsEmbedderCollator,
+    AbsEmbedderTrainDataset, AbsEmbedderCollator, AbsEmbedderEvalCollator,
     AbsEmbedderSameDatasetTrainDataset, AbsEmbedderSameDatasetCollator
 )
 
@@ -73,6 +74,10 @@ class AbsEmbedderRunner(ABC):
         self.tokenizer, self.model = self.load_tokenizer_and_model()
         self.train_dataset = self.load_train_dataset()
         self.data_collator = self.load_data_collator()
+        self.corpus = self.load_corpus()
+        self.corpus_collator = self.load_corpus_collator()
+        self.eval_dataset = self.load_eval_dataset()
+        self.eval_data_collator = self.load_eval_data_collator()
         self.trainer = self.load_trainer()
 
     @abstractmethod
@@ -138,6 +143,39 @@ class AbsEmbedderRunner(ABC):
             return_tensors="pt"
         )
         return data_collator
+    
+    def load_corpus(self) -> datasets.Dataset:
+        """Loads the corpus [jsonl]from the given path.
+
+        Returns:
+            dataset: The loaded corpus.[HF datasets]
+        """
+        if self.data_args.corpus_path is None:
+            return None
+        dataset = datasets.load_dataset('json', data_files=self.data_args.corpus_path, split='train')
+        logger.info(f"Corpus length: {dataset.num_rows}")
+        return dataset
+    
+    def load_eval_dataset(self) -> datasets.Dataset:
+        if self.data_args.eval_data is None:
+            return None
+        dataset = datasets.load_dataset('json', data_files=self.data_args.eval_data, split='train')
+        logger.info(f"Eval dataset length: {dataset.num_rows}")
+        return dataset
+    
+    def load_eval_data_collator(self):
+        data_collator = AbsEmbedderEvalCollator(
+            tokenizer=self.tokenizer,
+            max_len=self.data_args.query_max_len
+        )
+        return data_collator
+    
+    def load_corpus_collator(self):
+        data_collator = AbsEmbedderEvalCollator(
+            tokenizer=self.tokenizer,
+            max_len=self.data_args.passage_max_len
+        )
+        return data_collator
 
     def run(self):
         """
@@ -151,3 +189,4 @@ class AbsEmbedderRunner(ABC):
             self.training_args.resume_from_checkpoint = True
         self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
         self.trainer.save_model()
+        # self.trainer.evaluate()

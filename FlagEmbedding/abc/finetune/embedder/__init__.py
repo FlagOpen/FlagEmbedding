@@ -10,7 +10,7 @@ from .AbsDataset import (
     EmbedderTrainerCallbackForDataRefresh,
 )
 from .AbsModeling import AbsEmbedderModel, EmbedderOutput
-from .AbsTrainer import AbsEmbedderTrainer
+from .AbsTrainer import AbsEmbedderTrainer, EvaluateCallback
 from .AbsRunner import AbsEmbedderRunner
 
 
@@ -27,4 +27,5 @@ __all__ = [
     "AbsEmbedderSameDatasetCollator",
     "EmbedderOutput",
     "EmbedderTrainerCallbackForDataRefresh",
+    "EvaluateCallback",
 ]

@@ -5,7 +5,7 @@ from transformers import (
     AutoTokenizer, PreTrainedTokenizer
 )
 
-from FlagEmbedding.abc.finetune.embedder import AbsEmbedderRunner, AbsEmbedderModel, EmbedderTrainerCallbackForDataRefresh
+from FlagEmbedding.abc.finetune.embedder import AbsEmbedderRunner, AbsEmbedderModel, EmbedderTrainerCallbackForDataRefresh, EvaluateCallback
 from .modeling import BiEncoderOnlyEmbedderModel
 from .trainer import EncoderOnlyEmbedderTrainer
 
@@ -16,6 +16,9 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
     """
     Finetune Runner for base embedding models.
     """
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+    
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         """Load tokenizer and model.
 
@@ -77,8 +80,15 @@ class EncoderOnlyEmbedderRunner(AbsEmbedderRunner):
             args=self.training_args,
             train_dataset=self.train_dataset,
             data_collator=self.data_collator,
-            tokenizer=self.tokenizer
+            tokenizer=self.tokenizer,
+            eval_dataset=self.eval_dataset,
+            eval_data_collator=self.eval_data_collator,
+            corpus=self.corpus,
+            corpus_collator=self.corpus_collator
         )
         if self.data_args.same_dataset_within_batch:
             trainer.add_callback(EmbedderTrainerCallbackForDataRefresh(self.train_dataset))
+        if self.eval_dataset is not None:
+            logger.info('DEBUG Add EvaluateCallback')
+            trainer.add_callback(EvaluateCallback())
         return trainer

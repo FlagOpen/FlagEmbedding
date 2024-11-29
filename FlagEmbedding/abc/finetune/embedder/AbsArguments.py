@@ -112,6 +112,14 @@ class AbsEmbedderDataArguments:
         default=0,
         metadata={"help": "The threshold for dropping merged small dataset. If the number of examples in the merged small dataset is less than this threshold, it will be dropped."}
     )
+    corpus_path: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The path to the corpus file. If provided, the corpus will be used for evaluation."}
+    )
+    eval_data: Optional[str] = field(
+        default=None, 
+        metadata={"help": "The path to the evaluation data file. If provided, the evaluation data will be used for evaluation."}
+    )
 
     def __post_init__(self):
         for train_dir in self.train_data:

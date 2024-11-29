@@ -1,7 +1,7 @@
 import logging
 from typing import Optional
 from abc import ABC, abstractmethod
-from transformers.trainer import Trainer
+from transformers.trainer import Trainer, TrainerCallback, TrainingArguments, TrainerState, TrainerControl
 
 logger = logging.getLogger(__name__)
 
@@ -35,3 +35,23 @@ class AbsEmbedderTrainer(ABC, Trainer):
         loss = outputs.loss
 
         return (loss, outputs) if return_outputs else loss
+    
+class EvaluateCallback(TrainerCallback):
+    def on_epoch_end(self, args, state, control, **kwargs):
+        """
+        Callback method triggered at the end of each epoch.
+        Performs model evaluation.
+        
+        Args:
+            args: Training arguments
+            state: Current training state
+            control: Training control object
+            kwargs: Additional keyword arguments (includes trainer and model)
+        """
+        # Ensure evaluation happens after each epoch
+        control.should_evaluate = True
+        
+        # Optional: Add custom logging or additional actions
+        print(f"Epoch {state.epoch} completed. Running evaluation...")
+        
+        return control
