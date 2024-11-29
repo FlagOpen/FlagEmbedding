@@ -166,5 +166,5 @@ if __name__ == "__main__":
         # 将 JSON 数据写入文件
         with open(f"{EVAL_DATA_DIR}/queries_{version}.jsonl", "w") as f:
             for _, row in df_selected.iterrows():
-                json_line = {"query": row['query_text'], "correct_id": row['MisconceptionId']}
+                json_line = {"text": row['query_text'], "correct_id": row['MisconceptionId']}
                 f.write(json.dumps(json_line) + "\n")
