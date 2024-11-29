@@ -7,7 +7,6 @@ import numpy as np
 import torch.distributed as dist
 from dataclasses import dataclass
 from torch.utils.data import Dataset
-import torch
 from transformers import (
     PreTrainedTokenizer, 
     DataCollatorWithPadding,
