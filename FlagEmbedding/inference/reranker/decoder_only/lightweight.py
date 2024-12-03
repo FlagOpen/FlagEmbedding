@@ -435,7 +435,7 @@ class LightweightLLMReranker(AbsReranker):
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
     
-        if isinstance(all_scores[0], list):
+        if len(all_scores) == 1 and isinstance(all_scores[0], list):
             all_scores = all_scores[0]
 
         return all_scores
