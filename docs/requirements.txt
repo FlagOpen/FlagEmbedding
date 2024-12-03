@@ -1,3 +1,5 @@
 sphinx
 myst-nb
-furo
+sphinx-design
+pydata-sphinx-theme
+# furo

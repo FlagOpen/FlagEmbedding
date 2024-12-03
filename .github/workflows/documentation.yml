@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v5
       - name: Install dependencies
         run: |
-          pip install . sphinx sphinx_rtd_theme myst_parser myst-nb furo
+          pip install . sphinx myst_parser myst-nb sphinx-design pydata-sphinx-theme
       - name: Sphinx build
         run: |
           sphinx-build docs/source docs/build

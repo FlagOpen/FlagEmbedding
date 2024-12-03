@@ -1,5 +1,7 @@
-BGE-v1
-======
+BGE v1 & v1.5
+=============
+
+BGE v1 and v1.5 are series of encoder only models base on BERT. They achieved best performance among the models of the same size at the time of release.
 
 BGE
 ---
@@ -26,7 +28,7 @@ C-MTEB benchmarks at the time released.
 BGE-v1.5
 --------
 
-Then to enhance its retrieval ability without instruction and alleviate the issue of the similarity distribution, :code:`bge-*-1.5` models 
+Then to enhance its retrieval ability without instruction and alleviate the issue of the similarity distribution, :code:`bge-*-v1.5` models 
 were released in Sep 2023. They are still the most popular embedding models that balanced well between embedding quality and model sizes.
 
 +-----------------------------------------------------------------------------+-----------+------------+--------------+--------------+
@@ -37,8 +39,8 @@ were released in Sep 2023. They are still the most popular embedding models that
 | `BAAI/bge-base-en-v1.5 <https://huggingface.co/BAAI/bge-base-en-v1.5>`_     |  English  |    109M    |    438 MB    | reasonable   |
 +-----------------------------------------------------------------------------+-----------+------------+--------------+ similarity   +
 | `BAAI/bge-small-en-v1.5 <https://huggingface.co/BAAI/bge-small-en-v1.5>`_   |  English  |    33.4M   |    133 MB    | distribution |
-+-----------------------------------------------------------------------------+-----------+------------+--------------+              +
-| `BAAI/bge-large-zh-v1.5 <https://huggingface.co/BAAI/bge-large-zh-v1.5>`_   |  Chinese  |    326M    |    1.3 GB    |              |
++-----------------------------------------------------------------------------+-----------+------------+--------------+ and better   +
+| `BAAI/bge-large-zh-v1.5 <https://huggingface.co/BAAI/bge-large-zh-v1.5>`_   |  Chinese  |    326M    |    1.3 GB    | performance  |
 +-----------------------------------------------------------------------------+-----------+------------+--------------+              +
 | `BAAI/bge-base-zh-v1.5 <https://huggingface.co/BAAI/bge-base-zh-v1.5>`_     |  Chinese  |    102M    |    409 MB    |              |
 +-----------------------------------------------------------------------------+-----------+------------+--------------+              +
@@ -46,4 +48,30 @@ were released in Sep 2023. They are still the most popular embedding models that
 +-----------------------------------------------------------------------------+-----------+------------+--------------+--------------+
 
 
+Usage
+-----
 
+To use BGE v1 or v1.5 model for inference, load model through ``
+
+.. code:: python
+
+    from FlagEmbedding import FlagModel
+
+    model = FlagModel('BAAI/bge-base-en-v1.5')
+
+    sentences = ["Hello world", "I am inevitable"]
+    embeddings = model.encode(sentences)
+
+.. tip::
+
+    For simple tasks that only encode a few sentences like above, it's faster to use single GPU comparing to multi-GPUs:
+
+    .. code:: python
+
+        import os
+        os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    or 
+
+    .. code:: python
+
+        model = FlagModel('BAAI/bge-base-en-v1.5', devices=0)

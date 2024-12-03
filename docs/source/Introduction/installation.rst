@@ -41,3 +41,8 @@ For development in editable mode:
     pip install -e .
     # If you want to finetune the models, you can install the package with the finetune dependency:
     pip install -e .[finetune]
+
+PyTorch-CUDA
+------------
+
+If you want to use CUDA GPUs during inference and finetuning, please install appropriate version of `PyTorch <https://pytorch.org/get-started/locally/>`_ with CUDA support.
