@@ -7,7 +7,7 @@ BGE builds one-stop retrieval toolkit for search and RAG. We provide inference, 
    :width: 700
    :align: center
 
-   BGE embedder and reranker in an RAG pipeline.
+   BGE embedder and reranker in an RAG pipelin. `Source <https://safjan.com/images/retrieval_augmented_generation/RAG.png>`_
 
 Quickly get started with:
 
@@ -15,5 +15,6 @@ Quickly get started with:
    :maxdepth: 1
 
    installation
-   concept
    quick_start
+   concept
+   retrieval_demo

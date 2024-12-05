@@ -51,7 +51,7 @@ were released in Sep 2023. They are still the most popular embedding models that
 Usage
 -----
 
-To use BGE v1 or v1.5 model for inference, load model through ``
+To use BGE v1 or v1.5 model for inference, load model through
 
 .. code:: python
 
@@ -64,14 +64,35 @@ To use BGE v1 or v1.5 model for inference, load model through ``
 
 .. tip::
 
-    For simple tasks that only encode a few sentences like above, it's faster to use single GPU comparing to multi-GPUs:
+    For simple tasks that only encode a few sentences like above, it's faster to use CPU or a single GPU instead of multi-GPUs
 
-    .. code:: python
+To use CPU:
 
-        import os
-        os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-    or 
+.. code:: python
 
-    .. code:: python
+    # make no GPU visible
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = ''
+    
+    # or claim the devices during initialize the model
+    model = FlagModel('BAAI/bge-base-en-v1.5', devices='cpu')
 
-        model = FlagModel('BAAI/bge-base-en-v1.5', devices=0)
+To use a single GPU:
+
+.. code:: python
+
+    # select one sigle card to be visible
+    import os
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+    
+    # or claim the devices during initialize the model
+    model = FlagModel('BAAI/bge-base-en-v1.5', devices=0)
+
+|
+Useful Links:
+
+`API <../API/inference/embedder/encoder_only/BaseEmbedder>`_
+
+`Tutorial <https://github.com/FlagOpen/FlagEmbedding/blob/master/Tutorials/1_Embedding/1.2.3_BGE_v1%261.5.ipynb>`_
+
+`Example <https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder/encoder_only>`_

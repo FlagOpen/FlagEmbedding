@@ -36,8 +36,8 @@ exclude_patterns = []
 
 # html_theme = 'furo'
 html_theme = "pydata_sphinx_theme"
-html_logo = "_static/img/BAAI_logo.png"
-html_title = "FlagEmbedding"
+# html_logo = "_static/img/BAAI_logo.png"
+html_title = "BGE"
 html_static_path = ['_static']
 html_css_files = ["css/custom.css"]
 html_theme_options = {
@@ -80,7 +80,7 @@ html_theme_options = {
             "icon": "fa-solid fa-cube",
         }
     ],
-    "header_links_before_dropdown": 7,
+    "header_links_before_dropdown": 5,
 }
 
 html_context = {

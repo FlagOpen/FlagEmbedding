@@ -115,3 +115,9 @@ Usage
 
     output = model.encode(sentences_1, return_dense=True, return_sparse=True, return_colbert_vecs=True)
     dense, sparse, multiv = output['dense_vecs'], output['lexical_weights'], output['colbert_vecs']
+
+Useful Links:
+
+`API <../API/inference/embedder/encoder_only/M3Embedder>`_
+`Tutorial <>`_
+`Example <https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder/encoder_only>`_

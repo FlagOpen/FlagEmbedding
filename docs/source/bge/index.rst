@@ -11,9 +11,3 @@ BGE
    bge_m3
    bge_icl
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Embedder
-   
-   bge_reranker
-
