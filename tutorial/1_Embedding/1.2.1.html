@@ -1,0 +1,1066 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>BGE Series &#8212; BGE</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/1_Embedding/1.2.1';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="BGE Explanation" href="1.2.2.html" />
+    <link rel="prev" title="Intro to Embedding" href="1.1.1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.2.2.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="1.2.3.html">BGE-M3</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.3.1.html">C-MTEB</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../1_Embedding.html" class="nav-link">1. Embedding</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">BGE Series</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="bge-series">
+<h1>BGE Series<a class="headerlink" href="#bge-series" title="Link to this heading">#</a></h1>
+<p>In this Part, we will walk through the BGE series and introduce how to use the BGE embedding models.</p>
+<section id="baai-general-embedding">
+<h2>1. BAAI General Embedding<a class="headerlink" href="#baai-general-embedding" title="Link to this heading">#</a></h2>
+<p>BGE stands for BAAI General Embedding, it’s a series of embeddings models developed and published by Beijing Academy of Artificial Intelligence (BAAI).</p>
+<p>A full support of APIs and related usages of BGE is maintained in <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding">FlagEmbedding</a> on GitHub.</p>
+<p>Run the following cell to install FlagEmbedding in your environment.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
+<span class="o">%</span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">U</span> <span class="n">FlagEmbedding</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The collection of BGE models can be found in <a class="reference external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">Huggingface collection</a>.</p>
+</section>
+<section id="bge-series-models">
+<h2>2. BGE Series Models<a class="headerlink" href="#bge-series-models" title="Link to this heading">#</a></h2>
+<section id="bge">
+<h3>2.1 BGE<a class="headerlink" href="#bge" title="Link to this heading">#</a></h3>
+<p>The very first version of BGE has 6 models, with ‘large’, ‘base’, and ‘small’ for English and Chinese.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Model</p></th>
+<th class="head text-center"><p>Language</p></th>
+<th class="head text-center"><p>Parameters</p></th>
+<th class="head text-center"><p>Model Size</p></th>
+<th class="head text-center"><p>Description</p></th>
+<th class="head text-center"><p>Base Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-large-en">BAAI/bge-large-en</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>335M</p></td>
+<td class="text-center"><p>1.34 GB</p></td>
+<td class="text-center"><p>Embedding Model which map text into vector</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en">BAAI/bge-base-en</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>109M</p></td>
+<td class="text-center"><p>438 MB</p></td>
+<td class="text-center"><p>a base-scale model but with similar ability to <code class="docutils literal notranslate"><span class="pre">bge-large-en</span></code></p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-small-en">BAAI/bge-small-en</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>33.4M</p></td>
+<td class="text-center"><p>133 MB</p></td>
+<td class="text-center"><p>a small-scale model but with competitive performance</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-large-zh">BAAI/bge-large-zh</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>326M</p></td>
+<td class="text-center"><p>1.3 GB</p></td>
+<td class="text-center"><p>Embedding Model which map text into vector</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-zh">BAAI/bge-base-zh</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>102M</p></td>
+<td class="text-center"><p>409 MB</p></td>
+<td class="text-center"><p>a base-scale model but with similar ability to <code class="docutils literal notranslate"><span class="pre">bge-large-zh</span></code></p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-small-zh">BAAI/bge-small-zh</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>24M</p></td>
+<td class="text-center"><p>95.8 MB</p></td>
+<td class="text-center"><p>a small-scale model but with competitive performance</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>For inference, import FlagModel from FlagEmbedding and initialize the model.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">FlagEmbedding</span> <span class="kn">import</span> <span class="n">FlagModel</span>
+
+<span class="c1"># Load BGE model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">FlagModel</span><span class="p">(</span><span class="s1">&#39;BAAI/bge-base-en&#39;</span><span class="p">,</span>
+                  <span class="n">query_instruction_for_retrieval</span><span class="o">=</span><span class="s2">&quot;Represent this sentence for searching relevant passages:&quot;</span><span class="p">,</span>
+                  <span class="n">use_fp16</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;query 1&quot;</span><span class="p">,</span> <span class="s2">&quot;query 2&quot;</span><span class="p">]</span>
+<span class="n">corpus</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;passage 1&quot;</span><span class="p">,</span> <span class="s2">&quot;passage 2&quot;</span><span class="p">]</span>
+
+<span class="c1"># encode the queries and corpus</span>
+<span class="n">q_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+<span class="n">p_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span>
+
+<span class="c1"># compute the similarity scores</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">q_embeddings</span> <span class="o">@</span> <span class="n">p_embeddings</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>To use <code class="docutils literal notranslate"><span class="pre">FlagModel</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FlagModel</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">convert_to_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>encode()</em> function directly encode the input sentences to embedding vectors.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FlagModel</span><span class="o">.</span><span class="n">encode_queries</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> <span class="n">convert_to_numpy</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>encode_queries()</em> function concatenate the <code class="docutils literal notranslate"><span class="pre">query_instruction_for_retrieval</span></code> with each of the input query, and then call <code class="docutils literal notranslate"><span class="pre">encode()</span></code>.</p>
+</section>
+<section id="bge-v1-5">
+<h3>2.2 BGE v1.5<a class="headerlink" href="#bge-v1-5" title="Link to this heading">#</a></h3>
+<p>BGE 1.5 alleviate the issue of the similarity distribution, and enhance retrieval ability without instruction.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Model</p></th>
+<th class="head text-center"><p>Language</p></th>
+<th class="head text-center"><p>Parameters</p></th>
+<th class="head text-center"><p>Model Size</p></th>
+<th class="head text-center"><p>Description</p></th>
+<th class="head text-center"><p>Base Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-large-en-v1.5">BAAI/bge-large-en-v1.5</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>335M</p></td>
+<td class="text-center"><p>1.34 GB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-en-v1.5">BAAI/bge-base-en-v1.5</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>109M</p></td>
+<td class="text-center"><p>438 MB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-small-en-v1.5">BAAI/bge-small-en-v1.5</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>33.4M</p></td>
+<td class="text-center"><p>133 MB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-large-zh-v1.5">BAAI/bge-large-zh-v1.5</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>326M</p></td>
+<td class="text-center"><p>1.3 GB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-base-zh-v1.5">BAAI/bge-base-zh-v1.5</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>102M</p></td>
+<td class="text-center"><p>409 MB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-small-zh-v1.5">BAAI/bge-small-zh-v1.5</a></p></td>
+<td class="text-center"><p>Chinese</p></td>
+<td class="text-center"><p>24M</p></td>
+<td class="text-center"><p>95.8 MB</p></td>
+<td class="text-center"><p>version 1.5 with more reasonable similarity distribution</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>BGE 1.5 models shares the same API of <code class="docutils literal notranslate"><span class="pre">FlagModel</span></code> with BGE models.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">FlagModel</span><span class="p">(</span><span class="s1">&#39;BAAI/bge-base-en-v1.5&#39;</span><span class="p">,</span>
+                  <span class="n">query_instruction_for_retrieval</span><span class="o">=</span><span class="s2">&quot;Represent this sentence for searching relevant passages:&quot;</span><span class="p">,</span>
+                  <span class="n">use_fp16</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;query 1&quot;</span><span class="p">,</span> <span class="s2">&quot;query 2&quot;</span><span class="p">]</span>
+<span class="n">corpus</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;passage 1&quot;</span><span class="p">,</span> <span class="s2">&quot;passage 2&quot;</span><span class="p">]</span>
+
+<span class="c1"># encode the queries and corpus</span>
+<span class="n">q_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">queries</span><span class="p">)</span>
+<span class="n">p_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span>
+
+<span class="c1"># compute the similarity scores</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">q_embeddings</span> <span class="o">@</span> <span class="n">p_embeddings</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.736794  0.5989914]
+ [0.5684842 0.7461165]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="llm-embedder">
+<h3>2.3 LLM-Embedder<a class="headerlink" href="#llm-embedder" title="Link to this heading">#</a></h3>
+<p>LLM-Embedder is a unified embedding model supporting diverse retrieval augmentation needs for LLMs. It is fine-tuned over 6 tasks:</p>
+<ul class="simple">
+<li><p>Question Answering (qa)</p></li>
+<li><p>Conversational Search (convsearch)</p></li>
+<li><p>Long Conversation (chat)</p></li>
+<li><p>Long-Rnage Language Modeling (lrlm)</p></li>
+<li><p>In-Context Learning (icl)</p></li>
+<li><p>Tool Learning (tool)</p></li>
+</ul>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Model</p></th>
+<th class="head text-center"><p>Language</p></th>
+<th class="head text-center"><p>Parameters</p></th>
+<th class="head text-center"><p>Model Size</p></th>
+<th class="head text-center"><p>Description</p></th>
+<th class="head text-center"><p>Base Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/llm-embedder">BAAI/llm-embedder</a></p></td>
+<td class="text-center"><p>English</p></td>
+<td class="text-center"><p>109M</p></td>
+<td class="text-center"><p>438 MB</p></td>
+<td class="text-center"><p>a unified embedding model to support diverse retrieval augmentation needs for LLMs</p></td>
+<td class="text-center"><p>BERT</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To use <code class="docutils literal notranslate"><span class="pre">LLMEmbedder</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">LLMEmbedder</span><span class="o">.</span><span class="n">encode_queries</span><span class="p">(</span>
+    <span class="n">queries</span><span class="p">,</span> 
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> 
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> 
+    <span class="n">task</span><span class="o">=</span><span class="s1">&#39;qa&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <em>encode_queries()</em> will call the <em>_encode()</em> functions (similar to the <em>encode()</em> in <code class="docutils literal notranslate"><span class="pre">FlagModel</span></code>) and add the corresponding query instruction of the given <em>task</em> in front of each of the input <em>queries</em>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">LLMEmbedder</span><span class="o">.</span><span class="n">encode_keys</span><span class="p">(</span>
+    <span class="n">keys</span><span class="p">,</span> 
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> 
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span> 
+    <span class="n">task</span><span class="o">=</span><span class="s1">&#39;qa&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Similarly, <em>encode_keys()</em> also calls <em>_encode()</em> and automatically add instructions according to given task.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">FlagEmbedding</span> <span class="kn">import</span> <span class="n">LLMEmbedder</span>
+
+<span class="c1"># load the LLMEmbedder model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LLMEmbedder</span><span class="p">(</span><span class="s1">&#39;BAAI/llm-embedder&#39;</span><span class="p">,</span> <span class="n">use_fp16</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Define queries and keys</span>
+<span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;test query 1&quot;</span><span class="p">,</span> <span class="s2">&quot;test query 2&quot;</span><span class="p">]</span>
+<span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;test key 1&quot;</span><span class="p">,</span> <span class="s2">&quot;test key 2&quot;</span><span class="p">]</span>
+
+<span class="c1"># Encode for a specific task (qa, icl, chat, lrlm, tool, convsearch)</span>
+<span class="n">task</span> <span class="o">=</span> <span class="s2">&quot;qa&quot;</span>
+<span class="n">query_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_queries</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">)</span>
+<span class="n">key_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_keys</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="n">task</span><span class="p">)</span>
+
+<span class="c1"># compute the similarity scores</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">query_embeddings</span> <span class="o">@</span> <span class="n">key_embeddings</span><span class="o">.</span><span class="n">T</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">similarity</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.89705944 0.85341793]
+ [0.8462474  0.90914035]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bge-m3">
+<h3>2.4 BGE M3<a class="headerlink" href="#bge-m3" title="Link to this heading">#</a></h3>
+<p>BGE-M3 is the new version of BGE models that is distinguished for its versatility in:</p>
+<ul class="simple">
+<li><p>Multi-Functionality: Simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval.</p></li>
+<li><p>Multi-Linguality: Supports more than 100 working languages.</p></li>
+<li><p>Multi-Granularity: Can proces inputs with different granularityies, spanning from short sentences to long documents of up to 8192 tokens.</p></li>
+</ul>
+<p>For more details, feel free to check out the <a class="reference external" href="https://arxiv.org/pdf/2402.03216">paper</a>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Model</p></th>
+<th class="head text-center"><p>Language</p></th>
+<th class="head text-center"><p>Parameters</p></th>
+<th class="head text-center"><p>Model Size</p></th>
+<th class="head text-center"><p>Description</p></th>
+<th class="head text-center"><p>Base Model</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p><a class="reference external" href="https://huggingface.co/BAAI/bge-m3">BAAI/bge-m3</a></p></td>
+<td class="text-center"><p>Multilingual</p></td>
+<td class="text-center"><p>568M</p></td>
+<td class="text-center"><p>2.27 GB</p></td>
+<td class="text-center"><p>Multi-Functionality(dense retrieval, sparse retrieval, multi-vector(colbert)), Multi-Linguality, and Multi-Granularity(8192 tokens)</p></td>
+<td class="text-center"><p>XLM-RoBERTa</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">FlagEmbedding</span> <span class="kn">import</span> <span class="n">BGEM3FlagModel</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">BGEM3FlagModel</span><span class="p">(</span><span class="s1">&#39;BAAI/bge-m3&#39;</span><span class="p">,</span> <span class="n">use_fp16</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;What is BGE M3?&quot;</span><span class="p">,</span> <span class="s2">&quot;Defination of BM25&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Fetching 30 files: 100%|██████████| 30/30 [00:00&lt;00:00, 228780.22it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">BGEM3FlagModel</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">sentences</span><span class="p">,</span> 
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> 
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">8192</span><span class="p">,</span> 
+    <span class="n">return_dense</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+    <span class="n">return_sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> 
+    <span class="n">return_colbert_vecs</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>It returns a dictionary like:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s1">&#39;dense_vecs&#39;</span><span class="p">:</span> <span class="s1">&#39;array of dense embeddings of inputs if return_dense=True, otherwise None,&#39;</span>
+    <span class="s1">&#39;lexical_weights&#39;</span><span class="p">:</span> <span class="s1">&#39;array of dictionaries with keys and values are ids of tokens and their corresponding weights if return_sparse=True, otherwise None,&#39;</span>
+    <span class="s1">&#39;colbert_vecs&#39;</span><span class="p">:</span> <span class="s1">&#39;array of multi-vector embeddings of inputs if return_cobert_vecs=True, otherwise None,&#39;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># If you don&#39;t need such a long length of 8192 input tokens, you can set max_length to a smaller value to speed up encoding.</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">sentences</span><span class="p">,</span> 
+    <span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">return_dense</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+    <span class="n">return_sparse</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+    <span class="n">return_colbert_vecs</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dense embedding:</span><span class="se">\n</span><span class="si">{</span><span class="n">embeddings</span><span class="p">[</span><span class="s1">&#39;dense_vecs&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;sparse embedding:</span><span class="se">\n</span><span class="si">{</span><span class="n">embeddings</span><span class="p">[</span><span class="s1">&#39;lexical_weights&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;multi-vector:</span><span class="se">\n</span><span class="si">{</span><span class="n">embeddings</span><span class="p">[</span><span class="s1">&#39;colbert_vecs&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>dense embedding:
+[[-0.03411707 -0.04707828 -0.00089447 ...  0.04828531  0.00755427
+  -0.02961654]
+ [-0.01041734 -0.04479263 -0.02429199 ... -0.00819298  0.01503995
+   0.01113793]]
+sparse embedding:
+[defaultdict(&lt;class &#39;int&#39;&gt;, {&#39;4865&#39;: 0.08362077, &#39;83&#39;: 0.081469566, &#39;335&#39;: 0.12964639, &#39;11679&#39;: 0.25186998, &#39;276&#39;: 0.17001738, &#39;363&#39;: 0.26957875, &#39;32&#39;: 0.040755156}), defaultdict(&lt;class &#39;int&#39;&gt;, {&#39;262&#39;: 0.050144322, &#39;5983&#39;: 0.13689369, &#39;2320&#39;: 0.045134712, &#39;111&#39;: 0.06342201, &#39;90017&#39;: 0.25167602, &#39;2588&#39;: 0.33353207})]
+multi-vector:
+[array([[-8.6726490e-03, -4.8921868e-02, -3.0449261e-03, ...,
+        -2.2082448e-02,  5.7268854e-02,  1.2811369e-02],
+       [-8.8765034e-03, -4.6860173e-02, -9.5845405e-03, ...,
+        -3.1404708e-02,  5.3911421e-02,  6.8714428e-03],
+       [ 1.8445771e-02, -4.2359587e-02,  8.6754939e-04, ...,
+        -1.9803897e-02,  3.8384371e-02,  7.6852231e-03],
+       ...,
+       [-2.5543230e-02, -1.6561864e-02, -4.2125367e-02, ...,
+        -4.5030322e-02,  4.4091221e-02, -1.0043185e-02],
+       [ 4.9905590e-05, -5.5475257e-02,  8.4884483e-03, ...,
+        -2.2911752e-02,  6.0379632e-02,  9.3577225e-03],
+       [ 2.5895271e-03, -2.9331330e-02, -1.8961012e-02, ...,
+        -8.0389353e-03,  3.2842189e-02,  4.3894034e-02]], dtype=float32), array([[ 0.01715658,  0.03835309, -0.02311821, ...,  0.00146474,
+         0.02993429, -0.05985384],
+       [ 0.00996143,  0.039217  , -0.03855301, ...,  0.00599566,
+         0.02722942, -0.06509776],
+       [ 0.01777726,  0.03919311, -0.01709837, ...,  0.00805702,
+         0.03988946, -0.05069073],
+       ...,
+       [ 0.05474931,  0.0075684 ,  0.00329455, ..., -0.01651684,
+         0.02397249,  0.00368039],
+       [ 0.0093503 ,  0.05022853, -0.02385841, ...,  0.02575599,
+         0.00786822, -0.03260205],
+       [ 0.01805054,  0.01337725,  0.00016697, ...,  0.01843987,
+         0.01374448,  0.00310114]], dtype=float32)]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="1.1.1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Intro to Embedding</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="1.2.2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">BGE Explanation</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#baai-general-embedding">1. BAAI General Embedding</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bge-series-models">2. BGE Series Models</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bge">2.1 BGE</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bge-v1-5">2.2 BGE v1.5</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#llm-embedder">2.3 LLM-Embedder</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bge-m3">2.4 BGE M3</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/1_Embedding/1.2.1.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
