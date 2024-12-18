@@ -7,9 +7,7 @@ First, load one of the BGE embedding model:
 
     from FlagEmbedding import FlagAutoModel
 
-    model = FlagAutoModel.from_finetuned('BAAI/bge-base-en-v1.5',
-                                        query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
-                                        use_fp16=True)
+    model = FlagAutoModel.from_finetuned('BAAI/bge-base-en-v1.5')
 
 .. tip::
 
@@ -22,6 +20,7 @@ First, load one of the BGE embedding model:
 Then, feed some sentences to the model and get their embeddings:
 
 .. code:: python
+
     sentences_1 = ["I love NLP", "I love machine learning"]
     sentences_2 = ["I love BGE", "I love text retrieval"]
     embeddings_1 = model.encode(sentences_1)

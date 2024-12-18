@@ -89,6 +89,7 @@ To use a single GPU:
     model = FlagModel('BAAI/bge-base-en-v1.5', devices=0)
 
 |
+
 Useful Links:
 
 `API <../API/inference/embedder/encoder_only/BaseEmbedder>`_

@@ -11,3 +11,9 @@ BGE
    bge_m3
    bge_icl
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Reranker
+
+   bge_reranker
+   bge_reranker_v2

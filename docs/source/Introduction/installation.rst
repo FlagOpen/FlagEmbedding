@@ -6,7 +6,7 @@ Installation
 Using pip:
 ----------
 
-If you do not want to finetune the models, you can install the package without the finetune dependency:
+If you do not need to finetune the models, you can install the package without the finetune dependency:
 
 .. code:: bash
 
@@ -28,18 +28,18 @@ Clone the repository and install
 
     git clone https://github.com/FlagOpen/FlagEmbedding.git
     cd FlagEmbedding
-    # If you do not want to finetune the models, you can install the package without the finetune dependency:
+    # If you do not need to finetune the models, you can install the package without the finetune dependency:
     pip install  .
-    # If you want to finetune the models, you can install the package with the finetune dependency:
+    # If you want to finetune the models, install the package with the finetune dependency:
     pip install  .[finetune]
 
 For development in editable mode:
 
 .. code:: bash
 
-    # If you do not want to finetune the models, you can install the package without the finetune dependency:
+    # If you do not need to finetune the models, you can install the package without the finetune dependency:
     pip install -e .
-    # If you want to finetune the models, you can install the package with the finetune dependency:
+    # If you want to finetune the models, install the package with the finetune dependency:
     pip install -e .[finetune]
 
 PyTorch-CUDA

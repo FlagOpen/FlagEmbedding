@@ -119,5 +119,5 @@ Usage
 Useful Links:
 
 `API <../API/inference/embedder/encoder_only/M3Embedder>`_
-`Tutorial <>`_
+`Tutorial <https://github.com/FlagOpen/FlagEmbedding/blob/master/Tutorials/1_Embedding/1.2.4_BGE-M3.ipynb>`_
 `Example <https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/inference/embedder/encoder_only>`_
