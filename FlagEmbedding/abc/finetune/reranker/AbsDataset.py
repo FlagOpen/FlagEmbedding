@@ -183,7 +183,7 @@ class AbsRerankerCollator(DataCollatorWithPadding):
     query_max_len: int = 32
     passage_max_len: int = 128
 
-    def __call__(self, features) -> list[BatchEncoding]:
+    def __call__(self, features) -> List[BatchEncoding]:
         teacher_scores = [f[1] for f in features]
         if teacher_scores[0] is None:
             teacher_scores = None
