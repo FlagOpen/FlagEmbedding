@@ -36,20 +36,17 @@ exclude_patterns = []
 
 # html_theme = 'furo'
 html_theme = "pydata_sphinx_theme"
-# html_logo = "_static/img/BAAI_logo.png"
+html_logo = "_static/img/bge-logo.jpeg"
 html_title = "BGE"
 html_static_path = ['_static']
 html_css_files = ["css/custom.css"]
 html_theme_options = {
-#     # "light_logo": "/_static/img/BAAI_logo.png",
-#     "light_css_variables": {
-#         "color-brand-primary": "#238be8",
-#         "color-brand-content": "#238be8",
-#     },
-#     "dark_css_variables": {
-#         "color-brand-primary": "#FBCB67",
-#         "color-brand-content": "#FBCB67",
-#     },
+    "light_logo": "_static/img/bge-logo.jpeg",
+    "dark_logo": "_static/img/bge-logo.jpeg",
+    # "logo": {
+    #     "text": "BGE",
+    #     "image_dark": "_static/img/bge-logo.jpeg",
+    # },
     "navigation_depth": 5,
 }
 

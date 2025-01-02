@@ -14,7 +14,7 @@ BGE-Reranker-v2
 +------------------------------------------------------------------------------------------------------------------+-----------------------+-------------+--------------+---------------------------------------------------------------------------------------------------------------------------------------------------------+
 
 
-.. tip:: Suggessions on model selection
+.. tip::
 
     You can select the model according your senario and resource:
 
@@ -28,7 +28,9 @@ BGE-Reranker-v2
 Usage
 -----
 
-Use bge-reranker-v2-m3 in the same way as bge-reranker-base and bge-reranker-large.
+**bge-reranker-v2-m3**
+
+Use :code:`bge-reranker-v2-m3` in the same way as bge-reranker-base and bge-reranker-large.
 
 .. code:: python
 
@@ -43,6 +45,8 @@ Use bge-reranker-v2-m3 in the same way as bge-reranker-base and bge-reranker-lar
 
     print(score)
 
+**bge-reranker-v2-gemma**
+
 Use the :code:`FlagLLMReranker` class for bge-reranker-v2-gemma.
 
 .. code:: python
@@ -54,6 +58,8 @@ Use the :code:`FlagLLMReranker` class for bge-reranker-v2-gemma.
 
     score = reranker.compute_score(['query', 'passage'])
     print(score)
+
+**bge-reranker-v2-minicpm-layerwise**
 
 Use the :code:`LayerWiseFlagLLMReranker` class for bge-reranker-v2-minicpm-layerwise.
 
@@ -67,6 +73,8 @@ Use the :code:`LayerWiseFlagLLMReranker` class for bge-reranker-v2-minicpm-layer
     # Adjusting 'cutoff_layers' to pick which layers are used for computing the score.
     score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28]) 
     print(score)
+
+**bge-reranker-v2.5-gemma2-lightweight**
 
 Use the :code:`LightWeightFlagLLMReranker` class for bge-reranker-v2.5-gemma2-lightweight.
 
