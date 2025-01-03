@@ -1,6 +1,10 @@
 BGE
 ===
 
+.. figure:: ../_static/img/bge_logo.jpeg
+   :width: 250
+   :align: center
+
 **BGE** stands for **BAAI General Embeddings**, which is a series of embedding models released by BAAI.
 
 .. toctree::

@@ -11,7 +11,7 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 sys.path.insert(0, os.path.abspath("../.."))
 
-project = 'FlagEmbedding'
+project = 'BGE'
 copyright = '2024, BAAI'
 author = 'BAAI'
 
@@ -36,24 +36,17 @@ exclude_patterns = []
 
 # html_theme = 'furo'
 html_theme = "pydata_sphinx_theme"
-html_logo = "_static/img/bge-logo.jpeg"
-html_title = "BGE"
+html_logo = "_static/img/bge_logo.jpeg"
 html_static_path = ['_static']
 html_css_files = ["css/custom.css"]
-html_theme_options = {
-    "light_logo": "_static/img/bge-logo.jpeg",
-    "dark_logo": "_static/img/bge-logo.jpeg",
-    # "logo": {
-    #     "text": "BGE",
-    #     "image_dark": "_static/img/bge-logo.jpeg",
-    # },
-    "navigation_depth": 5,
-}
 
 # MyST-NB conf
 nb_execution_mode = "off"
 
 html_theme_options = {
+    "logo": {
+        "text": "BGE",
+    },
     "external_links": [
         {
             "url": "https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d",
@@ -77,6 +70,7 @@ html_theme_options = {
             "icon": "fa-solid fa-cube",
         }
     ],
+    "navigation_depth": 5,
     "header_links_before_dropdown": 5,
 }
 

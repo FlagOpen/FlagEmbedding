@@ -6,12 +6,12 @@
 :html_theme.sidebar_secondary.remove: True
 
 
-BGE
-===
+Welcome to BGE!
+===============
 
-Welcome to BGE documentation!
+.. Welcome to BGE documentation!
 
-.. figure:: _static/img/bge_logo.jpg
+.. figure:: _static/img/bge_panda.jpg
    :width: 400
    :align: center
 
