@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Type
+from typing import Type, List
 from dataclasses import dataclass
 from collections import OrderedDict
 
@@ -239,8 +239,8 @@ AUTO_EMBEDDER_MAPPING.update(BCE_MAPPING)
 
 # TODO: Add more models, such as Jina, Stella_v5, NV-Embed, etc.
 
-def support_native_bge_model_list():
+def support_native_bge_model_list()->List[str]:
     return list(BGE_MAPPING.keys())
 
-def support_model_list():
-    return (AUTO_EMBEDDER_MAPPING.keys())
+def support_model_list()->List[str]:
+    return list(AUTO_EMBEDDER_MAPPING.keys())
