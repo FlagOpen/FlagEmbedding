@@ -24,5 +24,6 @@ Quickly get started with:
    :maxdepth: 1
    :caption: Concept
 
+   IR
    model
    retrieval_demo
