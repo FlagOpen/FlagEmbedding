@@ -26,6 +26,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx_design",
     "myst_nb",
+    "sphinxcontrib.googleanalytics",
 ]
 
 templates_path = ['_templates']
@@ -77,3 +78,5 @@ html_theme_options = {
 html_context = {
    "default_mode": "light"
 }
+
+googleanalytics_id = 'G-X4B1E1Q35K'
