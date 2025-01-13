@@ -45,7 +45,8 @@ class DecoderOnlyEmbedderICLRunner(AbsEmbedderRunner):
             token=self.model_args.token,
             cache_dir=self.model_args.cache_dir,
             use_fast=False,
-            add_eos_token=True
+            add_eos_token=True,
+            trust_remote_code=self.model_args.trust_remote_code,
         )
 
         if tokenizer.pad_token is None:

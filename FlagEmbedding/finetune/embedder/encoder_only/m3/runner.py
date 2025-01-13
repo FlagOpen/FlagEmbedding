@@ -142,6 +142,14 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
                 if "position_embeddings" in k:
                     logging.info(f"Freeze the parameters for {k}")
                     v.requires_grad = False
+        
+        if self.training_args.fix_encoder:
+            for k, v in model.named_parameters():
+                if "colbert_linear" in k or 'sparse_linear' in k:
+                    logging.info(f"train the parameters for {k}")
+                else:
+                    v.requires_grad = False
+        
         return tokenizer, model
 
     def load_trainer(self) -> EncoderOnlyEmbedderM3Trainer:
