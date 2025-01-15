@@ -10,7 +10,7 @@ from FlagEmbedding.abc.evaluation import AbsEvalRunner, AbsEvalModelArgs
 from .arguments import MTEBEvalArgs
 from .searcher import MTEBEvalDenseRetriever, MTEBEvalReranker
 from .prompts import get_task_def_by_task_name_and_type
-from  .examples import examples_dict
+
 
 logger = logging.getLogger(__name__)
 

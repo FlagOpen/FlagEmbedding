@@ -1,4 +1,4 @@
 runner
 ======
 
-.. autoclass:: FlagEmbedding.evaluation.mteb.MTEBEvalRunner
+.. autoclass:: FlagEmbedding.evaluation.mteb.runner.MTEBEvalRunner

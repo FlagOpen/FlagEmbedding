@@ -1,4 +1,4 @@
 data loader
 ===========
 
-.. autoclass:: FlagEmbedding.evaluation.bier.BEIREvalDataLoader
+.. autoclass:: FlagEmbedding.evaluation.beir.data_loader.BEIREvalDataLoader
