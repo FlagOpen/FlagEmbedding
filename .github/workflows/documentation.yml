@@ -11,9 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
-      - name: Install dependencies
+      - name: Install doc dependencies
         run: |
           pip install . sphinx myst_parser myst-nb sphinx-design pydata-sphinx-theme sphinxcontrib-googleanalytics
+      - name: Install content dependencies
+        run: |
+          pip install faiss-cpu air-benchmark
       - name: Sphinx build
         run: |
           sphinx-build docs/source docs/build
