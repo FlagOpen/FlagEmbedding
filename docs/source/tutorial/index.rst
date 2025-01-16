@@ -6,7 +6,6 @@ In this section, we provide hands on introduction to different topics that highl
 To run the tutorials, clone the GitHub repo and check the `Tutorials <https://github.com/FlagOpen/FlagEmbedding/tree/master/Tutorials>`_ folder.
 
 .. toctree::
-   :hidden:
    :maxdepth: 1
    :caption: Tutorials
 
@@ -16,3 +15,4 @@ To run the tutorials, clone the GitHub repo and check the `Tutorials <https://gi
    4_Evaluation
    5_Reranking
    6_RAG
+   7_Finetuning
