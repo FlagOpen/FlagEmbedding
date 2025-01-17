@@ -47,8 +47,7 @@ Below are some commonly asked questions.
     :animate: fade-in-slide-down
 
     - Dense retrieval: map the text into a single embedding, e.g., `DPR <https://arxiv.org/abs/2004.04906>`_, `BGE-v1.5 <../bge/bge_v1_v1.5>`_
-    - Sparse retrieval (lexical matching): a vector of size equal to the vocabulary, with the majority of positions set to zero, calculating a weight only for tokens present in the text. 
-    e.g., BM25, `unicoil <https://arxiv.org/pdf/2106.14807>`_, and `splade <https://arxiv.org/abs/2107.05720>`_
+    - Sparse retrieval (lexical matching): a vector of size equal to the vocabulary, with the majority of positions set to zero, calculating a weight only for tokens present in the text. e.g., BM25, `unicoil <https://arxiv.org/pdf/2106.14807>`_, and `splade <https://arxiv.org/abs/2107.05720>`_
     - Multi-vector retrieval: use multiple vectors to represent a text, e.g., `ColBERT <https://arxiv.org/abs/2004.12832>`_.
 
 .. dropdown:: Recommended vector database?

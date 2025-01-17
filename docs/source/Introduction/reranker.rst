@@ -1,26 +1,5 @@
-Model
-=====
-
-If you are already familiar with the concepts, take a look at the :doc:`BGE models <../bge/index>`!
-
-Embedder
---------
-
-Embedder, or embedding model, bi-encoder, is a model designed to convert data, usually text, codes, or images, into sparse or dense numerical vectors (embeddings) in a high dimensional vector space.
-These embeddings capture the semantic meaning or key features of the input, which enable efficient comparison and analysis.
-
-A very famous demonstration is the example from `word2vec <https://arxiv.org/abs/1301.3781>`_. It shows how word embeddings capture semantic relationships through vector arithmetic:
-
-.. image:: ../_static/img/word2vec.png
-   :width: 500
-   :align: center
-
-Nowadays, embedders are capable of mapping sentences and even passages into vector space.
-They are widely used in real world tasks such as retrieval, clustering, etc.
-In the era of LLMs, embedding models play a pivot role in RAG, enables LLMs to access and integrate relevant context from vast external datasets.
-
 Reranker
---------
+========
 
 Reranker, or Cross-Encoder, is a model that refines the ranking of candidate pairs (e.g., query-document pairs) by jointly encoding and scoring them.
 

@@ -25,5 +25,6 @@ Quickly get started with:
    :caption: Concept
 
    IR
-   model
+   embedder
+   reranker
    retrieval_demo
