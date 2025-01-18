@@ -409,7 +409,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         Returns:
             datasets.DatasetDict: A dict of relevance of query and document.
         """
-        checked_split = self.check_splits(split)
+        checked_split = self.check_splits(split, dataset_name=dataset_name)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
         split = checked_split[0]
@@ -450,7 +450,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         Returns:
             datasets.DatasetDict: A dict of queries with id as key, query text as value.
         """
-        checked_split = self.check_splits(split)
+        checked_split = self.check_splits(split, dataset_name=dataset_name)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
         split = checked_split[0]
