@@ -145,11 +145,12 @@ class DecoderOnlyEmbedderICLRunner(AbsEmbedderRunner):
         """
         Run the finetune.
         """
-        Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
-        
-        # Training
-        self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
-        self.trainer.save_model()
+        if not self.model_args.only_merge_lora_model:
+            Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
+            
+            # Training
+            self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
+            self.trainer.save_model()
         
         # save merged model
         if self.model_args.save_merged_lora_model and self.training_args.process_index == 0:

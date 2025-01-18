@@ -69,3 +69,8 @@ class DecoderOnlyEmbedderModelArguments(AbsEmbedderModelArguments):
         default=False,
         metadata={"help": "If passed, will merge the lora modules and save the entire model."}
     )
+
+    only_merge_lora_model: bool = field(
+        default=False,
+        metadata={"help": "If passed, will only merge the lora modules and save the entire model."}
+    )
