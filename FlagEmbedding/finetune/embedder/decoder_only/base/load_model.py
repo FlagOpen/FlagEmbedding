@@ -177,7 +177,9 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = PeftModel.from_pretrained(model, find_largest_checkpoint(output_dir))
         model = model.merge_and_unload()
 
-    model.save_pretrained(os.path.join(output_dir, 'merged_model'))
-
     tokenizer = AutoTokenizer.from_pretrained(output_dir, trust_remote_code=model_args.trust_remote_code)
     tokenizer.save_pretrained(os.path.join(output_dir, 'merged_model'))
+
+    # modify the vocab size in the model configuration
+    model.config.vocab_size = len(tokenizer)
+    model.save_pretrained(os.path.join(output_dir, 'merged_model'))

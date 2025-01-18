@@ -29,6 +29,9 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         training_args: AbsEmbedderTrainingArguments
     ):
         super().__init__(model_args, data_args, training_args)
+        self.model_args: DecoderOnlyEmbedderModelArguments
+        self.data_args: AbsEmbedderDataArguments
+        self.training_args: AbsEmbedderTrainingArguments
 
     def load_tokenizer_and_model(self) -> Tuple[PreTrainedTokenizer, AbsEmbedderModel]:
         """Load tokenizer and model.
@@ -117,11 +120,12 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
         """
         Run the finetune.
         """
-        Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
+        if not self.model_args.only_merge_lora_model:
+            Path(self.training_args.output_dir).mkdir(parents=True, exist_ok=True)
 
-        # Training
-        self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
-        self.trainer.save_model()
+            # Training
+            self.trainer.train(resume_from_checkpoint=self.training_args.resume_from_checkpoint)
+            self.trainer.save_model()
 
         # save merged model
         if self.model_args.save_merged_lora_model and self.training_args.process_index == 0:
