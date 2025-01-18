@@ -145,7 +145,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         if dataset_name != 'cqadupstack':
             qrels = datasets.load_dataset(
                 'BeIR/{d}-qrels'.format(d=dataset_name),
-                split=split, 
+                split=split if split != 'dev' else 'validation', 
                 trust_remote_code=True,
                 cache_dir=self.cache_dir,
                 download_mode=self.hf_download_mode
