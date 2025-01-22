@@ -368,7 +368,7 @@ class LightweightLLMReranker(AbsReranker):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-            except torch.OutofMemoryError as e:
+            except torch.OutOfMemoryError as e:
                 batch_size = batch_size * 3 // 4
 
         all_scores = []
@@ -435,7 +435,7 @@ class LightweightLLMReranker(AbsReranker):
             if normalize:
                 all_scores[i] = [sigmoid(score) for score in all_scores[i]]
     
-        if isinstance(all_scores[0], list):
+        if len(all_scores) == 1 and isinstance(all_scores[0], list):
             all_scores = all_scores[0]
 
         return all_scores

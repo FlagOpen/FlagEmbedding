@@ -53,6 +53,7 @@ BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of 
 
 ## News
 
+- 05/12/2024: :book: We built the [BGE documentation](www.bge-model.com) for centralized BGE information and materials!
 - 10/29/2024: :earth_asia: We created WeChat group for BGE. Scan the [QR code](./imgs/BGE_WeChat_Group.png) to join the group chat! To get the first hand message about our updates and new release, or having any questions or ideas, join us now!
 - <img src="./imgs/BGE_WeChat_Group.png" alt="bge_wechat_group" class="center" width="200">
 
@@ -109,16 +110,16 @@ Clone the repository and install
 ```
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
-# If you do not want to finetune the models, you can install the package without the finetune dependency:
+# If you do not need to finetune the models, you can install the package without the finetune dependency:
 pip install  .
-# If you want to finetune the models, you can install the package with the finetune dependency:
+# If you want to finetune the models, install the package with the finetune dependency:
 # pip install  .[finetune]
 ```
 For development in editable mode:
 ```
-# If you do not want to finetune the models, you can install the package without the finetune dependency:
+# If you do not need to finetune the models, you can install the package without the finetune dependency:
 pip install -e .
-# If you want to finetune the models, you can install the package with the finetune dependency:
+# If you want to finetune the models, install the package with the finetune dependency:
 # pip install -e .[finetune]
 ```
 
@@ -159,7 +160,7 @@ Currently we are updating the [tutorials](./Tutorials/), we aim to create a comp
 The following contents are releasing in the upcoming weeks:
 
 - Evaluation
-- RAG
+- BGE-EN-ICL
 
 <details>
   <summary>The whole tutorial roadmap</summary>

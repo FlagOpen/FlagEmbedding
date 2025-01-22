@@ -224,7 +224,7 @@ If you want to evaluate the model(or your model) on **your data**, you can refer
 
 - **C-MTEB**:  
 We create the benchmark C-MTEB for Chinese text embedding which consists of 31 datasets from 6 tasks. 
-Please refer to [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/C_MTEB/README.md) for a detailed introduction.
+Please refer to [C_MTEB](https://github.com/FlagOpen/FlagEmbedding/blob/master/research/C_MTEB/README.md) for a detailed introduction.
 
 | Model | Embedding dimension | Avg | Retrieval | STS | PairClassification | Classification | Reranking | Clustering |
 |:-------------------------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|

@@ -1,4 +1,4 @@
 evaluator
 =========
 
-.. autoclass:: FlagEmbedding.evaluation.beir.BEIREvaluator
+.. autoclass:: FlagEmbedding.evaluation.beir.evaluator.BEIREvaluator

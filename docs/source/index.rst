@@ -3,23 +3,100 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-BAAI General Embedding
-======================
+:html_theme.sidebar_secondary.remove: True
 
-|
-|
 
-.. image:: _static/img/bge_logo.jpg
-   :target: https://github.com/FlagOpen/FlagEmbedding
-   :width: 500
+Welcome to BGE!
+===============
+
+.. Welcome to BGE documentation!
+
+.. figure:: _static/img/bge_panda.jpg
+   :width: 400
    :align: center
 
-|
-|
+.. grid:: 3
+   :gutter: 3
 
-Welcome to BGE documentation!
+   .. grid-item-card:: :octicon:`milestone` Introduction
 
-We aim for building one-stop retrieval toolkit for search and RAG.
+      New to BGE? Quickly get hands-on information.
+
+      +++
+
+      .. button-ref:: Introduction/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To Introduction
+
+
+   .. grid-item-card:: :octicon:`package` BGE Models
+
+      Get to know BGE embedding models and rerankers.
+
+      +++
+
+      .. button-ref:: bge/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To BGE
+
+
+   .. grid-item-card:: :octicon:`log` Tutorials
+
+      Find useful tutorials to start with if you are looking for guidance
+
+      +++
+
+      .. button-ref:: tutorial/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To Tutorials
+
+   .. grid-item-card:: :octicon:`codescan` API
+
+      Check the API of classes and functions in FlagEmbedding.
+
+      +++
+
+      .. button-ref:: API/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To APIs
+
+   .. grid-item-card:: :octicon:`question` FAQ
+
+      Take a look of questions people frequently asked.
+
+      +++
+
+      .. button-ref:: FAQ/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To FAQ
+   
+   .. grid-item-card:: :octicon:`people` Community
+
+      Welcome to join BGE community!
+
+      +++
+
+      .. button-ref:: community/index
+         :expand:
+         :color: primary
+         :click-parent:
+
+         To Community
 
 Besides the resources we provide here in this documentation, please visit our `GitHub repo <https://github.com/FlagOpen/FlagEmbedding>`_ for more contents including:
 
@@ -49,27 +126,39 @@ BGE is developed by Beijing Academy of Artificial Intelligence (BAAI).
    :maxdepth: 1
    :caption: Introduction
 
-   Introduction/installation
-   Introduction/quick_start
+   Introduction/index
 
 .. toctree::
    :hidden:
-   :maxdepth: 5
-   :caption: API
+   :maxdepth: 1
+   :caption: BGE
 
-   API/abc
-   API/inference
-   API/evaluation
-   API/finetune
+   bge/index
 
 .. toctree::
    :hidden:
    :maxdepth: 2
    :caption: Tutorials
 
-   tutorial/1_Embedding
-   tutorial/2_Metrics
-   tutorial/3_Indexing
-   tutorial/4_Evaluation
-   tutorial/5_Reranking
-   tutorial/6_RAG
+   tutorial/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 5
+   :caption: API
+
+   API/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: FAQ
+
+   FAQ/index
+
+.. toctree::
+   :hidden:
+   :maxdepth: 1
+   :caption: Community
+
+   community/index

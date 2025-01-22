@@ -462,6 +462,8 @@ class AbsEmbedder(ABC):
             Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
         """
         if isinstance(results_list[0], torch.Tensor):
+            # move all tensors to the same device
+            results_list = [res.to(self.target_devices[0]) for res in results_list]
             return torch.cat(results_list, dim=0)
         elif isinstance(results_list[0], np.ndarray):
             return np.concatenate(results_list, axis=0)

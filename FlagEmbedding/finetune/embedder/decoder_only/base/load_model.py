@@ -51,13 +51,15 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
         config = AutoConfig.from_pretrained(
             model_args.config_name,
             token=model_args.token,
-            cache_dir=model_args.cache_dir
+            cache_dir=model_args.cache_dir,
+            trust_remote_code=model_args.trust_remote_code,
         )
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
             model_args.model_name_or_path,
             token=model_args.token,
-            cache_dir=model_args.cache_dir
+            cache_dir=model_args.cache_dir,
+            trust_remote_code=model_args.trust_remote_code,
         )
     else:
         raise ValueError(
@@ -74,6 +76,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
             config=config,
+            trust_remote_code=model_args.trust_remote_code,
         )
     else:
         logger.info("Training new model from scratch")
@@ -129,13 +132,15 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         config = AutoConfig.from_pretrained(
             model_args.config_name,
             token=model_args.token,
-            cache_dir=model_args.cache_dir
+            cache_dir=model_args.cache_dir,
+            trust_remote_code=model_args.trust_remote_code,
         )
     elif model_args.model_name_or_path:
         config = AutoConfig.from_pretrained(
             model_args.model_name_or_path,
             token=model_args.token,
-            cache_dir=model_args.cache_dir
+            cache_dir=model_args.cache_dir,
+            trust_remote_code=model_args.trust_remote_code,
         )
     else:
         raise ValueError(
@@ -152,6 +157,7 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
             config=config,
+            trust_remote_code=model_args.trust_remote_code,
         )
     else:
         model = model_args.from_config(config)
@@ -171,7 +177,9 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = PeftModel.from_pretrained(model, find_largest_checkpoint(output_dir))
         model = model.merge_and_unload()
 
-    model.save_pretrained(os.path.join(output_dir, 'merged_model'))
-
-    tokenizer = AutoTokenizer.from_pretrained(output_dir)
+    tokenizer = AutoTokenizer.from_pretrained(output_dir, trust_remote_code=model_args.trust_remote_code)
     tokenizer.save_pretrained(os.path.join(output_dir, 'merged_model'))
+
+    # modify the vocab size in the model configuration
+    model.config.vocab_size = len(tokenizer)
+    model.save_pretrained(os.path.join(output_dir, 'merged_model'))

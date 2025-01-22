@@ -29,7 +29,7 @@ python hn_mine.py \
 - **`output_file`**: path to save JSON data with mined hard negatives for finetuning
 - **`negative_number`**: the number of sampled negatives
 - **`range_for_sampling`**: where to sample negative. For example, `2-100` means sampling `negative_number` negatives from top2-top200 documents. **You can set larger value to reduce the difficulty of negatives (e.g., set it `60-300` to sample negatives from top60-300 passages)**
-- **`candidate_pool`**: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. The format of this file is the same as [pretrain data](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/pretrain#2-data-format). If input a candidate_pool, this script will retrieve negatives from this file.
+- **`candidate_pool`**: The pool to retrieval. The default value is None, and this script will retrieve from the combination of all `neg` in `input_file`. If provided, it should be a jsonl file, each line is a dict with a key `text`. If input a candidate_pool, this script will retrieve negatives from this file.
 - **`use_gpu_for_searching`**: whether to use faiss-gpu to retrieve negatives.
 - **`search_batch_size`**: batch size for searching. Default is 64.
 - **`embedder_name_or_path`**: The name or path to the embedder.

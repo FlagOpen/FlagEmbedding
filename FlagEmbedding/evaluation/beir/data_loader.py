@@ -145,7 +145,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         if dataset_name != 'cqadupstack':
             qrels = datasets.load_dataset(
                 'BeIR/{d}-qrels'.format(d=dataset_name),
-                split=split, 
+                split=split if split != 'dev' else 'validation', 
                 trust_remote_code=True,
                 cache_dir=self.cache_dir,
                 download_mode=self.hf_download_mode
@@ -409,7 +409,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         Returns:
             datasets.DatasetDict: A dict of relevance of query and document.
         """
-        checked_split = self.check_splits(split)
+        checked_split = self.check_splits(split, dataset_name=dataset_name)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
         split = checked_split[0]
@@ -450,7 +450,7 @@ class BEIREvalDataLoader(AbsEvalDataLoader):
         Returns:
             datasets.DatasetDict: A dict of queries with id as key, query text as value.
         """
-        checked_split = self.check_splits(split)
+        checked_split = self.check_splits(split, dataset_name=dataset_name)
         if len(checked_split) == 0:
             raise ValueError(f"Split {split} not found in the dataset.")
         split = checked_split[0]
