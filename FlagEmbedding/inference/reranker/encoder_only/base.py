@@ -169,7 +169,7 @@ class BaseReranker(AbsReranker):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-            except torch.OutOfMemoryError as e:
+            except torch.cuda.OutOfMemoryError as e:
                 batch_size = batch_size * 3 // 4
 
         all_scores = []

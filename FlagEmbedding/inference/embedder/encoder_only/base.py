@@ -196,6 +196,38 @@ class BaseEmbedder(AbsEmbedder):
         if self.use_fp16: self.model.half()
 
         self.model.to(device)
+        
+        return self.encode_only(
+            sentences=sentences,
+            batch_size=batch_size,
+            max_length=max_length,
+            convert_to_numpy=convert_to_numpy,
+            device=device,
+            **kwargs
+        )
+    
+    @torch.no_grad()
+    def encode_only(
+        self,
+        sentences: Union[List[str], str],
+        batch_size: int = 256,
+        max_length: int = 512,
+        convert_to_numpy: bool = True,
+        device: Any = None,
+        **kwargs: Any
+    ):
+        """Encode input sentences.
+
+        Args:
+            sentences (Union[List[str], str]): Input sentences to encode.
+            batch_size (int, optional): Number of sentences for each iter. Defaults to :data:`256`.
+            max_length (int, optional): Maximum length of tokens. Defaults to :data:`512`.
+            convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will 
+                be a Torch Tensor. Defaults to :data:`True`.
+
+        Returns:
+            Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
+        """
         self.model.eval()
 
         input_was_string = False
@@ -238,7 +270,7 @@ class BaseEmbedder(AbsEmbedder):
                 flag = True
             except RuntimeError as e:
                 batch_size = batch_size * 3 // 4
-            except torch.OutOfMemoryError as e:
+            except torch.cuda.OutOfMemoryError as e:
                 batch_size = batch_size * 3 // 4
 
         # encode
