@@ -1,6 +1,10 @@
 Reranker
 ========
 
+.. tip::
+   
+   If you are already familiar with the concepts, take a look at the :doc:`BGE rerankers <../bge/index>`!
+
 Reranker, or Cross-Encoder, is a model that refines the ranking of candidate pairs (e.g., query-document pairs) by jointly encoding and scoring them.
 
 Typically, we use embedder as a Bi-Encoder. It first computes the embeddings of two input sentences, then compute their similarity using metrics such as cosine similarity or Euclidean distance.

@@ -3,6 +3,7 @@ BGE-M3
 ======
 
 BGE-M3 is a compound and powerful embedding model distinguished for its versatility in:
+
 - **Multi-Functionality**: It can simultaneously perform the three common retrieval functionalities of embedding model: dense retrieval, multi-vector retrieval, and sparse retrieval.
 - **Multi-Linguality**: It can support more than 100 working languages.
 - **Multi-Granularity**: It is able to process inputs of different granularities, spanning from short sentences to long documents of up to 8192 tokens.
