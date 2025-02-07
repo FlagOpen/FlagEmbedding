@@ -87,7 +87,8 @@ class BEIREvaluator(AbsEvaluator):
         if sub_dataset_names is None:
             if dataset_name is not None:
                 save_name = f"{dataset_name}-" + "{split}.json"
-                corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name)
+                if corpus_embd_save_dir is not None:
+                    corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name)
             else:
                 save_name = "{split}.json"
 
@@ -213,7 +214,8 @@ class BEIREvaluator(AbsEvaluator):
             for sub_dataset_name in sub_dataset_names:
                 if dataset_name is not None:
                     save_name = f"{dataset_name}-{sub_dataset_name}-" + "{split}.json"
-                    corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name, sub_dataset_name)
+                    if corpus_embd_save_dir is not None:
+                        corpus_embd_save_dir = os.path.join(corpus_embd_save_dir, str(retriever), dataset_name, sub_dataset_name)
                 else:
                     save_name = f"{sub_dataset_name}-" + "{split}.json"
 
