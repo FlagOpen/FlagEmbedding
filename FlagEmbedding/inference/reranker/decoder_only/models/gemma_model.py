@@ -53,7 +53,7 @@ from transformers.utils import (
 )
 from .gemma_config import CostWiseGemmaConfig
 from transformers.models.gemma2.modeling_gemma2 import Gemma2RMSNorm, Gemma2RotaryEmbedding, rotate_half, apply_rotary_pos_emb
-from transformers.models.gemma2.modeling_gemma2 import Gemma2MLP, repeat_kv, Gemma2Attention, Gemma2FlashAttention2, Gemma2SdpaAttention, GEMMA2_ATTENTION_CLASSES, Gemma2DecoderLayer, GEMMA2_START_DOCSTRING
+from transformers.models.gemma2.modeling_gemma2 import Gemma2MLP, repeat_kv, Gemma2Attention, Gemma2DecoderLayer, GEMMA2_START_DOCSTRING
 from transformers.models.gemma2.modeling_gemma2 import GEMMA2_INPUTS_DOCSTRING
 
 if is_flash_attn_2_available():
@@ -104,12 +104,6 @@ class CostWiseGemma2PreTrainedModel(PreTrainedModel):
             module.weight.data.normal_(mean=0.0, std=std)
             if module.padding_idx is not None:
                 module.weight.data[module.padding_idx].zero_()
-
-GEMMA2_ATTENTION_CLASSES = {
-    "eager": Gemma2Attention,
-    "flash_attention_2": Gemma2FlashAttention2,
-    "sdpa": Gemma2SdpaAttention,
-}
 
 
 _CONFIG_FOR_DOC = "CostWiseGemmaConfig"
