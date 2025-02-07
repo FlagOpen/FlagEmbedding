@@ -36,7 +36,6 @@ class AbsEmbedder(ABC):
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
         convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
             Defaults to :data:`True`.
-        multi_GPU_type (str): The type of multi-GPU inference. Defaults to :data:`"dp"`. You can choose ['dp', 'multi_process'].
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
 
@@ -53,7 +52,6 @@ class AbsEmbedder(ABC):
         query_max_length: int = 512,
         passage_max_length: int = 512,
         convert_to_numpy: bool = True,
-        multi_GPU_type: str = 'dp',
         **kwargs: Any,
     ):
         query_instruction_format = query_instruction_format.replace('\\n', '\n')
@@ -68,8 +66,6 @@ class AbsEmbedder(ABC):
         self.query_max_length = query_max_length
         self.passage_max_length = passage_max_length
         self.convert_to_numpy = convert_to_numpy
-        self._multi_GPU_type = multi_GPU_type
-        self._dp_set = False
 
         for k in kwargs:
             setattr(self, k, kwargs[k])
@@ -80,21 +76,6 @@ class AbsEmbedder(ABC):
         self.tokenizer = None
         self.model = None
         self.pool = None
-    
-    def start_dp(self):
-        if self._multi_GPU_type == 'dp' and \
-            (isinstance(self.target_devices, list) and len(self.target_devices) > 1) and \
-            (isinstance(self.target_devices[0], int) or 'cuda' in self.target_devices[0]) and \
-            self._dp_set == False:
-
-            if self.use_fp16: self.model.half()
-            self.model = self.model.to(torch.device("cuda"))
-            if isinstance(self.target_devices[0], int):
-                self.model = torch.nn.DataParallel(self.model, device_ids = self.target_devices)
-            else:
-                devices = [int(e.split(':')[-1].strip()) for e in self.target_devices]
-                self.model = torch.nn.DataParallel(self.model, device_ids = devices)
-            self._dp_set = True
 
     def stop_self_pool(self):
         if self.pool is not None:
@@ -275,15 +256,6 @@ class AbsEmbedder(ABC):
                 device=self.target_devices[0],
                 **kwargs
             )
-        
-        if self._multi_GPU_type == 'dp':
-            return self.encode_only(
-                sentences,
-                batch_size=batch_size,
-                max_length=max_length,
-                convert_to_numpy=convert_to_numpy,
-                **kwargs
-            )
 
         if self.pool is None:
             self.pool = self.start_multi_process_pool(AbsEmbedder._encode_multi_process_worker)
@@ -293,7 +265,6 @@ class AbsEmbedder(ABC):
             batch_size=batch_size,
             max_length=max_length,
             convert_to_numpy=convert_to_numpy,
-            device=torch.device("cuda"),
             **kwargs
         )
         return embeddings
@@ -309,20 +280,6 @@ class AbsEmbedder(ABC):
         max_length: int = 512,
         convert_to_numpy: bool = True,
         device: Optional[str] = None,
-        **kwargs: Any,
-    ):
-        """
-        This method should encode sentences and return embeddings on a single device.
-        """
-        pass
-
-    def encode_only(
-        self,
-        sentences: Union[List[str], str],
-        batch_size: int = 256,
-        max_length: int = 512,
-        convert_to_numpy: bool = True,
-        device: Any = None,
         **kwargs: Any,
     ):
         """
