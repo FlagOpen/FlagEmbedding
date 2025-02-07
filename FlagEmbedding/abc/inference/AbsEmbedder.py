@@ -13,6 +13,11 @@ import torch
 import numpy as np
 from transformers import is_torch_npu_available
 
+try:
+    import torch_musa
+except Exception:
+    pass
+
 logger = logging.getLogger(__name__)
 
 
@@ -106,6 +111,8 @@ class AbsEmbedder(ABC):
                 return [f"cuda:{i}" for i in range(torch.cuda.device_count())]
             elif is_torch_npu_available():
                 return [f"npu:{i}" for i in range(torch.npu.device_count())]
+            elif hasattr(torch, "musa") and torch.musa.is_available():
+                return [f"musa:{i}" for i in range(torch.musa.device_count())]
             elif torch.backends.mps.is_available():
                 try:
                     return [f"mps:{i}" for i in range(torch.mps.device_count())]
@@ -116,12 +123,18 @@ class AbsEmbedder(ABC):
         elif isinstance(devices, str):
             return [devices]
         elif isinstance(devices, int):
-            return [f"cuda:{devices}"]
+            if hasattr(torch, "musa") and torch.musa.is_available():
+                return [f"musa:{devices}"]
+            else:
+                return [f"cuda:{devices}"]
         elif isinstance(devices, list):
             if isinstance(devices[0], str):
                 return devices
             elif isinstance(devices[0], int):
-                return [f"cuda:{device}" for device in devices]
+                if hasattr(torch, "musa") and torch.musa.is_available():
+                    return [f"musa:{device}" for device in devices]
+                else:
+                    return [f"cuda:{device}" for device in devices]
             else:
                 raise ValueError("devices should be a string or an integer or a list of strings or a list of integers.")
         else:
