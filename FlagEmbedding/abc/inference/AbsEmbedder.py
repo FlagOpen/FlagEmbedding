@@ -130,7 +130,7 @@ class AbsEmbedder(ABC):
                 return [f"cuda:{i}" for i in range(torch.cuda.device_count())]
             elif is_torch_npu_available():
                 return [f"npu:{i}" for i in range(torch.npu.device_count())]
-            elif torch.musa.is_available():
+            elif hasattr(torch, "musa") and torch.musa.is_available():
                 return [f"musa:{i}" for i in range(torch.musa.device_count())]
             elif torch.backends.mps.is_available():
                 try:
@@ -142,7 +142,7 @@ class AbsEmbedder(ABC):
         elif isinstance(devices, str):
             return [devices]
         elif isinstance(devices, int):
-            if torch.musa.is_available():
+            if hasattr(torch, "musa") and torch.musa.is_available():
                 return [f"musa:{devices}"]
             else:
                 return [f"cuda:{devices}"]
@@ -150,7 +150,7 @@ class AbsEmbedder(ABC):
             if isinstance(devices[0], str):
                 return devices
             elif isinstance(devices[0], int):
-                if torch.musa.is_available():
+                if hasattr(torch, "musa") and torch.musa.is_available():
                     return [f"musa:{device}" for device in devices]
                 else:
                     return [f"cuda:{device}" for device in devices]
