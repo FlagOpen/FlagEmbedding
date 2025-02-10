@@ -164,8 +164,9 @@ class BEIREvaluator(AbsEvaluator):
                     no_reranker_search_results_dict[split] = search_results
             retriever.stop_multi_process_pool()
             eval_results_save_path = os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-            retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
-            self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
+            if not os.path.exists(eval_results_save_path) or self.overwrite or flag:
+                retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
+                self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
             # Reranking Stage
             if reranker is not None:
@@ -181,6 +182,7 @@ class BEIREvaluator(AbsEvaluator):
                     for split in splits
                 }
 
+                flag = False
                 for split in splits:
                     rerank_search_results_save_path = os.path.join(
                         reranker_search_results_save_dir, save_name.format(split=split)
@@ -189,6 +191,7 @@ class BEIREvaluator(AbsEvaluator):
                     if os.path.exists(rerank_search_results_save_path) and not self.overwrite:
                         continue
 
+                    flag = True
                     rerank_search_results = reranker(
                         corpus=corpus,
                         queries=queries_dict[split],
@@ -208,8 +211,9 @@ class BEIREvaluator(AbsEvaluator):
                         sub_dataset_name=sub_dataset_name,
                     )
                 eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
-                self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
+                if not os.path.exists(eval_results_save_path) or self.overwrite or flag:
+                    reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
+                    self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
         else:
             for sub_dataset_name in sub_dataset_names:
                 if dataset_name is not None:
@@ -291,8 +295,9 @@ class BEIREvaluator(AbsEvaluator):
                         )
                         no_reranker_search_results_dict[split] = search_results
                 eval_results_save_path = os.path.join(no_reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
-                self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
+                if not os.path.exists(eval_results_save_path) or self.overwrite or flag:
+                    retriever_eval_results = self.evaluate_results(no_reranker_search_results_save_dir, k_values=k_values)
+                    self.output_eval_results_to_json(retriever_eval_results, eval_results_save_path)
 
                 # Reranking Stage
                 if reranker is not None:
@@ -308,6 +313,7 @@ class BEIREvaluator(AbsEvaluator):
                         for split in splits
                     }
 
+                    flag = False
                     for split in splits:
                         rerank_search_results_save_path = os.path.join(
                             reranker_search_results_save_dir, save_name.format(split=split)
@@ -316,6 +322,7 @@ class BEIREvaluator(AbsEvaluator):
                         if os.path.exists(rerank_search_results_save_path) and not self.overwrite:
                             continue
 
+                        flag = True
                         rerank_search_results = reranker(
                             corpus=corpus,
                             queries=queries_dict[split],
@@ -335,8 +342,9 @@ class BEIREvaluator(AbsEvaluator):
                             sub_dataset_name=sub_dataset_name,
                         )
                     eval_results_save_path = os.path.join(reranker_search_results_save_dir, 'EVAL', 'eval_results.json')
-                    reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
-                    self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
+                    if not os.path.exists(eval_results_save_path) or self.overwrite or flag:
+                        reranker_eval_results = self.evaluate_results(reranker_search_results_save_dir, k_values=k_values)
+                        self.output_eval_results_to_json(reranker_eval_results, eval_results_save_path)
             if reranker is not None:
                 reranker.stop_multi_process_pool()
                 
