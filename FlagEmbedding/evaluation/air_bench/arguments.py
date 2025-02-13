@@ -102,3 +102,14 @@ class AIRBenchEvalModelArgs:
     compress_layers: Optional[int] = field(
         default=None, metadata={"help": "The compress layers of lightweight reranker.", "nargs": "+"}
     )
+
+    def __post_init__(self):
+        # replace "\\n" with "\n"
+        if "\\n" in self.query_instruction_format_for_retrieval:
+            self.query_instruction_format_for_retrieval = self.query_instruction_format_for_retrieval.replace("\\n", "\n")
+        if "\\n" in self.examples_instruction_format:
+            self.examples_instruction_format = self.examples_instruction_format.replace("\\n", "\n")
+        if "\\n" in self.query_instruction_format_for_rerank:
+            self.query_instruction_format_for_rerank = self.query_instruction_format_for_rerank.replace("\\n", "\n")
+        if "\\n" in self.passage_instruction_format_for_rerank:
+            self.passage_instruction_format_for_rerank = self.passage_instruction_format_for_rerank.replace("\\n", "\n")
