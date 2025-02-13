@@ -149,6 +149,8 @@ class AbsReranker(ABC):
         Returns:
             str: The complete sentence with instruction
         """
+        if "\\n" in instruction_format:
+            instruction_format = instruction_format.replace("\\n", "\n")
         return instruction_format.format(instruction, sentence)
     
     def get_detailed_inputs(self, sentence_pairs: Union[str, List[str]]):

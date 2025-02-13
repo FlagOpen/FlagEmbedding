@@ -90,6 +90,13 @@ class ModelArgs:
     embedder_passage_max_length: int = field(
         default=512, metadata={"help": "Max length for passage."}
     )
+    
+    def __post_init__(self):
+        # replace "\\n" with "\n"
+        if "\\n" in self.query_instruction_format_for_retrieval:
+            self.query_instruction_format_for_retrieval = self.query_instruction_format_for_retrieval.replace("\\n", "\n")
+        if "\\n" in self.examples_instruction_format:
+            self.examples_instruction_format = self.examples_instruction_format.replace("\\n", "\n")
 
 
 def create_index(embeddings: np.ndarray, use_gpu: bool = False):

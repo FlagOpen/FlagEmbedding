@@ -172,6 +172,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         Returns:
             str: The complete example following the given format.
         """
+        if "\\n" in instruction_format:
+            instruction_format = instruction_format.replace("\\n", "\n")
         return instruction_format.format(instruction, query, response)
 
     def stop_self_query_pool(self):

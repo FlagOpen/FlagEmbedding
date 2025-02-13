@@ -119,10 +119,17 @@ class AbsRerankerDataArguments:
         default='\n', metadata={"help": "The sep token for LLM reranker to discriminate between query and passage"}
     )
 
-    # def __post_init__(self):
-    #     for train_dir in self.train_data:
-    #         if not os.path.exists(train_dir):
-    #             raise FileNotFoundError(f"cannot find file: {train_dir}, please set a true path")
+    def __post_init__(self):
+        # replace "\\n" with "\n"
+        if "\\n" in self.query_instruction_format:
+            self.query_instruction_format = self.query_instruction_format.replace("\\n", "\n")
+        if "\\n" in self.passage_instruction_format:
+            self.passage_instruction_format = self.passage_instruction_format.replace("\\n", "\n")
+        
+        # check the existence of train data
+        for train_dir in self.train_data:
+            if not os.path.exists(train_dir):
+                raise FileNotFoundError(f"cannot find file: {train_dir}, please set a true path")
 
 
 @dataclass
