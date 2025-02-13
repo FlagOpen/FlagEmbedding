@@ -1,0 +1,793 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>FlagEmbedding.abc.evaluation.runner &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/FlagEmbedding/abc/evaluation/runner';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../tutorial/index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">FlagEmbedding.abc.evaluation.runner</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for FlagEmbedding.abc.evaluation.runner</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="kn">from</span> <span class="nn">FlagEmbedding</span> <span class="kn">import</span> <span class="n">FlagAutoModel</span><span class="p">,</span> <span class="n">FlagAutoReranker</span>
+
+<span class="kn">from</span> <span class="nn">.arguments</span> <span class="kn">import</span> <span class="n">AbsEvalArgs</span><span class="p">,</span> <span class="n">AbsEvalModelArgs</span>
+<span class="kn">from</span> <span class="nn">.evaluator</span> <span class="kn">import</span> <span class="n">AbsEvaluator</span>
+<span class="kn">from</span> <span class="nn">.searcher</span> <span class="kn">import</span> <span class="n">EvalDenseRetriever</span><span class="p">,</span> <span class="n">EvalReranker</span>
+<span class="kn">from</span> <span class="nn">.data_loader</span> <span class="kn">import</span> <span class="n">AbsEvalDataLoader</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="AbsEvalRunner">
+<a class="viewcode-back" href="../../../../API/abc/evaluation/runner.html#FlagEmbedding.abc.evaluation.AbsEvalRunner">[docs]</a>
+<span class="k">class</span> <span class="nc">AbsEvalRunner</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Abstract class of evaluation runner.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        eval_args (AbsEvalArgs): :class:AbsEvalArgs object with the evaluation arguments.</span>
+<span class="sd">        model_args (AbsEvalModelArgs): :class:AbsEvalModelArgs object with the model arguments.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">eval_args</span><span class="p">:</span> <span class="n">AbsEvalArgs</span><span class="p">,</span>
+        <span class="n">model_args</span><span class="p">:</span> <span class="n">AbsEvalModelArgs</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span> <span class="o">=</span> <span class="n">eval_args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_args</span> <span class="o">=</span> <span class="n">model_args</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">retriever</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">reranker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_retriever_and_reranker</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_data_loader</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_evaluator</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_models</span><span class="p">(</span><span class="n">model_args</span><span class="p">:</span> <span class="n">AbsEvalModelArgs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">FlagAutoModel</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">FlagAutoReranker</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the embedding and reranker model</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            model_args (AbsEvalModelArgs): :class:AbsEvalModelArgs object with the model arguments.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]: A :class:FlagAutoModel object of embedding model, and </span>
+<span class="sd">                :class:FlagAutoReranker object of reranker model if path provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embedder</span> <span class="o">=</span> <span class="n">FlagAutoModel</span><span class="o">.</span><span class="n">from_finetuned</span><span class="p">(</span>
+            <span class="n">model_name_or_path</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">embedder_name_or_path</span><span class="p">,</span>
+            <span class="n">model_class</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">embedder_model_class</span><span class="p">,</span>
+            <span class="n">normalize_embeddings</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">normalize_embeddings</span><span class="p">,</span>
+            <span class="n">pooling_method</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">pooling_method</span><span class="p">,</span>
+            <span class="n">use_fp16</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">use_fp16</span><span class="p">,</span>
+            <span class="n">query_instruction_for_retrieval</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">query_instruction_for_retrieval</span><span class="p">,</span>
+            <span class="n">query_instruction_format</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">query_instruction_format_for_retrieval</span><span class="p">,</span>
+            <span class="n">devices</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">devices</span><span class="p">,</span>
+            <span class="n">examples_for_task</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">examples_for_task</span><span class="p">,</span>
+            <span class="n">examples_instruction_format</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">examples_instruction_format</span><span class="p">,</span>
+            <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">trust_remote_code</span><span class="p">,</span>
+            <span class="n">cache_dir</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span>
+            <span class="n">batch_size</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">embedder_batch_size</span><span class="p">,</span>
+            <span class="n">query_max_length</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">embedder_query_max_length</span><span class="p">,</span>
+            <span class="n">passage_max_length</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">embedder_passage_max_length</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">embedder</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_name_or_path</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">embedder_name_or_path</span>
+        <span class="n">reranker</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">model_args</span><span class="o">.</span><span class="n">reranker_name_or_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reranker</span> <span class="o">=</span> <span class="n">FlagAutoReranker</span><span class="o">.</span><span class="n">from_finetuned</span><span class="p">(</span>
+                <span class="n">model_name_or_path</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_name_or_path</span><span class="p">,</span>
+                <span class="n">model_class</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_model_class</span><span class="p">,</span>
+                <span class="n">peft_path</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_peft_path</span><span class="p">,</span>
+                <span class="n">use_fp16</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">use_fp16</span><span class="p">,</span>
+                <span class="n">use_bf16</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">use_bf16</span><span class="p">,</span>
+                <span class="n">query_instruction_for_rerank</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">query_instruction_for_rerank</span><span class="p">,</span>
+                <span class="n">query_instruction_format</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">query_instruction_format_for_rerank</span><span class="p">,</span>
+                <span class="n">passage_instruction_for_rerank</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">passage_instruction_for_rerank</span><span class="p">,</span>
+                <span class="n">passage_instruction_format</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">passage_instruction_format_for_rerank</span><span class="p">,</span>
+                <span class="n">cache_dir</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">cache_dir</span><span class="p">,</span>
+                <span class="n">trust_remote_code</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">trust_remote_code</span><span class="p">,</span>
+                <span class="n">devices</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">devices</span><span class="p">,</span>
+                <span class="n">normalize</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">normalize</span><span class="p">,</span>
+                <span class="n">prompt</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span>
+                <span class="n">cutoff_layers</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">cutoff_layers</span><span class="p">,</span>
+                <span class="n">compress_layers</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">compress_layers</span><span class="p">,</span>
+                <span class="n">compress_ratio</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">compress_ratio</span><span class="p">,</span>
+                <span class="n">batch_size</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_batch_size</span><span class="p">,</span>
+                <span class="n">query_max_length</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_query_max_length</span><span class="p">,</span>
+                <span class="n">max_length</span><span class="o">=</span><span class="n">model_args</span><span class="o">.</span><span class="n">reranker_max_length</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">reranker</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">_name_or_path</span> <span class="o">=</span> <span class="n">model_args</span><span class="o">.</span><span class="n">reranker_name_or_path</span>
+        <span class="k">return</span> <span class="n">embedder</span><span class="p">,</span> <span class="n">reranker</span>
+
+    <span class="k">def</span> <span class="nf">load_retriever_and_reranker</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">EvalDenseRetriever</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">EvalReranker</span><span class="p">,</span> <span class="kc">None</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load retriever and reranker for evaluation</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Tuple[EvalDenseRetriever, Union[EvalReranker, None]]: A :class:EvalDenseRetriever object for retrieval, and a</span>
+<span class="sd">                :class:EvalReranker object if reranker provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">embedder</span><span class="p">,</span> <span class="n">reranker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_models</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">model_args</span><span class="p">)</span>
+        <span class="n">retriever</span> <span class="o">=</span> <span class="n">EvalDenseRetriever</span><span class="p">(</span>
+            <span class="n">embedder</span><span class="p">,</span>
+            <span class="n">search_top_k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">search_top_k</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">overwrite</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">reranker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">reranker</span> <span class="o">=</span> <span class="n">EvalReranker</span><span class="p">(</span><span class="n">reranker</span><span class="p">,</span> <span class="n">rerank_top_k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">rerank_top_k</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retriever</span><span class="p">,</span> <span class="n">reranker</span>
+
+    <span class="k">def</span> <span class="nf">load_data_loader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbsEvalDataLoader</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the data loader</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            AbsEvalDataLoader: Data loader object for that specific task.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data_loader</span> <span class="o">=</span> <span class="n">AbsEvalDataLoader</span><span class="p">(</span>
+            <span class="n">eval_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="p">,</span>
+            <span class="n">dataset_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">dataset_dir</span><span class="p">,</span>
+            <span class="n">cache_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">cache_path</span><span class="p">,</span>
+            <span class="n">token</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">token</span><span class="p">,</span>
+            <span class="n">force_redownload</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">force_redownload</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">data_loader</span>
+
+    <span class="k">def</span> <span class="nf">load_evaluator</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AbsEvaluator</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the evaluator for evaluation</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            AbsEvaluator: the evaluator to run the evaluation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">evaluator</span> <span class="o">=</span> <span class="n">AbsEvaluator</span><span class="p">(</span>
+            <span class="n">eval_name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="p">,</span>
+            <span class="n">data_loader</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">data_loader</span><span class="p">,</span>
+            <span class="n">overwrite</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">overwrite</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">evaluator</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">evaluate_metrics</span><span class="p">(</span>
+        <span class="n">search_results_save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">output_method</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;markdown&quot;</span><span class="p">,</span>
+        <span class="n">output_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;./eval_dev_results.md&quot;</span><span class="p">,</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ndcg_at_10&quot;</span><span class="p">,</span> <span class="s2">&quot;recall_at_10&quot;</span><span class="p">]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Evaluate the provided metrics and write the results.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            search_results_save_dir (str): Path to save the search results.</span>
+<span class="sd">            output_method (str, optional): Output results to `json` or `markdown`. Defaults to :data:`&quot;markdown&quot;`.</span>
+<span class="sd">            output_path (str, optional): Path to write the output. Defaults to :data:`&quot;./eval_dev_results.md&quot;`.</span>
+<span class="sd">            metrics (Union[str, List[str]], optional): metrics to use. Defaults to :data:`[&quot;ndcg_at_10&quot;, &quot;recall_at_10&quot;]`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            FileNotFoundError: Eval results not found</span>
+<span class="sd">            ValueError: Invalid output method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">eval_results_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">model_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">search_results_save_dir</span><span class="p">)):</span>
+            <span class="n">model_search_results_save_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">search_results_save_dir</span><span class="p">,</span> <span class="n">model_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">model_search_results_save_dir</span><span class="p">):</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">reranker_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">model_search_results_save_dir</span><span class="p">)):</span>
+                <span class="n">reranker_search_results_save_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">model_search_results_save_dir</span><span class="p">,</span> <span class="n">reranker_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">reranker_search_results_save_dir</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">eval_results_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">reranker_search_results_save_dir</span><span class="p">,</span> <span class="s1">&#39;EVAL&#39;</span><span class="p">,</span> <span class="s2">&quot;eval_results.json&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">eval_results_path</span><span class="p">):</span>
+                    <span class="n">eval_results</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">eval_results_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Eval results not found: </span><span class="si">{</span><span class="n">eval_results_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">model_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">eval_results_dict</span><span class="p">:</span>
+                    <span class="n">eval_results_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">eval_results_dict</span><span class="p">[</span><span class="n">model_name</span><span class="p">][</span><span class="n">reranker_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">eval_results</span>
+
+        <span class="k">if</span> <span class="n">output_method</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+            <span class="n">AbsEvaluator</span><span class="o">.</span><span class="n">output_eval_results_to_json</span><span class="p">(</span><span class="n">eval_results_dict</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">output_method</span> <span class="o">==</span> <span class="s2">&quot;markdown&quot;</span><span class="p">:</span>
+            <span class="n">AbsEvaluator</span><span class="o">.</span><span class="n">output_eval_results_to_markdown</span><span class="p">(</span><span class="n">eval_results_dict</span><span class="p">,</span> <span class="n">output_path</span><span class="p">,</span> <span class="n">metrics</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid output method: </span><span class="si">{</span><span class="n">output_method</span><span class="si">}</span><span class="s2">. Available methods: [&#39;json&#39;, &#39;markdown&#39;]&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run the whole evaluation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">dataset_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dataset_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">available_dataset_names</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dataset_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loader</span><span class="o">.</span><span class="n">check_dataset_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">dataset_names</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">dataset_names</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="si">}</span><span class="s2"> evaluation on the default dataset.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="p">(</span>
+                <span class="n">splits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">splits</span><span class="p">,</span>
+                <span class="n">search_results_save_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                <span class="n">retriever</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retriever</span><span class="p">,</span>
+                <span class="n">reranker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reranker</span><span class="p">,</span>
+                <span class="n">corpus_embd_save_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">corpus_embd_save_dir</span><span class="p">,</span>
+                <span class="n">ignore_identical_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">ignore_identical_ids</span><span class="p">,</span>
+                <span class="n">k_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">k_values</span>
+            <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="si">}</span><span class="s2"> evaluation completed.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="si">}</span><span class="s2"> evaluation on the following dataset names: </span><span class="si">{</span><span class="n">dataset_names</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">dataset_name</span> <span class="ow">in</span> <span class="n">dataset_names</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Running </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="si">}</span><span class="s2"> evaluation on: </span><span class="si">{</span><span class="n">dataset_name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">evaluator</span><span class="p">(</span>
+                    <span class="n">splits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">splits</span><span class="p">,</span>
+                    <span class="n">search_results_save_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+                    <span class="n">retriever</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">retriever</span><span class="p">,</span>
+                    <span class="n">reranker</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">reranker</span><span class="p">,</span>
+                    <span class="n">corpus_embd_save_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">corpus_embd_save_dir</span><span class="p">,</span>
+                    <span class="n">ignore_identical_ids</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">ignore_identical_ids</span><span class="p">,</span>
+                    <span class="n">k_values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">k_values</span><span class="p">,</span>
+                    <span class="n">dataset_name</span><span class="o">=</span><span class="n">dataset_name</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_name</span><span class="si">}</span><span class="s2"> evaluation on </span><span class="si">{</span><span class="n">dataset_names</span><span class="si">}</span><span class="s2"> completed.&quot;</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Start computing metrics.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_metrics</span><span class="p">(</span>
+            <span class="n">search_results_save_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">output_dir</span><span class="p">,</span>
+            <span class="n">output_method</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_output_method</span><span class="p">,</span>
+            <span class="n">output_path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_output_path</span><span class="p">,</span>
+            <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">eval_args</span><span class="o">.</span><span class="n">eval_metrics</span>
+        <span class="p">)</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.1.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
