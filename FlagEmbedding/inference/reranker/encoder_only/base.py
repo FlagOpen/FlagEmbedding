@@ -65,6 +65,7 @@ class BaseReranker(AbsReranker):
         )
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path, 
+            trust_remote_code=trust_remote_code, 
             cache_dir=cache_dir
         )
         self.model = AutoModelForSequenceClassification.from_pretrained(
