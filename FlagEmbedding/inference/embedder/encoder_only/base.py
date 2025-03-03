@@ -74,12 +74,14 @@ class BaseEmbedder(AbsEmbedder):
         self.tokenizer = AutoTokenizer.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
-            cache_dir=cache_dir
+            cache_dir=cache_dir,
+            **kwargs
         )
         self.model = AutoModel.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
-            cache_dir=cache_dir
+            cache_dir=cache_dir,
+            **kwargs
         )
 
     def encode_queries(
