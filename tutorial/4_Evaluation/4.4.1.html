@@ -1,0 +1,1099 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>Evaluate on BEIR &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/4_Evaluation/4.4.1';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Evaluate on MIRACL" href="4.5.1.html" />
+    <link rel="prev" title="Evaluation Using Sentence Transformers" href="4.3.1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Evaluate on BEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5.1.html">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../4_Evaluation.html" class="nav-link">4. Evaluation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Evaluate on BEIR</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="evaluate-on-beir">
+<h1>Evaluate on BEIR<a class="headerlink" href="#evaluate-on-beir" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://github.com/beir-cellar/beir">BEIR</a> (Benchmarking-IR) is a heterogeneous evaluation benchmark for information retrieval.
+It is designed for evaluating the performance of NLP-based retrieval models and widely used by research of modern embedding models.</p>
+<section id="installation">
+<h2>0. Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>First install the libraries we are using:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">beir</span> <span class="n">FlagEmbedding</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-using-beir">
+<h2>1. Evaluate using BEIR<a class="headerlink" href="#evaluate-using-beir" title="Link to this heading">#</a></h2>
+<p>BEIR contains 18 datasets which can be downloaded from the <a class="reference external" href="https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/">link</a>, while 4 of them are private datasets that need appropriate licences. If you want to access to those 4 datasets, take a look at their <a class="reference external" href="https://github.com/beir-cellar/beir/wiki/Datasets-available">wiki</a> for more information. Information collected and codes adapted from BEIR GitHub <a class="reference external" href="https://github.com/beir-cellar/beir">repo</a>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Dataset Name</p></th>
+<th class="head text-center"><p>Type</p></th>
+<th class="head"><p>Queries</p></th>
+<th class="head"><p>Documents</p></th>
+<th class="head"><p>Avg. Docs/Q</p></th>
+<th class="head text-center"><p>Public</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">msmarco</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>6,980</p></td>
+<td><p>8.84M</p></td>
+<td><p>1.1</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">trec-covid</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>50</p></td>
+<td><p>171K</p></td>
+<td><p>493.5</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nfcorpus</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>323</p></td>
+<td><p>3.6K</p></td>
+<td><p>38.2</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bioasq</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>500</p></td>
+<td><p>14.91M</p></td>
+<td><p>8.05</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">nq</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>3,452</p></td>
+<td><p>2.68M</p></td>
+<td><p>1.2</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">hotpotqa</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>7,405</p></td>
+<td><p>5.23M</p></td>
+<td><p>2.0</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fiqa</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>648</p></td>
+<td><p>57K</p></td>
+<td><p>2.6</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">signal1m</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>97</p></td>
+<td><p>2.86M</p></td>
+<td><p>19.6</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">trec-news</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>57</p></td>
+<td><p>595K</p></td>
+<td><p>19.6</p></td>
+<td class="text-center"><p>No</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">arguana</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>1,406</p></td>
+<td><p>8.67K</p></td>
+<td><p>1.0</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">webis-touche2020</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>49</p></td>
+<td><p>382K</p></td>
+<td><p>49.2</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">cqadupstack</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>13,145</p></td>
+<td><p>457K</p></td>
+<td><p>1.4</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">quora</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>10,000</p></td>
+<td><p>523K</p></td>
+<td><p>1.6</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">dbpedia-entity</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>400</p></td>
+<td><p>4.63M</p></td>
+<td><p>38.2</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">scidocs</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>1,000</p></td>
+<td><p>25K</p></td>
+<td><p>4.9</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fever</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Dev</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>6,666</p></td>
+<td><p>5.42M</p></td>
+<td><p>1.2</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">climate-fever</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>1,535</p></td>
+<td><p>5.42M</p></td>
+<td><p>3.0</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">scifact</span></code></p></td>
+<td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">Train</span></code> <code class="docutils literal notranslate"><span class="pre">Test</span></code></p></td>
+<td><p>300</p></td>
+<td><p>5K</p></td>
+<td><p>1.1</p></td>
+<td class="text-center"><p>Yes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="load-dataset">
+<h3>1.1 Load Dataset<a class="headerlink" href="#load-dataset" title="Link to this heading">#</a></h3>
+<p>First prepare the logging setup.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">beir</span> <span class="kn">import</span> <span class="n">LoggingHandler</span>
+
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+                    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+                    <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">LoggingHandler</span><span class="p">()])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this demo, we choose the <code class="docutils literal notranslate"><span class="pre">arguana</span></code> dataset for a quick demonstration.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">beir</span> <span class="kn">import</span> <span class="n">util</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://public.ukp.informatik.tu-darmstadt.de/thakur/BEIR/datasets/arguana.zip&quot;</span>
+<span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">(),</span> <span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">data_path</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">download_and_unzip</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Dataset is stored at: </span><span class="si">{</span><span class="n">data_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dataset downloaded here: /share/project/xzy/Projects/FlagEmbedding/Tutorials/4_Evaluation/data/arguana
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">beir.datasets.data_loader</span> <span class="kn">import</span> <span class="n">GenericDataLoader</span>
+
+<span class="n">corpus</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">qrels</span> <span class="o">=</span> <span class="n">GenericDataLoader</span><span class="p">(</span><span class="s2">&quot;data/arguana&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">split</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2024-11-15 03:54:55,809 - Loading Corpus...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>100%|██████████| 8674/8674 [00:00&lt;00:00, 158928.31it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2024-11-15 03:54:55,891 - Loaded 8674 TEST Documents.
+2024-11-15 03:54:55,891 - Doc Example: {&#39;text&#39;: &quot;You don’t have to be vegetarian to be green. Many special environments have been created by livestock farming – for example chalk down land in England and mountain pastures in many countries. Ending livestock farming would see these areas go back to woodland with a loss of many unique plants and animals. Growing crops can also be very bad for the planet, with fertilisers and pesticides polluting rivers, lakes and seas. Most tropical forests are now cut down for timber, or to allow oil palm trees to be grown in plantations, not to create space for meat production.  British farmer and former editor Simon Farrell also states: “Many vegans and vegetarians rely on one source from the U.N. calculation that livestock generates 18% of global carbon emissions, but this figure contains basic mistakes. It attributes all deforestation from ranching to cattle, rather than logging or development. It also muddles up one-off emissions from deforestation with on-going pollution.”  He also refutes the statement of meat production inefficiency: “Scientists have calculated that globally the ratio between the amounts of useful plant food used to produce meat is about 5 to 1. If you feed animals only food that humans can eat — which is, indeed, largely the case in the Western world — that may be true. But animals also eat food we can&#39;t eat, such as grass. So the real conversion figure is 1.4 to 1.” [1] At the same time eating a vegetarian diet may be no more environmentally friendly than a meat based diet if it is not sustainably sourced or uses perishable fruit and vegetables that are flown in from around the world. Eating locally sourced food can has as big an impact as being vegetarian. [2]  [1] Tara Kelly, Simon Fairlie: How Eating Meat Can Save the World, 12 October 2010  [2] Lucy Siegle, ‘It is time to become a vegetarian?’ The Observer, 18th May 2008&quot;, &#39;title&#39;: &#39;animals environment general health health general weight philosophy ethics&#39;}
+2024-11-15 03:54:55,891 - Loading Queries...
+2024-11-15 03:54:55,903 - Loaded 1406 TEST Queries.
+2024-11-15 03:54:55,903 - Query Example: Being vegetarian helps the environment  Becoming a vegetarian is an environmentally friendly thing to do. Modern farming is one of the main sources of pollution in our rivers. Beef farming is one of the main causes of deforestation, and as long as people continue to buy fast food in their billions, there will be a financial incentive to continue cutting down trees to make room for cattle. Because of our desire to eat fish, our rivers and seas are being emptied of fish and many species are facing extinction. Energy resources are used up much more greedily by meat farming than my farming cereals, pulses etc. Eating meat and fish not only causes cruelty to animals, it causes serious harm to the environment and to biodiversity. For example consider Meat production related pollution and deforestation  At Toronto’s 1992 Royal Agricultural Winter Fair, Agriculture Canada displayed two contrasting statistics: “it takes four football fields of land (about 1.6 hectares) to feed each Canadian” and “one apple tree produces enough fruit to make 320 pies.” Think about it — a couple of apple trees and a few rows of wheat on a mere fraction of a hectare could produce enough food for one person! [1]  The 2006 U.N. Food and Agriculture Organization (FAO) report concluded that worldwide livestock farming generates 18% of the planet&#39;s greenhouse gas emissions — by comparison, all the world&#39;s cars, trains, planes and boats account for a combined 13% of greenhouse gas emissions. [2]  As a result of the above point producing meat damages the environment. The demand for meat drives deforestation. Daniel Cesar Avelino of Brazil&#39;s Federal Public Prosecution Office says “We know that the single biggest driver of deforestation in the Amazon is cattle.” This clearing of tropical rainforests such as the Amazon for agriculture is estimated to produce 17% of the world&#39;s greenhouse gas emissions. [3] Not only this but the production of meat takes a lot more energy than it ultimately gives us chicken meat production consumes energy in a 4:1 ratio to protein output; beef cattle production requires an energy input to protein output ratio of 54:1.  The same is true with water use due to the same phenomenon of meat being inefficient to produce in terms of the amount of grain needed to produce the same weight of meat, production requires a lot of water. Water is another scarce resource that we will soon not have enough of in various areas of the globe. Grain-fed beef production takes 100,000 liters of water for every kilogram of food. Raising broiler chickens takes 3,500 liters of water to make a kilogram of meat. In comparison, soybean production uses 2,000 liters for kilogram of food produced; rice, 1,912; wheat, 900; and potatoes, 500 liters. [4] This is while there are areas of the globe that have severe water shortages. With farming using up to 70 times more water than is used for domestic purposes: cooking and washing. A third of the population of the world is already suffering from a shortage of water. [5] Groundwater levels are falling all over the world and rivers are beginning to dry up. Already some of the biggest rivers such as China’s Yellow river do not reach the sea. [6]  With a rising population becoming vegetarian is the only responsible way to eat.  [1] Stephen Leckie, ‘How Meat-centred Eating Patterns Affect Food Security and the Environment’, International development research center  [2] Bryan Walsh, Meat: Making Global Warming Worse, Time magazine, 10 September 2008 .  [3] David Adam, Supermarket suppliers ‘helping to destroy Amazon rainforest’, The Guardian, 21st June 2009.  [4] Roger Segelken, U.S. could feed 800 million people with grain that livestock eat, Cornell Science News, 7th August 1997.  [5] Fiona Harvey, Water scarcity affects one in three, FT.com, 21st August 2003  [6] Rupert Wingfield-Hayes, Yellow river ‘drying up’, BBC News, 29th July 2004
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluation">
+<h3>1.2 Evaluation<a class="headerlink" href="#evaluation" title="Link to this heading">#</a></h3>
+<p>Then we load <code class="docutils literal notranslate"><span class="pre">bge-base-en-v1.5</span></code> from huggingface and evaluate its performance on arguana.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">beir.retrieval.evaluation</span> <span class="kn">import</span> <span class="n">EvaluateRetrieval</span>
+<span class="kn">from</span> <span class="nn">beir.retrieval</span> <span class="kn">import</span> <span class="n">models</span>
+<span class="kn">from</span> <span class="nn">beir.retrieval.search.dense</span> <span class="kn">import</span> <span class="n">DenseRetrievalExactSearch</span> <span class="k">as</span> <span class="n">DRES</span>
+
+
+<span class="c1"># Load bge model using Sentence Transformers</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">DRES</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">SentenceBERT</span><span class="p">(</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span><span class="p">),</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">128</span><span class="p">)</span>
+<span class="n">retriever</span> <span class="o">=</span> <span class="n">EvaluateRetrieval</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">score_function</span><span class="o">=</span><span class="s2">&quot;cos_sim&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the searching results</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">retrieve</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">queries</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2024-11-15 04:00:45,253 - Use pytorch device_name: cuda
+2024-11-15 04:00:45,254 - Load pretrained SentenceTransformer: BAAI/bge-base-en-v1.5
+2024-11-15 04:00:48,750 - Encoding Queries...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Batches: 100%|██████████| 11/11 [00:01&lt;00:00,  8.27it/s]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2024-11-15 04:00:50,177 - Sorting Corpus by document length (Longest first)...
+2024-11-15 04:00:50,183 - Encoding Corpus in batches... Warning: This might take a while!
+2024-11-15 04:00:50,183 - Scoring Function: Cosine Similarity (cos_sim)
+2024-11-15 04:00:50,184 - Encoding Batch 1/1...
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Batches: 100%|██████████| 68/68 [00:07&lt;00:00,  9.43it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retriever evaluation for k in: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">retriever</span><span class="o">.</span><span class="n">k_values</span><span class="p">))</span>
+<span class="n">ndcg</span><span class="p">,</span> <span class="n">_map</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="n">precision</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">qrels</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">retriever</span><span class="o">.</span><span class="n">k_values</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>2024-11-15 04:00:58,514 - Retriever evaluation for k in: [1, 3, 5, 10, 100, 1000]
+2024-11-15 04:00:58,514 - For evaluation, we ignore identical query and document ids (default), please explicitly set ``ignore_identical_ids=False`` to ignore this.
+2024-11-15 04:00:59,184 - 
+
+2024-11-15 04:00:59,188 - NDCG@1: 0.4075
+2024-11-15 04:00:59,188 - NDCG@3: 0.5572
+2024-11-15 04:00:59,188 - NDCG@5: 0.5946
+2024-11-15 04:00:59,188 - NDCG@10: 0.6361
+2024-11-15 04:00:59,188 - NDCG@100: 0.6606
+2024-11-15 04:00:59,188 - NDCG@1000: 0.6613
+2024-11-15 04:00:59,188 - 
+
+2024-11-15 04:00:59,188 - MAP@1: 0.4075
+2024-11-15 04:00:59,188 - MAP@3: 0.5193
+2024-11-15 04:00:59,188 - MAP@5: 0.5402
+2024-11-15 04:00:59,188 - MAP@10: 0.5577
+2024-11-15 04:00:59,188 - MAP@100: 0.5634
+2024-11-15 04:00:59,188 - MAP@1000: 0.5635
+2024-11-15 04:00:59,188 - 
+
+2024-11-15 04:00:59,188 - Recall@1: 0.4075
+2024-11-15 04:00:59,188 - Recall@3: 0.6671
+2024-11-15 04:00:59,188 - Recall@5: 0.7575
+2024-11-15 04:00:59,188 - Recall@10: 0.8841
+2024-11-15 04:00:59,188 - Recall@100: 0.9915
+2024-11-15 04:00:59,189 - Recall@1000: 0.9964
+2024-11-15 04:00:59,189 - 
+
+2024-11-15 04:00:59,189 - P@1: 0.4075
+2024-11-15 04:00:59,189 - P@3: 0.2224
+2024-11-15 04:00:59,189 - P@5: 0.1515
+2024-11-15 04:00:59,189 - P@10: 0.0884
+2024-11-15 04:00:59,189 - P@100: 0.0099
+2024-11-15 04:00:59,189 - P@1000: 0.0010
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="evaluate-using-flagembedding">
+<h2>2. Evaluate using FlagEmbedding<a class="headerlink" href="#evaluate-using-flagembedding" title="Link to this heading">#</a></h2>
+<p>We provide independent evaluation for popular datasets and benchmarks. Try the following code to run the evaluation, or run the shell script provided in <a class="reference internal" href="#../../examples/evaluation/beir/eval_beir.sh"><span class="xref myst">example</span></a> folder.</p>
+<p>Load the arguments:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">arguments</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;-</span>
+<span class="s2">    --eval_name beir </span>
+<span class="s2">    --dataset_dir ./beir/data </span>
+<span class="s2">    --dataset_names arguana</span>
+<span class="s2">    --splits test dev </span>
+<span class="s2">    --corpus_embd_save_dir ./beir/corpus_embd </span>
+<span class="s2">    --output_dir ./beir/search_results </span>
+<span class="s2">    --search_top_k 1000 </span>
+<span class="s2">    --rerank_top_k 100 </span>
+<span class="s2">    --cache_path /root/.cache/huggingface/hub </span>
+<span class="s2">    --overwrite True </span>
+<span class="s2">    --k_values 10 100 </span>
+<span class="s2">    --eval_output_method markdown </span>
+<span class="s2">    --eval_output_path ./beir/beir_eval_results.md </span>
+<span class="s2">    --eval_metrics ndcg_at_10 recall_at_100 </span>
+<span class="s2">    --ignore_identical_ids True </span>
+<span class="s2">    --embedder_name_or_path BAAI/bge-base-en-v1.5 </span>
+<span class="s2">    --embedder_batch_size 1024</span>
+<span class="s2">    --devices cuda:4</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then pass the arguments to HFArgumentParser and run the evaluation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">HfArgumentParser</span>
+
+<span class="kn">from</span> <span class="nn">FlagEmbedding.evaluation.beir</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BEIREvalArgs</span><span class="p">,</span> <span class="n">BEIREvalModelArgs</span><span class="p">,</span>
+    <span class="n">BEIREvalRunner</span>
+<span class="p">)</span>
+
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">HfArgumentParser</span><span class="p">((</span>
+    <span class="n">BEIREvalArgs</span><span class="p">,</span>
+    <span class="n">BEIREvalModelArgs</span>
+<span class="p">))</span>
+
+<span class="n">eval_args</span><span class="p">,</span> <span class="n">model_args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args_into_dataclasses</span><span class="p">()</span>
+<span class="n">eval_args</span><span class="p">:</span> <span class="n">BEIREvalArgs</span>
+<span class="n">model_args</span><span class="p">:</span> <span class="n">BEIREvalModelArgs</span>
+
+<span class="n">runner</span> <span class="o">=</span> <span class="n">BEIREvalRunner</span><span class="p">(</span>
+    <span class="n">eval_args</span><span class="o">=</span><span class="n">eval_args</span><span class="p">,</span>
+    <span class="n">model_args</span><span class="o">=</span><span class="n">model_args</span>
+<span class="p">)</span>
+
+<span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Split &#39;dev&#39; not found in the dataset. Removing it from the list.
+ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.
+pre tokenize: 100%|██████████| 9/9 [00:00&lt;00:00, 16.19it/s]
+You&#39;re using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+Inference Embeddings: 100%|██████████| 9/9 [00:11&lt;00:00,  1.27s/it]
+pre tokenize: 100%|██████████| 2/2 [00:00&lt;00:00, 19.54it/s]
+Inference Embeddings: 100%|██████████| 2/2 [00:02&lt;00:00,  1.29s/it]
+Searching: 100%|██████████| 44/44 [00:00&lt;00:00, 208.73it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Take a look at the results and choose the way you prefer!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;beir/search_results/bge-base-en-v1.5/NoReranker/EVAL/eval_results.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">content_file</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">content_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{
+    &quot;arguana-test&quot;: {
+        &quot;ndcg_at_10&quot;: 0.63668,
+        &quot;ndcg_at_100&quot;: 0.66075,
+        &quot;map_at_10&quot;: 0.55801,
+        &quot;map_at_100&quot;: 0.56358,
+        &quot;recall_at_10&quot;: 0.88549,
+        &quot;recall_at_100&quot;: 0.99147,
+        &quot;precision_at_10&quot;: 0.08855,
+        &quot;precision_at_100&quot;: 0.00991,
+        &quot;mrr_at_10&quot;: 0.55809,
+        &quot;mrr_at_100&quot;: 0.56366
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4.3.1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Evaluation Using Sentence Transformers</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4.5.1.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Evaluate on MIRACL</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">0. Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-using-beir">1. Evaluate using BEIR</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset">1.1 Load Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation">1.2 Evaluation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-using-flagembedding">2. Evaluate using FlagEmbedding</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/4_Evaluation/4.4.1.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
