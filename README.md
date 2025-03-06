@@ -53,6 +53,7 @@ BGE (BAAI General Embedding) focuses on retrieval-augmented LLMs, consisting of 
 
 ## News
 
+- 3/6/2025: :fire: Release **MegaPairs** ([repo](https://github.com/VectorSpaceLab/MegaPairs), [paper](https://arxiv.org/abs/2412.14475)), massive data synthesis for universal multimodal retrieval. And corresponding [BGE-VL](https://huggingface.co/collections/BAAI/megapairs-67c6bbe49c15a9e7a7c69d92) series multimodel embedding models!
 - 12/5/2024: :book: We built the [BGE documentation](https://www.bge-model.com) for centralized BGE information and materials!
 - 10/29/2024: :earth_asia: We created WeChat group for BGE. Scan the [QR code](./imgs/BGE_WeChat_Group.png) to join the group chat! To get the first hand message about our updates and new release, or having any questions or ideas, join us now!
 - <img src="./imgs/BGE_WeChat_Group.png" alt="bge_wechat_group" class="center" width="200">
