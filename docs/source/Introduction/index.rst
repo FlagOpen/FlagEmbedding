@@ -27,4 +27,5 @@ Quickly get started with:
    IR
    embedder
    reranker
+   similarity
    retrieval_demo
