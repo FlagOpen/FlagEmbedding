@@ -92,7 +92,8 @@ class AbsReranker(ABC):
             torch.cuda.empty_cache()
         except:
             pass
-        gc.collect()
+        if gc is not None and callable(gc.collect):
+            gc.collect()
 
     @staticmethod
     def get_target_devices(devices: Union[str, int, List[str], List[int]]) -> List[str]:
