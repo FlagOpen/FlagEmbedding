@@ -103,14 +103,15 @@ class BGEM3Model(nn.Module):
         token_weights = torch.relu(self.sparse_linear(hidden_state))
         if not return_embedding: return token_weights
 
-        sparse_embedding = torch.zeros(input_ids.size(0), input_ids.size(1), self.vocab_size,
-                                       dtype=token_weights.dtype,
-                                       device=token_weights.device)
-        sparse_embedding = torch.scatter(sparse_embedding, dim=-1, index=input_ids.unsqueeze(-1), src=token_weights)
+        sparse_embedding = torch.zeros(input_ids.size(0), self.vocab_size,
+                                        dtype=token_weights.dtype,
+                                        device=token_weights.device)
+        sparse_embedding = sparse_embedding.scatter_reduce(
+            dim=-1, index=input_ids, src=token_weights.squeeze(-1), reduce="amax"
+        )
 
         unused_tokens = [self.tokenizer.cls_token_id, self.tokenizer.eos_token_id, self.tokenizer.pad_token_id,
                          self.tokenizer.unk_token_id]
-        sparse_embedding = torch.max(sparse_embedding, dim=1).values
         sparse_embedding[:, unused_tokens] *= 0.
         return sparse_embedding
 
