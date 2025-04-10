@@ -652,7 +652,7 @@ class M3Embedder(AbsEmbedder):
             'colbert+sparse+dense': []
         }
         for start_index in tqdm(range(0, len(sentence_pairs), batch_size), desc="Compute Scores",
-                                disable=len(sentence_pairs) < 128):
+                                disable=len(sentence_pairs) < batch_size):
             sentences_batch = sentence_pairs[start_index:start_index + batch_size]
 
             queries_batch = [pair[0] for pair in sentences_batch]
