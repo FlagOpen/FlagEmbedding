@@ -1,0 +1,1242 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>Evaluate on MIRACL &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/4_Evaluation/4.5.1';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Evaluate on MLDR" href="4.5.2.html" />
+    <link rel="prev" title="Evaluate on BEIR" href="4.4.1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.4.1.html">Evaluate on BEIR</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../4_Evaluation.html" class="nav-link">4. Evaluation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Evaluate on MIRACL</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="evaluate-on-miracl">
+<h1>Evaluate on MIRACL<a class="headerlink" href="#evaluate-on-miracl" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://project-miracl.github.io/">MIRACL</a> (Multilingual Information Retrieval Across a Continuum of Languages) is an WSDM 2023 Cup challenge that focuses on search across 18 different languages. They release a multilingual retrieval dataset containing the train and dev set for 16 “known languages” and only dev set for 2 “surprise languages”. The topics are generated by native speakers of each language, who also label the relevance between the topics and a given document list. You can found the dataset on HuggingFace.</p>
+<p>Note: We highly recommend you to run the evaluation of MIRACL on GPU. For reference, it takes about an hour for the whole process on a 8xA100 40G node.</p>
+<section id="installation">
+<h2>0. Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>First install the libraries we are using:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">pip</span> <span class="n">install</span> <span class="n">FlagEmbedding</span> <span class="n">pytrec_eval</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="dataset">
+<h2>1. Dataset<a class="headerlink" href="#dataset" title="Link to this heading">#</a></h2>
+<p>With the great number of passages and articles in the 18 languages. MIRACL is a resourceful dataset for training or evaluating multi-lingual model. The data can be downloaded from <a class="reference external" href="https://huggingface.co/datasets/miracl/miracl">Hugging Face</a>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-left"><p>Language</p></th>
+<th class="head text-right"><p># of Passages</p></th>
+<th class="head text-right"><p># of Articles</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-left"><p>Arabic (ar)</p></td>
+<td class="text-right"><p>2,061,414</p></td>
+<td class="text-right"><p>656,982</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Bengali (bn)</p></td>
+<td class="text-right"><p>297,265</p></td>
+<td class="text-right"><p>63,762</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>English (en)</p></td>
+<td class="text-right"><p>32,893,221</p></td>
+<td class="text-right"><p>5,758,285</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Spanish (es)</p></td>
+<td class="text-right"><p>10,373,953</p></td>
+<td class="text-right"><p>1,669,181</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Persian (fa)</p></td>
+<td class="text-right"><p>2,207,172</p></td>
+<td class="text-right"><p>857,827</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Finnish (fi)</p></td>
+<td class="text-right"><p>1,883,509</p></td>
+<td class="text-right"><p>447,815</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>French (fr)</p></td>
+<td class="text-right"><p>14,636,953</p></td>
+<td class="text-right"><p>2,325,608</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Hindi (hi)</p></td>
+<td class="text-right"><p>506,264</p></td>
+<td class="text-right"><p>148,107</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Indonesian (id)</p></td>
+<td class="text-right"><p>1,446,315</p></td>
+<td class="text-right"><p>446,330</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Japanese (ja)</p></td>
+<td class="text-right"><p>6,953,614</p></td>
+<td class="text-right"><p>1,133,444</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Korean (ko)</p></td>
+<td class="text-right"><p>1,486,752</p></td>
+<td class="text-right"><p>437,373</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Russian (ru)</p></td>
+<td class="text-right"><p>9,543,918</p></td>
+<td class="text-right"><p>1,476,045</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Swahili (sw)</p></td>
+<td class="text-right"><p>131,924</p></td>
+<td class="text-right"><p>47,793</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Telugu (te)</p></td>
+<td class="text-right"><p>518,079</p></td>
+<td class="text-right"><p>66,353</p></td>
+</tr>
+<tr class="row-even"><td class="text-left"><p>Thai (th)</p></td>
+<td class="text-right"><p>542,166</p></td>
+<td class="text-right"><p>128,179</p></td>
+</tr>
+<tr class="row-odd"><td class="text-left"><p>Chinese (zh)</p></td>
+<td class="text-right"><p>4,934,368</p></td>
+<td class="text-right"><p>1,246,389</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+
+<span class="n">lang</span> <span class="o">=</span> <span class="s2">&quot;en&quot;</span>
+<span class="n">corpus</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;miracl/miracl-corpus&quot;</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;train&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each passage in the corpus has three parts: <code class="docutils literal notranslate"><span class="pre">docid</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code>, and <code class="docutils literal notranslate"><span class="pre">text</span></code>. In the structure of document with docid <code class="docutils literal notranslate"><span class="pre">x#y</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code> indicates the id of Wikipedia article, and <code class="docutils literal notranslate"><span class="pre">y</span></code> is the number of passage within that article. The title is the name of the article with id <code class="docutils literal notranslate"><span class="pre">x</span></code> that passage belongs to. The text is the text body of the passage.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corpus</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;docid&#39;: &#39;56672809#4&#39;,
+ &#39;title&#39;: &#39;Glen Tomasetti&#39;,
+ &#39;text&#39;: &#39;In 1967 Tomasetti was prosecuted after refusing to pay one sixth of her taxes on the grounds that one sixth of the federal budget was funding Australia\&#39;s military presence in Vietnam. In court she argued that Australia\&#39;s participation in the Vietnam War violated its international legal obligations as a member of the United Nations. Public figures such as Joan Baez had made similar protests in the USA, but Tomasetti\&#39;s prosecution was &quot;believed to be the first case of its kind in Australia&quot;, according to a contemporary news report. Tomasetti was eventually ordered to pay the unpaid taxes.&#39;}
+</pre></div>
+</div>
+</div>
+</div>
+<p>The qrels have following form:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dev</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s1">&#39;miracl/miracl&#39;</span><span class="p">,</span> <span class="n">lang</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="s1">&#39;dev&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dev</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{&#39;query_id&#39;: &#39;0&#39;,
+ &#39;query&#39;: &#39;Is Creole a pidgin of French?&#39;,
+ &#39;positive_passages&#39;: [{&#39;docid&#39;: &#39;462221#4&#39;,
+   &#39;text&#39;: &quot;At the end of World War II in 1945, Korea was divided into North Korea and South Korea with North Korea (assisted by the Soviet Union), becoming a communist government after 1946, known as the Democratic People&#39;s Republic, followed by South Korea becoming the Republic of Korea. China became the communist People&#39;s Republic of China in 1949. In 1950, the Soviet Union backed North Korea while the United States backed South Korea, and China allied with the Soviet Union in what was to become the first military action of the Cold War.&quot;,
+   &#39;title&#39;: &#39;Eighth United States Army&#39;},
+  {&#39;docid&#39;: &#39;29810#23&#39;,
+   &#39;text&#39;: &#39;The large size of Texas and its location at the intersection of multiple climate zones gives the state highly variable weather. The Panhandle of the state has colder winters than North Texas, while the Gulf Coast has mild winters. Texas has wide variations in precipitation patterns. El Paso, on the western end of the state, averages of annual rainfall, while parts of southeast Texas average as much as per year. Dallas in the North Central region averages a more moderate per year.&#39;,
+   &#39;title&#39;: &#39;Texas&#39;},
+  {&#39;docid&#39;: &#39;3716905#0&#39;,
+   &#39;text&#39;: &#39;A French creole, or French-based creole language, is a creole language (contact language with native speakers) for which French is the &quot;lexifier&quot;. Most often this lexifier is not modern French but rather a 17th-century koiné of French from Paris, the French Atlantic harbors, and the nascent French colonies. French-based creole languages are spoken natively by millions of people worldwide, primarily in the Americas and on archipelagos throughout the Indian Ocean. This article also contains information on French pidgin languages, contact languages that lack native speakers.&#39;,
+   &#39;title&#39;: &#39;French-based creole languages&#39;},
+  {&#39;docid&#39;: &#39;22399755#18&#39;,
+   &#39;text&#39;: &#39;There are many hypotheses on the origins of Haitian Creole. Linguist John Singler suggests that it most likely emerged under French control in colonial years when shifted its economy focused heavily on sugar production. This resulted in a much larger population of enslaved Africans, whose interaction with the French created the circumstances for the dialect to evolve from a pidgin to a Creole. His research and the research of Claire Lefebvre of the Université du Québec à Montréal suggests that Creole, despite drawing 90% of its lexicon from French, is the syntactic cousin of Fon, a Gbe language of the Niger-Congo family spoken in Benin. At the time of the emergence of Haitian Creole, 50% of the enslaved Africans in Haiti were Gbe speakers.&#39;,
+   &#39;title&#39;: &#39;Haitian literature&#39;}],
+ &#39;negative_passages&#39;: [{&#39;docid&#39;: &#39;1170520#2&#39;,
+   &#39;text&#39;: &#39;Louisiana Creole is a contact language that arose in the 18th century from interactions between speakers of the lexifier language of Standard French and several substrate or adstrate languages from Africa. Prior to its establishment as a Creole, the precursor was considered a pidgin language. The social situation that gave rise to the Louisiana Creole language was unique, in that the lexifier language was the language found at the contact site. More often the lexifier is the language that arrives at the contact site belonging to the substrate/adstrate languages. Neither the French, the French-Canadians, nor the African slaves were native to the area; this fact categorizes Louisiana Creole as a contact language that arose between exogenous ethnicities. Once the pidgin tongue was transmitted to the next generation as a &quot;lingua franca&quot; (who were then considered the first native speakers of the new grammar), it could effectively be classified as a creole language.&#39;,
+   &#39;title&#39;: &#39;Louisiana Creole&#39;},
+  {&#39;docid&#39;: &#39;49823#1&#39;,
+   &#39;text&#39;: &#39;The precise number of creole languages is not known, particularly as many are poorly attested or documented. About one hundred creole languages have arisen since 1500. These are predominantly based on European languages such as English and French due to the European Age of Discovery and the Atlantic slave trade that arose at that time. With the improvements in ship-building and navigation, traders had to learn to communicate with people around the world, and the quickest way to do this was to develop a pidgin, or simplified language suited to the purpose; in turn, full creole languages developed from these pidgins. In addition to creoles that have European languages as their base, there are, for example, creoles based on Arabic, Chinese, and Malay. The creole with the largest number of speakers is Haitian Creole, with almost ten million native speakers, followed by Tok Pisin with about 4 million, most of whom are second-language speakers.&#39;,
+   &#39;title&#39;: &#39;Creole language&#39;},
+  {&#39;docid&#39;: &#39;1651722#10&#39;,
+   &#39;text&#39;: &#39;Krio is an English-based creole from which descend Nigerian Pidgin English and Cameroonian Pidgin English and Pichinglis. It is also similar to English-based creole languages spoken in the Americas, especially the Gullah language, Jamaican Patois (Jamaican Creole), and Bajan Creole but it has its own distinctive character. It also shares some linguistic similarities with non-English creoles, such as the French-based creole languages in the Caribbean.&#39;,
+   &#39;title&#39;: &#39;Krio language&#39;},
+  {&#39;docid&#39;: &#39;540382#4&#39;,
+   &#39;text&#39;: &#39;Until recently creoles were considered &quot;degenerate&quot; dialects of Portuguese unworthy of attention. As a consequence, there is little documentation on the details of their formation. Since the 20th century, increased study of creoles by linguists led to several theories being advanced. The monogenetic theory of pidgins assumes that some type of pidgin language — dubbed West African Pidgin Portuguese — based on Portuguese was spoken from the 15th to 18th centuries in the forts established by the Portuguese on the West African coast. According to this theory, this variety may have been the starting point of all the pidgin and creole languages. This may explain to some extent why Portuguese lexical items can be found in many creoles, but more importantly, it would account for the numerous grammatical similarities shared by such languages, such as the preposition &quot;na&quot;, meaning &quot;in&quot; and/or &quot;on&quot;, which would come from the Portuguese contraction &quot;na&quot; meaning &quot;in the&quot; (feminine singular).&#39;,
+   &#39;title&#39;: &#39;Portuguese-based creole languages&#39;},
+  {&#39;docid&#39;: &#39;49823#7&#39;,
+   &#39;text&#39;: &#39;Other scholars, such as Salikoko Mufwene, argue that pidgins and creoles arise independently under different circumstances, and that a pidgin need not always precede a creole nor a creole evolve from a pidgin. Pidgins, according to Mufwene, emerged in trade colonies among &quot;users who preserved their native vernaculars for their day-to-day interactions.&quot; Creoles, meanwhile, developed in settlement colonies in which speakers of a European language, often indentured servants whose language would be far from the standard in the first place, interacted extensively with non-European slaves, absorbing certain words and features from the slaves\&#39; non-European native languages, resulting in a heavily basilectalized version of the original language. These servants and slaves would come to use the creole as an everyday vernacular, rather than merely in situations in which contact with a speaker of the superstrate was necessary.&#39;,
+   &#39;title&#39;: &#39;Creole language&#39;},
+  {&#39;docid&#39;: &#39;11236157#2&#39;,
+   &#39;text&#39;: &#39;While many creoles around the world have lexicons based on languages other than Portuguese (e.g. English, French, Spanish, Dutch), it was hypothesized that such creoles were derived from this lingua franca by means of relexification, i.e. the process in which a pidgin or creole incorporates a significant amount of its lexicon from another language while keeping the grammar intact. There is some evidence that relexification is a real process. Pieter Muysken and show that there are languages which derive their grammar and lexicon from two different languages respectively, which could be easily explained with the relexification hypothesis. Also, Saramaccan seems to be a pidgin frozen in the middle of relexification from Portuguese to English. However, in cases of such mixed languages, as call them, there is never a one-to-one relationship between the grammar or lexicon of the mixed language and the grammar or lexicon of the language they attribute it to.&#39;,
+   &#39;title&#39;: &#39;Monogenetic theory of pidgins&#39;},
+  {&#39;docid&#39;: &#39;1612877#8&#39;,
+   &#39;text&#39;: &#39;A mixed language differs from pidgins, creoles and code-switching in very fundamental ways. In most cases, mixed language speakers are fluent, even native, speakers of both languages; however, speakers of Michif (a N-V mixed language) are unique in that many are not fluent in both of the sources languages. Pidgins, on the other hand, develop in a situation, usually in the context of trade, where speakers of two (or more) different languages come into contact and need to find some way to communicate with each other. Creoles develop when a pidgin language becomes a first language for young speakers. While creoles tend to have drastically simplified morphologies, mixed languages often retain the inflectional complexities of one, or both, of parent languages. For instance, Michif retains the complexities of its French nouns and its Cree verbs.&#39;,
+   &#39;title&#39;: &#39;Mixed language&#39;},
+  {&#39;docid&#39;: &#39;9606120#4&#39;,
+   &#39;text&#39;: &#39;While it is classified as a pidgin language, this is inaccurate. Speakers are already fluent in either English and French, and as such it is not used in situations where both parties lack a common tongue. As a whole, Camfranglais sets itself apart from other pidgins and creoles in that it consists of an array of languages, at least one of which is already known by those speaking it. For instance, while it contains elements of borrowing, code-switching, and pidgin languages, it is not a contact language as both parties can be presumed to speak French, the lexifer. Numerous other classifications have been proposed, like ‘pidgin’, ‘argot’, ‘youth language’, a ‘sabir camerounais’, an ‘appropriation vernaculaire du français’ or a ‘hybrid slang’. However, as Camfranglais is more developed than a slang, this too is insufficient. Kießling proposes it be classified as a \&#39;highly hybrid sociolect of the urban youth type&quot;, a definition that Stein-Kanjora agrees with.&#39;,
+   &#39;title&#39;: &#39;Camfranglais&#39;}]}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Each item has four parts: <code class="docutils literal notranslate"><span class="pre">query_id</span></code>, <code class="docutils literal notranslate"><span class="pre">query</span></code>, <code class="docutils literal notranslate"><span class="pre">positive_passages</span></code>, and <code class="docutils literal notranslate"><span class="pre">negative_passages</span></code>. Here, <code class="docutils literal notranslate"><span class="pre">query_id</span></code> and <code class="docutils literal notranslate"><span class="pre">query</span></code> correspond to the id and text content of the qeury. <code class="docutils literal notranslate"><span class="pre">positive_passages</span></code> and <code class="docutils literal notranslate"><span class="pre">negative_passages</span></code> are list of passages with their corresponding <code class="docutils literal notranslate"><span class="pre">docid</span></code>, <code class="docutils literal notranslate"><span class="pre">title</span></code>, and <code class="docutils literal notranslate"><span class="pre">text</span></code>.</p>
+<p>This structure is the same in the <code class="docutils literal notranslate"><span class="pre">train</span></code>, <code class="docutils literal notranslate"><span class="pre">dev</span></code>, <code class="docutils literal notranslate"><span class="pre">testA</span></code> and <code class="docutils literal notranslate"><span class="pre">testB</span></code> sets.</p>
+<p>Then we process the ids and text of queries and corpus, and get the qrels of the dev set.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">corpus_ids</span> <span class="o">=</span> <span class="n">corpus</span><span class="p">[</span><span class="s1">&#39;docid&#39;</span><span class="p">]</span>
+<span class="n">corpus_text</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">corpus</span><span class="p">:</span>
+   <span class="n">corpus_text</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">doc</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+<span class="n">queries_ids</span> <span class="o">=</span> <span class="n">dev</span><span class="p">[</span><span class="s1">&#39;query_id&#39;</span><span class="p">]</span>
+<span class="n">queries_text</span> <span class="o">=</span> <span class="n">dev</span><span class="p">[</span><span class="s1">&#39;query&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluate-from-scratch">
+<h2>2. Evaluate from scratch<a class="headerlink" href="#evaluate-from-scratch" title="Link to this heading">#</a></h2>
+<section id="embedding">
+<h3>2.1 Embedding<a class="headerlink" href="#embedding" title="Link to this heading">#</a></h3>
+<p>In the demo we use bge-base-en-v1.5, feel free to change to the model you prefer.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span> 
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TRANSFORMERS_NO_ADVISORY_WARNINGS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;SETUPTOOLS_USE_DISTUTILS&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">FlagEmbedding</span> <span class="kn">import</span> <span class="n">FlagModel</span>
+
+<span class="c1"># get the BGE embedding model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">FlagModel</span><span class="p">(</span><span class="s1">&#39;BAAI/bge-base-en-v1.5&#39;</span><span class="p">)</span>
+
+<span class="c1"># get the embedding of the queries and corpus</span>
+<span class="n">queries_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_queries</span><span class="p">(</span><span class="n">queries_text</span><span class="p">)</span>
+<span class="n">corpus_embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode_corpus</span><span class="p">(</span><span class="n">corpus_text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;shape of the embeddings:&quot;</span><span class="p">,</span> <span class="n">corpus_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;data type of the embeddings: &quot;</span><span class="p">,</span> <span class="n">corpus_embeddings</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>initial target device: 100%|██████████| 8/8 [00:29&lt;00:00,  3.66s/it]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 52.84it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 55.15it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 56.49it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 55.22it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 49.22it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 54.69it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 49.16it/s]
+pre tokenize: 100%|██████████| 1/1 [00:00&lt;00:00, 50.77it/s]
+Chunks: 100%|██████████| 8/8 [00:10&lt;00:00,  1.27s/it]
+pre tokenize: 100%|██████████| 16062/16062 [08:12&lt;00:00, 32.58it/s]  
+pre tokenize: 100%|██████████| 16062/16062 [08:44&lt;00:00, 30.60it/s]68s/it]
+pre tokenize: 100%|██████████| 16062/16062 [08:39&lt;00:00, 30.90it/s]41s/it]
+pre tokenize: 100%|██████████| 16062/16062 [09:04&lt;00:00, 29.49it/s]43s/it]
+pre tokenize: 100%|██████████| 16062/16062 [09:27&lt;00:00, 28.29it/s]it/s]t]
+pre tokenize: 100%|██████████| 16062/16062 [09:08&lt;00:00, 29.30it/s]32s/it]
+pre tokenize: 100%|██████████| 16062/16062 [08:59&lt;00:00, 29.77it/s]it/s]t]
+pre tokenize: 100%|██████████| 16062/16062 [09:04&lt;00:00, 29.50it/s]29s/it]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:10&lt;00:00, 15.59it/s] 
+Inference Embeddings: 100%|██████████| 16062/16062 [17:04&lt;00:00, 15.68it/s]]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:01&lt;00:00, 15.72it/s]s]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:28&lt;00:00, 15.32it/s]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:43&lt;00:00, 15.10it/s]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:27&lt;00:00, 15.34it/s]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:36&lt;00:00, 15.20it/s]
+Inference Embeddings: 100%|██████████| 16062/16062 [17:31&lt;00:00, 15.28it/s]
+Chunks: 100%|██████████| 8/8 [27:49&lt;00:00, 208.64s/it]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>shape of the embeddings: (32893221, 768)
+data type of the embeddings:  float16
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="indexing">
+<h3>2.2 Indexing<a class="headerlink" href="#indexing" title="Link to this heading">#</a></h3>
+<p>Create a Faiss index to store the embeddings.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">faiss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># get the length of our embedding vectors, vectors by bge-base-en-v1.5 have length 768</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="n">corpus_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># create the faiss index and store the corpus embeddings into the vector space</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">index_factory</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="s1">&#39;Flat&#39;</span><span class="p">,</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_INNER_PRODUCT</span><span class="p">)</span>
+<span class="n">corpus_embeddings</span> <span class="o">=</span> <span class="n">corpus_embeddings</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="c1"># train and add the embeddings to the index</span>
+<span class="n">index</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">corpus_embeddings</span><span class="p">)</span>
+<span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">corpus_embeddings</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;total number of vectors: </span><span class="si">{</span><span class="n">index</span><span class="o">.</span><span class="n">ntotal</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>total number of vectors: 32893221
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="searching">
+<h3>2.3 Searching<a class="headerlink" href="#searching" title="Link to this heading">#</a></h3>
+<p>Use the Faiss index to search for each query.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">tqdm</span> <span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="n">query_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">queries_embeddings</span><span class="p">)</span>
+
+<span class="n">all_scores</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">all_indices</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">query_size</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Searching&quot;</span><span class="p">):</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">32</span><span class="p">,</span> <span class="n">query_size</span><span class="p">)</span>
+    <span class="n">query_embedding</span> <span class="o">=</span> <span class="n">queries_embeddings</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">j</span><span class="p">]</span>
+    <span class="n">score</span><span class="p">,</span> <span class="n">indice</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query_embedding</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span> <span class="n">k</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">all_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+    <span class="n">all_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">indice</span><span class="p">)</span>
+
+<span class="n">all_scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_scores</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">all_indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">all_indices</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Searching: 100%|██████████| 25/25 [15:03&lt;00:00, 36.15s/it]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then map the search results back to the indices in the dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">all_scores</span><span class="p">,</span> <span class="n">all_indices</span><span class="p">)):</span>
+    <span class="n">results</span><span class="p">[</span><span class="n">queries_ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">queries_ids</span><span class="p">[</span><span class="n">idx</span><span class="p">]][</span><span class="n">corpus_ids</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="evaluating">
+<h3>2.4 Evaluating<a class="headerlink" href="#evaluating" title="Link to this heading">#</a></h3>
+<p>Download the qrels file for evaluation:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">endpoint</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;HF_ENDPOINT&#39;</span><span class="p">,</span> <span class="s1">&#39;https://huggingface.co&#39;</span><span class="p">)</span>
+<span class="n">file_name</span> <span class="o">=</span> <span class="s2">&quot;qrels.miracl-v1.0-en-dev.tsv&quot;</span>
+<span class="n">qrel_url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;wget </span><span class="si">{</span><span class="n">endpoint</span><span class="si">}</span><span class="s2">/datasets/miracl/miracl/resolve/main/miracl-v1.0-en/qrels/</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s2">&quot;</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="n">qrel_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>--2024-11-21 10:26:16--  https://hf-mirror.com/datasets/miracl/miracl/resolve/main/miracl-v1.0-en/qrels/qrels.miracl-v1.0-en-dev.tsv
+Resolving hf-mirror.com (hf-mirror.com)... 153.121.57.40, 133.242.169.68, 160.16.199.204
+Connecting to hf-mirror.com (hf-mirror.com)|153.121.57.40|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 167817 (164K) [text/plain]
+Saving to: ‘qrels.miracl-v1.0-en-dev.tsv’
+
+     0K .......... .......... .......... .......... .......... 30%  109K 1s
+    50K .......... .......... .......... .......... .......... 61% 44.5K 1s
+   100K .......... .......... .......... .......... .......... 91% 69.6K 0s
+   150K .......... ...                                        100% 28.0K=2.8s
+
+2024-11-21 10:26:20 (58.6 KB/s) - ‘qrels.miracl-v1.0-en-dev.tsv’ saved [167817/167817]
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Read the qrels from the file:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qrels_dict</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+        <span class="n">qid</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">docid</span><span class="p">,</span> <span class="n">rel</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">qid</span><span class="p">,</span> <span class="n">docid</span><span class="p">,</span> <span class="n">rel</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">qid</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">docid</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">rel</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">qrels_dict</span><span class="p">:</span>
+            <span class="n">qrels_dict</span><span class="p">[</span><span class="n">qid</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">qrels_dict</span><span class="p">[</span><span class="n">qid</span><span class="p">][</span><span class="n">docid</span><span class="p">]</span> <span class="o">=</span> <span class="n">rel</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, use <a class="reference external" href="https://github.com/cvangysel/pytrec_eval">pytrec_eval</a> library to help us calculate the scores of selected metrics:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pytrec_eval</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="n">ndcg_string</span> <span class="o">=</span> <span class="s2">&quot;ndcg_cut.&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]])</span>
+<span class="n">recall_string</span> <span class="o">=</span> <span class="s2">&quot;recall.&quot;</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]])</span>
+
+<span class="n">evaluator</span> <span class="o">=</span> <span class="n">pytrec_eval</span><span class="o">.</span><span class="n">RelevanceEvaluator</span><span class="p">(</span>
+    <span class="n">qrels_dict</span><span class="p">,</span> <span class="p">{</span><span class="n">ndcg_string</span><span class="p">,</span> <span class="n">recall_string</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">scores</span> <span class="o">=</span> <span class="n">evaluator</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+<span class="n">all_ndcgs</span><span class="p">,</span> <span class="n">all_recalls</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">),</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">query_id</span> <span class="ow">in</span> <span class="n">scores</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]:</span>
+        <span class="n">all_ndcgs</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;NDCG@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">query_id</span><span class="p">][</span><span class="s2">&quot;ndcg_cut_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)])</span>
+        <span class="n">all_recalls</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Recall@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">query_id</span><span class="p">][</span><span class="s2">&quot;recall_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">)])</span>
+
+<span class="n">ndcg</span><span class="p">,</span> <span class="n">recall</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">all_ndcgs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+    <span class="n">all_recalls</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span><span class="mi">100</span><span class="p">]:</span>
+    <span class="n">ndcg</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;NDCG@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">ndcg</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;NDCG@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+    <span class="n">recall</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Recall@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">recall</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;Recall@</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">),</span> <span class="mi">5</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">ndcg</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">recall</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>defaultdict(&lt;class &#39;list&#39;&gt;, {&#39;NDCG@10&#39;: 0.46073, &#39;NDCG@100&#39;: 0.54336})
+defaultdict(&lt;class &#39;list&#39;&gt;, {&#39;Recall@10&#39;: 0.55972, &#39;Recall@100&#39;: 0.83827})
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="evaluate-using-flagembedding">
+<h2>3. Evaluate using FlagEmbedding<a class="headerlink" href="#evaluate-using-flagembedding" title="Link to this heading">#</a></h2>
+<p>We provide independent evaluation for popular datasets and benchmarks. Try the following code to run the evaluation, or run the shell script provided in <a class="reference internal" href="#../../examples/evaluation/miracl/eval_miracl.sh"><span class="xref myst">example</span></a> folder.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">arguments</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;- </span><span class="se">\</span>
+<span class="s2">    --eval_name miracl </span><span class="se">\</span>
+<span class="s2">    --dataset_dir ./miracl/data </span><span class="se">\</span>
+<span class="s2">    --dataset_names en </span><span class="se">\</span>
+<span class="s2">    --splits dev </span><span class="se">\</span>
+<span class="s2">    --corpus_embd_save_dir ./miracl/corpus_embd </span><span class="se">\</span>
+<span class="s2">    --output_dir ./miracl/search_results </span><span class="se">\</span>
+<span class="s2">    --search_top_k 100 </span><span class="se">\</span>
+<span class="s2">    --cache_path ./cache/data </span><span class="se">\</span>
+<span class="s2">    --overwrite True </span><span class="se">\</span>
+<span class="s2">    --k_values 10 100 </span><span class="se">\</span>
+<span class="s2">    --eval_output_method markdown </span><span class="se">\</span>
+<span class="s2">    --eval_output_path ./miracl/miracl_eval_results.md </span><span class="se">\</span>
+<span class="s2">    --eval_metrics ndcg_at_10 recall_at_100 </span><span class="se">\</span>
+<span class="s2">    --embedder_name_or_path BAAI/bge-base-en-v1.5 </span><span class="se">\</span>
+<span class="s2">    --devices cuda:0 cuda:1 </span><span class="se">\</span>
+<span class="s2">    --embedder_batch_size 1024</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">argv</span> <span class="o">=</span> <span class="n">arguments</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">HfArgumentParser</span>
+
+<span class="kn">from</span> <span class="nn">FlagEmbedding.evaluation.miracl</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">MIRACLEvalArgs</span><span class="p">,</span> <span class="n">MIRACLEvalModelArgs</span><span class="p">,</span>
+    <span class="n">MIRACLEvalRunner</span>
+<span class="p">)</span>
+
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">HfArgumentParser</span><span class="p">((</span>
+    <span class="n">MIRACLEvalArgs</span><span class="p">,</span>
+    <span class="n">MIRACLEvalModelArgs</span>
+<span class="p">))</span>
+
+<span class="n">eval_args</span><span class="p">,</span> <span class="n">model_args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args_into_dataclasses</span><span class="p">()</span>
+<span class="n">eval_args</span><span class="p">:</span> <span class="n">MIRACLEvalArgs</span>
+<span class="n">model_args</span><span class="p">:</span> <span class="n">MIRACLEvalModelArgs</span>
+
+<span class="n">runner</span> <span class="o">=</span> <span class="n">MIRACLEvalRunner</span><span class="p">(</span>
+    <span class="n">eval_args</span><span class="o">=</span><span class="n">eval_args</span><span class="p">,</span>
+    <span class="n">model_args</span><span class="o">=</span><span class="n">model_args</span>
+<span class="p">)</span>
+
+<span class="n">runner</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/root/anaconda3/envs/dev/lib/python3.12/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+initial target device: 100%|██████████| 2/2 [00:09&lt;00:00,  4.98s/it]
+pre tokenize: 100%|██████████| 16062/16062 [18:01&lt;00:00, 14.85it/s]  
+You&#39;re using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+/root/anaconda3/envs/dev/lib/python3.12/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml
+  warnings.warn(
+pre tokenize: 100%|██████████| 16062/16062 [18:44&lt;00:00, 14.29it/s]92s/it]
+Inference Embeddings:   0%|          | 42/16062 [00:54&lt;8:28:19,  1.90s/it]You&#39;re using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.
+Inference Embeddings:   0%|          | 43/16062 [00:56&lt;8:22:03,  1.88s/it]/root/anaconda3/envs/dev/lib/python3.12/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml
+  warnings.warn(
+Inference Embeddings: 100%|██████████| 16062/16062 [48:29&lt;00:00,  5.52it/s] 
+Inference Embeddings: 100%|██████████| 16062/16062 [48:55&lt;00:00,  5.47it/s]
+Chunks: 100%|██████████| 2/2 [1:10:57&lt;00:00, 2128.54s/it]  
+pre tokenize: 100%|██████████| 1/1 [00:11&lt;00:00, 11.06s/it]
+pre tokenize: 100%|██████████| 1/1 [00:12&lt;00:00, 12.72s/it]
+Inference Embeddings: 100%|██████████| 1/1 [00:00&lt;00:00, 32.15it/s]
+Inference Embeddings: 100%|██████████| 1/1 [00:00&lt;00:00, 39.80it/s]
+Chunks: 100%|██████████| 2/2 [00:31&lt;00:00, 15.79s/it]
+Searching: 100%|██████████| 25/25 [00:00&lt;00:00, 26.24it/s]
+Qrels not found in ./miracl/data/en/dev_qrels.jsonl. Trying to download the qrels from the remote and save it to ./miracl/data/en.
+--2024-11-20 13:00:40--  https://hf-mirror.com/datasets/miracl/miracl/resolve/main/miracl-v1.0-en/qrels/qrels.miracl-v1.0-en-dev.tsv
+Resolving hf-mirror.com (hf-mirror.com)... 133.242.169.68, 153.121.57.40, 160.16.199.204
+Connecting to hf-mirror.com (hf-mirror.com)|133.242.169.68|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 167817 (164K) [text/plain]
+Saving to: ‘./cache/data/miracl/qrels.miracl-v1.0-en-dev.tsv’
+
+     0K .......... .......... .......... .......... .......... 30%  336K 0s
+    50K .......... .......... .......... .......... .......... 61%  678K 0s
+   100K .......... .......... .......... .......... .......... 91%  362K 0s
+   150K .......... ...                                        100% 39.8K=0.7s
+
+2024-11-20 13:00:42 (231 KB/s) - ‘./cache/data/miracl/qrels.miracl-v1.0-en-dev.tsv’ saved [167817/167817]
+
+Loading and Saving qrels: 100%|██████████| 8350/8350 [00:00&lt;00:00, 184554.95it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;miracl/search_results/bge-base-en-v1.5/NoReranker/EVAL/eval_results.json&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">content_file</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">content_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>{
+    &quot;en-dev&quot;: {
+        &quot;ndcg_at_10&quot;: 0.46053,
+        &quot;ndcg_at_100&quot;: 0.54313,
+        &quot;map_at_10&quot;: 0.35928,
+        &quot;map_at_100&quot;: 0.38726,
+        &quot;recall_at_10&quot;: 0.55972,
+        &quot;recall_at_100&quot;: 0.83809,
+        &quot;precision_at_10&quot;: 0.14018,
+        &quot;precision_at_100&quot;: 0.02347,
+        &quot;mrr_at_10&quot;: 0.54328,
+        &quot;mrr_at_100&quot;: 0.54929
+    }
+}
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4.4.1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Evaluate on BEIR</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4.5.2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Evaluate on MLDR</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">0. Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#dataset">1. Dataset</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-from-scratch">2. Evaluate from scratch</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#embedding">2.1 Embedding</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#indexing">2.2 Indexing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#searching">2.3 Searching</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluating">2.4 Evaluating</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluate-using-flagembedding">3. Evaluate using FlagEmbedding</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/4_Evaluation/4.5.1.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

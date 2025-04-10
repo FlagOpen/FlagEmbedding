@@ -1,0 +1,933 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>Faiss Quantizers &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/3_Indexing/3.1.4';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Choosing Index" href="3.1.5.html" />
+    <link rel="prev" title="Faiss Indexes" href="3.1.3.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.4.1.html">Evaluate on BEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.1.html">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../3_Indexing.html" class="nav-link">3. Indexing</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Faiss Quantizers</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="faiss-quantizers">
+<h1>Faiss Quantizers<a class="headerlink" href="#faiss-quantizers" title="Link to this heading">#</a></h1>
+<p>In this notebook, we will introduce the quantizer object in Faiss and how to use them.</p>
+<section id="preparation">
+<h2>Preparation<a class="headerlink" href="#preparation" title="Link to this heading">#</a></h2>
+<p>For CPU usage, run:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install faiss-cpu
+</pre></div>
+</div>
+</div>
+</div>
+<p>For GPU on Linux x86_64 system, use Conda:</p>
+<p><code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">install</span> <span class="pre">-c</span> <span class="pre">pytorch</span> <span class="pre">-c</span> <span class="pre">nvidia</span> <span class="pre">faiss-gpu=1.8.0</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">faiss</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">768</span><span class="p">)</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="scalar-quantizer">
+<h2>1. Scalar Quantizer<a class="headerlink" href="#scalar-quantizer" title="Link to this heading">#</a></h2>
+<p>Normal data type of vector embeedings is usually 32 bit floats. Scalar quantization is transforming the 32 float representation to, for example, 8 bit interger. Thus with a 4x reduction in size. In this way, it can be seen as we distribute each dimension into 256 buckets.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Name</p></th>
+<th class="head text-center"><p>Class</p></th>
+<th class="head text-left"><p>Parameters</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">ScalarQuantizer</span></code></p></td>
+<td class="text-center"><p>Quantizer class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">qtype</span></code>: map dimension into $2^\text{qtype}$ clusters</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">IndexScalarQuantizer</span></code></p></td>
+<td class="text-center"><p>Flat index class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">qtype</span></code>: map dimension into $2^\text{qtype}$ clusters<br><code class="docutils literal notranslate"><span class="pre">metric</span></code>: similarity metric (L2 or IP)</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">IndexIVFScalarQuantizer</span></code></p></td>
+<td class="text-center"><p>IVF index class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">nlist</span></code>: number of cells/clusters to partition the inverted file space<br><code class="docutils literal notranslate"><span class="pre">qtype</span></code>: map dimension into $2^\text{qtype}$ clusters<br><code class="docutils literal notranslate"><span class="pre">metric</span></code>: similarity metric (L2 or IP)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Quantizer class objects are used to compress the data before adding into indexes. Flat index class objects and IVF index class objects can be used direct as and index. Quantization will be done automatically.</p>
+<section id="id1">
+<h3>Scalar Quantizer<a class="headerlink" href="#id1" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">qtype</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">ScalarQuantizer</span><span class="o">.</span><span class="n">QT_8bit</span>
+
+<span class="n">quantizer</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">ScalarQuantizer</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">qtype</span><span class="p">)</span>
+
+<span class="n">quantizer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">new_data</span> <span class="o">=</span> <span class="n">quantizer</span><span class="o">.</span><span class="n">compute_codes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">new_data</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[156 180  46 226  13 130  41 187  63 251  16 199 205 166 117 122 214   2
+ 206 137  71 186  20 131  59  57  68 114  35  45  28 210  27  93  74 245
+ 167   5  32  42  44 128  10 189  10  13  42 162 179 221 241 104 205  21
+  70  87  52 219 172 138 193   0 228 175 144  34  59  88 170   1 233 220
+  20  64 245 241   5 161  41  55  30 247 107   8 229  90 201  10  43 158
+ 238 184 187 114 232  90 116 205  14 214 135 158 237 192 205 141 232 176
+ 124 176 163  68  49  91 125  70   6 170  55  44 215  84  46  48 218  56
+ 107 176]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="scalar-quantizer-index">
+<h3>Scalar Quantizer Index<a class="headerlink" href="#scalar-quantizer-index" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">k</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">qtype</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">ScalarQuantizer</span><span class="o">.</span><span class="n">QT_8bit</span>
+<span class="c1"># nlist = 5</span>
+
+<span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexScalarQuantizer</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">qtype</span><span class="p">,</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_L2</span><span class="p">)</span>
+<span class="c1"># index = faiss.IndexIVFScalarQuantizer(d, nlist, faiss.ScalarQuantizer.QT_8bit, faiss.METRIC_L2)</span>
+
+<span class="n">index</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;closest elements: </span><span class="si">{</span><span class="n">I</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;distance: </span><span class="si">{</span><span class="n">D</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>closest elements: [[  0 471 188]]
+distance: [[1.6511828e-04 1.6252808e+01 1.6658131e+01]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="product-quantizer">
+<h2>2. Product Quantizer<a class="headerlink" href="#product-quantizer" title="Link to this heading">#</a></h2>
+<p>When speed and memory are crucial factors in searching, product quantizer becomes a top choice. It is one of the effective quantizer on reducing memory size.</p>
+<p>The first step of PQ is dividing the original vectors with dimension <code class="docutils literal notranslate"><span class="pre">d</span></code> into smaller, low-dimensional sub-vectors with dimension <code class="docutils literal notranslate"><span class="pre">d/m</span></code>. Here <code class="docutils literal notranslate"><span class="pre">m</span></code> is the number of sub-vectors.</p>
+<p>Then clustering algorithms are used to create codebook of a fixed number of centroids.</p>
+<p>Next, each sub-vector of a vector is replaced by the index of the closest centroid from its corresponding codebook. Now each vector will be stored with only the indices instead of the full vector.</p>
+<p>When comuputing the distance between a query vector. Only the distances to the centroids in the codebooks are calculated, thus enable the quick approximate nearest neighbor searches.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head text-center"><p>Name</p></th>
+<th class="head text-center"><p>Class</p></th>
+<th class="head text-left"><p>Parameters</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">ProductQuantizer</span></code></p></td>
+<td class="text-center"><p>Quantizer class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">M</span></code>: number of sub-vectors that D % M == 0<br><code class="docutils literal notranslate"><span class="pre">nbits</span></code>: number of bits per subquantizer, so each contain $2^\text{nbits}$ centroids</p></td>
+</tr>
+<tr class="row-odd"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">IndexPQ</span></code></p></td>
+<td class="text-center"><p>Flat index class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">M</span></code>: number of sub-vectors that D % M == 0<br><code class="docutils literal notranslate"><span class="pre">nbits</span></code>: number of bits per subquantizer, so each contain $2^\text{nbits}$ centroids<br><code class="docutils literal notranslate"><span class="pre">metric</span></code>: similarity metric (L2 or IP)</p></td>
+</tr>
+<tr class="row-even"><td class="text-center"><p><code class="docutils literal notranslate"><span class="pre">IndexIVFPQ</span></code></p></td>
+<td class="text-center"><p>IVF index class</p></td>
+<td class="text-left"><p><code class="docutils literal notranslate"><span class="pre">quantizer</span></code>: the quantizer used in computing distance phase.<br><code class="docutils literal notranslate"><span class="pre">d</span></code>: dimension of vectors<br><code class="docutils literal notranslate"><span class="pre">nlist</span></code>: number of cells/clusters to partition the inverted file space<br><code class="docutils literal notranslate"><span class="pre">M</span></code>: number of sub-vectors that D % M == 0<br><code class="docutils literal notranslate"><span class="pre">nbits</span></code>: number of bits per subquantizer, so each contain $2^\text{nbits}$ centroids<br><code class="docutils literal notranslate"><span class="pre">metric</span></code>: similarity metric (L2 or IP)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="id2">
+<h3>Product Quantizer<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">d</span> <span class="o">=</span> <span class="mi">128</span>
+<span class="n">M</span> <span class="o">=</span> <span class="mi">8</span>
+<span class="n">nbits</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="n">quantizer</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">ProductQuantizer</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">nbits</span><span class="p">)</span>
+
+<span class="n">quantizer</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">new_data</span> <span class="o">=</span> <span class="n">quantizer</span><span class="o">.</span><span class="n">compute_codes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">new_data</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">new_data</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>255
+[[ 90 169 226  45]
+ [ 33  51  34  15]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="product-quantizer-index">
+<h3>Product Quantizer Index<a class="headerlink" href="#product-quantizer-index" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexPQ</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_L2</span><span class="p">)</span>
+
+<span class="n">index</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;closest elements: </span><span class="si">{</span><span class="n">I</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;distance: </span><span class="si">{</span><span class="n">D</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>closest elements: [[  0 946 330]]
+distance: [[ 8.823908 11.602461 11.746731]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="product-quantizer-ivf-index">
+<h3>Product Quantizer IVF Index<a class="headerlink" href="#product-quantizer-ivf-index" title="Link to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nlist</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="n">quantizer</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexFlat</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_L2</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexIVFPQ</span><span class="p">(</span><span class="n">quantizer</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">nlist</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">nbits</span><span class="p">,</span> <span class="n">faiss</span><span class="o">.</span><span class="n">METRIC_L2</span><span class="p">)</span>
+
+<span class="n">index</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">index</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span><span class="p">,</span> <span class="n">I</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">k</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;closest elements: </span><span class="si">{</span><span class="n">I</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;distance: </span><span class="si">{</span><span class="n">D</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>closest elements: [[  0 899 521]]
+distance: [[ 8.911423 12.088312 12.104569]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="3.1.3.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Faiss Indexes</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="3.1.5.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Choosing Index</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation">Preparation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#scalar-quantizer">1. Scalar Quantizer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Scalar Quantizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#scalar-quantizer-index">Scalar Quantizer Index</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#product-quantizer">2. Product Quantizer</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Product Quantizer</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#product-quantizer-index">Product Quantizer Index</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#product-quantizer-ivf-index">Product Quantizer IVF Index</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/3_Indexing/3.1.4.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

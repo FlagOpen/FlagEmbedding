@@ -1,0 +1,897 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>RAG with LlamaIndex &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/6_RAG/6.3';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="7. Finetuning" href="../7_Finetuning.html" />
+    <link rel="prev" title="RAG with LangChain" href="6.2.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.4.1.html">Evaluate on BEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.1.html">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../6_RAG.html" class="nav-link">6. RAG</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">RAG with LlamaIndex</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="rag-with-llamaindex">
+<h1>RAG with LlamaIndex<a class="headerlink" href="#rag-with-llamaindex" title="Link to this heading">#</a></h1>
+<p>LlamaIndex is a very popular framework to help build connections between data sources and LLMs. It is also a top choice when people would like to build an RAG framework. In this tutorial, we will go through how to use LlamaIndex to aggregate bge-base-en-v1.5 and GPT-4o-mini to an RAG application.</p>
+<section id="preparation">
+<h2>0. Preparation<a class="headerlink" href="#preparation" title="Link to this heading">#</a></h2>
+<p>First install the required packages in the environment.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install llama-index-llms-openai llama-index-embeddings-huggingface llama-index-vector-stores-faiss
+<span class="o">%</span><span class="k">pip</span> install llama_index 
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then fill the OpenAI API key below:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For openai key</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;OPENAI_API_KEY&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;YOUR_API_KEY&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>BGE-M3 is a very powerful embedding model, We would like to know what does that ‘M3’ stands for.</p>
+<p>Let’s first ask GPT the question:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.llms.openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="c1"># non-streaming</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">()</span><span class="o">.</span><span class="n">complete</span><span class="p">(</span><span class="s2">&quot;What does M3-Embedding stands for?&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>M3-Embedding stands for Multimodal Multiscale Embedding. It is a technique used in machine learning and data analysis to embed high-dimensional data into a lower-dimensional space while preserving the structure and relationships within the data. This technique is particularly useful for analyzing complex datasets that contain multiple modalities or scales of information.
+</pre></div>
+</div>
+</div>
+</div>
+<p>By checking the description in GitHub <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/BGE_M3">repo</a> of BGE-M3, we are pretty sure that GPT is giving us hallucination. Let’s build an RAG pipeline to solve the problem!</p>
+</section>
+<section id="data">
+<h2>1. Data<a class="headerlink" href="#data" title="Link to this heading">#</a></h2>
+<p>First, download BGE-M3 <a class="reference external" href="https://arxiv.org/pdf/2402.03216">paper</a> to a directory, and load it through <code class="docutils literal notranslate"><span class="pre">SimpleDirectoryReader</span></code>.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">SimpleDirectoryReader</span></code> can read all the documents under that directory and supports a lot of commonly used <a class="reference external" href="https://docs.llamaindex.ai/en/stable/module_guides/loading/simpledirectoryreader/#supported-file-types">file types</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">SimpleDirectoryReader</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">SimpleDirectoryReader</span><span class="p">(</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="c1"># reader = SimpleDirectoryReader(&quot;DIR_TO_FILE&quot;)</span>
+<span class="n">documents</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Settings</span></code> object is a global settings for the RAG pipeline. Attributes in it have default settings and can be modified by users (OpenAI’s GPT and embedding model). Large attributes like models will be only loaded when being used.</p>
+<p>Here, we specify the <code class="docutils literal notranslate"><span class="pre">node_parser</span></code> to <code class="docutils literal notranslate"><span class="pre">SentenceSplitter()</span></code> with our chosen parameters, use the open-source <code class="docutils literal notranslate"><span class="pre">bge-base-en-v1.5</span></code> as our embedding model, and <code class="docutils literal notranslate"><span class="pre">gpt-4o-mini</span></code> as our llm.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">Settings</span>
+<span class="kn">from</span> <span class="nn">llama_index.core.node_parser</span> <span class="kn">import</span> <span class="n">SentenceSplitter</span>
+<span class="kn">from</span> <span class="nn">llama_index.embeddings.huggingface</span> <span class="kn">import</span> <span class="n">HuggingFaceEmbedding</span>
+<span class="kn">from</span> <span class="nn">llama_index.llms.openai</span> <span class="kn">import</span> <span class="n">OpenAI</span>
+
+<span class="c1"># set the parser with parameters</span>
+<span class="n">Settings</span><span class="o">.</span><span class="n">node_parser</span> <span class="o">=</span> <span class="n">SentenceSplitter</span><span class="p">(</span>
+    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>    <span class="c1"># Maximum size of chunks to return</span>
+    <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span>  <span class="c1"># number of overlap characters between chunks</span>
+<span class="p">)</span>
+
+<span class="c1"># set the specific embedding model</span>
+<span class="n">Settings</span><span class="o">.</span><span class="n">embed_model</span> <span class="o">=</span> <span class="n">HuggingFaceEmbedding</span><span class="p">(</span><span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span><span class="p">)</span>
+
+<span class="c1"># set the llm we want to use</span>
+<span class="n">Settings</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">&quot;gpt-4o-mini&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="indexing">
+<h2>2. Indexing<a class="headerlink" href="#indexing" title="Link to this heading">#</a></h2>
+<p>Indexing is one of the most important part in RAG. LlamaIndex integrates a great amount of vector databases. Here we will use Faiss as an example.</p>
+<p>First check the dimension of the embeddings, which will need for initializing a Faiss index.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">embedding</span> <span class="o">=</span> <span class="n">Settings</span><span class="o">.</span><span class="n">embed_model</span><span class="o">.</span><span class="n">get_text_embedding</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
+<span class="n">dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">embedding</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>768
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then create the index with Faiss and our documents. Here LlamaIndex help capsulate the Faiss function calls. If you would like to know more about Faiss, refer to the tutorial of <a class="reference external" href="https://github.com/FlagOpen/FlagEmbedding/tree/master/Tutorials/3_Indexing">Faiss and indexing</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">faiss</span>
+<span class="kn">from</span> <span class="nn">llama_index.vector_stores.faiss</span> <span class="kn">import</span> <span class="n">FaissVectorStore</span>
+<span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">StorageContext</span><span class="p">,</span> <span class="n">VectorStoreIndex</span>
+
+<span class="c1"># init Faiss and create a vector store</span>
+<span class="n">faiss_index</span> <span class="o">=</span> <span class="n">faiss</span><span class="o">.</span><span class="n">IndexFlatL2</span><span class="p">(</span><span class="n">dim</span><span class="p">)</span>
+<span class="n">vector_store</span> <span class="o">=</span> <span class="n">FaissVectorStore</span><span class="p">(</span><span class="n">faiss_index</span><span class="o">=</span><span class="n">faiss_index</span><span class="p">)</span>
+
+<span class="c1"># customize the storage context using our vector store</span>
+<span class="n">storage_context</span> <span class="o">=</span> <span class="n">StorageContext</span><span class="o">.</span><span class="n">from_defaults</span><span class="p">(</span>
+    <span class="n">vector_store</span><span class="o">=</span><span class="n">vector_store</span>
+<span class="p">)</span>
+
+<span class="c1"># use the loaded documents to build the index</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">VectorStoreIndex</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span>
+    <span class="n">documents</span><span class="p">,</span> <span class="n">storage_context</span><span class="o">=</span><span class="n">storage_context</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="retrieve-and-generate">
+<h2>3. Retrieve and Generate<a class="headerlink" href="#retrieve-and-generate" title="Link to this heading">#</a></h2>
+<p>With a well constructed index, we can now build the query engine to accomplish our task:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">query_engine</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">as_query_engine</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The following cell displays the default prompt template for Q&amp;A in our pipeline:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># check the default promt template</span>
+<span class="n">prompt_template</span> <span class="o">=</span> <span class="n">query_engine</span><span class="o">.</span><span class="n">get_prompts</span><span class="p">()[</span><span class="s1">&#39;response_synthesizer:text_qa_template&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prompt_template</span><span class="o">.</span><span class="n">get_template</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Context information is below.
+---------------------
+{context_str}
+---------------------
+Given the context information and not prior knowledge, answer the query.
+Query: {query_str}
+Answer: 
+</pre></div>
+</div>
+</div>
+</div>
+<p>(Optional) You could modify the prompt to match your use cases:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">llama_index.core</span> <span class="kn">import</span> <span class="n">PromptTemplate</span>
+
+<span class="n">template</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are a Q&amp;A chat bot.</span>
+<span class="s2">Use the given context only, answer the question.</span>
+
+<span class="s2">&lt;context&gt;</span>
+<span class="si">{context_str}</span>
+<span class="s2">&lt;/context&gt;</span>
+
+<span class="s2">Question: </span><span class="si">{query_str}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">new_template</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span><span class="n">template</span><span class="p">)</span>
+<span class="n">query_engine</span><span class="o">.</span><span class="n">update_prompts</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;response_synthesizer:text_qa_template&quot;</span><span class="p">:</span> <span class="n">new_template</span><span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">prompt_template</span> <span class="o">=</span> <span class="n">query_engine</span><span class="o">.</span><span class="n">get_prompts</span><span class="p">()[</span><span class="s1">&#39;response_synthesizer:text_qa_template&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prompt_template</span><span class="o">.</span><span class="n">get_template</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>You are a Q&amp;A chat bot.
+Use the given context only, answer the question.
+
+&lt;context&gt;
+{context_str}
+&lt;/context&gt;
+
+Question: {query_str}
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, let’s see how does the RAG application performs on our query!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">response</span> <span class="o">=</span> <span class="n">query_engine</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s2">&quot;What does M3-Embedding stands for?&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>M3-Embedding stands for Multi-Linguality, Multi-Functionality, and Multi-Granularity.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="6.2.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">RAG with LangChain</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../7_Finetuning.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">7. Finetuning</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation">0. Preparation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data">1. Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indexing">2. Indexing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#retrieve-and-generate">3. Retrieve and Generate</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/6_RAG/6.3.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
