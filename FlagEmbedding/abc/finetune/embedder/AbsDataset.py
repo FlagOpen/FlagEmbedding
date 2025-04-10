@@ -213,7 +213,7 @@ class AbsEmbedderCollator(DataCollatorWithPadding):
                 q_collated.append(self.tokenizer.pad(
                     sub_features,
                     padding=self.padding,
-                    max_length=self.passage_max_len,
+                    max_length=self.query_max_len,
                     pad_to_multiple_of=self.pad_to_multiple_of,
                     return_tensors=self.return_tensors
                 ))
