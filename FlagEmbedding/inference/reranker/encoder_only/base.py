@@ -122,7 +122,7 @@ class BaseReranker(AbsReranker):
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize",
-                                  disable=len(sentence_pairs) < 128):
+                                  disable=len(sentence_pairs) < batch_size):
             sentences_batch = sentence_pairs[start_index:start_index + batch_size]
             queries = [s[0] for s in sentences_batch]
             passages = [s[1] for s in sentences_batch]
@@ -174,7 +174,7 @@ class BaseReranker(AbsReranker):
 
         all_scores = []
         for start_index in tqdm(range(0, len(all_inputs_sorted), batch_size), desc="Compute Scores",
-                                disable=len(all_inputs_sorted) < 128):
+                                disable=len(all_inputs_sorted) < batch_size):
             sentences_batch = all_inputs_sorted[start_index:start_index + batch_size]
             inputs = self.tokenizer.pad(
                 sentences_batch,
