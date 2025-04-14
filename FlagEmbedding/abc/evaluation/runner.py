@@ -3,7 +3,7 @@ import json
 import logging
 from typing import List, Union, Tuple
 
-from FlagEmbedding import FlagAutoModel, FlagAutoReranker
+from FlagEmbedding import FlagAutoModel, FlagAutoReranker, AbsEmbedder, AbsReranker
 
 from .arguments import AbsEvalArgs, AbsEvalModelArgs
 from .evaluator import AbsEvaluator
@@ -34,15 +34,15 @@ class AbsEvalRunner:
         self.evaluator = self.load_evaluator()
 
     @staticmethod
-    def get_models(model_args: AbsEvalModelArgs) -> Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]:
+    def get_models(model_args: AbsEvalModelArgs) -> Tuple[AbsEmbedder, Union[AbsReranker, None]]:
         """Get the embedding and reranker model
 
         Args:
             model_args (AbsEvalModelArgs): :class:AbsEvalModelArgs object with the model arguments.
 
         Returns:
-            Tuple[FlagAutoModel, Union[FlagAutoReranker, None]]: A :class:FlagAutoModel object of embedding model, and 
-                :class:FlagAutoReranker object of reranker model if path provided.
+            Tuple[AbsEmbedder, Union[AbsReranker, None]]: A :class:AbsEmbedder object of embedding model, and 
+                :class:AbsReranker object of reranker model if path provided.
         """
         embedder = FlagAutoModel.from_finetuned(
             model_name_or_path=model_args.embedder_name_or_path,

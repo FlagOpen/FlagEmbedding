@@ -5,7 +5,7 @@ from typing import Dict, List, Union, Any
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-from transformers import AutoTokenizer
+from transformers import PreTrainedTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EmbedderOutput
 
@@ -16,8 +16,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     """Embedder class for M3 model.
 
     Args:
-        base_model (AutoModel): The base model to train on.
-        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        base_model (dict[str, Any]): The base model to train on.
+        tokenizer (PreTrainedTokenizer, optional): The tokenizer to use. Defaults to ``None``.
         negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
@@ -32,7 +32,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def __init__(
         self,
         base_model: Dict[str, Any],
-        tokenizer: AutoTokenizer = None,
+        tokenizer: PreTrainedTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1,
         sub_batch_size: int = -1,

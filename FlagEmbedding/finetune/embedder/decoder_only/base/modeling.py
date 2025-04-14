@@ -1,7 +1,7 @@
 import logging
 
 import torch
-from transformers import AutoModel, AutoTokenizer
+from transformers import AutoModel, PreTrainedModel, PreTrainedTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel
 
@@ -12,8 +12,8 @@ class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
     """Embedder model class for decoder only model.
 
     Args:
-        base_model (AutoModel): The base model to train on.
-        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        base_model (PreTrainedModel): The base model to train on.
+        tokenizer (PreTrainedTokenizer, optional): The tokenizer to use. Defaults to ``None``.
         negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
@@ -26,8 +26,8 @@ class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
 
     def __init__(
         self,
-        base_model: AutoModel,
-        tokenizer: AutoTokenizer = None,
+        base_model: PreTrainedModel,
+        tokenizer: PreTrainedTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
         sub_batch_size: int = -1,

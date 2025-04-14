@@ -1,6 +1,6 @@
 import torch
 from torch import nn, Tensor
-from transformers import AutoTokenizer
+from transformers import PreTrainedTokenizer
 from transformers.file_utils import ModelOutput
 
 import logging
@@ -22,16 +22,16 @@ class AbsRerankerModel(ABC, nn.Module):
 
     Args:
         base_model: The base model to train on.
-        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        tokenizer (PreTrainedTokenizer, optional): The tokenizer to use. Defaults to ``None``.
         train_batch_size (int, optional): Batch size used for training. Defaults to ``4``.
     """
     def __init__(
         self,
         base_model: None,
-        tokenizer: AutoTokenizer = None,
+        tokenizer: PreTrainedTokenizer = None,
         train_batch_size: int = 4,
     ):
-        super().__init__()
+        nn.Module.__init__(self)
         self.model = base_model
         self.tokenizer = tokenizer
         self.cross_entropy = nn.CrossEntropyLoss(reduction='mean')

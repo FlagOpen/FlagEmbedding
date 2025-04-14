@@ -2,7 +2,7 @@ import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
 import torch.distributed as dist
-from transformers import AutoTokenizer
+from transformers import PreTrainedTokenizer
 from transformers.file_utils import ModelOutput
 
 import logging
@@ -29,7 +29,7 @@ class AbsEmbedderModel(ABC, nn.Module):
 
     Args:
         base_model: The base model to train on.
-        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        tokenizer (PreTrainedTokenizer, optional): The tokenizer to use. Defaults to ``None``.
         negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
@@ -39,13 +39,13 @@ class AbsEmbedderModel(ABC, nn.Module):
     def __init__(
         self,
         base_model,
-        tokenizer: AutoTokenizer = None,
+        tokenizer: PreTrainedTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1.0,
         sub_batch_size: int = -1,
         kd_loss_type: str = 'kl_div',
     ):
-        super().__init__()
+        nn.Module.__init__(self)
         self.model = base_model
         self.tokenizer = tokenizer
 
