@@ -5,7 +5,7 @@ from typing import Dict, List, Union, Any
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-from transformers import AutoTokenizer
+from transformers import PreTrainedTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EmbedderOutput
 
@@ -16,8 +16,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     """Embedder class for M3 model.
 
     Args:
-        base_model (AutoModel): The base model to train on.
-        tokenizer (AutoTokenizer, optional): The tokenizer to use. Defaults to ``None``.
+        base_model (dict[str, Any]): The base model to train on.
+        tokenizer (PreTrainedTokenizer, optional): The tokenizer to use. Defaults to ``None``.
         negatives_cross_device (bool, optional): If True, will compute cross devices negative loss. Defaults to ``False``.
         temperature (float, optional): Temperature to control the scale of scores. Defaults to ``1.0``.
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
@@ -32,7 +32,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
     def __init__(
         self,
         base_model: Dict[str, Any],
-        tokenizer: AutoTokenizer = None,
+        tokenizer: PreTrainedTokenizer = None,
         negatives_cross_device: bool = False,
         temperature: float = 1,
         sub_batch_size: int = -1,
@@ -122,14 +122,26 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         token_weights = torch.relu(self.sparse_linear(hidden_state))
         if not return_embedding: return token_weights
 
-        sparse_embedding = torch.zeros(
-            input_ids.size(0), self.vocab_size,
-            dtype=token_weights.dtype,
-            device=token_weights.device
-        )
-        sparse_embedding = sparse_embedding.scatter_reduce(
-            dim=-1, index=input_ids, src=token_weights.squeeze(-1), reduce="amax"
-        )
+        if self.training:
+            sparse_embedding = torch.zeros(
+                input_ids.size(0), input_ids.size(1), self.vocab_size,
+                dtype=token_weights.dtype,
+                device=token_weights.device
+            )
+            sparse_embedding = torch.scatter(sparse_embedding, dim=-1, index=input_ids.unsqueeze(-1), src=token_weights)
+            sparse_embedding = torch.max(sparse_embedding, dim=1).values
+        else:
+            # Optimize suggestion from issue #1364: https://github.com/FlagOpen/FlagEmbedding/issues/1364
+            # Disable when self.training = True, otherwise will cause:
+            # RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation
+            sparse_embedding = torch.zeros(
+                input_ids.size(0), self.vocab_size,
+                dtype=token_weights.dtype,
+                device=token_weights.device
+            )
+            sparse_embedding = sparse_embedding.scatter_reduce(
+                dim=-1, index=input_ids, src=token_weights.squeeze(-1), reduce="amax"
+            )
 
         unused_tokens = [
             self.tokenizer.cls_token_id, self.tokenizer.eos_token_id,
@@ -527,6 +539,10 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             dict: A dictionary containing the three types of embeddings.
         """
         assert return_dense or return_sparse or return_colbert_vecs, 'Must choose one or more from `return_colbert_vecs`, `return_sparse`, `return_dense` to set `True`!'
+
+        # this is for sparse embedding computation: using optimization suggestion from 
+        # issue #1364: https://github.com/FlagOpen/FlagEmbedding/issues/1364
+        self.training = False
 
         last_hidden_state = self.model(**text_input, return_dict=True).last_hidden_state
 
