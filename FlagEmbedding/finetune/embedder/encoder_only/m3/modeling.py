@@ -122,14 +122,26 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         token_weights = torch.relu(self.sparse_linear(hidden_state))
         if not return_embedding: return token_weights
 
-        sparse_embedding = torch.zeros(
-            input_ids.size(0), self.vocab_size,
-            dtype=token_weights.dtype,
-            device=token_weights.device
-        )
-        sparse_embedding = sparse_embedding.scatter_reduce(
-            dim=-1, index=input_ids, src=token_weights.squeeze(-1), reduce="amax"
-        )
+        if self.training:
+            sparse_embedding = torch.zeros(
+                input_ids.size(0), input_ids.size(1), self.vocab_size,
+                dtype=token_weights.dtype,
+                device=token_weights.device
+            )
+            sparse_embedding = torch.scatter(sparse_embedding, dim=-1, index=input_ids.unsqueeze(-1), src=token_weights)
+            sparse_embedding = torch.max(sparse_embedding, dim=1).values
+        else:
+            # Optimize suggestion from issue #1364: https://github.com/FlagOpen/FlagEmbedding/issues/1364
+            # Disable when self.training = True, otherwise will cause:
+            # RuntimeError: one of the variables needed for gradient computation has been modified by an inplace operation
+            sparse_embedding = torch.zeros(
+                input_ids.size(0), self.vocab_size,
+                dtype=token_weights.dtype,
+                device=token_weights.device
+            )
+            sparse_embedding = sparse_embedding.scatter_reduce(
+                dim=-1, index=input_ids, src=token_weights.squeeze(-1), reduce="amax"
+            )
 
         unused_tokens = [
             self.tokenizer.cls_token_id, self.tokenizer.eos_token_id,
@@ -527,6 +539,10 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             dict: A dictionary containing the three types of embeddings.
         """
         assert return_dense or return_sparse or return_colbert_vecs, 'Must choose one or more from `return_colbert_vecs`, `return_sparse`, `return_dense` to set `True`!'
+
+        # this is for sparse embedding computation: using optimization suggestion from 
+        # issue #1364: https://github.com/FlagOpen/FlagEmbedding/issues/1364
+        self.training = False
 
         last_hidden_state = self.model(**text_input, return_dict=True).last_hidden_state
 
