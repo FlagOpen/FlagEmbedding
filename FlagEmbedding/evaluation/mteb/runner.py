@@ -158,13 +158,13 @@ class MTEBEvalRunner(AbsEvalRunner):
                     instruction = get_task_def_by_task_name_and_type(task_name, task_type)
                     self.retriever.set_instruction(instruction)
                 except:
-                    logger.logger.info(f"No instruction found for {task_name}")
+                    logger.info(f"No instruction found for {task_name}")
 
             if self.eval_args.examples_path is not None:
                 try:
                     eg_pairs = json.load(open(os.path.join(self.eval_args.examples_path, task_name + '.json')))
                 except:
-                    logger.logger.info(f"No examples found for {task_name}")
+                    logger.info(f"No examples found for {task_name}")
 
             if task_type == 'Classification':
                 self.retriever.set_normalize_embeddings(False)
