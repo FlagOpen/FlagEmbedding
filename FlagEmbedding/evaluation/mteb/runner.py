@@ -82,7 +82,7 @@ class MTEBEvalRunner(AbsEvalRunner):
                         print('ERROR')
                         break
 
-                    temp_datas = data['scores'][split][0]
+                    temp_datas = data['scores'][split]
                     temp_data = None
                     for td in temp_datas:
                         if td['hf_subset'] == 'default':
