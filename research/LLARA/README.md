@@ -163,7 +163,7 @@ run.py \
 --num_train_epochs 1 \
 --per_device_train_batch_size 1 \
 --dataloader_drop_last True \
---normlized True \
+--normalized True \
 --temperature 0.01 \
 --query_max_len 64 \
 --passage_max_len 160 \
