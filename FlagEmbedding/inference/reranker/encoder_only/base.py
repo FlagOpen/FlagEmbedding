@@ -31,23 +31,24 @@ class BaseReranker(AbsReranker):
         max_length (int, optional): Maximum length of passages. Defaults to :data`512`.
         normalize (bool, optional): If True, use Sigmoid to normalize the results. Defaults to :data:`False`.
     """
+
     def __init__(
-        self,
-        model_name_or_path: str,
-        use_fp16: bool = False,
-        query_instruction_for_rerank: Optional[str] = None,
-        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
-        passage_instruction_for_rerank: Optional[str] = None,
-        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        trust_remote_code: bool = False,
-        cache_dir: Optional[str] = None,
-        devices: Optional[Union[str, List[str], List[int]]] = None, # specify devices, such as ["cuda:0"] or ["0"]
-        # inference
-        batch_size: int = 128,
-        query_max_length: Optional[int] = None,
-        max_length: int = 512,
-        normalize: bool = False,
-        **kwargs: Any,
+            self,
+            model_name_or_path: str,
+            use_fp16: bool = False,
+            query_instruction_for_rerank: Optional[str] = None,
+            query_instruction_format: str = "{}{}",  # specify the format of query_instruction_for_rerank
+            passage_instruction_for_rerank: Optional[str] = None,
+            passage_instruction_format: str = "{}{}",  # specify the format of passage_instruction_for_rerank
+            trust_remote_code: bool = False,
+            cache_dir: Optional[str] = None,
+            devices: Optional[Union[str, List[str], List[int]]] = None,  # specify devices, such as ["cuda:0"] or ["0"]
+            # inference
+            batch_size: int = 128,
+            query_max_length: Optional[int] = None,
+            max_length: int = 512,
+            normalize: bool = False,
+            **kwargs: Any,
     ):
         super().__init__(
             model_name_or_path=model_name_or_path,
@@ -63,27 +64,32 @@ class BaseReranker(AbsReranker):
             normalize=normalize,
             **kwargs
         )
+        tokenizer_kwargs = {}
+        if 'use_fast' in kwargs:
+            tokenizer_kwargs["use_fast"] = kwargs.get("use_fast")
+
         self.tokenizer = AutoTokenizer.from_pretrained(
-            model_name_or_path, 
-            trust_remote_code=trust_remote_code, 
-            cache_dir=cache_dir
+            model_name_or_path,
+            trust_remote_code=trust_remote_code,
+            cache_dir=cache_dir,
+            **tokenizer_kwargs
         )
         self.model = AutoModelForSequenceClassification.from_pretrained(
-            model_name_or_path, 
-            trust_remote_code=trust_remote_code, 
+            model_name_or_path,
+            trust_remote_code=trust_remote_code,
             cache_dir=cache_dir
         )
 
     @torch.no_grad()
     def compute_score_single_gpu(
-        self,
-        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: Optional[int] = None,
-        query_max_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        normalize: Optional[bool] = None,
-        device: Optional[str] = None,
-        **kwargs: Any
+            self,
+            sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+            batch_size: Optional[int] = None,
+            query_max_length: Optional[int] = None,
+            max_length: Optional[int] = None,
+            normalize: Optional[bool] = None,
+            device: Optional[str] = None,
+            **kwargs: Any
     ) -> List[float]:
         """_summary_
 
@@ -119,7 +125,7 @@ class BaseReranker(AbsReranker):
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize",

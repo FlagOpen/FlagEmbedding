@@ -44,20 +44,27 @@ class DatasetForReranker(Dataset):
         prompt (Optional[str], optional): Prompt for the specific task, will use the default if not provided.
             Defaults to `None`.
     """
+
     def __init__(
-        self,
-        all_queries_inputs,
-        all_passages_inputs,
-        tokenizer_path: str,
-        max_len: int = 512,
-        cache_dir: Optional[str] = None,
-        prompt: Optional[str] = None,
-        **kwargs: Any, 
+            self,
+            all_queries_inputs,
+            all_passages_inputs,
+            tokenizer_path: str,
+            max_len: int = 512,
+            cache_dir: Optional[str] = None,
+            prompt: Optional[str] = None,
+            **kwargs: Any,
     ):
+
+        tokenizer_kwargs = {}
+        if 'use_fast' in kwargs:
+            tokenizer_kwargs["use_fast"] = kwargs.get("use_fast")
+
         self.tokenizer = AutoTokenizer.from_pretrained(
             tokenizer_path,
             trust_remote_code=True,
-            cache_dir=cache_dir
+            cache_dir=cache_dir,
+            **tokenizer_kwargs
         )
 
         self.all_queries_inputs = all_queries_inputs
@@ -127,6 +134,7 @@ class Collater:
         tokenizer (transformers.AutoTokenizer): The tokenizer for reranker.
         max_len (int): Maximum length of tokens.
     """
+
     def __init__(self, tokenizer, max_len):
         self.tokenizer = tokenizer
         self.max_len = max_len
@@ -196,26 +204,27 @@ class BaseLLMReranker(AbsReranker):
         max_length (int, optional): Maximum length of passages. Defaults to :data`512`.
         normalize (bool, optional): If True, use Sigmoid to normalize the results. Defaults to :data:`False`.
     """
+
     def __init__(
-        self,
-        model_name_or_path: str,
-        peft_path: Optional[str] = None,
-        use_fp16: bool = False,
-        use_bf16: bool = False,
-        query_instruction_for_rerank: str = "A: ",
-        query_instruction_format: str = "{}{}", # specify the format of query_instruction_for_rerank
-        passage_instruction_for_rerank: str = "B: ",
-        passage_instruction_format: str = "{}{}", # specify the format of passage_instruction_for_rerank
-        cache_dir: Optional[str] = None,
-        trust_remote_code: bool = False,
-        devices: Union[str, List[str], List[int]] = None, # specify devices, such as ["cuda:0"] or ["0"]
-        # inference
-        prompt: Optional[str] = None,
-        batch_size: int = 128,
-        query_max_length: int = None,
-        max_length: int = 512,
-        normalize: bool = False,
-        **kwargs: Any,
+            self,
+            model_name_or_path: str,
+            peft_path: Optional[str] = None,
+            use_fp16: bool = False,
+            use_bf16: bool = False,
+            query_instruction_for_rerank: str = "A: ",
+            query_instruction_format: str = "{}{}",  # specify the format of query_instruction_for_rerank
+            passage_instruction_for_rerank: str = "B: ",
+            passage_instruction_format: str = "{}{}",  # specify the format of passage_instruction_for_rerank
+            cache_dir: Optional[str] = None,
+            trust_remote_code: bool = False,
+            devices: Union[str, List[str], List[int]] = None,  # specify devices, such as ["cuda:0"] or ["0"]
+            # inference
+            prompt: Optional[str] = None,
+            batch_size: int = 128,
+            query_max_length: int = None,
+            max_length: int = 512,
+            normalize: bool = False,
+            **kwargs: Any,
     ) -> None:
         super().__init__(
             model_name_or_path=model_name_or_path,
@@ -255,17 +264,17 @@ class BaseLLMReranker(AbsReranker):
 
     @torch.no_grad()
     def compute_score_single_gpu(
-        self,
-        sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
-        batch_size: Optional[int] = None,
-        query_max_length: Optional[int] = None,
-        max_length: Optional[int] = None,
-        prompt: Optional[str] = None,
-        normalize: Optional[bool] = None,
-        use_dataloader: bool = False,
-        num_workers: int = None,
-        device: Optional[str] = None,
-        **kwargs: Any
+            self,
+            sentence_pairs: Union[List[Tuple[str, str]], Tuple[str, str]],
+            batch_size: Optional[int] = None,
+            query_max_length: Optional[int] = None,
+            max_length: Optional[int] = None,
+            prompt: Optional[str] = None,
+            normalize: Optional[bool] = None,
+            use_dataloader: bool = False,
+            num_workers: int = None,
+            device: Optional[str] = None,
+            **kwargs: Any
     ) -> List[float]:
         """Compute the relevance scores using a single GPU.
 
@@ -305,7 +314,7 @@ class BaseLLMReranker(AbsReranker):
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-        
+
         # tokenize without padding to get the correct length
         all_queries_inputs = []
         all_passages_inputs = []
@@ -341,7 +350,8 @@ class BaseLLMReranker(AbsReranker):
             all_passages_inputs.extend(passages_inputs_batch)
 
         # sort by length for less padding
-        length_sorted_idx = np.argsort([-len(x['input_ids']) - len(y['input_ids']) for (x, y) in zip(all_queries_inputs, all_passages_inputs)])
+        length_sorted_idx = np.argsort(
+            [-len(x['input_ids']) - len(y['input_ids']) for (x, y) in zip(all_queries_inputs, all_passages_inputs)])
         all_queries_inputs_sorted = [all_queries_inputs[i] for i in length_sorted_idx]
         all_passages_inputs_sorted = [all_passages_inputs[i] for i in length_sorted_idx]
 
@@ -367,8 +377,8 @@ class BaseLLMReranker(AbsReranker):
             try:
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(
-                    all_queries_inputs_sorted[:min(len(all_queries_inputs_sorted), batch_size)], 
-                    all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
+                        all_queries_inputs_sorted[:min(len(all_queries_inputs_sorted), batch_size)],
+                        all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
                 ):
                     if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
                         item = self.tokenizer.prepare_for_model(
@@ -401,9 +411,9 @@ class BaseLLMReranker(AbsReranker):
 
                 collater_instance = Collater(self.tokenizer, encode_max_length)
                 batch_inputs = collater_instance([{
-                        'input_ids': item['input_ids'],
-                        'attention_mask': item['attention_mask']
-                    } for item in batch_inputs]
+                    'input_ids': item['input_ids'],
+                    'attention_mask': item['attention_mask']
+                } for item in batch_inputs]
                 )
 
                 batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
@@ -446,8 +456,8 @@ class BaseLLMReranker(AbsReranker):
                 all_scores.extend(scores.cpu().float().tolist())
         else:
             for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):
-                queries_inputs = all_queries_inputs_sorted[batch_start:batch_start+batch_size]
-                passages_inputs = all_passages_inputs_sorted[batch_start:batch_start+batch_size]
+                queries_inputs = all_queries_inputs_sorted[batch_start:batch_start + batch_size]
+                passages_inputs = all_passages_inputs_sorted[batch_start:batch_start + batch_size]
 
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(queries_inputs, passages_inputs):
@@ -482,9 +492,9 @@ class BaseLLMReranker(AbsReranker):
 
                 collater_instance = Collater(self.tokenizer, encode_max_length)
                 batch_inputs = collater_instance([{
-                        'input_ids': item['input_ids'],
-                        'attention_mask': item['attention_mask']
-                    } for item in batch_inputs]
+                    'input_ids': item['input_ids'],
+                    'attention_mask': item['attention_mask']
+                } for item in batch_inputs]
                 )
 
                 batch_inputs = {key: val.to(device) for key, val in batch_inputs.items()}
