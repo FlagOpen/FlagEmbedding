@@ -1,0 +1,982 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>Evaluation Metrics &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/2_Metrics/2.2';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="3. Indexing" href="../3_Indexing.html" />
+    <link rel="prev" title="Similarity" href="2.1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="2.1.html">Similarity</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.1.html">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.4.1.html">Evaluate on BEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.1.html">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../4_Evaluation/4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../2_Metrics.html" class="nav-link">2. Metrics</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Evaluation Metrics</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="evaluation-metrics">
+<h1>Evaluation Metrics<a class="headerlink" href="#evaluation-metrics" title="Link to this heading">#</a></h1>
+<p>In this tutorial, we’ll cover a list of metrics that are widely used for evaluating embedding model’s performance.</p>
+<section id="preparation">
+<h2>0. Preparation<a class="headerlink" href="#preparation" title="Link to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="k">pip</span> install numpy scikit-learn
+</pre></div>
+</div>
+</div>
+</div>
+<p>Suppose we have a corpus with document ids from 0 - 30.</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ground_truth</span></code> contains the actual relevant document ids to each query.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">results</span></code> contains the search results of each query by some retrieval system.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">ground_truth</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">11</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span>  <span class="mi">1</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">26</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span>  <span class="mi">8</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="mi">11</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span>  <span class="mi">7</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span>  <span class="mi">0</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span>  <span class="mi">9</span><span class="p">,</span> <span class="mi">20</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">16</span><span class="p">,</span>  <span class="mi">1</span><span class="p">,</span>  <span class="mi">6</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span>  <span class="mi">3</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">24</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span>  <span class="mi">2</span><span class="p">,</span>  <span class="mi">8</span><span class="p">,</span> <span class="mi">28</span><span class="p">,</span>  <span class="mi">4</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">21</span><span class="p">],</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([ 0,  1,  2,  3,  4,  6,  7,  8,  9, 10, 11, 13, 14, 16, 17, 18, 19,
+       21, 22, 24, 25, 26, 28])
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">ground_truth</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+       [1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+       [1, 1, 1, 1, 1, 1, 1, 1, 1, 1]])
+</pre></div>
+</div>
+</div>
+</div>
+<p>And we are interested in the following cutoffs:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">cutoffs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>In this tutorial, we will use the above small example to show how different metrics evaluate the retrieval system’s quality.</p>
+</section>
+<section id="recall">
+<h2>1. Recall<a class="headerlink" href="#recall" title="Link to this heading">#</a></h2>
+<p>Recall represents the model’s capability of correctly predicting positive instances from all the actual positive samples in the dataset.</p>
+<p>$$\textbf{Recall}=\frac{\text{True Positives}}{\text{True Positives}+\text{False Negatives}}$$</p>
+<p>to write it in the form of information retrieval, which is the ratio of relevant documents retrieved to the total number of relevant documents in the corpus. In practice, we usually make the denominator to be the minimum between the current cutoff (usually 1, 5, 10, 100, etc) and the total number of relevant documents in the corpus:</p>
+<p>$$\textbf{Recall}=\frac{|\text{{Relevant docs}}\cap\text{{Retrieved docs}}|}{\text{min}(|\text{{Retrieved docs}}|, |\text{{Relevant docs}}|)}$$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_recall</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truths</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+    <span class="n">recalls</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">truth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truths</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">text</span><span class="p">[:</span><span class="n">c</span><span class="p">])</span>
+            <span class="n">recalls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">truth</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">recalls</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">recalls</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">recalls</span> <span class="o">=</span> <span class="n">calc_recall</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;recall@</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">recalls</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>recall@1: 0.6666666666666666
+recall@5: 0.8055555555555555
+recall@10: 0.9166666666666666
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="mrr">
+<h2>2. MRR<a class="headerlink" href="#mrr" title="Link to this heading">#</a></h2>
+<p>Mean Reciprocal Rank (<a class="reference external" href="https://en.wikipedia.org/wiki/Mean_reciprocal_rank">MRR</a>) is a widely used metric in information retrieval to evaluate the effectiveness of a system. It measures the rank position of the first relevant result in a list of search results.</p>
+<p>$$MRR=\frac{1}{|Q|}\sum_{i=1}^{|Q|}\frac{1}{rank_i}$$</p>
+<p>where</p>
+<ul class="simple">
+<li><p>$|Q|$ is the total number of queries.</p></li>
+<li><p>$rank_i$ is the rank position of the first relevant document of the i-th query.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_MRR</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+    <span class="n">mrr</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">))]</span>
+    <span class="k">for</span> <span class="n">pred</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truth</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">pred</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">c</span> <span class="ow">and</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">t</span><span class="p">:</span>
+                    <span class="n">mrr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="k">break</span>
+    <span class="n">mrr</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">mrr</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">mrr</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mrr</span> <span class="o">=</span> <span class="n">calc_MRR</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MRR@</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">mrr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MRR@1: 0.6666666666666666
+MRR@5: 0.8333333333333334
+MRR@10: 0.8333333333333334
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="ndcg">
+<h2>3. nDCG<a class="headerlink" href="#ndcg" title="Link to this heading">#</a></h2>
+<p>Normalized Discounted Cumulative Gain (nDCG) measures the quality of a ranked list of search results by considering both the position of the relevant documents and their graded relevance scores. The calculation of nDCG involves two main steps:</p>
+<ol class="arabic simple">
+<li><p>Discounted cumulative gain (DCG) measures the ranking quality in retrieval tasks.</p></li>
+</ol>
+<p>$$DCG_p=\sum_{i=1}^p\frac{2^{rel_i}-1}{\log_2(i+1)}$$</p>
+<ol class="arabic simple" start="2">
+<li><p>Normalized by ideal DCG to make it comparable across queries.
+$$nDCG_p=\frac{DCG_p}{IDCG_p}$$
+where $IDCG$ is the maximum possible DCG for a given set of documents, assuming they are perfectly ranked in order of relevance.</p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">pred_hard_encodings</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pred</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">):</span>
+    <span class="n">pred_hard_encoding</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+    <span class="n">pred_hard_encodings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pred_hard_encoding</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">ndcg_score</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="n">nDCG</span> <span class="o">=</span> <span class="n">ndcg_score</span><span class="p">(</span><span class="n">pred_hard_encodings</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">c</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nDCG@</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">nDCG</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>nDCG@1: 0.0
+nDCG@5: 0.3298163165186628
+nDCG@10: 0.5955665344840209
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="precision">
+<h2>4. Precision<a class="headerlink" href="#precision" title="Link to this heading">#</a></h2>
+<p>Precision</p>
+<p>$$\textbf{Recall}=\frac{\text{True Positives}}{\text{True Positives}+\text{False Positive}}$$</p>
+<p>in information retrieval, it’s the ratio of relevant documents retrieved to the totoal number of documents retrieved:</p>
+<p>$$\textbf{Recall}=\frac{|\text{{Relevant docs}}\cap\text{{Retrieved docs}}|}{|\text{{Retrieved docs}}|}$$</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_precision</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truths</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+    <span class="n">prec</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">truth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">preds</span><span class="p">,</span> <span class="n">truths</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+            <span class="n">hits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">truth</span><span class="p">,</span> <span class="n">text</span><span class="p">[:</span><span class="n">c</span><span class="p">])</span>
+            <span class="n">prec</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span> <span class="o">/</span> <span class="n">c</span>
+    <span class="n">prec</span> <span class="o">/=</span> <span class="nb">len</span><span class="p">(</span><span class="n">preds</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">prec</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">precisions</span> <span class="o">=</span> <span class="n">calc_precision</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">ground_truth</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;precision@</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">precisions</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>precision@1: 0.6666666666666666
+precision@5: 0.6666666666666666
+precision@10: 0.3666666666666667
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="map">
+<h2>5. MAP<a class="headerlink" href="#map" title="Link to this heading">#</a></h2>
+<p>Mean Average Precision (MAP) measures the effectiveness of a system at returning relevant documents across multiple queries.</p>
+<p>First, Average Precision (AP) evals how well relevant documents are ranked within the retrieved documents. It’s computed by averaging the precision values for each position of relevant document in the ranking of all the retrieved documents:</p>
+<p>$$\textbf{AP}=\frac{\sum_{k=1}^{M}\text{Relevance}(k) \times \text{Precision}(k)}{|{\text{Relevant Docs}}|}$$</p>
+<p>where</p>
+<ul class="simple">
+<li><p>$M$ is the total number of documents retrieved.</p></li>
+<li><p>$\text{Relevance}(k)$ is a binary value, indicating whether document at position $k$ is relevant (=1) or not (=0).</p></li>
+<li><p>$\text{Precision}(k)$ is the precision when considering only top $k$ retrieved items.</p></li>
+</ul>
+<p>Then calculate the average AP across multiple queries to get the MAP:</p>
+<p>$$\textbf{MAP}=\frac{1}{N}\sum_{i=1}^{N}\text{AP}_i$$</p>
+<p>where</p>
+<ul class="simple">
+<li><p>$N$ is the total number of queries.</p></li>
+<li><p>$\text{AP}_i$ is the average precision of the $i^{th}$ query.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_AP</span><span class="p">(</span><span class="n">encoding</span><span class="p">):</span>
+    <span class="n">rel</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">precs</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">hit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">hit</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">rel</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">precs</span> <span class="o">+=</span> <span class="n">rel</span><span class="o">/</span><span class="n">k</span>
+
+    <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">rel</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">precs</span><span class="o">/</span><span class="n">rel</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">calc_MAP</span><span class="p">(</span><span class="n">encodings</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">):</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cutoffs</span><span class="p">:</span>
+        <span class="n">ap_sum</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">encoding</span> <span class="ow">in</span> <span class="n">encodings</span><span class="p">:</span>
+            <span class="n">ap_sum</span> <span class="o">+=</span> <span class="n">calc_AP</span><span class="p">(</span><span class="n">encoding</span><span class="p">[:</span><span class="n">c</span><span class="p">])</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ap_sum</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">encodings</span><span class="p">))</span>
+        
+    <span class="k">return</span> <span class="n">res</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">maps</span> <span class="o">=</span> <span class="n">calc_MAP</span><span class="p">(</span><span class="n">pred_hard_encodings</span><span class="p">,</span> <span class="n">cutoffs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cutoffs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MAP@</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">maps</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>MAP@1: 0.6666666666666666
+MAP@5: 0.862962962962963
+MAP@10: 0.8074074074074075
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="2.1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Similarity</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="../3_Indexing.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">3. Indexing</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preparation">0. Preparation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#recall">1. Recall</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#mrr">2. MRR</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ndcg">3. nDCG</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#precision">4. Precision</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#map">5. MAP</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/2_Metrics/2.2.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

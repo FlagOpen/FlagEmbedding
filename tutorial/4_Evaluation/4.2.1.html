@@ -1,0 +1,956 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" data-theme="light">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X4B1E1Q35K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-X4B1E1Q35K');
+    </script>
+    
+    <title>MTEB &#8212; BGE  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "light";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=aace3583" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'tutorial/4_Evaluation/4.2.1';</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="MTEB Leaderboard" href="4.2.2.html" />
+    <link rel="prev" title="Evaluation" href="4.1.1.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="light">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+    
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-light" alt=""/>
+    <img src="../../_static/bge_logo.jpeg" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">BGE</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../index.html">
+    Home
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../Introduction/index.html">
+    Introduction
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../bge/index.html">
+    BGE
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="../index.html">
+    Tutorials
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../API/index.html">
+    API
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../FAQ/index.html">
+    FAQ
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../community/index.html">
+    Community
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d">
+    HF Models
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/FlagOpen/FlagEmbedding" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-github fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/FlagEmbedding/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-python fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">PyPI</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://huggingface.co/collections/BAAI/bge-66797a74476eb1f085c7446d" title="HF Models" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-solid fa-cube fa-lg" aria-hidden="true"></i>
+            <span class="sr-only">HF Models</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><p aria-level="2" class="caption" role="heading"><span class="caption-text">Tutorials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../1_Embedding.html">1. Embedding</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.1.1.html">Intro to Embedding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.1.html">BGE Series</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.2.html">BGE Auto Embedder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.3.html">BGE Explanation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.4.html">BGE-M3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../1_Embedding/1.2.5.html">BGE-EN-ICL</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../2_Metrics.html">2. Metrics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.1.html">Similarity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../2_Metrics/2.2.html">Evaluation Metrics</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../3_Indexing.html">3. Indexing</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.1.html">Indexing Using Faiss</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.2.html">Faiss GPU</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.3.html">Faiss Indexes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.4.html">Faiss Quantizers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../3_Indexing/3.1.5.html">Choosing Index</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../4_Evaluation.html">4. Evaluation</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="4.1.1.html">Evaluation</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.2.html">MTEB Leaderboard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.2.3.html">C-MTEB</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.3.1.html">Evaluation Using Sentence Transformers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.4.1.html">Evaluate on BEIR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5.1.html">Evaluate on MIRACL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="4.5.2.html">Evaluate on MLDR</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../5_Reranking.html">5. Reranking</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.1.html">Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.2.html">BGE Reranker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../5_Reranking/5.3.html">Evaluate Reranker</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../6_RAG.html">6. RAG</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.1.html">Simple RAG From Scratch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.2.html">RAG with LangChain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../6_RAG/6.3.html">RAG with LlamaIndex</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../7_Finetuning.html">7. Finetuning</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.1.html">Data Preparation for Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.2.html">Fine-tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.1.3.html">Evaluate the Fine-tuned Model</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../7_Finetuning/7.2.1.html">Hard Negatives</a></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Tutorials</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="../4_Evaluation.html" class="nav-link">4. Evaluation</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MTEB</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="mteb">
+<h1>MTEB<a class="headerlink" href="#mteb" title="Link to this heading">#</a></h1>
+<p>For evaluation of embedding models, MTEB is one of the most well-known benchmark. In this tutorial, we’ll introduce MTEB, its basic usage, and evaluate how your model performs on the MTEB leaderboard.</p>
+<section id="installation">
+<h2>0. Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<p>Install the packages we will use in your environment:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%capture</span>
+<span class="o">%</span><span class="n">pip</span> <span class="n">install</span> <span class="n">sentence_transformers</span> <span class="n">mteb</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="intro">
+<h2>1. Intro<a class="headerlink" href="#intro" title="Link to this heading">#</a></h2>
+<p>The <a class="reference external" href="https://github.com/embeddings-benchmark/mteb">Massive Text Embedding Benchmark (MTEB)</a> is a large-scale evaluation framework designed to assess the performance of text embedding models across a wide variety of natural language processing (NLP) tasks. Introduced to standardize and improve the evaluation of text embeddings, MTEB is crucial for assessing how well these models generalize across various real-world applications. It contains a wide range of datasets in eight main NLP tasks and different languages, and provides an easy pipeline for evaluation.</p>
+<p>MTEB is also well known for the MTEB leaderboard, which contains a ranking of the latest first-class embedding models. We’ll cover that in the next tutorial. Now let’s have a look on how to use MTEB to do evaluation easily.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mteb</span>
+<span class="kn">from</span> <span class="nn">sentence_transformers</span> <span class="kn">import</span> <span class="n">SentenceTransformer</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s take a look at how to use MTEB to do a quick evaluation.</p>
+<p>First we load the model that we would like to evaluate on:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;BAAI/bge-base-en-v1.5&quot;</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Below is the list of datasets of retrieval used by MTEB’s English leaderboard.</p>
+<p>MTEB directly use the open source benchmark BEIR in its retrieval part, which contains 15 datasets (note there are 12 subsets of CQADupstack).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">retrieval_tasks</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;ArguAna&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ClimateFEVER&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackAndroidRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackEnglishRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackGamingRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackGisRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackMathematicaRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackPhysicsRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackProgrammersRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackStatsRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackTexRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackUnixRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackWebmastersRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CQADupstackWordpressRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;DBPedia&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FEVER&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FiQA2018&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HotpotQA&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;MSMARCO&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NFCorpus&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;NQ&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;QuoraRetrieval&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SCIDOCS&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SciFact&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Touche2020&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;TRECCOVID&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For demonstration, let’s just run the first one, “ArguAna”.</p>
+<p>For a full list of tasks and languages that MTEB supports, check the <a class="reference external" href="https://github.com/embeddings-benchmark/mteb/blob/18662380f0f476db3d170d0926892045aa9f74ee/docs/tasks.md">page</a>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tasks</span> <span class="o">=</span> <span class="n">mteb</span><span class="o">.</span><span class="n">get_tasks</span><span class="p">(</span><span class="n">tasks</span><span class="o">=</span><span class="n">retrieval_tasks</span><span class="p">[:</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Then, create and initialize an MTEB instance with our chosen tasks, and run the evaluation process.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># use the tasks we chose to initialize the MTEB instance</span>
+<span class="n">evaluation</span> <span class="o">=</span> <span class="n">mteb</span><span class="o">.</span><span class="n">MTEB</span><span class="p">(</span><span class="n">tasks</span><span class="o">=</span><span class="n">tasks</span><span class="p">)</span>
+
+<span class="c1"># call run() with the model and output_folder</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">evaluation</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">output_folder</span><span class="o">=</span><span class="s2">&quot;results&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="color: #262626; text-decoration-color: #262626">───────────────────────────────────────────────── </span><span style="font-weight: bold">Selected tasks </span><span style="color: #262626; text-decoration-color: #262626"> ─────────────────────────────────────────────────</span>
+</pre>
+</div><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace"><span style="font-weight: bold">Retrieval</span>
+</pre>
+</div><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">    - ArguAna, <span style="color: #626262; text-decoration-color: #626262; font-style: italic">s2p</span>
+</pre>
+</div><div class="output text_html"><pre style="white-space:pre;overflow-x:auto;line-height:normal;font-family:Menlo,'DejaVu Sans Mono',consolas,'Courier New',monospace">
+
+</pre>
+</div><div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Batches: 100%|██████████| 44/44 [00:41&lt;00:00,  1.06it/s]
+Batches: 100%|██████████| 272/272 [03:36&lt;00:00,  1.26it/s]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The results should be stored in <code class="docutils literal notranslate"><span class="pre">{output_folder}/{model_name}/{model_revision}/{task_name}.json</span></code>.</p>
+<p>Openning the json file you should see contents as below, which are the evaluation results on “ArguAna” with different metrics on cutoffs from 1 to 1000.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="s2">&quot;dataset_revision&quot;</span><span class="p">:</span> <span class="s2">&quot;c22ab2a51041ffd869aaddef7af8d8215647e41a&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;evaluation_time&quot;</span><span class="p">:</span> <span class="mf">260.14976954460144</span><span class="p">,</span>
+  <span class="s2">&quot;kg_co2_emissions&quot;</span><span class="p">:</span> <span class="n">null</span><span class="p">,</span>
+  <span class="s2">&quot;mteb_version&quot;</span><span class="p">:</span> <span class="s2">&quot;1.14.17&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;scores&quot;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s2">&quot;test&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">{</span>
+        <span class="s2">&quot;hf_subset&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;languages&quot;</span><span class="p">:</span> <span class="p">[</span>
+          <span class="s2">&quot;eng-Latn&quot;</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;main_score&quot;</span><span class="p">:</span> <span class="mf">0.63616</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_1&quot;</span><span class="p">:</span> <span class="mf">0.40754</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_10&quot;</span><span class="p">:</span> <span class="mf">0.55773</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_100&quot;</span><span class="p">:</span> <span class="mf">0.56344</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_1000&quot;</span><span class="p">:</span> <span class="mf">0.56347</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_20&quot;</span><span class="p">:</span> <span class="mf">0.56202</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_3&quot;</span><span class="p">:</span> <span class="mf">0.51932</span><span class="p">,</span>
+        <span class="s2">&quot;map_at_5&quot;</span><span class="p">:</span> <span class="mf">0.54023</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_1&quot;</span><span class="p">:</span> <span class="mf">0.4139402560455192</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_10&quot;</span><span class="p">:</span> <span class="mf">0.5603739077423295</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_100&quot;</span><span class="p">:</span> <span class="mf">0.5660817425350153</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_1000&quot;</span><span class="p">:</span> <span class="mf">0.5661121884705748</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_20&quot;</span><span class="p">:</span> <span class="mf">0.564661930998293</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_3&quot;</span><span class="p">:</span> <span class="mf">0.5208629682313899</span><span class="p">,</span>
+        <span class="s2">&quot;mrr_at_5&quot;</span><span class="p">:</span> <span class="mf">0.5429113323850182</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1000_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15930478114759905</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1000_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.06396189194646361</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1000_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13168797291549253</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_100_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15934819555197366</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_100_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.06389635013430676</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_100_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13164524259533786</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_10_diff1&quot;</span><span class="p">:</span> <span class="mf">0.16057318234658585</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_10_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.060962623117325254</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_10_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.1300413865104607</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1_diff1&quot;</span><span class="p">:</span> <span class="mf">0.17346152653542332</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.09705499215630589</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_1_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.14726476953035533</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_20_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15956349246366208</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_20_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.06259296677860492</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_20_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13097093150054095</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_3_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15620049317363813</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_3_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.06690213479396273</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_3_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13440904793529648</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_5_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1557795701081579</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_5_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.06255283252590663</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_map_at_5_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.1355361594910923</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1000_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1378988612808882</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1000_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.07507962333910836</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1000_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12969109830101241</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_100_diff1&quot;</span><span class="p">:</span> <span class="mf">0.13794450668758515</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_100_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.07501290390362861</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_100_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12964855554504057</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_10_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1396047981645623</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_10_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.07185174301688693</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_10_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12807325096717753</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15610387932529113</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.09824591983546396</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_1_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13914318784294258</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_20_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1382786098284509</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_20_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.07364476417961506</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_20_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12898192060943495</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_3_diff1&quot;</span><span class="p">:</span> <span class="mf">0.13118224861025093</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_3_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.08164985279853691</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_3_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.13241573571401533</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_5_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1346130730317385</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_5_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.07404093236468848</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_mrr_at_5_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.1340775377068567</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1000_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15919987960292029</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1000_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.05457945565481172</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1000_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12457339152558143</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_100_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1604091882521101</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_100_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.05281549383775287</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_100_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12347288098914058</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_10_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1657018523692905</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_10_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.036222943297402846</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_10_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.11284619565817842</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1_diff1&quot;</span><span class="p">:</span> <span class="mf">0.17346152653542332</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.09705499215630589</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_1_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.14726476953035533</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_20_diff1&quot;</span><span class="p">:</span> <span class="mf">0.16231721725673165</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_20_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.04147115653921931</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_20_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.11598700704312062</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_3_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15256475371124711</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_3_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.05432154580979357</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_3_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12841084787822227</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_5_diff1&quot;</span><span class="p">:</span> <span class="mf">0.15236205846534961</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_5_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.04356123278888682</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_ndcg_at_5_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.12942556865700913</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1000_diff1&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.038790629929866066</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1000_max&quot;</span><span class="p">:</span> <span class="mf">0.3630826341915611</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1000_std&quot;</span><span class="p">:</span> <span class="mf">0.4772189839676386</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_100_diff1&quot;</span><span class="p">:</span> <span class="mf">0.32118609204433185</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_100_max&quot;</span><span class="p">:</span> <span class="mf">0.4740132817600036</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_100_std&quot;</span><span class="p">:</span> <span class="mf">0.3456396169952022</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_10_diff1&quot;</span><span class="p">:</span> <span class="mf">0.22279659689895104</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_10_max&quot;</span><span class="p">:</span> <span class="mf">0.16823918613191954</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_10_std&quot;</span><span class="p">:</span> <span class="mf">0.0377209694331257</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1_diff1&quot;</span><span class="p">:</span> <span class="mf">0.17346152653542332</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.09705499215630589</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_1_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.14726476953035533</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_20_diff1&quot;</span><span class="p">:</span> <span class="mf">0.23025740175221762</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_20_max&quot;</span><span class="p">:</span> <span class="mf">0.2892313928157665</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_20_std&quot;</span><span class="p">:</span> <span class="mf">0.13522755012490692</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_3_diff1&quot;</span><span class="p">:</span> <span class="mf">0.1410889527057097</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_3_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.010771302313530132</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_3_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.10744937823276193</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_5_diff1&quot;</span><span class="p">:</span> <span class="mf">0.14012953903010988</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_5_max&quot;</span><span class="p">:</span> <span class="mf">0.03977485677045894</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_precision_at_5_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.10292184602358977</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1000_diff1&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.03879062992990034</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1000_max&quot;</span><span class="p">:</span> <span class="mf">0.36308263419153386</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1000_std&quot;</span><span class="p">:</span> <span class="mf">0.47721898396760526</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_100_diff1&quot;</span><span class="p">:</span> <span class="mf">0.3211860920443005</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_100_max&quot;</span><span class="p">:</span> <span class="mf">0.4740132817599919</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_100_std&quot;</span><span class="p">:</span> <span class="mf">0.345639616995194</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_10_diff1&quot;</span><span class="p">:</span> <span class="mf">0.22279659689895054</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_10_max&quot;</span><span class="p">:</span> <span class="mf">0.16823918613192046</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_10_std&quot;</span><span class="p">:</span> <span class="mf">0.037720969433127145</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1_diff1&quot;</span><span class="p">:</span> <span class="mf">0.17346152653542332</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.09705499215630589</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_1_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.14726476953035533</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_20_diff1&quot;</span><span class="p">:</span> <span class="mf">0.23025740175221865</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_20_max&quot;</span><span class="p">:</span> <span class="mf">0.2892313928157675</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_20_std&quot;</span><span class="p">:</span> <span class="mf">0.13522755012490456</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_3_diff1&quot;</span><span class="p">:</span> <span class="mf">0.14108895270570979</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_3_max&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.010771302313529425</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_3_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.10744937823276134</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_5_diff1&quot;</span><span class="p">:</span> <span class="mf">0.14012953903010958</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_5_max&quot;</span><span class="p">:</span> <span class="mf">0.039774856770459645</span><span class="p">,</span>
+        <span class="s2">&quot;nauc_recall_at_5_std&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mf">0.10292184602358935</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_1&quot;</span><span class="p">:</span> <span class="mf">0.40754</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_10&quot;</span><span class="p">:</span> <span class="mf">0.63616</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_100&quot;</span><span class="p">:</span> <span class="mf">0.66063</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_1000&quot;</span><span class="p">:</span> <span class="mf">0.6613</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_20&quot;</span><span class="p">:</span> <span class="mf">0.65131</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_3&quot;</span><span class="p">:</span> <span class="mf">0.55717</span><span class="p">,</span>
+        <span class="s2">&quot;ndcg_at_5&quot;</span><span class="p">:</span> <span class="mf">0.59461</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_1&quot;</span><span class="p">:</span> <span class="mf">0.40754</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_10&quot;</span><span class="p">:</span> <span class="mf">0.08841</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_100&quot;</span><span class="p">:</span> <span class="mf">0.00991</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_1000&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_20&quot;</span><span class="p">:</span> <span class="mf">0.04716</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_3&quot;</span><span class="p">:</span> <span class="mf">0.22238</span><span class="p">,</span>
+        <span class="s2">&quot;precision_at_5&quot;</span><span class="p">:</span> <span class="mf">0.15149</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_1&quot;</span><span class="p">:</span> <span class="mf">0.40754</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_10&quot;</span><span class="p">:</span> <span class="mf">0.88407</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_100&quot;</span><span class="p">:</span> <span class="mf">0.99147</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_1000&quot;</span><span class="p">:</span> <span class="mf">0.99644</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_20&quot;</span><span class="p">:</span> <span class="mf">0.9431</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_3&quot;</span><span class="p">:</span> <span class="mf">0.66714</span><span class="p">,</span>
+        <span class="s2">&quot;recall_at_5&quot;</span><span class="p">:</span> <span class="mf">0.75747</span>
+      <span class="p">}</span>
+    <span class="p">]</span>
+  <span class="p">},</span>
+  <span class="s2">&quot;task_name&quot;</span><span class="p">:</span> <span class="s2">&quot;ArguAna&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now we’ve successfully run the evaluation using mteb! In the next tutorial, we’ll show how to evaluate your model on the whole 56 tasks of English MTEB and compete with models on the leaderboard.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="4.1.1.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Evaluation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="4.2.2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">MTEB Leaderboard</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">0. Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#intro">1. Intro</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/tutorial/4_Evaluation/4.2.1.ipynb.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2024, BAAI.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>
