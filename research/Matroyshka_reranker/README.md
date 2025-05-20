@@ -26,7 +26,7 @@ pip install -r requirements.txt
 | Model                                                        | Introduction                                              |
 | ------------------------------------------------------------ | --------------------------------------------------------- |
 | [BAAI/Matroyshka-ReRanker-passage](https://huggingface.co/BAAI/Matroyshka-ReRanker-passage) | The Matroyshka Re-Ranker fine-tuned on MS MARCO passage   |
-| [BAAI/BAAI/Matroyshka-ReRanker-document](https://huggingface.co/BAAI/Matroyshka-ReRanker-document) | The Matroyshka Re-Ranker fine-tuned on MS MARCO document  |
+| [BAAI/Matroyshka-ReRanker-document](https://huggingface.co/BAAI/Matroyshka-ReRanker-document) | The Matroyshka Re-Ranker fine-tuned on MS MARCO document  |
 | [BAAI/Matroyshka-ReRanker-beir](https://huggingface.co/BAAI/Matroyshka-ReRanker-beir) | The Matroyshka Re-Ranker fine-tuned for general retrieval |
 
 ### Usage
