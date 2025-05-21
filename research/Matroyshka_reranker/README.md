@@ -240,10 +240,10 @@ cutoff_layers = [20, 24] # config your layers to output
 
 reranker = MatroyshkaReranker(
     model_name_or_path='mistralai/Mistral-7B-v0.1',
-    peft_name_or_path=[
+    peft_path=[
         './finetune/self_distillation/result_self_distillation',
         './finetune/compensation/result_compensation_token_compress_ratio_2',
-        ],
+    ],
     use_fp16=True,
     cache_dir='./model_cache',
     compress_ratio=compress_ratio,
