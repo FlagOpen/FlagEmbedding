@@ -1,0 +1,380 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# BGE Reranker"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Like embedding models, BGE has a group of rerankers with various sizes and functionalities. In this tutorial, we will introduce the BGE rerankers series."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 0. Installation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Install the dependencies in the environment."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%pip install -U FlagEmbedding"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. bge-reranker"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The first generation of BGE reranker contains two models:\n",
+    "\n",
+    "| Model  | Language |   Parameters   |    Description    |   Base Model     |\n",
+    "|:-------|:--------:|:----:|:-----------------:|:--------------------------------------:|\n",
+    "| [BAAI/bge-reranker-base](https://huggingface.co/BAAI/bge-reranker-base)   |   Chinese and English |     278M     |  a cross-encoder model which is more accurate but less efficient     |  XLM-RoBERTa-Base  |\n",
+    "| [BAAI/bge-reranker-large](https://huggingface.co/BAAI/bge-reranker-large) |   Chinese and English |     560M     |   a cross-encoder model which is more accurate but less efficient    |  XLM-RoBERTa-Large  |"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html\n",
+      "  from .autonotebook import tqdm as notebook_tqdm\n",
+      "You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "[7.984375, -6.84375, -7.15234375, 5.44921875]"
+      ]
+     },
+     "execution_count": 1,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from FlagEmbedding import FlagReranker\n",
+    "\n",
+    "model = FlagReranker(\n",
+    "    'BAAI/bge-reranker-large',\n",
+    "    use_fp16=True,\n",
+    "    devices=[\"cuda:0\"],   # if you don't have GPUs, you can use \"cpu\"\n",
+    ")\n",
+    "\n",
+    "pairs = [\n",
+    "    [\"What is the capital of France?\", \"Paris is the capital of France.\"],\n",
+    "    [\"What is the capital of France?\", \"The population of China is over 1.4 billion people.\"],\n",
+    "    [\"What is the population of China?\", \"Paris is the capital of France.\"],\n",
+    "    [\"What is the population of China?\", \"The population of China is over 1.4 billion people.\"]\n",
+    "]\n",
+    "\n",
+    "scores = model.compute_score(pairs)\n",
+    "scores"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. bge-reranker v2"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "| Model  | Language |   Parameters   |    Description    |   Base Model     |\n",
+    "|:-------|:--------:|:----:|:-----------------:|:--------------------------------------:|\n",
+    "| [BAAI/bge-reranker-v2-m3](https://huggingface.co/BAAI/bge-reranker-v2-m3) | Multilingual |     568M     | a lightweight cross-encoder model, possesses strong multilingual capabilities, easy to deploy, with fast inference. | XLM-RoBERTa-Large |\n",
+    "| [BAAI/bge-reranker-v2-gemma](https://huggingface.co/BAAI/bge-reranker-v2-gemma) | Multilingual |     2.51B     | a cross-encoder model which is suitable for multilingual contexts, performs well in both English proficiency and multilingual capabilities. | Gemma2-2B |\n",
+    "| [BAAI/bge-reranker-v2-minicpm-layerwise](https://huggingface.co/BAAI/bge-reranker-v2-minicpm-layerwise) | Multilingual |    2.72B    | a cross-encoder model which is suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers for output, facilitating accelerated inference. | MiniCPM |\n",
+    "| [BAAI/bge-reranker-v2.5-gemma2-lightweight](https://huggingface.co/BAAI/bge-reranker-v2.5-gemma2-lightweight) | Multilingual |    9.24B    | a cross-encoder model which is suitable for multilingual contexts, performs well in both English and Chinese proficiency, allows freedom to select layers, compress ratio and compress layers for output, facilitating accelerated inference. | Gemma2-9B |"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### bge-reranker-v2-m3"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "bge-reranker-v2-m3 is trained based on bge-m3, introducing great multi-lingual capability as keeping a slim model size."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[0.003483424193080668]\n"
+     ]
+    }
+   ],
+   "source": [
+    "from FlagEmbedding import FlagReranker\n",
+    "\n",
+    "# Setting use_fp16 to True speeds up computation with a slight performance degradation (if using gpu)\n",
+    "reranker = FlagReranker('BAAI/bge-reranker-v2-m3', devices=[\"cuda:0\"], use_fp16=True)\n",
+    "\n",
+    "score = reranker.compute_score(['query', 'passage'])\n",
+    "# or set \"normalize=True\" to apply a sigmoid function to the score for 0-1 range\n",
+    "score = reranker.compute_score(['query', 'passage'], normalize=True)\n",
+    "\n",
+    "print(score)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### bge-reranker-v2-gemma"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "bge-reranker-v2-gemma is trained based on gemma-2b. It has excellent performances with both English proficiency and multilingual capabilities."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  5.29it/s]\n",
+      "You're using a GemmaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "100%|██████████| 1/1 [00:00<00:00, 45.99it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[1.974609375]\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from FlagEmbedding import FlagLLMReranker\n",
+    "\n",
+    "reranker = FlagLLMReranker('BAAI/bge-reranker-v2-gemma', devices=[\"cuda:0\"], use_fp16=True)\n",
+    "\n",
+    "score = reranker.compute_score(['query', 'passage'])\n",
+    "print(score)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### bge-reranker-v2-minicpm-layerwise"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "bge-reranker-v2-minicpm-layerwise is trained based on minicpm-2b-dpo-bf16. It's suitable for multi-lingual contexts, performs well in Both English and Chinese proficiency.\n",
+    "\n",
+    "Another special functionality is the layerwise design gives user freedom to select layers for output, facilitating accelerated inference."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Loading checkpoint shards: 100%|██████████| 3/3 [00:00<00:00,  3.85it/s]\n",
+      "You're using a LlamaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "100%|██████████| 1/1 [00:00<00:00, 24.51it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[-7.06640625]\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from FlagEmbedding import LayerWiseFlagLLMReranker\n",
+    "\n",
+    "reranker = LayerWiseFlagLLMReranker('BAAI/bge-reranker-v2-minicpm-layerwise', devices=[\"cuda:0\"], use_fp16=True)\n",
+    "\n",
+    "# Adjusting 'cutoff_layers' to pick which layers are used for computing the score.\n",
+    "score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28])\n",
+    "print(score)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### bge-reranker-v2.5-gemma2-lightweight"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "bge-reranker-v2.5-gemma2-lightweight is trained based on gemma2-9b. It's also suitable for multi-lingual contexts.\n",
+    "\n",
+    "Besides the layerwise reduction functionality, bge-reranker-v2.5-gemma2-lightweight integrates token compression capabilities to further save more resources while maintaining outstanding performances."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Loading checkpoint shards: 100%|██████████| 4/4 [00:01<00:00,  3.60it/s]\n",
+      "You're using a GemmaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "100%|██████████| 1/1 [00:00<00:00, 23.95it/s]"
+     ]
+    },
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "[14.734375]\n"
+     ]
+    },
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "from FlagEmbedding import LightWeightFlagLLMReranker\n",
+    "\n",
+    "reranker = LightWeightFlagLLMReranker('BAAI/bge-reranker-v2.5-gemma2-lightweight', devices=[\"cuda:0\"], use_fp16=True)\n",
+    "\n",
+    "# Adjusting 'cutoff_layers' to pick which layers are used for computing the score.\n",
+    "score = reranker.compute_score(['query', 'passage'], cutoff_layers=[28], compress_ratio=2, compress_layers=[24, 40])\n",
+    "print(score)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Comparison"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "BGE reranker series provides a great number of choices for all kinds of functionalities. You can select the model according your senario and resource:\n",
+    "\n",
+    "- For multilingual, utilize `BAAI/bge-reranker-v2-m3`, `BAAI/bge-reranker-v2-gemma` and `BAAI/bge-reranker-v2.5-gemma2-lightweight`.\n",
+    "\n",
+    "- For Chinese or English, utilize `BAAI/bge-reranker-v2-m3` and `BAAI/bge-reranker-v2-minicpm-layerwise`.\n",
+    "\n",
+    "- For efficiency, utilize `BAAI/bge-reranker-v2-m3` and the low layer of `BAAI/bge-reranker-v2-minicpm-layerwise`.\n",
+    "\n",
+    "- For saving resources and extreme efficiency, utilize `BAAI/bge-reranker-base` and `BAAI/bge-reranker-large`.\n",
+    "\n",
+    "- For better performance, recommand `BAAI/bge-reranker-v2-minicpm-layerwise` and B`AAI/bge-reranker-v2-gemma`.\n",
+    "\n",
+    "Make sure always test on your real use case and choose the one with best speed-quality balance!"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "ft",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
