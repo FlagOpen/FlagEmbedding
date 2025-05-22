@@ -49,8 +49,6 @@ class BiIREmbedderModel(BiEncoderOnlyEmbedderModel):
         sentence_pooling_method: str = 'cls',
         normalize_embeddings: bool = False,
         normalize_answer: bool = True,
-        use_linear_for_answer: bool = False,
-        answer_model: AutoModel = None,
         training_type: str = 'retrieval_answer'
     ):
         super().__init__(
