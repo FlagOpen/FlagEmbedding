@@ -110,7 +110,7 @@ For example, for msmarco dataset, you can save with the following format:
 
 For all data, you can save with the following format:
 
-```bash
+```
 ├─data
 |  ├─msmarco
 |    ├─corpus.json
@@ -152,7 +152,7 @@ python generate_universal_query.py \
 
 For all data, it will be saved with the following format:
 
-```bash
+```
 ├─inference
 ├─finetune
 ├─data_generation
@@ -207,7 +207,7 @@ python update_file.py \
 
 For all data, it will be saved with the following format:
 
-```bash
+```
 ├─inference
 ├─finetune
 |  ├─generator
@@ -337,7 +337,7 @@ python generate_retriever_distill_data.py \
 
 For all data, it will be saved with the following format:
 
-```bash
+```
 ├─inference
 ├─finetune
 |  ├─generator
