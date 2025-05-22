@@ -114,7 +114,7 @@ For all data, you can save with the following format:
 ├─data
 |  ├─msmarco
 |    ├─corpus.json
-|  ├─msmarco
+|  ├─trec-covid
 |    ├─corpus.json
 |  ├─nq
 |    ├─corpus.json

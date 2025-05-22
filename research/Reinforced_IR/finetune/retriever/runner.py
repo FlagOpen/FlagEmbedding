@@ -77,24 +77,6 @@ class IREmbedderRunner(AbsEmbedderRunner):
             trust_remote_code=self.model_args.trust_remote_code
         )
 
-        if self.training_args.use_linear_for_answer:
-            if self.training_args.linear_path is not None:
-                answer_model = AutoModel.from_pretrained(
-                    self.training_args.linear_path,
-                    cache_dir=self.model_args.cache_dir,
-                    token=self.model_args.token,
-                    trust_remote_code=self.model_args.trust_remote_code
-                )
-            else:
-                answer_model = AutoModel.from_pretrained(
-                    self.model_args.model_name_or_path,
-                    cache_dir=self.model_args.cache_dir,
-                    token=self.model_args.token,
-                    trust_remote_code=self.model_args.trust_remote_code
-                )
-        else:
-            answer_model = None
-
         num_labels = 1
         config = AutoConfig.from_pretrained(
             self.model_args.config_name if self.model_args.config_name else self.model_args.model_name_or_path,
@@ -115,8 +97,6 @@ class IREmbedderRunner(AbsEmbedderRunner):
             kd_loss_type=self.training_args.kd_loss_type,
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings,
-            use_linear_for_answer=self.training_args.use_linear_for_answer,
-            answer_model=answer_model,
             normalize_answer=self.training_args.normalize_answer,
             training_type=self.training_args.training_type
         )
