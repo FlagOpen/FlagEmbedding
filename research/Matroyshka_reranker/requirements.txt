@@ -16,4 +16,3 @@ modelscope
 peft
 deepspeed
 bitsandbytes
-deepspeed
