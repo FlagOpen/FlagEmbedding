@@ -11,14 +11,17 @@
     </a>
 </p>
 
+
 This repo contains the data, training, and evaluation pipeline for CodeR / [BGE-Code-v1](https://huggingface.co/BAAI/bge-code-v1)
 
 **[BGE-Code-v1](https://huggingface.co/BAAI/bge-code-v1)** is an LLM-based code embedding model that supports code retrieval, text retrieval, and multilingual retrieval. It primarily demonstrates the following capabilities:
+
 - Superior Code Retrieval Performance: The model demonstrates exceptional code retrieval capabilities, supporting natural language queries in both English and Chinese, as well as 20 programming languages.
 - Robust Text Retrieval Capabilities: The model maintains strong text retrieval capabilities comparable to text embedding models of similar scale.
 - Extensive Multilingual Support: BGE-Code-v1 offers comprehensive multilingual retrieval capabilities, excelling in languages such as English, Chinese, Japanese, French, and more.
 
 ## :bell: News:
+
 - 🥳 5/15/2025: We have released the CodeR! :fire:
 
 ## Usage
@@ -29,9 +32,6 @@ This repo contains the data, training, and evaluation pipeline for CodeR / [BGE-
 git clone https://github.com/FlagOpen/FlagEmbedding.git
 cd FlagEmbedding
 pip install -e .
-```
-
-```python
 from FlagEmbedding import FlagLLMModel
 queries = [
     "Delete the record with ID 4 from the 'Staff' table.", 
@@ -149,29 +149,29 @@ print(scores.tolist())
 
 - CoIR
 
-|                                 | CodeXEmbed-2B | CodeXEmbed-7B | Voyage-Code-002 | Voyage-Code-003 | BGE-Code-v1 |
-|---------------------------------------|---------------|---------------|-----------------|-----------------|-----------|
-| **Apps**                                  | 76.86         | 85.38         | 26.52           | 93.62           | 98.08     |
-| **CosQA**                                 | 40.47         | 42.47         | 29.79           | 34.45           | 46.72     |
-| **Text2SQL**                              | 78.42         | 78.94         | 69.26           | 62.87           | 64.35     |
-| **CSN**                                   | 87.87         | 89.67         | 81.79           | 89.35           | 89.53     |
-| **CSN-CCR**                               | 97.66         | 97.95         | 73.45           | 90.05           | 98.30     |
-| **CodeTrans-Contest**                     | 90.30         | 94.45         | 72.77           | 94.96           | 94.38     |
-| **CodeTrans-DL**                          | 38.57         | 40.46         | 27.48           | 38.57           | 46.13     |
-| **StackOverFlow-QA**                      | 94.47         | 96.33         | 67.68           | 97.17           | 95.35     |
-| **CodeFeedBack-ST**                       | 86.36         | 87.53         | 65.35           | 90.67           | 90.56     |
-| **CodeFeedBack-MT**                       | 65.51         | 68.83         | 28.74           | 93.58           | 94.38     |
-| **AVG**                                   | **75.65**         | **78.20**         | **56.26**           | **78.53**    | **81.77**     |
+|                       | CodeXEmbed-2B | CodeXEmbed-7B | Voyage-Code-002 | Voyage-Code-003 | BGE-Code-v1 |
+| --------------------- | ------------- | ------------- | --------------- | --------------- | ----------- |
+| **Apps**              | 76.86         | 85.38         | 26.52           | 93.62           | 98.08       |
+| **CosQA**             | 40.47         | 42.47         | 29.79           | 34.45           | 46.72       |
+| **Text2SQL**          | 78.42         | 78.94         | 69.26           | 62.87           | 64.35       |
+| **CSN**               | 87.87         | 89.67         | 81.79           | 89.35           | 89.53       |
+| **CSN-CCR**           | 97.66         | 97.95         | 73.45           | 90.05           | 98.30       |
+| **CodeTrans-Contest** | 90.30         | 94.45         | 72.77           | 94.96           | 94.38       |
+| **CodeTrans-DL**      | 38.57         | 40.46         | 27.48           | 38.57           | 46.13       |
+| **StackOverFlow-QA**  | 94.47         | 96.33         | 67.68           | 97.17           | 95.35       |
+| **CodeFeedBack-ST**   | 86.36         | 87.53         | 65.35           | 90.67           | 90.56       |
+| **CodeFeedBack-MT**   | 65.51         | 68.83         | 28.74           | 93.58           | 94.38       |
+| **AVG**               | **75.65**     | **78.20**     | **56.26**       | **78.53**       | **81.77**   |
 
 - CodedRAG
 
-|                 | HummanEval | MBPP | DS-1000 | ODEX | RepoEval | SWE-bench-Lite | AVG  |
-| --------------- | ---------- | ---- | ------- | ---- | -------- | -------------- | ---- |
+|                 | HummanEval | MBPP | DS-1000 | ODEX | RepoEval | SWE-bench-Lite | AVG      |
+| --------------- | ---------- | ---- | ------- | ---- | -------- | -------------- | -------- |
 | SFR             | 100.0      | 99.0 | 19.3    | 37.1 | 83.8     | 62.7           | **67.0** |
 | Jina-v2-code    | 100.0      | 97.7 | 26.2    | 19.9 | 90.5     | 58.3           | **65.4** |
 | CodeXEmbed-2B   | 100.0      | 97.4 | 25.4    | 23.9 | 88.7     | 52.4           | **64.6** |
 | Voyage-Code-002 | 100.0      | 99.0 | 33.1    | 26.6 | 94.3     | 29.1           | **63.7** |
-| BGE-Code-v1       | 100.0      | 99.2 | 40.9    | 36.1 | 93.1     | 67.4           | **72.8** |
+| BGE-Code-v1     | 100.0      | 99.2 | 40.9    | 36.1 | 93.1     | 67.4           | **72.8** |
 
 ### Instructions for Evaluation
 
@@ -200,21 +200,32 @@ print(scores.tolist())
 
 #### CoIR
 
-For CoIR, we use the [CoIR](https://github.com/CoIR-team/coir) evaluation script.
+For CoIR, we use the [CoIR](https://github.com/CoIR-team/coir) evaluation script:
 
-You can also evaluate the model using the following script:
 ```shell
 cd ./evaluation/coir_eval
+### clone coir
+mkdir test
+cd ./test
+git clone https://github.com/CoIR-team/coir.git
+mv ./coir/coir ../
+cd ..
+rm -rf ./test
+### evaluate
 bash eval.sh
 ```
 
 ### CodeRAG
 
-For CodeRAG, we use the [CodeRAG](https://github.com/code-rag-bench/code-rag-bench) evaluation script.
+For CodeRAG, we use the [CodeRAG](https://github.com/code-rag-bench/code-rag-bench) evaluation script:
 
-You can also evaluate the model using the following script:
 ```shell
 cd ./evaluation/coderag_eval
+### clone coderag
+git clone https://github.com/code-rag-bench/code-rag-bench.git
+## You need prepare environment according to README.md
+rm -rf ./code-rag-bench/retrieval/create
+cp -r ./test/* ./code-rag-bench/retrieval/
 ### prepare data
 bash prepare_data.sh
 ### evaluate
