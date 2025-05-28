@@ -195,3 +195,28 @@ print(scores.tolist())
     "SWE-bench-Lite": "Given a code snippet containing a bug and a natural language description of the bug or error, retrieve code snippets that demonstrate solutions or fixes for similar bugs or errors (the desired documents)."
 }
 ```
+
+### Evaluation script
+
+#### CoIR
+
+For CoIR, we use the [CoIR](https://github.com/CoIR-team/coir) evaluation script.
+
+You can also evaluate the model using the following script:
+```shell
+cd ./evaluation/coir_eval
+bash eval.sh
+```
+
+### CodeRAG
+
+For CodeRAG, we use the [CodeRAG](https://github.com/code-rag-bench/code-rag-bench) evaluation script.
+
+You can also evaluate the model using the following script:
+```shell
+cd ./evaluation/coderag_eval
+### prepare data
+bash prepare_data.sh
+### evaluate
+bash eval.sh
+```
