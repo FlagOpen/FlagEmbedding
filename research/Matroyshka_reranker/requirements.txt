@@ -7,12 +7,12 @@ func_timeout==4.3.5
 pandas==2.2.1
 sqlglot==22.1.1
 rank_bm25==0.2.2
+peft==0.10.0
 transformers==4.41.1
 jinja2
 datasets
 sentencepiece
 flash-attn
 modelscope
-peft
 deepspeed
 bitsandbytes
