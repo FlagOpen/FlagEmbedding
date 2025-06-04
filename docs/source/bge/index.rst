@@ -15,6 +15,7 @@ BGE
    bge_m3
    bge_icl
    bge_vl
+   bge_code
 
 .. toctree::
    :maxdepth: 1
