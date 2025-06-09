@@ -80,7 +80,7 @@ def main():
 
     model = BiEncoderModel(model=base_model,
                            tokenizer=tokenizer,
-                           normlized=training_args.normlized,
+                           normalized=training_args.normalized,
                            negatives_cross_device=training_args.negatives_cross_device,
                            temperature=training_args.temperature,
                            sub_batch_size=training_args.sub_batch_size)
