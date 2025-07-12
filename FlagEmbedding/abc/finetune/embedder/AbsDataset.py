@@ -433,7 +433,6 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
             if isinstance(train_group_size, int) and train_group_size > 0:
                 return train_group_size, None
             else:
-                logger.warning(f"Invalid `train_group_size` found in the batch data: {train_group_size}. Using default group size {self.args.train_group_size}.")
                 return self.args.train_group_size, None
         return self.args.train_group_size, None
 
