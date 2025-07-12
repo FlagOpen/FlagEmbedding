@@ -428,6 +428,13 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
                 return min(len(batch_raw_data['neg'][0]) + 1, self.args.train_group_size), data_type
             else:
                 return self.args.train_group_size, data_type
+        elif 'train_group_size' in batch_raw_data:
+            train_group_size = batch_raw_data['train_group_size'][0]
+            if isinstance(train_group_size, int) and train_group_size > 0:
+                return train_group_size, None
+            else:
+                logger.warning(f"Invalid `train_group_size` found in the batch data: {train_group_size}. Using default group size {self.args.train_group_size}.")
+                return self.args.train_group_size, None
         return self.args.train_group_size, None
 
     def _create_batch_data(self, batch_raw_data):
