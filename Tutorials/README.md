@@ -71,3 +71,10 @@ RAG is one of the most popular approach to enchance the capabilities of LLMs by 
 - [x] RAG with LangChain
 - [x] RAG with LlamaIndex
 - [ ] ...
+
+## [Deployments](./7_Deployments/)
+
+Deploying BGE models to the cloud makes them accessible and scalable for real-world applications.
+
+- [x] Microsoft Azure
+- [ ] ...
