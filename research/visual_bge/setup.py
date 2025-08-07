@@ -11,6 +11,10 @@ setup(
     packages=find_packages(where="src"),
     package_dir={"": "src"},
     include_package_data=True,       # keep model configs, vocab etc.
+    package_data={
+        # every *.gz and *.txt plus YAML configs in this sub-package
+        "visual_bge.eva_clip": ["*.gz", "*.txt", "model_configs/*.yaml"],
+    },
     install_requires=[
         "torchvision",
         "timm",
