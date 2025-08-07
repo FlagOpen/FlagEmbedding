@@ -13,7 +13,7 @@ setup(
     include_package_data=True,       # keep model configs, vocab etc.
     package_data={
         # every *.gz and *.txt plus YAML configs in this sub-package
-        "visual_bge.eva_clip": ["*.gz", "*.txt", "model_configs/*.yaml"],
+        "visual_bge.eva_clip": ["*.gz", "*.txt", "model_configs/*.json"],
     },
     install_requires=[
         "torchvision",
