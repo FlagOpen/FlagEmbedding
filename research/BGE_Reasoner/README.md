@@ -7,7 +7,7 @@
 We introduce **BGE-Reasoner**, an end-to-end reasoning-intensive information retrieval framework. BGE-Reasoner is characterized by three key features:
 
 1. **End-to-end**: It comprises three core components in IR—**BGE-Reasoner-Rewriter**, **BGE-Reasoner-Embed**, and **BGE-Reasoner-Reranker**—covering the entire retrieval pipeline, from query rewriting and retrieval to reranking for reasoning-intensive tasks.
-2. **Excellent performance**: **BGE-Reasoner** achieves **state-of-the-art (SOTA)** performance on [BRIGHT](https://brightbenchmark.github.io/), a reasoning-intensive information retrieval benchmark, with an **nDCG@10 of 43.8** across 12 datasets, outperforming the previous SOTA by +2.2 points (41.6 from [DIVER](https://brightbenchmark.github.io/), Aug 12, 2025).
+2. **Excellent performance**: **BGE-Reasoner** achieves **state-of-the-art (SOTA)** performance on [BRIGHT](https://brightbenchmark.github.io/), a reasoning-intensive information retrieval benchmark, with an **nDCG@10 of 43.8** across 12 datasets, outperforming the previous SOTA by +2.2 points (41.6 from [DIVER](https://arxiv.org/pdf/2508.07995), Aug 12, 2025).
 3. **Open-source resources**: We will release the code, model checkpoints, training data, and evaluation scripts to facilitate future research on reasoning-intensive information retrieval. Please stay tuned!
 
 
