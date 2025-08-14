@@ -28,7 +28,7 @@ We introduce **BGE-Reasoner**, an end-to-end reasoning-intensive information ret
 
 1. **Query Rewrite**: **BGE-Reasoner-Rewriter** rewrites the original query to a more reasoning-friendly form.
 2. **Retrieval**: **BGE-Reasoner-Embed** and **BM25** each retrieve the top-2000 documents from the corpus using the rewritten query. Hybrid retrieval combines the results from both methods, with a weight of 0.75 for BGE-Reasoner-Embed and 0.25 for BM25 (after min-max normalization).
-3. **Reranking**: BGE-Reasoner-Reranker reranks the top-100 documents from the previous step. Hybrid retrieval combines the reranked results with those from the previous step, assigning a weight of 0.5 to each method.
+3. **Reranking**: **BGE-Reasoner-Reranker** reranks the top-100 documents from the previous step. Hybrid retrieval combines the reranked results with those from the previous step, assigning a weight of 0.5 to each method.
 
 Our work is still in progress. We temporarily report the preview-version results of **BGE-Reasoner** on the **BRIGHT** benchmark as shown below. Detailed results for each component, along with additional technical details, will be released soon.
 
