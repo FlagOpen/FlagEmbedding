@@ -88,7 +88,9 @@ Note:
 >
 > [3] https://github.com/Debrup-61/RaDeR
 >
-> [4] https://arxiv.org/pdf/2508.07995
+> [4] https://seed1-5-embedding.github.io
+>
+> [5] https://arxiv.org/pdf/2508.07995
 
 
 ## Technical Details
