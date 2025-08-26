@@ -91,6 +91,8 @@ Note:
 > [4] https://seed1-5-embedding.github.io
 >
 > [5] https://arxiv.org/pdf/2508.07995
+>
+> *: results evaluated with our script
 
 
 ## Technical Details
