@@ -65,11 +65,13 @@ Note:
 ### Embedder & Rewriter Results
 
 
-**BGE-Reasoner-Embed** also achieves excellent performance on the BRIGHT benchmark:
+**BGE-Reasoner-Embed-0821**, submitted to the BRIGHT leaderboard on Aug 21, 2025, also achieves excellent performance on the benchmark:
 
 - With original queries, it attains **nDCG@10 = 32.5**, an absolute improvement of **+3.6** over the previous best ([DIVER](https://arxiv.org/pdf/2508.07995): 28.9).
 - Using the GPT-4 reasoning queries provided by BRIGHT, the score increases to **37.7**, which is **+5.6** higher than DIVER’s corresponding result (32.1). Combining our embedding-based retrieval with BM25 (hybrid fusion, weights: 0.75 / 0.25) yields **nDCG@10 = 40.2**.
 - Finally, when using rewritten queries produced by **BGE-Reasoner-Rewriter** and fusing with BM25 (weights: 0.75 / 0.25), we reach **nDCG@10 = 40.8**.
+
+> On Sep 4, 2025, we released the first-stage search results of BGE-Reasoner-Embed-0821 using original queries and GPT-4 reasoning queries (Top-2000 candidates; excluded IDs removed) [here](https://huggingface.co/datasets/hanhainebula/bright-search-results_bge-reasoner-embed-0821/tree/main), and part of our training data [here](https://huggingface.co/datasets/hanhainebula/bge-reasoner-data/tree/main/bge-reasoner-data-0904).
 
 
 ![BGE-Reasoner-Embed & BGE-Reasoner-Rewriter Results](./imgs/embedder-rewriter_results.png)
