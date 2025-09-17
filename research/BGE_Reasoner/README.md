@@ -13,13 +13,15 @@ We introduce **BGE-Reasoner**, an end-to-end reasoning-intensive information ret
 
 ## Open-source resources
 
-| Resource Type      | Name                  | Link              |
-| ------------------ | --------------------- | ----------- |
-| Model              | BGE-Reasoner-Rewriter | [🤗]() (TBA)     |
-| Model              | BGE-Reasoner-Embed    | [🤗]() (TBA)     |
-| Model              | BGE-Reasoner-Reranker | [🤗]() (TBA)     |
-| Training Data      | BGE-Reasoner-Data     | [🤗]() (TBA)     |
-| Evaluation Scripts | -                     | (TBA)             |
+| Resource Type      | Name                  | Link              | Release Date | Comments |
+| ------------------ | --------------------- | ----------- | ------------------ | ------------------ |
+| Model              | BGE-Reasoner-Rewriter | [🤗]() (TBA)     | -    |      |
+| Model              | BGE-Reasoner-Reranker | [🤗]() (TBA)     | -    |      |
+| Model              | BGE-Reasoner-Embed    | [🤗]() (TBA)     | -    |      |
+| Search Results | BGE-Reasoner-Embed-0821 Search Results | [🤗](https://huggingface.co/datasets/hanhainebula/bright-search-results_bge-reasoner-embed-0821/tree/main) | Sep 4, 2025 | nDCG@10 = 32.5, submission to BRIGHT leaderboard on Aug 21, 2025 |
+| Training Data      | BGE-Reasoner-Data | [🤗](https://huggingface.co/datasets/hanhainebula/bge-reasoner-data/tree/main/bge-reasoner-data-0904) | Sep 4, 2025 | part of our training data; full data to be released in the future |
+| Evaluation Scripts | -                     | (TBA)             | -            |              |
+
 
 
 ## Performance
@@ -71,7 +73,7 @@ Note:
 - Using the GPT-4 reasoning queries provided by BRIGHT, the score increases to **37.7**, which is **+5.6** higher than DIVER’s corresponding result (32.1). Combining our embedding-based retrieval with BM25 (hybrid fusion, weights: 0.75 / 0.25) yields **nDCG@10 = 40.2**.
 - Finally, when using rewritten queries produced by **BGE-Reasoner-Rewriter** and fusing with BM25 (weights: 0.75 / 0.25), we reach **nDCG@10 = 40.8**.
 
-> On Sep 4, 2025, we released the first-stage search results of BGE-Reasoner-Embed-0821 using original queries and GPT-4 reasoning queries (Top-2000 candidates; excluded IDs removed) [here](https://huggingface.co/datasets/hanhainebula/bright-search-results_bge-reasoner-embed-0821/tree/main), and part of our training data [here](https://huggingface.co/datasets/hanhainebula/bge-reasoner-data/tree/main/bge-reasoner-data-0904).
+> On Sep 4, 2025, we released the first-stage search results of BGE-Reasoner-Embed-0821 using original queries and GPT-4 reasoning queries (Top-2000 candidates; excluded IDs removed) [here](https://huggingface.co/datasets/hanhainebula/bright-search-results_bge-reasoner-embed-0821/tree/main).
 
 
 ![BGE-Reasoner-Embed & BGE-Reasoner-Rewriter Results](./imgs/embedder-rewriter_results.png)
