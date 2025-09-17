@@ -43,7 +43,7 @@ class DecoderOnlyEmbedderRunner(AbsEmbedderRunner):
             self.model_args.tokenizer_name if self.model_args.tokenizer_name else self.model_args.model_name_or_path,
             token=self.model_args.token,
             cache_dir=self.model_args.cache_dir,
-            use_fast=False,
+            use_fast=self.model_args.use_fast_tokenizer,
             add_eos_token=True,
             trust_remote_code=self.model_args.trust_remote_code,
         )

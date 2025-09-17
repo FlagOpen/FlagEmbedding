@@ -30,6 +30,10 @@ class AbsEmbedderModelArguments:
         default=False,
         metadata={"help": "Trust remote code"}
     )
+    use_fast_tokenizer: bool = field(
+        default=True,
+        metadata={"help": "Whether to use fast tokenizer or not."}
+    )
     token: str = field(
         default_factory=lambda: os.getenv('HF_TOKEN', None),
         metadata={"help": "The token to use when accessing the model."}
