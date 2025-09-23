@@ -63,7 +63,8 @@ class AbsEmbedderTrainDataset(Dataset):
         Returns:
             datasets.Dataset: Loaded HF dataset.
         """
-        if dist.get_rank() == 0:
+        safe_rank = dist.get_rank() if dist.is_initialized() else 0
+        if safe_rank == 0:
             logger.info(f'loading data from {file_path} ...')
 
         temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
@@ -342,7 +343,8 @@ class AbsEmbedderSameDatasetTrainDataset(AbsEmbedderTrainDataset):
         Returns:
             datasets.Dataset: The loaded dataset.
         """
-        if dist.get_rank() == 0:
+        safe_rank = dist.get_rank() if dist.is_initialized() else 0
+        if safe_rank == 0:
             logger.info(f'loading data from {file_path} ...')
 
         temp_dataset = datasets.load_dataset('json', data_files=file_path, split='train', cache_dir=self.args.cache_path)
