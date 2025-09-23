@@ -40,7 +40,7 @@ class BaseLLMEmbedder(AbsEmbedder):
             degradation. Defaults to :data:`True`.
         query_instruction_for_retrieval (Optional[str], optional): Query instruction for retrieval tasks, which will be used with
             with :attr:`query_instruction_format`. Defaults to :data:`None`.
-        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"{}{}"`.
+        query_instruction_format (str, optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`"Instruct: {}\nQuery: {}"`.
         devices (Optional[Union[str, int, List[str], List[int]]], optional): Devices to use for model inference. Defaults to :data:`None`.
         trust_remote_code (bool, optional): trust_remote_code for HF datasets or models. Defaults to :data:`False`.
         cache_dir (Optional[str], optional): Cache directory for the model. Defaults to :data:`None`.

@@ -39,6 +39,14 @@ class EmbedderConfig:
 # BGE models mapping
 BGE_MAPPING = OrderedDict([
     (
+        "bge-reasoner-embed-qwen3-8b-0923",
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery: {}")
+    ),
+    (
+        "bge-code-v1",
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, trust_remote_code=True, query_instruction_format="<instruct>{}\n<query>{}")
+    ),
+    (
         "bge-en-icl", 
         EmbedderConfig(FlagICLModel, PoolingMethod.LAST_TOKEN, query_instruction_format="<instruct>{}\n<query>{}")
     ),
@@ -99,6 +107,23 @@ BGE_MAPPING = OrderedDict([
         EmbedderConfig(FlagModel, PoolingMethod.CLS)
     ),
 ])
+
+# Qwen3-Embedding models mapping
+QWEN3_EMBEDDING_MAPPING = OrderedDict([
+    (
+        "Qwen3-Embedding-0.6B",
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery:{}")
+    ),
+    (
+        "Qwen3-Embedding-4B",
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery:{}")
+    ),
+    (
+        "Qwen3-Embedding-8B",
+        EmbedderConfig(FlagLLMModel, PoolingMethod.LAST_TOKEN, query_instruction_format="Instruct: {}\nQuery:{}")
+    ),
+])
+
 
 # E5 models mapping
 E5_MAPPING = OrderedDict([
@@ -231,6 +256,7 @@ BCE_MAPPING = OrderedDict([
 # Combine all mappings
 AUTO_EMBEDDER_MAPPING = OrderedDict()
 AUTO_EMBEDDER_MAPPING.update(BGE_MAPPING)
+AUTO_EMBEDDER_MAPPING.update(QWEN3_EMBEDDING_MAPPING)
 AUTO_EMBEDDER_MAPPING.update(E5_MAPPING)
 AUTO_EMBEDDER_MAPPING.update(GTE_MAPPING)
 AUTO_EMBEDDER_MAPPING.update(SFR_MAPPING)
