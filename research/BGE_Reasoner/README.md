@@ -17,8 +17,8 @@ We introduce **BGE-Reasoner**, an end-to-end reasoning-intensive information ret
 | ------------------ | --------------------- | ----------- | ------------------ | ------------------ |
 | Model              | BGE-Reasoner-Rewriter | [🤗]() (TBA)     | -    |      |
 | Model              | BGE-Reasoner-Reranker | [🤗]() (TBA)     | -    |      |
-| Model              | BGE-Reasoner-Embed-Qwen3-8B-0923 | [🤗](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923) | Sep 23, 2025 | nDCG@10 = 37.2 using original query, fine-tuned on [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) with our latest refined training data (data to be released) |
-| Search Results | BGE-Reasoner-Embed-Qwen3-8B-0923 Search Results | [🤗](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923/tree/main/search_results) | Sep 23, 2025 | nDCG@10 = 37.2 using original query |
+| Model              | BGE-Reasoner-Embed-Qwen3-8B-0923 | [🤗](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923) | Sep 23, 2025 | nDCG@10 = 37.1 using original query, fine-tuned on [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) with our latest refined training data (data to be released) |
+| Search Results | BGE-Reasoner-Embed-Qwen3-8B-0923 Search Results | [🤗](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923/tree/main/search_results) | Sep 23, 2025 | nDCG@10 = 37.1 using original query |
 | Search Results | BGE-Reasoner-Embed-0821 Search Results | [🤗](https://huggingface.co/datasets/hanhainebula/bright-search-results_bge-reasoner-embed-0821/tree/main) | Sep 4, 2025 | nDCG@10 = 32.5 using original query, submission to BRIGHT leaderboard on Aug 21, 2025 |
 | Training Data      | BGE-Reasoner-Data | [🤗](https://huggingface.co/datasets/hanhainebula/bge-reasoner-data/tree/main/bge-reasoner-data-0904) | Sep 4, 2025 | part of our training data; full data to be released in the future |
 | Evaluation Scripts | -                     | (TBA)             | -            |              |
@@ -72,7 +72,7 @@ Note:
 
 **BGE-Reasoner-Embed-Qwen3-8B-0923**, fine-tuned on [Qwen/Qwen3-8B](https://huggingface.co/Qwen/Qwen3-8B) with our latest refined training data (data to be released), achieves strong performance on the BRIGHT benchmark:
 
-- With original queries, it attains **nDCG@10 = 37.2**, an absolute improvement of **+8.3** over the previous best ([DIVER](https://arxiv.org/pdf/2508.07995): 28.9).
+- With original queries, it attains **nDCG@10 = 37.1**, an absolute improvement of **+8.2** over the previous best ([DIVER](https://arxiv.org/pdf/2508.07995): 28.9).
 - Using the GPT-4 reasoning queries provided by BRIGHT, the score increases to **39.7**, which is **+7.6** higher than DIVER’s corresponding result (32.1).
 
 > On Sep 23, 2025, we released the first-stage search results of BGE-Reasoner-Embed-Qwen3-8B-0923 using original queries and GPT-4 reasoning queries (Top-2000 candidates; excluded IDs removed) [here](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923/tree/main/search_results). The model checkpoint is available [here](https://huggingface.co/BAAI/bge-reasoner-embed-qwen3-8b-0923).
@@ -137,6 +137,11 @@ Note:
 
 
 The technical details for each component of **BGE-Reasoner** will be released soon. Please stay tuned!
+
+
+## Contact Information
+
+Some resources are not yet publicly available. If you have urgent research needs for any of these resources (e.g., model checkpoints, search results, evaluation scripts) or have any questions, please contact Jianlyu Chen at jianlvchen@gmail.com.
 
 
 ## Citation
