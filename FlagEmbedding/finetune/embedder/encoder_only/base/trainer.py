@@ -1,5 +1,4 @@
 import os
-import torch
 import logging
 from typing import Optional
 
@@ -32,13 +31,8 @@ class EncoderOnlyEmbedderTrainer(AbsEmbedderTrainer):
                 f'does not support save interface')
         else:
             self.model.save(output_dir)
-        if self.tokenizer is not None and self.is_world_process_zero():
-            self.tokenizer.save_pretrained(output_dir)
-
-        torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
-
-        # save the checkpoint for sentence-transformers library
-        # if self.is_world_process_zero():
-        #     save_ckpt_for_sentence_transformers(output_dir,
-        #                                         pooling_mode=self.args.sentence_pooling_method,
-        #                                         normlized=self.args.normlized)
+        if self.is_world_process_zero():
+            self.save_ckpt_for_sentence_transformers(output_dir,
+                                                    pooling_mode=self.args.sentence_pooling_method)
+            if self.tokenizer is not None:
+                self.tokenizer.save_pretrained(output_dir)
