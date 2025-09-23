@@ -54,8 +54,8 @@ class AbsEmbedderModel(ABC, nn.Module):
         if self.negatives_cross_device:
             if not dist.is_initialized():
                 raise ValueError('Distributed training has not been initialized for representation all gather.')
-            self.process_rank = dist.get_rank()
-            self.world_size = dist.get_world_size()
+            self.process_rank = dist.get_rank() if dist.is_initialized() else 0
+            self.world_size = dist.get_world_size() if dist.is_initialized() else 1
 
         self.sub_batch_size = sub_batch_size
         self.kd_loss_type = kd_loss_type
