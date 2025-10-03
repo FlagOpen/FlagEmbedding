@@ -7,11 +7,13 @@ import torch.distributed as dist
 from torch import nn, Tensor
 from transformers import AutoModel, AutoTokenizer, AutoConfig
 from transformers.file_utils import ModelOutput
+from PIL import ImageFile
 
 
-from visual_bge.eva_clip import create_eva_vision_and_transforms
+from .eva_clip import create_eva_vision_and_transforms
 from PIL import Image
 
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 logger = logging.getLogger(__name__)
 
 
