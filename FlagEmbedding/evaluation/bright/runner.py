@@ -1,11 +1,12 @@
 import logging
-from typing import Union
-from FlagEmbedding.abc.evaluation import AbsEvalRunner, \
+from typing import Union, Tuple
+from FlagEmbedding.abc.evaluation import AbsEvalRunner, EvalReranker, \
     AbsEvalModelArgs as BrightEvalModelArgs
 
 from .prompts import BrightShortInstructions, BrightLongInstructions
 from .arguments import BrightEvalArgs
 from .data_loader import BrightShortEvalDataLoader, BrightLongEvalDataLoader
+from .searcher import BrightEvalDenseRetriever
 
 logger = logging.getLogger(__name__)
 
@@ -40,6 +41,23 @@ class BrightEvalRunner(AbsEvalRunner):
             force_redownload=self.eval_args.force_redownload,
         )
         return data_loader
+
+    def load_retriever_and_reranker(self) -> Tuple[BrightEvalDenseRetriever, Union[EvalReranker, None]]:
+        """Load retriever and reranker for evaluation
+
+        Returns:
+            Tuple[BrightEvalDenseRetriever, Union[EvalReranker, None]]: A :class:BrightEvalDenseRetriever object for retrieval, and a
+                :class:EvalReranker object if reranker provided.
+        """
+        embedder, reranker = self.get_models(self.model_args)
+        retriever = BrightEvalDenseRetriever(
+            embedder,
+            search_top_k=self.eval_args.search_top_k,
+            overwrite=self.eval_args.overwrite
+        )
+        if reranker is not None:
+            reranker = EvalReranker(reranker, rerank_top_k=self.eval_args.rerank_top_k)
+        return retriever, reranker
 
     def run(self):
         """
