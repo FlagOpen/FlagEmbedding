@@ -19,8 +19,9 @@ In this section, we will first introduce the commonly used arguments across all 
   - [(4) MIRACL](#4-MIRACL)
   - [(5) MLDR](#5-MLDR)
   - [(6) MKQA](#6-MKQA)
-  - [(7) AIR-Bench](#7-Air-Bench)
-  - [(8) Custom Dataset](#8-Custom-Dataset)
+  - [(7) AIR-Bench](#7-AIR-Bench)
+  - [(8) BRIGHT](#8-BRIGHT)
+  - [(9) Custom Dataset](#9-Custom-Dataset)
 
 ## Introduction
 
@@ -320,7 +321,44 @@ python -m FlagEmbedding.evaluation.air_bench \
     --reranker_max_length 1024 
 ```
 
-### 8. Custom Dataset
+### 8. BRIGHT
+
+[BRIGHT](https://brightbenchmark.github.io/) supports evaluations on reasoning-intensive text retrieval tasks, and includes 12 datasets: `biology`, `earth_science`, `economics`, `psychology`, `robotics`, `stackoverflow`, `sustainable_living`, `leetcode`, `pony`, `aops`, `theoremqa_questions`, `theoremqa_theorems`.
+
+Here is an example for evaluation:
+
+```shell
+# Available splits (provided by BRIGHT): examples, gpt4_reason, claude-3-opus_reason, Gemini-1.0_reason, llama3-70b_reason, grit_reason
+# NOTE: must run single split each time to ensure correct format of output evaluation results
+split="examples"
+python -m FlagEmbedding.evaluation.bright \
+    --task_type short \
+    --use_special_instructions True \
+    --eval_name bright_short \
+    --dataset_dir ./bright_short/data \
+    --dataset_names pony theoremqa_theorems \
+    --splits $split \
+    --corpus_embd_save_dir ./bright_short/corpus_embd \
+    --output_dir ./bright_short/search_results/$split \
+    --search_top_k 2000 \
+    --cache_path ./cache/data \
+    --overwrite False \
+    --k_values 1 10 100 \
+    --eval_output_method markdown \
+    --eval_output_path ./bright_short/eval_results_$split.md \
+    --eval_metrics ndcg_at_10 recall_at_10 recall_at_100 \
+    --embedder_name_or_path BAAI/bge-reasoner-embed-qwen3-8b-0923 \
+    --embedder_model_class decoder-only-base \
+    --query_instruction_format_for_retrieval 'Instruct: {}\nQuery: {}' \
+    --pooling_method last_token \
+    --devices cuda:0 cuda:1 \
+    --cache_dir ./cache/model \
+    --embedder_batch_size 2 \
+    --embedder_query_max_length 8192 \
+    --embedder_passage_max_length 8192 \
+```
+
+### 9. Custom Dataset
 
 The example data for `corpus.jsonl`:
 
