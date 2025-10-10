@@ -1,6 +1,6 @@
 # Evaluation
 
-After fine-tuning the model, it is essential to evaluate its performance. To facilitate this process, we have provided scripts for assessing the model on various datasets. These datasets include: [**MTEB**](https://github.com/embeddings-benchmark/mteb), [**BEIR**](https://github.com/beir-cellar/beir), [**MSMARCO**](https://microsoft.github.io/msmarco/), [**MIRACL**](https://github.com/project-miracl/miracl), [**MLDR**](https://huggingface.co/datasets/Shitao/MLDR), [**MKQA**](https://github.com/apple/ml-mkqa), [**AIR-Bench**](https://github.com/AIR-Bench/AIR-Bench), and your **custom datasets**.
+After fine-tuning the model, it is essential to evaluate its performance. To facilitate this process, we have provided scripts for assessing the model on various datasets. These datasets include: [**MTEB**](https://github.com/embeddings-benchmark/mteb), [**BEIR**](https://github.com/beir-cellar/beir), [**MSMARCO**](https://microsoft.github.io/msmarco/), [**MIRACL**](https://github.com/project-miracl/miracl), [**MLDR**](https://huggingface.co/datasets/Shitao/MLDR), [**MKQA**](https://github.com/apple/ml-mkqa), [**AIR-Bench**](https://github.com/AIR-Bench/AIR-Bench), [**BRIGHT**](https://brightbenchmark.github.io/), and your **custom datasets**.
 
 To evaluate the model on a specific dataset, you can find the corresponding bash scripts in the respective folders dedicated to each dataset. These scripts contain the necessary commands and configurations to run the evaluation process.
 
