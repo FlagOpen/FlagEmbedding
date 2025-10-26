@@ -160,6 +160,6 @@ class RetrieverTrainingArguments(TrainingArguments):
     temperature: Optional[float] = field(default=0.02)
     fix_position_embedding: bool = field(default=False, metadata={"help": "Freeze the parameters of position embeddings"})
     sentence_pooling_method: str = field(default='cls', metadata={"help": "the pooling method, should be cls or mean"})
-    normlized: bool = field(default=True)
+    normalized: bool = field(default=True)
     sub_batch_size: int = field(default=None)
     cache_chunk_size: int = field(default=-1, metadata={"help": "用于缓存每一步的执行."})

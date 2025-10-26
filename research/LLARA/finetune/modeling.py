@@ -27,7 +27,7 @@ class BiEncoderModel(nn.Module):
     def __init__(self,
                  model: AutoModel = None,
                  tokenizer: AutoTokenizer = None,
-                 normlized: bool = False,
+                 normalized: bool = False,
                  negatives_cross_device: bool = False,
                  temperature: float = 1.0,
                  sub_batch_size: int = -1
@@ -38,9 +38,9 @@ class BiEncoderModel(nn.Module):
         self.tokenizer = tokenizer
         self.cross_entropy = nn.CrossEntropyLoss(reduction='mean')
 
-        self.normlized = normlized
+        self.normalized = normalized
         self.temperature = temperature
-        if not normlized:
+        if not normalized:
             self.temperature = 1.0
             logger.info("reset temperature = 1.0 due to using inner product to compute similarity")
 
@@ -80,14 +80,14 @@ class BiEncoderModel(nn.Module):
                     p_reps = torch.mean(p_reps, dim=1)
                     all_p_reps.append(p_reps)
                 all_p_reps = torch.cat(all_p_reps, 0).contiguous()
-                if self.normlized:
+                if self.normalized:
                     all_p_reps = torch.nn.functional.normalize(all_p_reps, dim=-1)
                 return all_p_reps.contiguous()
             else:
                 psg_out = self.model(**features, return_dict=True, output_hidden_states=True)
                 p_reps = psg_out.hidden_states[-1][:, -8:, :]
                 p_reps = torch.mean(p_reps, dim=1)
-                if self.normlized:
+                if self.normalized:
                     p_reps = torch.nn.functional.normalize(p_reps, dim=-1)
                 return p_reps.contiguous()
         else:
@@ -99,7 +99,7 @@ class BiEncoderModel(nn.Module):
                 p_reps = torch.mean(p_reps, dim=1)
                 all_p_reps.append(p_reps)
             all_p_reps = torch.cat(all_p_reps, 0).contiguous()
-            if self.normlized:
+            if self.normalized:
                 all_p_reps = torch.nn.functional.normalize(all_p_reps, dim=-1)
             return all_p_reps.contiguous()
 
