@@ -89,7 +89,9 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
             args=self.training_args,
             train_dataset=self.train_dataset,
             data_collator=self.data_collator,
-            tokenizer=self.tokenizer
+            tokenizer=self.tokenizer,
+            eval_dataset=self.eval_dataset,
+            compute_metrics=self.compute_metrics
         )
         return trainer
 

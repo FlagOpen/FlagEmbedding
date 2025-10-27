@@ -59,10 +59,20 @@ class AbsRerankerDataArguments:
             "nargs": "+"
         }
     )
+    eval_data: Optional[str] = field(
+        default=None, metadata={
+            "help": "One or more paths to evaluation data. Same format as train_data: `query: str`, `pos: List[str]`, `neg: List[str]`.",
+            "nargs": "+"
+        }
+    )
     cache_path: Optional[str] = field(
         default=None, metadata={"help": "Where do you want to store the cached data"}
     )
     train_group_size: int = field(default=8)
+    eval_group_size: int = field(
+        default=8,
+        metadata={"help": "Number of passages per query for evaluation (1 positive + N-1 negatives)"}
+    )
 
     query_max_len: int = field(
         default=32,
@@ -129,11 +139,17 @@ class AbsRerankerDataArguments:
             self.query_instruction_format = self.query_instruction_format.replace("\\n", "\n")
         if "\\n" in self.passage_instruction_format:
             self.passage_instruction_format = self.passage_instruction_format.replace("\\n", "\n")
-        
+
         # check the existence of train data
         for train_dir in self.train_data:
             if not os.path.exists(train_dir):
                 raise FileNotFoundError(f"cannot find file: {train_dir}, please set a true path")
+
+        # check the existence of eval data if provided
+        if self.eval_data is not None:
+            for eval_dir in self.eval_data:
+                if not os.path.exists(eval_dir):
+                    raise FileNotFoundError(f"cannot find file: {eval_dir}, please set a true path")
 
 
 @dataclass
