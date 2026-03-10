@@ -391,11 +391,12 @@ class M3Embedder(AbsEmbedder):
         flag = False
         while flag is False:
             try:
-                inputs_batch = self.tokenizer.pad(
-                    all_inputs_sorted[: batch_size],
+                inputs_batch = self.tokenizer(
+                    sentences[start_index:start_index + batch_size],
                     padding=True,
+                    truncation=True,
+                    max_length=max_length,
                     return_tensors='pt',
-                    **kwargs
                 ).to(device)
                 outputs = self.model(
                     inputs_batch,
@@ -413,10 +414,12 @@ class M3Embedder(AbsEmbedder):
         all_dense_embeddings, all_lexical_weights, all_colbert_vecs = [], [], []
         for start_index in tqdm(range(0, len(sentences), batch_size), desc="Inference Embeddings",
                                 disable=len(sentences) < batch_size):
-            inputs_batch = all_inputs_sorted[start_index:start_index + batch_size]
-            inputs_batch = self.tokenizer.pad(
-                inputs_batch,
+            sentences_batch = [sentences[i] for i in length_sorted_idx[start_index:start_index + batch_size]]
+            inputs_batch = self.tokenizer(
+                sentences_batch,
                 padding=True,
+                truncation=True,
+                max_length=max_length,
                 return_tensors='pt',
                 **kwargs
             ).to(device)
