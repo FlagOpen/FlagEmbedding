@@ -43,6 +43,7 @@ def merge_layerwise_raw_llm(model_name_or_path, lora_name_or_path, save_path, ca
 
     model = PeftModel.from_pretrained(model, lora_name_or_path)
     model = model.merge_and_unload()
+    model._hf_peft_config_loaded = False
     model.save_pretrained(save_path)
 
     try:
