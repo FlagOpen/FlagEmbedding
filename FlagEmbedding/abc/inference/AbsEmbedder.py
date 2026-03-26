@@ -49,6 +49,7 @@ class AbsEmbedder(ABC):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
+        use_bf16: bool = False,
         query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "{}{}",  # specify the format of query_instruction_for_retrieval
         devices: Optional[Union[str, int, List[str], List[int]]] = None,
@@ -62,6 +63,7 @@ class AbsEmbedder(ABC):
         self.model_name_or_path = model_name_or_path
         self.normalize_embeddings = normalize_embeddings
         self.use_fp16 = use_fp16
+        self.use_bf16 = use_bf16
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format
         self.target_devices = self.get_target_devices(devices)
@@ -80,6 +82,13 @@ class AbsEmbedder(ABC):
         self.tokenizer = None
         self.model = None
         self.pool = None
+
+    def get_model_torch_dtype(self) -> torch.dtype:
+        if self.use_bf16:
+            return torch.bfloat16
+        if self.use_fp16:
+            return torch.float16
+        return torch.float32
 
     def stop_self_pool(self):
         if self.pool is not None:

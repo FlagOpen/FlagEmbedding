@@ -68,6 +68,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         model_name_or_path: str,
         normalize_embeddings: bool = True,
         use_fp16: bool = True,
+        use_bf16: bool = False,
         query_instruction_for_retrieval: Optional[str] = None,
         query_instruction_format: str = "<instruct>{}\n<query>{}", # specify the format of query_instruction_for_retrieval
         suffix: str = '\n<response>',
@@ -90,6 +91,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             model_name_or_path,
             normalize_embeddings=normalize_embeddings,
             use_fp16=use_fp16,
+            use_bf16=use_bf16,
             query_instruction_for_retrieval=query_instruction_for_retrieval,
             query_instruction_format=query_instruction_format,
             devices=devices,
@@ -108,7 +110,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         self.model = AutoModel.from_pretrained(
             model_name_or_path,
             trust_remote_code=trust_remote_code,
-            cache_dir=cache_dir
+            cache_dir=cache_dir,
+            torch_dtype=self.get_model_torch_dtype(),
         )
         self.examples_for_task = examples_for_task
         self.examples_instruction_format = examples_instruction_format
@@ -340,8 +343,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         if device is None:
             device = self.target_devices[0]
 
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
+        if device == "cpu": self.model.float()
 
         self.model.to(device)
         self.model.eval()
