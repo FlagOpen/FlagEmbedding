@@ -343,7 +343,8 @@ class ICLLLMEmbedder(AbsEmbedder):
         if device is None:
             device = self.target_devices[0]
 
-        if device == "cpu": self.model.float()
+        if device == "cpu":
+            self.model.float()
 
         self.model.to(device)
         self.model.eval()
