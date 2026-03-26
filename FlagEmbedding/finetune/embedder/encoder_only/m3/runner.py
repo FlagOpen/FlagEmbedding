@@ -1,7 +1,7 @@
 import os
 import torch
 import logging
-from typing import Tuple
+from typing import Tuple, Optional
 from transformers import (
     AutoModel, AutoConfig,
     AutoTokenizer, PreTrainedTokenizer
@@ -44,7 +44,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         model_name_or_path: str,
         trust_remote_code: bool = False,
         colbert_dim: int = -1,
-        cache_dir: str = None
+        cache_dir: str = None,
+        torch_dtype: Optional[torch.dtype] = None,
     ):
         """Get the model.
 
@@ -54,6 +55,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             trust_remote_code (bool, optional): trust_remote_code to use when loading models from HF. Defaults to ``False``.
             colbert_dim (int, optional): Colbert dim to set. Defaults to ``-1``.
             cache_dir (str, optional): HF cache dir to store the model. Defaults to ``None``.
+            torch_dtype (Optional[torch.dtype], optional): Torch dtype used when loading model weights. Defaults to ``None``.
 
         Returns:
             dict: A dictionary containing the model, colbert linear and sparse linear.
@@ -69,7 +71,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         model = AutoModel.from_pretrained(
             model_name_or_path,
             cache_dir=cache_folder,
-            trust_remote_code=trust_remote_code
+            trust_remote_code=trust_remote_code,
+            dtype=torch_dtype,
         )
         colbert_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
