@@ -431,23 +431,23 @@ class M3Embedder(AbsEmbedder):
             )
 
             if return_dense:
-                all_dense_embeddings.append(outputs['dense_vecs'].cpu().numpy())
+                all_dense_embeddings.append(self._convert_to_numpy(outputs['dense_vecs'], device=device))
 
             if return_sparse:
                 token_weights = outputs['sparse_vecs'].squeeze(-1)
                 all_lexical_weights.extend(
                     list(map(
                         _process_token_weights, 
-                        token_weights.cpu().numpy(),
-                        inputs_batch['input_ids'].cpu().numpy().tolist()
+                        self._convert_to_numpy(token_weights, device=device),
+                        self._convert_to_numpy(inputs_batch['input_ids'], device=device).tolist()
                 )))
 
             if return_colbert_vecs:
                 all_colbert_vecs.extend(
                     list(map(
                         _process_colbert_vecs,
-                        outputs['colbert_vecs'].cpu().numpy(),
-                        inputs_batch['attention_mask'].cpu().numpy()
+                        self._convert_to_numpy(outputs['colbert_vecs'], device=device),
+                        self._convert_to_numpy(inputs_batch['attention_mask'], device=device)
                 )))
 
         if return_dense:
@@ -700,19 +700,28 @@ class M3Embedder(AbsEmbedder):
                 inx, inx].float(), colbert_scores[inx, inx].float()
 
             all_scores['colbert'].extend(
-                colbert_scores.cpu().numpy().tolist()
+                self._convert_to_numpy(colbert_scores, device=device).tolist()
             )
             all_scores['sparse'].extend(
-                sparse_scores.cpu().numpy().tolist()
+                self._convert_to_numpy(sparse_scores, device=device).tolist()
             )
             all_scores['dense'].extend(
-                dense_scores.cpu().numpy().tolist()
+                self._convert_to_numpy(dense_scores, device=device).tolist()
             )
             all_scores['sparse+dense'].extend(
-                ((sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/(weights_for_different_modes[1]+weights_for_different_modes[0])).cpu().numpy().tolist()
+                self._convert_to_numpy(
+                    (sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])
+                    / (weights_for_different_modes[1] + weights_for_different_modes[0]),
+                    device=device,
+                ).tolist()
             )
             all_scores['colbert+sparse+dense'].extend(
-                ((colbert_scores * weights_for_different_modes[2] + sparse_scores * weights_for_different_modes[1] + dense_scores * weights_for_different_modes[0])/weight_sum).cpu().numpy().tolist()
+                self._convert_to_numpy(
+                    (colbert_scores * weights_for_different_modes[2]
+                     + sparse_scores * weights_for_different_modes[1]
+                     + dense_scores * weights_for_different_modes[0]) / weight_sum,
+                    device=device,
+                ).tolist()
             )
 
         if one_input_pair:
