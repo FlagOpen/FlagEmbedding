@@ -77,7 +77,7 @@ def get_model(model_args: RerankerModelArguments, only_for_one_logit):
             model_args.model_name_or_path,
             trust_remote_code=model_args.trust_remote_code,
             # torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
-            use_flash_attention_2=True if model_args.use_flash_attn else False,
+            attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
@@ -131,7 +131,7 @@ def get_model(model_args: RerankerModelArguments, only_for_one_logit):
         model = LayerWiseMiniCPMForCausalLM.from_pretrained(
             model_args.model_name_or_path,
             # torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
-            use_flash_attention_2=True if model_args.use_flash_attn else False,
+            attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),

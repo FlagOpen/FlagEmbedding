@@ -71,7 +71,7 @@ def get_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir: str, re
         model = AutoModel.from_pretrained(
             model_args.model_name_or_path,
             # torch_dtype=torch.bfloat16,
-            use_flash_attention_2=True if model_args.use_flash_attn else False,
+            attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
@@ -152,7 +152,7 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = AutoModel.from_pretrained(
             model_args.model_name_or_path,
             # torch_dtype=torch.bfloat16,
-            use_flash_attention_2=True if model_args.use_flash_attn else False,
+            attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
             from_tf=bool(".ckpt" in model_args.model_name_or_path),
