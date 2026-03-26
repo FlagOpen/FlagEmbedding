@@ -437,7 +437,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             embeddings = cast(torch.Tensor, embeddings)
 
             if convert_to_numpy:
-                embeddings = embeddings.cpu().numpy()
+                embeddings = self._convert_to_numpy(embeddings, device=device)
             all_embeddings.append(embeddings)
 
         if convert_to_numpy:
@@ -546,7 +546,7 @@ class ICLLLMEmbedder(AbsEmbedder):
             embeddings = cast(torch.Tensor, embeddings)
 
             if convert_to_numpy:
-                embeddings = embeddings.cpu().numpy()
+                embeddings = self._convert_to_numpy(embeddings, device=device)
             all_embeddings.append(embeddings)
 
         if convert_to_numpy:

@@ -450,3 +450,20 @@ class AbsEmbedder(ABC):
             return np.concatenate(results_list, axis=0)
         else:
             raise NotImplementedError("Unsupported type for results_list")
+
+    def _convert_to_numpy(self, embeddings: torch.Tensor, device: Optional[str] = None) -> np.ndarray:
+        """Convert tensor embeddings to numpy with bf16-safe handling.
+
+        NumPy does not support bfloat16, so we upcast to float32 only when
+        bf16 inference is enabled on non-CPU devices.
+
+        Args:
+            embeddings (torch.Tensor): Embedding tensor.
+            device (Optional[str], optional): Inference device string. Defaults to ``None``.
+
+        Returns:
+            np.ndarray: Embeddings in numpy format.
+        """
+        if device != "cpu" and self.use_bf16 and embeddings.dtype == torch.bfloat16:
+            embeddings = embeddings.float()
+        return embeddings.cpu().numpy()
