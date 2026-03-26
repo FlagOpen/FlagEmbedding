@@ -76,11 +76,13 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
         )
         colbert_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
-            out_features=model.config.hidden_size if colbert_dim <= 0 else colbert_dim
+            out_features=model.config.hidden_size if colbert_dim <= 0 else colbert_dim,
+            dtype=torch_dtype,
         )
         sparse_linear = torch.nn.Linear(
             in_features=model.config.hidden_size,
-            out_features=1
+            out_features=1,
+            dtype=torch_dtype,
         )
 
         colbert_model_path = os.path.join(model_name_or_path, 'colbert_linear.pt')
