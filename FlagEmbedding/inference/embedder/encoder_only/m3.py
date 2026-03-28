@@ -366,9 +366,12 @@ class M3Embedder(AbsEmbedder):
             return result
 
         def _process_colbert_vecs(colbert_vecs: np.ndarray, attention_mask: list):
-            # delte the vectors of padding tokens
+            # Remove padding and EOS token vectors
+            # Note: CLS is already excluded in colbert_embedding (last_hidden_state[:, 1:])
+            # tokens_num includes CLS and EOS, but colbert_vecs excludes CLS
+            # So we use tokens_num - 2 to also exclude EOS
             tokens_num = np.sum(attention_mask)
-            return colbert_vecs[:tokens_num - 1]  # we don't use the embedding of cls, so select tokens_num-1
+            return colbert_vecs[:tokens_num - 2]
 
         # tokenize without padding to get the correct length
         all_inputs = []
