@@ -111,8 +111,7 @@ class LayerWiseLLMReranker(AbsReranker):
         )
 
         if use_bf16 is False and use_fp16 is False:
-            warnings.warn("Due to model constraints, `use_bf16` and `use_fp16` cannot both be `False`. Here, `use_fp16` is set to `True` by default.", UserWarning)
-            self.use_fp16 = True
+            raise ValueError("Due to model constraints, Both use_bf16 and use_fp16 cannot be False. Please set at least one to True.")
         
         try:
             self.model = LayerWiseMiniCPMForCausalLM.from_pretrained(
