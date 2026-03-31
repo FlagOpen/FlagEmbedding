@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import Dict, List, Union, Any
+from typing import Dict, List, Union, Any, Optional
 
 import torch
 from torch import Tensor
@@ -23,6 +23,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
         kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``'m3_kd_loss'``.
+        use_mrl (bool, optional): Whether to use MRL for training. Defaults to ``False``.
+        mrl_dims (List[int], optional): The dimensions of MRL layers. Defaults to ``[]``.
         sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to ``'cls'``.
         normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to ``False``.
         unified_finetuning (bool, optional): If True, will finetune colbert vector and sparce embedding. Defaults to ``True``.
@@ -37,12 +39,16 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         temperature: float = 1,
         sub_batch_size: int = -1,
         kd_loss_type: str = 'm3_kd_loss',
+        use_mrl: bool = False,
+        mrl_dims: List[int] = [],
         sentence_pooling_method: str = 'cls',
         normalize_embeddings: bool = False,
         unified_finetuning: bool = True,
         use_self_distill: bool = False,
         self_distill_start_step: int = -1
     ):
+        if use_mrl is True:
+            raise NotImplementedError(f"use_mrl method not implemented for M3 model")
         super().__init__(
             base_model,
             tokenizer=tokenizer,
@@ -524,7 +530,9 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
                 return_dense: bool = True,
                 return_sparse: bool = False,
                 return_colbert_vecs: bool = False,
-                return_sparse_embedding: bool = False):
+                return_sparse_embedding: bool = False,
+                truncate_dim: Optional[int] = None
+                ):
         """Encode the text input using the selected way.
 
         Args:
@@ -534,6 +542,8 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             return_colbert_vecs (bool, optional): If True, return the colbert vectors. Defaults to ``False``.
             return_sparse_embedding (bool, optional): Parameter for :meth:`_sparse_embedding()`. If True, will return sparse embedding.
                 Otherwise, return the token weights. Defaults to ``False``.
+            truncate_dim (Optional[int], optional): The dimension to truncate the output embeddings to. Useful for Matryoshka
+                Representation Learning models. If None, no truncation is performed. Defaults to :data:`None`.
 
         Returns:
             dict: A dictionary containing the three types of embeddings.
@@ -549,6 +559,8 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
         output = {}
         if return_dense:
             dense_vecs = self._dense_embedding(last_hidden_state, text_input['attention_mask'])
+            if truncate_dim is not None:
+                dense_vecs = dense_vecs[..., :truncate_dim]
             output['dense_vecs'] = dense_vecs
         if return_sparse:
             sparse_vecs = self._sparse_embedding(
@@ -558,6 +570,8 @@ class EncoderOnlyEmbedderM3ModelForInference(EncoderOnlyEmbedderM3Model):
             output['sparse_vecs'] = sparse_vecs
         if return_colbert_vecs:
             colbert_vecs = self._colbert_embedding(last_hidden_state, text_input['attention_mask'])
+            if truncate_dim is not None:
+                colbert_vecs = colbert_vecs[..., :truncate_dim]
             output['colbert_vecs'] = colbert_vecs
 
         if self.normalize_embeddings:

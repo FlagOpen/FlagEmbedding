@@ -429,15 +429,12 @@ class M3Embedder(AbsEmbedder):
                 inputs_batch,
                 return_dense=return_dense,
                 return_sparse=return_sparse,
-                return_colbert_vecs=return_colbert_vecs
+                return_colbert_vecs=return_colbert_vecs,
+                truncate_dim=self.truncate_dim
             )
 
             if return_dense:
-                dense_vecs = outputs['dense_vecs']
-                dense_vecs = self._truncate_embeddings(dense_vecs)
-                if self.truncate_dim is not None and self.normalize_embeddings:
-                    dense_vecs = torch.nn.functional.normalize(dense_vecs, dim=-1)
-                all_dense_embeddings.append(self._convert_to_numpy(dense_vecs, device=device))
+                all_dense_embeddings.append(self._convert_to_numpy(outputs['dense_vecs'], device=device))
 
             if return_sparse:
                 token_weights = outputs['sparse_vecs'].squeeze(-1)

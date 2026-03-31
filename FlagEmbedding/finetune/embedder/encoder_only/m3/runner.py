@@ -133,6 +133,8 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             temperature=self.training_args.temperature,
             sub_batch_size=self.training_args.sub_batch_size,
             kd_loss_type=self.training_args.kd_loss_type,
+            use_mrl=self.training_args.use_mrl,
+            mrl_dims=self.training_args.mrl_dims,
             sentence_pooling_method=self.training_args.sentence_pooling_method,
             normalize_embeddings=self.training_args.normalize_embeddings,
             unified_finetuning=self.training_args.unified_finetuning,
@@ -169,7 +171,7 @@ class EncoderOnlyEmbedderM3Runner(AbsEmbedderRunner):
             args=self.training_args,
             train_dataset=self.train_dataset,
             data_collator=self.data_collator,
-            tokenizer=self.tokenizer
+            processing_class=self.tokenizer
         )
         if self.data_args.same_dataset_within_batch:
             trainer.add_callback(EmbedderTrainerCallbackForDataRefresh(self.train_dataset))

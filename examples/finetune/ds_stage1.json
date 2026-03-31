@@ -12,11 +12,14 @@
         "hysteresis": 2,
         "min_loss_scale": 1
     },
-    
     "bf16": {
-        "enabled": "auto"
+        "enabled": "auto",
+        "loss_scale": 0,
+        "initial_scale_power": 10,
+        "loss_scale_window": 1000,
+        "hysteresis": 2,
+        "min_loss_scale": 1
     },
-
     "optimizer": {
         "type": "AdamW",
         "params": {
