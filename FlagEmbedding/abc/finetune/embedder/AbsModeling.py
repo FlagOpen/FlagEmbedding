@@ -35,6 +35,8 @@ class AbsEmbedderModel(ABC, nn.Module):
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
         kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``"kl_div"``.
+        use_mrl (bool, optional): Whether to use MRL for training. Defaults to ``False``.
+        mrl_dims (List[int], optional): The dimensions of MRL layers. Defaults to ``[]``.
     """
     def __init__(
         self,
@@ -44,6 +46,8 @@ class AbsEmbedderModel(ABC, nn.Module):
         temperature: float = 1.0,
         sub_batch_size: int = -1,
         kd_loss_type: str = 'kl_div',
+        use_mrl: bool = False,
+        mrl_dims: List[int] = [],
     ):
         nn.Module.__init__(self)
         self.model = base_model
@@ -59,6 +63,11 @@ class AbsEmbedderModel(ABC, nn.Module):
 
         self.sub_batch_size = sub_batch_size
         self.kd_loss_type = kd_loss_type
+        
+        self.use_mrl = use_mrl
+        self.mrl_dims = mrl_dims
+        if self.use_mrl and len(self.mrl_dims) == 0:
+            raise ValueError("mrl_dims should be provided when use_mrl is True")
 
     @abstractmethod
     def encode(self, features):
@@ -251,11 +260,18 @@ class AbsEmbedderModel(ABC, nn.Module):
         """
         q_reps = self.encode(queries) # (batch_size, dim)
         p_reps = self.encode(passages) # (batch_size * group_size, dim)
+        
+        if self.use_mrl:
+            device = q_reps[0].device
+            batch_size = q_reps[0].size(0)
+        else:
+            device = q_reps.device
+            batch_size = q_reps.size(0)
 
         if self.training:
             if teacher_scores is not None:
-                teacher_scores = torch.tensor(teacher_scores, device=q_reps.device)
-                teacher_scores = teacher_scores.view(q_reps.size(0), -1).detach()   # (batch_size, group_size)
+                teacher_scores = torch.tensor(teacher_scores, device=device)
+                teacher_scores = teacher_scores.view(batch_size, -1).detach()   # (batch_size, group_size)
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
             else:
                 teacher_targets = None
@@ -268,7 +284,15 @@ class AbsEmbedderModel(ABC, nn.Module):
                 else:
                     compute_loss_func = self._compute_in_batch_neg_loss
 
-            scores, loss = compute_loss_func(q_reps, p_reps, teacher_targets=teacher_targets)
+            if self.use_mrl:
+                # compute MRL loss
+                all_loss = torch.tensor(0.0, device=device)
+                for dim_q_reps, dim_p_reps in zip(q_reps, p_reps):
+                    _, mrl_loss = compute_loss_func(dim_q_reps, dim_p_reps, teacher_targets=teacher_targets)
+                    all_loss += mrl_loss
+                loss = all_loss / len(self.mrl_dims)
+            else:
+                scores, loss = compute_loss_func(q_reps, p_reps, teacher_targets=teacher_targets)
         else:
             loss = None
 
