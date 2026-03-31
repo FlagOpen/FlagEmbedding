@@ -156,6 +156,9 @@ class AbsEvalModelArgs:
     embedder_passage_max_length: int = field(
         default=512, metadata={"help": "Max length for passage."}
     )
+    truncate_dim: Optional[int] = field(
+        default=None, metadata={"help": "The dimension to truncate embeddings to. Useful for Matryoshka Representation Learning models. If None, no truncation is performed."}
+    )
     reranker_query_max_length: Optional[int] = field(
         default=None, metadata={"help": "Max length for reranking."}
     )

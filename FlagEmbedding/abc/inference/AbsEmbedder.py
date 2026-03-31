@@ -41,6 +41,8 @@ class AbsEmbedder(ABC):
         passage_max_length (int, optional): Maximum length for passage. Defaults to :data:`512`.
         convert_to_numpy (bool, optional): If True, the output embedding will be a Numpy array. Otherwise, it will be a Torch Tensor. 
             Defaults to :data:`True`.
+        truncate_dim (Optional[int], optional): The dimension to truncate the output embeddings to. Useful for Matryoshka
+            Representation Learning models. If None, no truncation is performed. Defaults to :data:`None`.
         kwargs (Dict[Any], optional): Additional parameters for HuggingFace Transformers config or children classes.
     """
 
@@ -58,6 +60,7 @@ class AbsEmbedder(ABC):
         query_max_length: int = 512,
         passage_max_length: int = 512,
         convert_to_numpy: bool = True,
+        truncate_dim: Optional[int] = None,
         **kwargs: Any,
     ):
         self.model_name_or_path = model_name_or_path
@@ -72,6 +75,7 @@ class AbsEmbedder(ABC):
         self.query_max_length = query_max_length
         self.passage_max_length = passage_max_length
         self.convert_to_numpy = convert_to_numpy
+        self.truncate_dim = truncate_dim
 
         for k in kwargs:
             setattr(self, k, kwargs[k])
@@ -467,3 +471,21 @@ class AbsEmbedder(ABC):
         if device != "cpu" and self.use_bf16 and embeddings.dtype == torch.bfloat16:
             embeddings = embeddings.float()
         return embeddings.cpu().numpy()
+
+    def _truncate_embeddings(self, embeddings: torch.Tensor) -> torch.Tensor:
+        """Truncate the embedding vectors to the specified dimension.
+
+        This is useful for Matryoshka Representation Learning models, where
+        embeddings can be truncated to a smaller dimension without significant
+        loss of quality.
+
+        Args:
+            embeddings (torch.Tensor): The embedding tensor to truncate.
+
+        Returns:
+            torch.Tensor: The truncated embedding tensor. If :attr:`truncate_dim` is None,
+                the original embeddings are returned unchanged.
+        """
+        if self.truncate_dim is not None:
+            embeddings = embeddings[..., :self.truncate_dim]
+        return embeddings

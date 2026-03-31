@@ -32,6 +32,7 @@ class FlagAutoModel:
         pooling_method: Optional[str] = None,
         trust_remote_code: Optional[bool] = None,
         query_instruction_format: Optional[str] = None,
+        truncate_dim: Optional[int] = None,
         **kwargs,
     ):
         """
@@ -109,5 +110,6 @@ class FlagAutoModel:
             devices=devices,
             pooling_method=pooling_method,
             trust_remote_code=trust_remote_code,
+            truncate_dim=truncate_dim,
             **kwargs,
         )
