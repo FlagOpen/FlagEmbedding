@@ -58,6 +58,7 @@ class AbsEvalRunner:
             examples_instruction_format=model_args.examples_instruction_format,
             trust_remote_code=model_args.trust_remote_code,
             cache_dir=model_args.cache_dir,
+            domain_for_pseudo_moe=model_args.domain_for_pseudo_moe,
             batch_size=model_args.embedder_batch_size,
             query_max_length=model_args.embedder_query_max_length,
             passage_max_length=model_args.embedder_passage_max_length,

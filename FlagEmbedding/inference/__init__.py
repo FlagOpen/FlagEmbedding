@@ -2,7 +2,7 @@ from .auto_embedder import FlagAutoModel
 from .auto_reranker import FlagAutoReranker
 from .embedder import (
     FlagModel, BGEM3FlagModel,
-    FlagICLModel, FlagLLMModel,
+    FlagICLModel, FlagLLMModel, FlagPseudoMoEModel,
     EmbedderModelClass
 )
 from .reranker import (
@@ -21,6 +21,7 @@ __all__ = [
     "BGEM3FlagModel",
     "FlagICLModel",
     "FlagLLMModel",
+    "FlagPseudoMoEModel",
     "FlagReranker",
     "FlagLLMReranker",
     "LayerWiseFlagLLMReranker",

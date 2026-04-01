@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from collections import OrderedDict
 
 from FlagEmbedding.abc.inference import AbsEmbedder
-from FlagEmbedding.inference.embedder import FlagModel, BGEM3FlagModel, FlagLLMModel, FlagICLModel
+from FlagEmbedding.inference.embedder import FlagModel, BGEM3FlagModel, FlagLLMModel, FlagICLModel, FlagPseudoMoEModel
 
 
 class EmbedderModelClass(Enum):
@@ -12,13 +12,15 @@ class EmbedderModelClass(Enum):
     ENCODER_ONLY_M3 = "encoder-only-m3"
     DECODER_ONLY_BASE = "decoder-only-base"
     DECODER_ONLY_ICL = "decoder-only-icl"
+    DECODER_ONLY_PSEUDO_MOE = "decoder-only-pseudo_moe"
 
 
 EMBEDDER_CLASS_MAPPING = OrderedDict([
     (EmbedderModelClass.ENCODER_ONLY_BASE, FlagModel),
     (EmbedderModelClass.ENCODER_ONLY_M3, BGEM3FlagModel),
     (EmbedderModelClass.DECODER_ONLY_BASE, FlagLLMModel),
-    (EmbedderModelClass.DECODER_ONLY_ICL, FlagICLModel)
+    (EmbedderModelClass.DECODER_ONLY_ICL, FlagICLModel),
+    (EmbedderModelClass.DECODER_ONLY_PSEUDO_MOE, FlagPseudoMoEModel)
 ])
 
 
