@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, List
 from dataclasses import dataclass, field
 
 from transformers import TrainingArguments
@@ -139,3 +139,5 @@ class AbsEmbedderTrainingArguments(TrainingArguments):
     normalize_embeddings: bool = field(default=True, metadata={"help": "whether to normalize the embeddings"})
     sub_batch_size: Optional[int] = field(default=None, metadata={"help": "sub batch size for training"})
     kd_loss_type: str = field(default='kl_div', metadata={"help": "the loss type for knowledge distillation. Available options: kl_div, m3_kd_loss. Default: kl_div.", "choices": ['kl_div', 'm3_kd_loss']})
+    use_mrl: bool = field(default=False, metadata={"help": "whether to use MRL for training"})
+    mrl_dims: List[int] = field(default_factory=lambda: [], metadata={"help": "the dimensions of MRL layers"})

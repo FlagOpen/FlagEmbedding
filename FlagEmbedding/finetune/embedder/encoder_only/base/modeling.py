@@ -1,4 +1,5 @@
 import logging
+from typing import List
 
 import torch
 from transformers import AutoModel, PreTrainedModel, PreTrainedTokenizer
@@ -19,6 +20,8 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
         sub_batch_size (int, optional): Sub-batch size during encoding. If negative, will not split to sub-batch.
             Defaults to ``-1``.
         kd_loss_type (str, optional): Type of knowledge distillation loss. Defaults to ``"kl_div"``.
+        use_mrl (bool, optional): Whether to use MRL for training. Defaults to ``False``.
+        mrl_dims (List[int], optional): The dimensions of MRL layers. Defaults to ``[]``.
         sentence_pooling_method (str, optional): Pooling method to get sentence embedding. Defaults to ``'cls'``.
         normalize_embeddings (bool, optional): If True, normalize the embedding vector. Defaults to ``False``.
     """
@@ -32,6 +35,8 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
         temperature: float = 1.0,
         sub_batch_size: int = -1,
         kd_loss_type: str = 'kl_div',
+        use_mrl: bool = False,
+        mrl_dims: List[int] = [],
         sentence_pooling_method: str = 'cls',
         normalize_embeddings: bool = False,
     ):
@@ -42,6 +47,8 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
             temperature=temperature,
             sub_batch_size=sub_batch_size,
             kd_loss_type=kd_loss_type,
+            use_mrl=use_mrl,
+            mrl_dims=mrl_dims,
         )
         self.sentence_pooling_method = sentence_pooling_method
         self.normalize_embeddings = normalize_embeddings
@@ -54,7 +61,7 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
             features (Union[list, dict]): Features feed to the model.
 
         Returns:
-            torch.Tensor: The embedding vectors.
+            Union[torch.Tensor, List[torch.Tensor]]: The embedding vectors or a list of embedding vectors if MRL is used.
         """
         if features is None:
             return None
@@ -70,15 +77,9 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
                     p_reps = self._sentence_embedding(last_hidden_state, sub_features['attention_mask'])
                     all_p_reps.append(p_reps)
                 all_p_reps = torch.cat(all_p_reps, 0).contiguous()
-                if self.normalize_embeddings:
-                    all_p_reps = torch.nn.functional.normalize(all_p_reps, dim=-1)
-                return all_p_reps.contiguous()
             else:
                 last_hidden_state = self.model(**features, return_dict=True).last_hidden_state
                 all_p_reps = self._sentence_embedding(last_hidden_state, features['attention_mask'])
-                if self.normalize_embeddings:
-                    all_p_reps = torch.nn.functional.normalize(all_p_reps, dim=-1)
-                return all_p_reps.contiguous()
         else:
             all_p_reps = []
             for sub_features in features:
@@ -86,6 +87,20 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
                 p_reps = self._sentence_embedding(last_hidden_state, sub_features['attention_mask'])
                 all_p_reps.append(p_reps)
             all_p_reps = torch.cat(all_p_reps, 0).contiguous()
+            
+        if self.use_mrl:
+            p_reps_list = []
+            ori_dim = all_p_reps.size(-1)
+            for dim in self.mrl_dims:
+                if dim > ori_dim:
+                    logger.warning(f"MRL dim {dim} is larger than original dimension {ori_dim}, using original dimension instead.")
+                dim = min(dim, ori_dim)
+                dim_p_reps = all_p_reps[:, :dim]
+                if self.normalize_embeddings:
+                    dim_p_reps = torch.nn.functional.normalize(dim_p_reps, dim=-1)
+                p_reps_list.append(dim_p_reps.contiguous())
+            return p_reps_list
+        else:
             if self.normalize_embeddings:
                 all_p_reps = torch.nn.functional.normalize(all_p_reps, dim=-1)
             return all_p_reps.contiguous()

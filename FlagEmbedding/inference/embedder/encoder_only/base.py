@@ -55,6 +55,7 @@ class BaseEmbedder(AbsEmbedder):
         query_max_length: int = 512,
         passage_max_length: int = 512,
         convert_to_numpy: bool = True,
+        truncate_dim: Optional[int] = None,
         **kwargs: Any,
     ):
         super().__init__(
@@ -69,6 +70,7 @@ class BaseEmbedder(AbsEmbedder):
             query_max_length=query_max_length,
             passage_max_length=passage_max_length,
             convert_to_numpy=convert_to_numpy,
+            truncate_dim=truncate_dim,
             **kwargs
         )
         self.pooling_method = pooling_method
@@ -257,6 +259,7 @@ class BaseEmbedder(AbsEmbedder):
             ).to(device)
             last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
             embeddings = self.pooling(last_hidden_state, inputs_batch['attention_mask'])
+            embeddings = self._truncate_embeddings(embeddings)
             if self.normalize_embeddings:
                 embeddings = torch.nn.functional.normalize(embeddings, dim=-1)
             embeddings = cast(torch.Tensor, embeddings)

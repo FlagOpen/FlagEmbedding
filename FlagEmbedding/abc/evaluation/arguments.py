@@ -92,8 +92,8 @@ class AbsEvalModelArgs:
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
     )
-    pooling_method: str = field(
-        default="cls", metadata={"help": "The pooling method fot the embedder."}
+    pooling_method: Optional[str] = field(
+        default=None, metadata={"help": "The pooling method fot the embedder."}
     )
     use_fp16: bool = field(
         default=True, metadata={"help": "whether to use fp16 for inference"}
@@ -155,6 +155,9 @@ class AbsEvalModelArgs:
     )
     embedder_passage_max_length: int = field(
         default=512, metadata={"help": "Max length for passage."}
+    )
+    truncate_dim: Optional[int] = field(
+        default=None, metadata={"help": "The dimension to truncate embeddings to. Useful for Matryoshka Representation Learning models. If None, no truncation is performed."}
     )
     reranker_query_max_length: Optional[int] = field(
         default=None, metadata={"help": "Max length for reranking."}

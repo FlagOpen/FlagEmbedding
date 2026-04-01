@@ -68,6 +68,7 @@ class M3Embedder(AbsEmbedder):
         return_dense: bool = True,
         return_sparse: bool = False,
         return_colbert_vecs: bool = False,
+        truncate_dim: Optional[int] = None,
         **kwargs: Any,
     ):
         super().__init__(
@@ -84,6 +85,7 @@ class M3Embedder(AbsEmbedder):
             return_dense=return_dense,
             return_sparse=return_sparse,
             return_colbert_vecs=return_colbert_vecs,
+            truncate_dim=truncate_dim,
             **kwargs
         )
         self.pooling_method = pooling_method
@@ -427,7 +429,8 @@ class M3Embedder(AbsEmbedder):
                 inputs_batch,
                 return_dense=return_dense,
                 return_sparse=return_sparse,
-                return_colbert_vecs=return_colbert_vecs
+                return_colbert_vecs=return_colbert_vecs,
+                truncate_dim=self.truncate_dim
             )
 
             if return_dense:

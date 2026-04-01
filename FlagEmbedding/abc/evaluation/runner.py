@@ -61,6 +61,7 @@ class AbsEvalRunner:
             batch_size=model_args.embedder_batch_size,
             query_max_length=model_args.embedder_query_max_length,
             passage_max_length=model_args.embedder_passage_max_length,
+            truncate_dim=model_args.truncate_dim,
         )
         embedder.model.config._name_or_path = model_args.embedder_name_or_path
         reranker = None
