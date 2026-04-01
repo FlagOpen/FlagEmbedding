@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
-from FlagEmbedding.inference.reranker.decoder_only.base import DatasetForReranker, Collater
+from FlagEmbedding.inference.reranker.decoder_only.base import DatasetForReranker, Collater, prepare_for_model_compat
 
 from .models.modeling_minicpm_reranker import LayerWiseMiniCPMForCausalLM
 
@@ -252,14 +252,11 @@ class LayerWiseLLMReranker(AbsReranker):
                     all_queries_inputs_sorted[:min(len(all_queries_inputs_sorted), batch_size)], 
                     all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
                 ):
-                    item = self.tokenizer.prepare_for_model(
+                    item = prepare_for_model_compat(
+                        self.tokenizer,
                         [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
                         sep_inputs + passage_inputs['input_ids'],
-                        truncation='only_second',
                         max_length=encode_max_length,
-                        padding=False,
-                        return_attention_mask=False,
-                        return_token_type_ids=False,
                         add_special_tokens=False
                     )
                     item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
@@ -329,14 +326,11 @@ class LayerWiseLLMReranker(AbsReranker):
 
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(queries_inputs, passages_inputs):
-                    item = self.tokenizer.prepare_for_model(
+                    item = prepare_for_model_compat(
+                        self.tokenizer,
                         [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
                         sep_inputs + passage_inputs['input_ids'],
-                        truncation='only_second',
                         max_length=encode_max_length,
-                        padding=False,
-                        return_attention_mask=False,
-                        return_token_type_ids=False,
                         add_special_tokens=False
                     )
                     item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs

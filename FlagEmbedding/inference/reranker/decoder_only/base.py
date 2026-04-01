@@ -11,6 +11,33 @@ from torch.utils.data import Dataset, DataLoader
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
 
+def prepare_for_model_compat(
+    tokenizer,
+    first_ids: List[int],
+    second_ids: List[int],
+    max_length: Optional[int],
+    add_special_tokens: bool = False
+) -> dict:
+    if not add_special_tokens:
+        if max_length is not None:
+            max_second_len = max_length - len(first_ids)
+            second_ids = second_ids[:max(0, max_second_len)]
+        return {"input_ids": first_ids + second_ids}
+
+    query_text = tokenizer.decode(first_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+    doc_text = tokenizer.decode(second_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+    want_tti = "token_type_ids" in getattr(tokenizer, "model_input_names", [])
+    return tokenizer(
+        query_text,
+        doc_text,
+        truncation='only_second',
+        max_length=max_length,
+        padding=False,
+        return_attention_mask=False,
+        return_token_type_ids=want_tti,
+        add_special_tokens=add_special_tokens
+    )
+
 
 def last_logit_pool(logits: Tensor,
                     attention_mask: Tensor) -> Tensor:
@@ -89,25 +116,19 @@ class DatasetForReranker(Dataset):
         query_inputs = self.all_queries_inputs[item]
         passage_inputs = self.all_passages_inputs[item]
         if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
-            item = self.tokenizer.prepare_for_model(
+            item = prepare_for_model_compat(
+                self.tokenizer,
                 [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
                 self.sep_inputs + passage_inputs['input_ids'],
-                truncation='only_second',
                 max_length=self.encode_max_length,
-                padding=False,
-                return_attention_mask=False,
-                return_token_type_ids=False,
                 add_special_tokens=False
             )
         else:
-            item = self.tokenizer.prepare_for_model(
+            item = prepare_for_model_compat(
+                self.tokenizer,
                 query_inputs['input_ids'],
                 self.sep_inputs + passage_inputs['input_ids'],
-                truncation='only_second',
                 max_length=self.encode_max_length,
-                padding=False,
-                return_attention_mask=False,
-                return_token_type_ids=False,
                 add_special_tokens=False
             )
         item['input_ids'] = item['input_ids'] + self.sep_inputs + self.prompt_inputs
@@ -371,25 +392,19 @@ class BaseLLMReranker(AbsReranker):
                     all_passages_inputs_sorted[:min(len(all_passages_inputs_sorted), batch_size)]
                 ):
                     if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
-                        item = self.tokenizer.prepare_for_model(
+                        item = prepare_for_model_compat(
+                            self.tokenizer,
                             [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
                             sep_inputs + passage_inputs['input_ids'],
-                            truncation='only_second',
                             max_length=encode_max_length,
-                            padding=False,
-                            return_attention_mask=False,
-                            return_token_type_ids=False,
                             add_special_tokens=False
                         )
                     else:
-                        item = self.tokenizer.prepare_for_model(
+                        item = prepare_for_model_compat(
+                            self.tokenizer,
                             query_inputs['input_ids'],
                             sep_inputs + passage_inputs['input_ids'],
-                            truncation='only_second',
                             max_length=encode_max_length,
-                            padding=False,
-                            return_attention_mask=False,
-                            return_token_type_ids=False,
                             add_special_tokens=False
                         )
                     item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
@@ -452,25 +467,19 @@ class BaseLLMReranker(AbsReranker):
                 batch_inputs = []
                 for query_inputs, passage_inputs in zip(queries_inputs, passages_inputs):
                     if self.tokenizer.bos_token_id is not None and self.tokenizer.bos_token_id != self.tokenizer.pad_token_id:
-                        item = self.tokenizer.prepare_for_model(
+                        item = prepare_for_model_compat(
+                            self.tokenizer,
                             [self.tokenizer.bos_token_id] + query_inputs['input_ids'],
                             sep_inputs + passage_inputs['input_ids'],
-                            truncation='only_second',
                             max_length=encode_max_length,
-                            padding=False,
-                            return_attention_mask=False,
-                            return_token_type_ids=False,
                             add_special_tokens=False
                         )
                     else:
-                        item = self.tokenizer.prepare_for_model(
+                        item = prepare_for_model_compat(
+                            self.tokenizer,
                             query_inputs['input_ids'],
                             sep_inputs + passage_inputs['input_ids'],
-                            truncation='only_second',
                             max_length=encode_max_length,
-                            padding=False,
-                            return_attention_mask=False,
-                            return_token_type_ids=False,
                             add_special_tokens=False
                         )
                     item['input_ids'] = item['input_ids'] + sep_inputs + prompt_inputs
