@@ -5,7 +5,7 @@ from transformers import HfArgumentParser
 
 from arguments import COIREvalArgs, COIREvalModelArgs
 from prompts import get_task_def_by_task_name
-from FlagEmbedding import FlagLLMModel, FlagModel
+from FlagEmbedding import FlagLLMModel, FlagModel, FlagPseudoMoEModel
 
 
 def get_model(model_args: COIREvalModelArgs):
@@ -44,6 +44,25 @@ def get_model(model_args: COIREvalModelArgs):
             batch_size=model_args.embedder_batch_size,
             query_max_length=model_args.embedder_query_max_length,
             passage_max_length=model_args.embedder_passage_max_length,
+        )
+    elif model_args.embedder_model_class == "decoder-only-pseudo_moe":
+        embedder = FlagPseudoMoEModel(
+            model_name_or_path=embedder_name_or_path,
+            normalize_embeddings=model_args.normalize_embeddings,
+            pooling_method=model_args.pooling_method,
+            use_fp16=model_args.use_fp16,
+            use_bf16=model_args.use_bf16,
+            query_instruction_for_retrieval=model_args.query_instruction_for_retrieval,
+            query_instruction_format=model_args.query_instruction_format_for_retrieval,
+            devices=model_args.devices,
+            examples_for_task=model_args.examples_for_task,
+            examples_instruction_format=model_args.examples_instruction_format,
+            trust_remote_code=model_args.trust_remote_code,
+            cache_dir=model_args.cache_dir,
+            batch_size=model_args.embedder_batch_size,
+            query_max_length=model_args.embedder_query_max_length,
+            passage_max_length=model_args.embedder_passage_max_length,
+            domain_for_pseudo_moe=model_args.domain_for_pseudo_moe,
         )
     else:
         raise ValueError(f"Invalid model class: {model_args.embedder_model_class}")
