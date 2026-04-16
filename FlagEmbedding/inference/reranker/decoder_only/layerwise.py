@@ -179,7 +179,8 @@ class LayerWiseLLMReranker(AbsReranker):
             device = self.target_devices[0]
 
         if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
+        if self.use_fp16 and next(self.model.parameters()).dtype != torch.float16:
+            self.model.half()
 
         self.model.to(device)
         self.model.eval()
