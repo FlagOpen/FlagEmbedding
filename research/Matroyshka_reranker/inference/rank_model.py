@@ -146,7 +146,9 @@ class MatroyshkaReranker(AbsReranker):
             for p in peft_path:
                 self.model = PeftModel.from_pretrained(self.model, p)
                 self.model = self.model.merge_and_unload()
-    
+        if self.use_fp16 and not all(d == "cpu" for d in self.target_devices):
+            self.model.half()
+
     @torch.no_grad()
     def compute_score_single_gpu(
         self,
@@ -201,9 +203,6 @@ class MatroyshkaReranker(AbsReranker):
 
         if device is None:
             device = self.target_devices[0]
-
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
 
         self.model.to(device)
         self.model.eval()

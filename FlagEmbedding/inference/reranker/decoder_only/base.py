@@ -250,6 +250,8 @@ class BaseLLMReranker(AbsReranker):
         if peft_path:
             self.model = PeftModel.from_pretrained(self.model, peft_path)
             self.model = self.model.merge_and_unload()
+        if self.use_fp16 and not all(d == "cpu" for d in self.target_devices):
+            self.model.half()
 
         self.yes_loc = self.tokenizer('Yes', add_special_tokens=False)['input_ids'][0]
 
@@ -296,16 +298,13 @@ class BaseLLMReranker(AbsReranker):
         if device is None:
             device = self.target_devices[0]
 
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
-
         self.model.to(device)
         self.model.eval()
 
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-        
+
         # tokenize without padding to get the correct length
         all_queries_inputs = []
         all_passages_inputs = []

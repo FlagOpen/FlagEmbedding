@@ -69,10 +69,12 @@ class BaseReranker(AbsReranker):
             cache_dir=cache_dir
         )
         self.model = AutoModelForSequenceClassification.from_pretrained(
-            model_name_or_path, 
-            trust_remote_code=trust_remote_code, 
+            model_name_or_path,
+            trust_remote_code=trust_remote_code,
             cache_dir=cache_dir
         )
+        if self.use_fp16 and not all(d == "cpu" for d in self.target_devices):
+            self.model.half()
 
     @torch.no_grad()
     def compute_score_single_gpu(
@@ -110,16 +112,13 @@ class BaseReranker(AbsReranker):
         if device is None:
             device = self.target_devices[0]
 
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16: self.model.half()
-
         self.model.to(device)
         self.model.eval()
 
         assert isinstance(sentence_pairs, list)
         if isinstance(sentence_pairs[0], str):
             sentence_pairs = [sentence_pairs]
-        
+
         # tokenize without padding to get the correct length
         all_inputs = []
         for start_index in trange(0, len(sentence_pairs), batch_size, desc="pre tokenize",
