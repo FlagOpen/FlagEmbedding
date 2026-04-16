@@ -110,8 +110,8 @@ class BaseReranker(AbsReranker):
         if device is None:
             device = self.target_devices[0]
 
-        if device == "cpu": self.use_fp16 = False
-        if self.use_fp16 and next(self.model.parameters()).dtype != torch.float16:
+        use_fp16 = self.use_fp16 and device != "cpu"
+        if use_fp16 and next(self.model.parameters()).dtype != torch.float16:
             self.model.half()
 
         self.model.to(device)
