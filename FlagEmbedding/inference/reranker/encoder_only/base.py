@@ -74,6 +74,38 @@ class BaseReranker(AbsReranker):
             cache_dir=cache_dir
         )
 
+    def _prepare_pair_inputs(
+        self,
+        q_inp: List[int],
+        d_inp: List[int],
+        max_length: int
+    ) -> dict:
+        """Build model inputs for a tokenized pair with v4/v5 tokenizer compatibility."""
+        prepare_for_model = getattr(self.tokenizer, "prepare_for_model", None)
+        if callable(prepare_for_model):
+            return prepare_for_model(
+                q_inp,
+                d_inp,
+                truncation='only_second',
+                max_length=max_length,
+                padding=False,
+            )
+
+        # v5 tokenizers may not expose id-level pair builders.
+        query_text = self.tokenizer.decode(q_inp, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        doc_text = self.tokenizer.decode(d_inp, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+        want_tti = "token_type_ids" in getattr(self.tokenizer, "model_input_names", [])
+        return self.tokenizer(
+            query_text,
+            doc_text,
+            truncation='only_second',
+            max_length=max_length,
+            padding=False,
+            return_attention_mask=False,
+            return_token_type_ids=want_tti,
+            add_special_tokens=True,
+        )
+
     @torch.no_grad()
     def compute_score_single_gpu(
         self,
@@ -144,13 +176,7 @@ class BaseReranker(AbsReranker):
                 **kwargs
             )['input_ids']
             for q_inp, d_inp in zip(queries_inputs_batch, passages_inputs_batch):
-                item = self.tokenizer.prepare_for_model(
-                    q_inp,
-                    d_inp,
-                    truncation='only_second',
-                    max_length=max_length,
-                    padding=False,
-                )
+                item = self._prepare_pair_inputs(q_inp, d_inp, max_length=max_length)
                 all_inputs.append(item)
         # sort by length for less padding
         length_sorted_idx = np.argsort([-len(x['input_ids']) for x in all_inputs])
