@@ -87,7 +87,7 @@ class AbsEvalModelArgs:
         metadata={"help": "The embedder name or path.", "required": True}
     )
     embedder_model_class: Optional[str] = field(
-        default=None, metadata={"help": "The embedder model class. Available classes: ['encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl']. Default: None. For the custom model, you need to specifiy the model class.", "choices": ["encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl"]}
+        default=None, metadata={"help": "The embedder model class. Available classes: ['encoder-only-base', 'encoder-only-m3', 'decoder-only-base', 'decoder-only-icl', 'decoder-only-pseudo_moe']. Default: None. For the custom model, you need to specifiy the model class.", "choices": ["encoder-only-base", "encoder-only-m3", "decoder-only-base", "decoder-only-icl", "decoder-only-pseudo_moe"]}
     )
     normalize_embeddings: bool = field(
         default=True, metadata={"help": "whether to normalize the embeddings"}
@@ -142,6 +142,9 @@ class AbsEvalModelArgs:
     )
     cache_dir: str = field(
         default=None, metadata={"help": "Cache directory for models."}
+    )
+    domain_for_pseudo_moe: Optional[str] = field(
+        default=None, metadata={"help": "Domain used by decoder-only-pseudo_moe model, e.g. general/coding/reasoning."}
     )
     # ================ for inference ===============
     embedder_batch_size: int = field(
