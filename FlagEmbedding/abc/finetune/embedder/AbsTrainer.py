@@ -2,6 +2,8 @@ import logging
 from typing import Optional
 from abc import ABC, abstractmethod
 from transformers.trainer import Trainer
+from sentence_transformers import SentenceTransformer, models
+# from transformers.trainer import *
 
 logger = logging.getLogger(__name__)
 
@@ -35,3 +37,14 @@ class AbsEmbedderTrainer(ABC, Trainer):
         loss = outputs.loss
 
         return (loss, outputs) if return_outputs else loss
+
+    @staticmethod
+    def save_ckpt_for_sentence_transformers(ckpt_dir, pooling_mode: str = 'cls', normalized: bool = True):
+        word_embedding_model = models.Transformer(ckpt_dir)
+        pooling_model = models.Pooling(word_embedding_model.get_word_embedding_dimension(), pooling_mode=pooling_mode)
+        if normalized:
+            normalize_layer = models.Normalize()
+            model = SentenceTransformer(modules=[word_embedding_model, pooling_model, normalize_layer], device='cpu')
+        else:
+            model = SentenceTransformer(modules=[word_embedding_model, pooling_model], device='cpu')
+        model.save(ckpt_dir)
