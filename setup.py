@@ -19,7 +19,7 @@ setup(
         'datasets>=2.19.0',
         'accelerate>=0.20.1',
         'sentence_transformers',
-        'peft',
+        'peft>=0.11.0,<0.18.0',
         'ir-datasets',
         'sentencepiece',
         'protobuf'
