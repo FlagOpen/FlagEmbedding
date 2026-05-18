@@ -27,6 +27,15 @@ def test_import_modeling_minicpm_reranker_inference():
     assert LayerWiseMiniCPMForCausalLM is not None
 
 
+def test_import_gemma_model_inference():
+    """Test importing the Gemma reranker model module from inference."""
+    from FlagEmbedding.inference.reranker.decoder_only.models.gemma_model import (
+        CostWiseGemmaForCausalLM,
+    )
+
+    assert CostWiseGemmaForCausalLM is not None
+
+
 def test_import_modeling_minicpm_reranker_finetune():
     """Test importing the modeling_minicpm_reranker module from finetune."""
     from FlagEmbedding.finetune.reranker.decoder_only.layerwise.modeling_minicpm_reranker import (

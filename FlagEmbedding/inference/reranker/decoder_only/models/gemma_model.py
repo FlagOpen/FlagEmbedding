@@ -53,8 +53,13 @@ from transformers.utils import (
 )
 from .gemma_config import CostWiseGemmaConfig
 from transformers.models.gemma2.modeling_gemma2 import Gemma2RMSNorm, Gemma2RotaryEmbedding, rotate_half, apply_rotary_pos_emb
-from transformers.models.gemma2.modeling_gemma2 import Gemma2MLP, repeat_kv, Gemma2Attention, Gemma2DecoderLayer, GEMMA2_START_DOCSTRING
-from transformers.models.gemma2.modeling_gemma2 import GEMMA2_INPUTS_DOCSTRING
+from transformers.models.gemma2.modeling_gemma2 import Gemma2MLP, repeat_kv, Gemma2Attention, Gemma2DecoderLayer
+
+try:
+    from transformers.models.gemma2.modeling_gemma2 import GEMMA2_START_DOCSTRING, GEMMA2_INPUTS_DOCSTRING
+except ImportError:
+    GEMMA2_START_DOCSTRING = ""
+    GEMMA2_INPUTS_DOCSTRING = ""
 
 if is_flash_attn_2_available():
     from flash_attn import flash_attn_func, flash_attn_varlen_func
