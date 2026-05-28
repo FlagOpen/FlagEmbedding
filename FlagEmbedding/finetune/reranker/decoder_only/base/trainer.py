@@ -35,8 +35,13 @@ class DecoderOnlyRerankerTrainer(AbsRerankerTrainer):
         else:
             self.model.save(output_dir)
             
-        if self.tokenizer is not None and self.is_world_process_zero():
-            self.tokenizer.save_pretrained(output_dir)
+        processor = getattr(self, "tokenizer", None)
+
+        if processor is None:
+            processor = getattr(self, "processing_class", None)
+
+        if processor is not None and self.is_world_process_zero():
+            processor.save_pretrained(output_dir)
 
         torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
 

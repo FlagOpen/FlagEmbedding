@@ -12,6 +12,7 @@ class DecoderOnlyEmbedderICLTrainer(AbsEmbedderTrainer):
     """
     Trainer class for base encoder models.
     """
+
     def _save(self, output_dir: Optional[str] = None, state_dict=None):
         """Save the model to directory.
 
@@ -26,15 +27,20 @@ class DecoderOnlyEmbedderICLTrainer(AbsEmbedderTrainer):
         logger.info("Saving model checkpoint to %s", output_dir)
         # Save a trained model and configuration using `save_pretrained()`.
         # They can then be reloaded using `from_pretrained()`
-        if not hasattr(self.model, 'save'):
+        if not hasattr(self.model, "save"):
             raise NotImplementedError(
-                f'MODEL {self.model.__class__.__name__} '
-                f'does not support save interface')
+                f"MODEL {self.model.__class__.__name__} does not support save interface"
+            )
         else:
             self.model.save(output_dir)
 
-        if self.tokenizer is not None and self.is_world_process_zero():
-            self.tokenizer.save_pretrained(output_dir)
+        processor = getattr(self, "tokenizer", None)
+
+        if processor is None:
+            processor = getattr(self, "processing_class", None)
+
+        if processor is not None and self.is_world_process_zero():
+            processor.save_pretrained(output_dir)
 
         torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
 
