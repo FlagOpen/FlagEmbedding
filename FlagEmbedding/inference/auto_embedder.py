@@ -95,8 +95,18 @@ class FlagAutoModel:
             _model_class = model_config.model_class
             if pooling_method is None:
                 pooling_method = model_config.pooling_method.value
+            # Never enable trust_remote_code from a basename-only registry match.
+            # Basename collisions (local dirs / arbitrary Hub repos) must not
+            # silently execute remote code (#1579). Callers opt in explicitly.
             if trust_remote_code is None:
-                trust_remote_code = model_config.trust_remote_code
+                trust_remote_code = False
+                if model_config.trust_remote_code:
+                    logger.warning(
+                        "`trust_remote_code` defaults to False for security; "
+                        "pass trust_remote_code=True explicitly if this model "
+                        "requires custom code (registry basename match alone "
+                        "is not sufficient)."
+                    )
             if query_instruction_format is None:
                 query_instruction_format = model_config.query_instruction_format
 
