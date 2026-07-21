@@ -8,7 +8,7 @@ Reranker
 Reranker, or Cross-Encoder, is a model that refines the ranking of candidate pairs (e.g., query-document pairs) by jointly encoding and scoring them.
 
 Typically, we use embedder as a Bi-Encoder. It first computes the embeddings of two input sentences, then compute their similarity using metrics such as cosine similarity or Euclidean distance.
-Whereas a reranker takes two sentences at the same time and directly computer a score representing their similarity.
+Whereas a reranker takes two sentences at the same time and directly computes a score representing their similarity.
 
 The following figure shows their difference:
 
