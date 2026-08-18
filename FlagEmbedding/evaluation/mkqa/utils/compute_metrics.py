@@ -77,7 +77,8 @@ def evaluate_qa_recall(ctxs, answers, k_values: Union[int, List[int]]=100):
 
     scores = map(get_score_partial, data)
 
-    n_docs = len(data[0]['ctxs'])
+    # Retrieval depth can vary by query, so size the buckets to the deepest result list.
+    n_docs = max(len(example['ctxs']) for example in data)
     top_k_hits = [0] * n_docs
     for question_hits in scores:
         best_hit = next((i for i, x in enumerate(question_hits) if x), None)
