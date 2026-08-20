@@ -1,11 +1,11 @@
-import os
 import logging
-from typing import Union, Optional
+from typing import Optional, Union
 
+from FlagEmbedding.inference._model_mapping import resolve_model_name
 from FlagEmbedding.inference.reranker.model_mapping import (
-    RerankerModelClass,
+    AUTO_RERANKER_MAPPING,
     RERANKER_CLASS_MAPPING,
-    AUTO_RERANKER_MAPPING
+    RerankerModelClass,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,10 +46,6 @@ class FlagAutoReranker:
         Returns:
             AbsReranker: The reranker class to load model, which is child class of :class:`AbsReranker`.
         """
-        model_name = os.path.basename(model_name_or_path)
-        if model_name.startswith("checkpoint-"):
-            model_name = os.path.basename(os.path.dirname(model_name_or_path))
-
         if model_class is not None:
             _model_class = RERANKER_CLASS_MAPPING[RerankerModelClass(model_class)]
             if trust_remote_code is None:
@@ -58,6 +54,7 @@ class FlagAutoReranker:
                     f"`trust_remote_code` is not specified, set to default value '{trust_remote_code}'."
                 )
         else:
+            model_name = resolve_model_name(model_name_or_path, AUTO_RERANKER_MAPPING)
             if model_name not in AUTO_RERANKER_MAPPING:
                 raise ValueError(
                     f"Model name '{model_name}' not found in the model mapping. You can pull request to add the model to "

@@ -1,10 +1,11 @@
-import os
 import logging
-from typing import List, Union, Optional
+from typing import List, Optional, Union
 
+from FlagEmbedding.inference._model_mapping import resolve_model_name
 from FlagEmbedding.inference.embedder.model_mapping import (
+    AUTO_EMBEDDER_MAPPING,
+    EMBEDDER_CLASS_MAPPING,
     EmbedderModelClass,
-    AUTO_EMBEDDER_MAPPING, EMBEDDER_CLASS_MAPPING
 )
 
 logger = logging.getLogger(__name__)
@@ -59,10 +60,6 @@ class FlagAutoModel:
         Returns:
             AbsEmbedder: The model class to load model, which is child class of :class:`AbsEmbedder`.
         """
-        model_name = os.path.basename(model_name_or_path)
-        if model_name.startswith("checkpoint-"):
-            model_name = os.path.basename(os.path.dirname(model_name_or_path))
-
         if model_class is not None:
             _model_class = EMBEDDER_CLASS_MAPPING[EmbedderModelClass(model_class)]
             if pooling_method is None:
@@ -81,6 +78,7 @@ class FlagAutoModel:
                     f"`query_instruction_format` is not specified, set to default value '{query_instruction_format}'."
                 )
         else:
+            model_name = resolve_model_name(model_name_or_path, AUTO_EMBEDDER_MAPPING)
             if model_name not in AUTO_EMBEDDER_MAPPING:
                 raise ValueError(
                     f"Model name '{model_name}' not found in the model mapping. You can pull request to add the model to "
