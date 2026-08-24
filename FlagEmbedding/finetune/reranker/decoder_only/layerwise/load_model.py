@@ -1,8 +1,9 @@
 import os
 import re
 import logging
+import torch
 from torch import nn
-from transformers import AutoConfig, AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoConfig, AutoTokenizer
 from peft import LoraConfig, TaskType, get_peft_model, PeftModel
 
 from FlagEmbedding.finetune.reranker.decoder_only.layerwise.arguments import RerankerModelArguments
@@ -38,11 +39,14 @@ def find_largest_checkpoint(checkpoint_dir):
         return None
 
 
-def get_model(model_args: RerankerModelArguments, only_for_one_logit):
+def get_model(model_args: RerankerModelArguments, only_for_one_logit, training_args):
     """Get the model.
 
     Args:
         model_args (RerankerModelArguments): Model arguments instance.
+        only_for_one_logit: Index of the logit to keep when the classifier head is not multi-head.
+        training_args: Training arguments instance, used to pick the torch dtype (fp16/bf16) the
+            model weights are loaded in.
 
     Returns:
         transformers.PreTrainedModel or PeftModel: The loaded model.
@@ -76,7 +80,7 @@ def get_model(model_args: RerankerModelArguments, only_for_one_logit):
         model = LayerWiseMiniCPMForCausalLM.from_pretrained(
             model_args.model_name_or_path,
             trust_remote_code=model_args.trust_remote_code,
-            # torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
             attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
@@ -130,7 +134,7 @@ def get_model(model_args: RerankerModelArguments, only_for_one_logit):
 
         model = LayerWiseMiniCPMForCausalLM.from_pretrained(
             model_args.model_name_or_path,
-            # torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
+            torch_dtype=torch.float16 if training_args.fp16 else torch.bfloat16,
             attn_implementation = "flash_attention_2" if model_args.use_flash_attn else None,
             token=model_args.token,
             cache_dir=model_args.cache_dir,
