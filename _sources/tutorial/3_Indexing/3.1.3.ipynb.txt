@@ -1,0 +1,417 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Faiss Indexes"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This tutorial will go through several widely used indexes in Faiss that fits different requirements, and how to use them."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Preparation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "For CPU usage, use:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%pip install faiss-cpu"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "For GPU on Linux x86_64 system, use Conda:\n",
+    "\n",
+    "```conda install -c pytorch -c nvidia faiss-gpu=1.8.0```"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import faiss\n",
+    "import numpy as np\n",
+    "\n",
+    "np.random.seed(768)\n",
+    "\n",
+    "data = np.random.random((1000, 128))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. `IndexFlat*`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Flat index is the very fundamental index structure. It does not do any preprocess for the incoming vectors. All the vectors are stored directly without compression or quantization. Thus no training is need for flat indexes.\n",
+    "\n",
+    "When searching, Flat index will decode all the vectors sequentially and compute the similarity score to the query vectors. Thus, Flat Index guarantees the global optimum of results."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Flat index family is small: just `IndexFlatL2` and `IndexFlatIP`, which are just different by the similarity metrics of Euclidean distance and inner product."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Usage:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "d = 128  # dimension of the vector\n",
+    "k = 3    # number of nearest neighbors to search\n",
+    "\n",
+    "# just simply create the index and add all the data\n",
+    "index = faiss.IndexFlatL2(d)\n",
+    "index.add(data)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Sanity check:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "closest elements: [[  0 471 188]]\n",
+      "distance: [[ 0.       16.257435 16.658928]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# search for the k nearest neighbor for the first element in data\n",
+    "D, I = index.search(data[:1], k)\n",
+    "\n",
+    "print(f\"closest elements: {I}\")\n",
+    "print(f\"distance: {D}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Flat Indexes guarantee the perfect quality but with terrible speed. It works well on small datasets or the cases that speed is not a crucial factor. \n",
+    "\n",
+    "But what about the cases that speed is important? There's no way to have it all. So we want some indexes that only sacrifice as small as possible quality to speed up. That's why approximate nearest-neighbors (ANN) algorithms are widely accepted. Now we will go through a few popular ANN methods used in vector searching."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. `IndexIVF*`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Intro\n",
+    "\n",
+    "Inverted File Flat (IVF) Index is a widely accepted technique to speed up searching by using k-means or Voronoi diagram to create a number of cells (or say, clusters) in the whole space. Then when given a query, an amount of closest cells will be searched. After that, `k` closest elements to the query will be searched in those cells.\n",
+    "\n",
+    "- `quantizer` is another index/quantizer to assign vectors to inverted lists.\n",
+    "- `nlist` is the number of cells the space to be partitioned.\n",
+    "- `nprob` is the nuber of closest cells to visit for searching in query time."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Tradeoff\n",
+    "\n",
+    "Increasing `nlist` will shrink the size of each cell, which speed up the search process. But the smaller coverage will sacrifice accuracy and increase the possibility of the edge/surface problem discribed above.\n",
+    "\n",
+    "Increasing `nprob` will have a greater scope, preferring search quality by the tradeoff of slower speed."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Shortage\n",
+    "\n",
+    "There could be a problem when the query vector lands on the edge/surface of the cell. It is possible that the closest element falls into the neighbor cell, which may not be considered due to `nprob` is not large enough."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "nlist = 5\n",
+    "nprob = 2\n",
+    "\n",
+    "# the quantizer defines how to store and compare the vectors\n",
+    "quantizer = faiss.IndexFlatL2(d)\n",
+    "index = faiss.IndexIVFFlat(quantizer, d, nlist)\n",
+    "\n",
+    "# note different from flat index, IVF index first needs training to create the cells\n",
+    "index.train(data)\n",
+    "index.add(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "closest elements: [[  0 471 188]]\n",
+      "distance: [[ 0.       16.257435 16.658928]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "# set nprob before searching\n",
+    "index.nprobe = 8\n",
+    "D, I = index.search(data[:1], k)\n",
+    "\n",
+    "print(f\"closest elements: {I}\")\n",
+    "print(f\"distance: {D}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. `IndexHNSW*`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Intro\n",
+    "\n",
+    "Hierarchical Navigable Small World (HNSW) indexing is a graph based method, which is an extension of navigable small world (NSW). It builds a multi-layered graph where nodes (vectors) are connected based on their proximity, forming \"small-world\" structures that allow efficient navigation through the space.\n",
+    "\n",
+    "- `M` is the number of neighbors each vector has in the graph.\n",
+    "- `efConstruction` is the number of entry points to explore when building the index.\n",
+    "- `efSearch` is the number of entry points to explore when searching."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Tradeoff\n",
+    "\n",
+    "Increasing `M` or `efSearch` will make greater fidelity with reasonable longer time. Larger `efConstruction` mainly increases the index construction time.\n",
+    "\n",
+    "HNSW has great searching quality and speed. But it is memory-consuming due to the graph structure. Scaling up `M` will cause a linear increase of memory usage.\n",
+    "\n",
+    "Note that HNSW index does not support vector's removal because removing nodes will distroy graph structure.\n",
+    "\n",
+    "Thus HNSW is a great index to choose when RAM is not a limiting factor."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "M = 32\n",
+    "ef_search = 16\n",
+    "ef_construction = 32\n",
+    "\n",
+    "index = faiss.IndexHNSWFlat(d, M)\n",
+    "# set the two parameters before adding data\n",
+    "index.hnsw.efConstruction = ef_construction\n",
+    "index.hnsw.efSearch = ef_search\n",
+    "\n",
+    "index.add(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "closest elements: [[  0 471 188]]\n",
+      "distance: [[ 0.       16.257435 16.658928]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "D, I = index.search(data[:1], k)\n",
+    "\n",
+    "print(f\"closest elements: {I}\")\n",
+    "print(f\"distance: {D}\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### 4. `IndexLSH`"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Intro\n",
+    "\n",
+    "Locality Sensitive Hashing (LSH) is an ANN method that hashing data points into buckets. While well known use cases of hash function such as dictionary/hashtabel are trying to avoid hashing collisions, LSH trys to maximize hashing collisions. Similar vectors will be grouped into same hash bucket.\n",
+    "\n",
+    "In Faiss, `IndexLSH` is a Flat index with binary codes. Vectors are hashed into binary codes and compared by Hamming distances.\n",
+    "\n",
+    "- `nbits` can be seen as the \"resolution\" of hashed vectors."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Tradeoff\n",
+    "\n",
+    "Increasing `nbits` can get higher fidelity with the cost of more memory and longer searching time.\n",
+    "\n",
+    "LSH suffers the curse of dimensionality when using a larger `d`. In order to get similar search quality, the `nbits` value needs to be scaled up to maintain the search quality."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Shortage\n",
+    "\n",
+    "LSH speeds up searching time with a reasonable sacrifice of quality. But that only applies to small dimension `d`. Even 128 is already too large for LSH. Thus for vectors generated by transformer based embedding models, LSH index is not a common choice."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "nbits = d * 8\n",
+    "\n",
+    "index = faiss.IndexLSH(d, nbits)\n",
+    "index.train(data)\n",
+    "index.add(data)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "closest elements: [[  0 471 392]]\n",
+      "distance: [[  0. 197. 199.]]\n"
+     ]
+    }
+   ],
+   "source": [
+    "D, I = index.search(data[:1], k)\n",
+    "\n",
+    "print(f\"closest elements: {I}\")\n",
+    "print(f\"distance: {D}\")"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "faiss",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.9"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
