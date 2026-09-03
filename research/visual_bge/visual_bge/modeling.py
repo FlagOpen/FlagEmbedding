@@ -15,6 +15,33 @@ from PIL import Image
 logger = logging.getLogger(__name__)
 
 
+def build_multimodal_attention_mask(prompt_attention_mask: Tensor, image_token_len: int) -> Tensor:
+    """Place the prompt mask around image tokens in the multimodal sequence.
+
+    ``encode_mm`` constructs ``[CLS, image tokens, prompt tokens excluding
+    CLS]``.  The corresponding mask must follow that exact layout so padded
+    prompt tokens cannot participate in attention or mean pooling.
+    """
+    if prompt_attention_mask.ndim != 2:
+        raise ValueError(
+            f"prompt_attention_mask must be [batch, sequence], got {tuple(prompt_attention_mask.shape)}"
+        )
+    if image_token_len < 0:
+        raise ValueError(f"image_token_len must be non-negative, got {image_token_len}")
+
+    batch_size = prompt_attention_mask.shape[0]
+    image_attention_mask = torch.ones(
+        batch_size,
+        image_token_len,
+        dtype=prompt_attention_mask.dtype,
+        device=prompt_attention_mask.device,
+    )
+    return torch.cat(
+        [prompt_attention_mask[:, :1], image_attention_mask, prompt_attention_mask[:, 1:]],
+        dim=1,
+    )
+
+
 @dataclass
 class EncoderOutput(ModelOutput):
     q_reps: Optional[Tensor] = None
@@ -266,8 +293,7 @@ class Visualized_BGE(nn.Module):
 
         prompt_img_embedding = torch.cat([cls_token, img_token_emb, prompt_embedding_output], dim=1)
         
-        img_attention_mask = torch.ones(batch_size, img_token_len, device=device)  
-        prom_img_attention_mask = torch.cat([img_attention_mask, prompt_attention_mask], dim=1)
+        prom_img_attention_mask = build_multimodal_attention_mask(prompt_attention_mask, img_token_len)
         prom_img_input_shape = prompt_img_embedding.size()
 
         head_mask = [None] * self.depth
