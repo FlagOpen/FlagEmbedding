@@ -42,7 +42,7 @@ More details please refer to our report: [LM-Cocktail](https://arxiv.org/abs/231
 
 
 
-### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_embedder) 
+### [LLM Embedder](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_embedder)
 
 LLM Embedder is fine-tuned based on the feedback from LLMs. 
 It supports the retrieval augmentation needs of large language models, including knowledge retrieval, memory retrieval, example retrieval, and tool retrieval. 
@@ -57,13 +57,13 @@ Cross-encoder will perform full-attention over the input pair,
 which is more accurate than embedding model (i.e., bi-encoder) but more time-consuming than embedding model.
 Therefore, it can be used to re-rank the top-k documents returned by embedding model.
 We train the cross-encoder on a multilingual pair data, 
-The data format is the same as embedding model, so you can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/reranker). 
+The data format is the same as embedding model, so you can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/examples/finetune/reranker).
 For more details please refer to [./reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/reranker)
 
 
 ### [LLM Reranker](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_reranker) 
 
-We provide a new version of the cross-encoder that supports more languages and longer lengths. The data format is similar to our embedding models, but now includes prompt data for fine-tuning and inference. You can perform inference using specific layers or using the entire layers. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/FlagEmbedding/llm_reranker#fine-tune).
+We provide a new version of the cross-encoder that supports more languages and longer lengths. The data format is similar to our embedding models, but now includes prompt data for fine-tuning and inference. You can perform inference using specific layers or using the entire layers. You can fine-tune it easily following our [example](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_reranker#fine-tune).
 For more details please refer to [./llm_reranker/README.md](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/llm_reranker).
 
 ### [BGE Embedding](https://github.com/FlagOpen/FlagEmbedding/tree/master/research/baai_general_embedding) 
