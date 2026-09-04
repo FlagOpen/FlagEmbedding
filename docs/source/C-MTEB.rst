@@ -4,7 +4,7 @@
 .. Introduction
 .. ------------
 
-.. `C-MTEB <https://github.com/FlagOpen/FlagEmbedding/tree/master/C_MTEB>`_ is a benchmark for chinese text embedding. It contains 35
+.. `C-MTEB <https://github.com/FlagOpen/FlagEmbedding/tree/master/research/C_MTEB>`_ is a benchmark for chinese text embedding. It contains 35
 .. datasets in 6 different tasks, providing a comprehensive evaluation to the quality of an embedding model on Chinese.
 
 
