@@ -321,6 +321,8 @@ class MiniCPMAttention(nn.Module):
         self.num_key_value_groups = self.num_heads // self.num_key_value_heads
         self.max_position_embeddings = config.max_position_embeddings
         self.rope_theta = config.rope_theta
+        if config.rope_scaling is not None:
+            self.rope_theta = config.rope_scaling.get("rope_theta", self.rope_theta)
         self.is_causal = True
 
         if (self.head_dim * self.num_heads) != self.hidden_size:
@@ -336,15 +338,19 @@ class MiniCPMAttention(nn.Module):
         self._init_rope()
 
     def _init_rope(self):
-        if self.config.rope_scaling is None:
+        rope_scaling = self.config.rope_scaling
+        scaling_type = (
+            "default" if rope_scaling is None
+            else rope_scaling.get("rope_type", rope_scaling.get("type"))
+        )
+        if scaling_type == "default":
             self.rotary_emb = MiniCPMRotaryEmbedding(
                 self.head_dim,
                 max_position_embeddings=self.max_position_embeddings,
                 base=self.rope_theta,
             )
         else:
-            scaling_type = self.config.rope_scaling["type"]
-            scaling_factor = self.config.rope_scaling["factor"]
+            scaling_factor = rope_scaling["factor"]
             if scaling_type == "linear":
                 self.rotary_emb = MiniCPMLinearScalingRotaryEmbedding(
                     self.head_dim,
@@ -872,13 +878,27 @@ class MiniCPMPreTrainedModel(PreTrainedModel):
     def _init_weights(self, module):
         std = self.config.initializer_range
         if isinstance(module, nn.Linear):
-            module.weight.data.normal_(mean=0.0, std=std)
+            nn.init.normal_(module.weight, mean=0.0, std=std)
             if module.bias is not None:
-                module.bias.data.zero_()
+                nn.init.zeros_(module.bias)
         elif isinstance(module, nn.Embedding):
-            module.weight.data.normal_(mean=0.0, std=std)
-            if module.padding_idx is not None:
-                module.weight.data[module.padding_idx].zero_()
+            nn.init.normal_(module.weight, mean=0.0, std=std)
+            if module.padding_idx is not None and not getattr(module.weight, "_is_hf_initialized", False):
+                nn.init.zeros_(module.weight[module.padding_idx])
+        elif isinstance(module, MiniCPMRMSNorm):
+            nn.init.ones_(module.weight)
+        elif isinstance(module, MiniCPMRotaryEmbedding):
+            # These non-persistent buffers are absent from checkpoints and must
+            # be rebuilt after Transformers materializes a model from meta.
+            inv_freq = 1.0 / (
+                module.base ** (torch.arange(0, module.dim, 2, device=module.inv_freq.device).float() / module.dim)
+            )
+            module.register_buffer("inv_freq", inv_freq, persistent=False)
+            module._set_cos_sin_cache(
+                seq_len=module.max_seq_len_cached,
+                device=inv_freq.device,
+                dtype=module.cos_cached.dtype,
+            )
 
 
 MINICPM_INPUTS_DOCSTRING = r"""
@@ -1143,7 +1163,7 @@ class LayerWiseHead(nn.Module):
         return self.linear_head(**kwargs)
 
 class LayerWiseMiniCPMForCausalLM(MiniCPMPreTrainedModel):
-    _tied_weights_keys = ["lm_head.weight"]
+    _tied_weights_keys = {"lm_head.weight": "model.embed_tokens.weight"}
 
     def __init__(self, config):
         super().__init__(config)
@@ -1184,6 +1204,11 @@ class LayerWiseMiniCPMForCausalLM(MiniCPMPreTrainedModel):
                     config.hidden_size, 1) for _ in range(
                     self.config.start_layer,
                     self.model.config.num_hidden_layers + 1)])
+
+        # Transformers 5 inspects tied parameters before applying weight tying
+        # when loading a checkpoint. Declare the alias on head containers too.
+        if config.tie_word_embeddings and not hasattr(self.lm_head, "weight"):
+            self.lm_head.weight = self.model.embed_tokens.weight
 
         # Initialize weights and apply final processing
         self.post_init()
