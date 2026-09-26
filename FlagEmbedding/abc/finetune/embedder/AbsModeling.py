@@ -226,7 +226,7 @@ class AbsEmbedderModel(ABC, nn.Module):
 
                 cross_idxs = torch.arange(cross_q_reps.size(0), device=cross_q_reps.device, dtype=torch.long)
                 cross_targets = cross_idxs * group_size # (world_size * batch_size)
-                loss += self.compute_loss(cross_scores, cross_targets)
+                loss += self.world_size * self.compute_loss(cross_scores, cross_targets)
             elif self.kd_loss_type == "m3_kd_loss":
                 cross_teacher_targets = self._dist_gather_tensor(teacher_targets)   # (world_size * batch_size, group_size)
 
