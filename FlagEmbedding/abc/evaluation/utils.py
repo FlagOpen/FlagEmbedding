@@ -31,8 +31,12 @@ def evaluate_mrr(
     k_max, top_hits = max(k_values), {}
 
     for query_id, doc_scores in results.items():
+        # A score-only sort keeps dict order, so a tied relevant document can
+        # rank behind an earlier id. Break ties by document id, higher first.
         top_hits[query_id] = sorted(
-            doc_scores.items(), key=lambda item: item[1], reverse=True
+            doc_scores.items(),
+            key=lambda item: (item[1], item[0]),
+            reverse=True,
         )[0:k_max]
 
     for query_id in top_hits:
@@ -77,7 +81,11 @@ def evaluate_recall_cap(
     logging.info("\n")
     
     for query_id, doc_scores in results.items():
-        top_hits = sorted(doc_scores.items(), key=lambda item: item[1], reverse=True)[0:k_max]   
+        top_hits = sorted(
+            doc_scores.items(),
+            key=lambda item: (item[1], item[0]),
+            reverse=True,
+        )[0:k_max]   
         query_relevant_docs = [doc_id for doc_id in qrels[query_id] if qrels[query_id][doc_id] > 0]
         for k in k_values:
             retrieved_docs = [row[0] for row in top_hits[0:k] if qrels[query_id].get(row[0], 0) > 0]
