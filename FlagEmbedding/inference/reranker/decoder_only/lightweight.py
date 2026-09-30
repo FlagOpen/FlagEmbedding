@@ -11,6 +11,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat, prepare_for_model_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 
 
 def last_logit_pool_lightweight(logits: Tensor,
@@ -248,6 +249,7 @@ class LightweightLLMReranker(AbsReranker):
         if compress_ratio is None: compress_ratio = self.compress_ratio
         if prompt is None: prompt = self.prompt
         if batch_size is None: batch_size = self.batch_size
+        validate_batch_size(batch_size)
         if max_length is None: max_length = self.max_length
         if query_max_length is None:
             if self.query_max_length is not None:
@@ -378,9 +380,11 @@ class LightweightLLMReranker(AbsReranker):
                 )
                 flag = True
             except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError as e:
-                batch_size = batch_size * 3 // 4
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         all_scores = []
         for batch_start in trange(0, len(all_queries_inputs_sorted), batch_size):

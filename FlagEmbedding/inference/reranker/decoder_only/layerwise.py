@@ -11,6 +11,7 @@ from torch.utils.data import DataLoader
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.inference.reranker.encoder_only.base import sigmoid
 from FlagEmbedding.utils.tokenizer_compat import prepare_for_model_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 from FlagEmbedding.inference.reranker.decoder_only.base import DatasetForReranker, Collater
 
 from .models.modeling_minicpm_reranker import LayerWiseMiniCPMForCausalLM
@@ -168,6 +169,7 @@ class LayerWiseLLMReranker(AbsReranker):
         if cutoff_layers is None: cutoff_layers = self.cutoff_layers
         if prompt is None: prompt = self.prompt
         if batch_size is None: batch_size = self.batch_size
+        validate_batch_size(batch_size)
         if max_length is None: max_length = self.max_length
         if query_max_length is None:
             if self.query_max_length is not None:
@@ -283,9 +285,11 @@ class LayerWiseLLMReranker(AbsReranker):
                 self.model(**batch_inputs, output_hidden_states=True, cutoff_layers=cutoff_layers)
                 flag = True
             except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError as e:
-                batch_size = batch_size * 3 // 4
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         dataset, dataloader = None, None
         if use_dataloader:

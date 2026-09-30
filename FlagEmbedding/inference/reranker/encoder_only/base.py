@@ -6,6 +6,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsReranker
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat, prepare_for_model_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 
 
 def sigmoid(x):
@@ -100,6 +101,7 @@ class BaseReranker(AbsReranker):
             List[float]: Computed scores of queries and passages.
         """
         if batch_size is None: batch_size = self.batch_size
+        validate_batch_size(batch_size)
         if max_length is None: max_length = self.max_length
         if query_max_length is None:
             if self.query_max_length is not None:
@@ -172,9 +174,11 @@ class BaseReranker(AbsReranker):
                 scores = self.model(**test_inputs_batch, return_dict=True).logits.view(-1, ).float()
                 flag = True
             except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError as e:
-                batch_size = batch_size * 3 // 4
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         all_scores = []
         for start_index in tqdm(range(0, len(all_inputs_sorted), batch_size), desc="Compute Scores",
