@@ -7,6 +7,7 @@ from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 
 
 # Pooling function for LLM-based embedding models
@@ -214,6 +215,8 @@ class BaseLLMEmbedder(AbsEmbedder):
         Returns:
             Union[torch.Tensor, np.ndarray]: return the embedding vectors in a numpy array or tensor.
         """
+        validate_batch_size(batch_size)
+
         if device is None:
             device = self.target_devices[0]
 
@@ -263,9 +266,11 @@ class BaseLLMEmbedder(AbsEmbedder):
                 embeddings = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
                 flag = True
             except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError as e:
-                batch_size = batch_size * 3 // 4
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         # encode
         all_embeddings = []

@@ -11,6 +11,7 @@ from typing import Any, List, Union, Dict, Literal, Tuple, Optional
 
 from FlagEmbedding.abc.inference import AbsEmbedder
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
     EncoderOnlyEmbedderM3ModelForInference, EncoderOnlyEmbedderM3Runner
 )
@@ -334,6 +335,8 @@ class M3Embedder(AbsEmbedder):
         Returns:
             Dict[Literal["dense_vecs", "lexical_weights", "colbert_vecs"], Union[np.ndarray, List[Dict[str, float]], List[np.ndarray]]
         """
+        validate_batch_size(batch_size)
+
         # pop convert_to_numpy from kwargs
         kwargs.pop("convert_to_numpy", None)
 
@@ -412,9 +415,11 @@ class M3Embedder(AbsEmbedder):
                 )
                 flag = True
             except RuntimeError as e:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError as e:
-                batch_size = batch_size * 3 // 4
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         # encode
         all_dense_embeddings, all_lexical_weights, all_colbert_vecs = [], [], []
