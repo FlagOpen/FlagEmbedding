@@ -143,8 +143,12 @@ class AbsEmbedderModel(ABC, nn.Module):
             all_scores = self.compute_score(q_reps, p_reps)
         else:
             all_scores = compute_score_func(q_reps, p_reps, **kwargs)
-        loacl_scores = self.get_local_score(q_reps, p_reps, all_scores)
-        return loacl_scores
+        group_size = p_reps.size(0) // q_reps.size(0)
+        # M3 ensembles may already supply one local score group per query.
+        if all_scores.size(1) == group_size:
+            return all_scores
+        local_scores = self.get_local_score(q_reps, p_reps, all_scores)
+        return local_scores
 
     def _compute_no_in_batch_neg_loss(self, q_reps, p_reps, teacher_targets=None, compute_score_func=None, **kwargs):
         """
@@ -324,9 +328,10 @@ class AbsEmbedderModel(ABC, nn.Module):
             )
         elif kd_loss_type == 'm3_kd_loss':
             # teacher_targets: (batch_size, group_size) / (world_size * batch_size, group_size)
-            # student_scores: (batch_size, batch_size * group_size) / (world_size * batch_size, world_size * batch_size * group_size)
-            labels = torch.arange(student_scores.size(0), device=student_scores.device, dtype=torch.long)
-            labels = labels * group_size
+            # Local scores: (batch_size, group_size); otherwise passage groups are concatenated across queries.
+            labels = torch.zeros(student_scores.size(0), device=student_scores.device, dtype=torch.long)
+            if student_scores.size(1) != group_size:
+                labels = torch.arange(student_scores.size(0), device=student_scores.device, dtype=torch.long) * group_size
 
             loss = 0
             mask = torch.zeros_like(student_scores)
