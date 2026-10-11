@@ -394,7 +394,7 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
 
         if self.training:
             if teacher_scores is not None:
-                teacher_scores = torch.tensor(teacher_scores, device=q_dense_vecs.device)
+                teacher_scores = torch.tensor(teacher_scores, dtype=torch.float32, device=q_dense_vecs.device)
                 teacher_scores = teacher_scores.view(q_dense_vecs.size(0), -1).detach()   # (batch_size, group_size)
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
             else:
