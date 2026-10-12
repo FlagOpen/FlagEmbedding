@@ -527,6 +527,11 @@ class M3Embedder(AbsEmbedder):
                 **kwargs
             )
 
+        # A single (query, passage) pair is scored as a one-pair batch, then unwrapped like on a single device
+        one_input_pair = isinstance(sentence_pairs[0], str)
+        if one_input_pair:
+            sentence_pairs = [sentence_pairs]
+
         pool = self.start_multi_process_pool(M3Embedder._compute_score_multi_process_worker)
         embeddings = self.compute_score_multi_process(
             sentence_pairs,
@@ -538,6 +543,8 @@ class M3Embedder(AbsEmbedder):
             **kwargs
         )
         self.stop_multi_process_pool(pool)
+        if one_input_pair:
+            return {k: v[0] for k, v in embeddings.items()}
         return embeddings
 
     # adapted from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L877
