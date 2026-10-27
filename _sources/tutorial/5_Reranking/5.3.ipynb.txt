@@ -1,0 +1,271 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Evaluate Reranker"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Reranker usually better captures the latent semantic meanings between sentences. But comparing to using an embedding model, it will take quadratic $O(N^2)$ running time for the whole dataset. Thus the most common use cases of rerankers in information retrieval or RAG is reranking the top k answers retrieved according to the embedding similarities.\n",
+    "\n",
+    "The evaluation of reranker has the similar idea. We compare how much better the rerankers can rerank the candidates searched by a same embedder. In this tutorial, we will evaluate two rerankers' performances on BEIR benchmark, with bge-large-en-v1.5 as the base embedding model."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Note: We highly recommend to run this notebook with GPU. The whole pipeline is very time consuming. For simplicity, we only use a single task FiQA in BEIR."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 0. Installation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "First install the required dependency"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%pip install FlagEmbedding"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. bge-reranker-large"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The first model is bge-reranker-large, a BERT like reranker with about 560M parameters.\n",
+    "\n",
+    "We can use the evaluation pipeline of FlagEmbedding to directly run the whole process:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Split 'dev' not found in the dataset. Removing it from the list.\n",
+      "ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.\n",
+      "pre tokenize: 100%|██████████| 57/57 [00:03<00:00, 14.68it/s]\n",
+      "You're using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml\n",
+      "  warnings.warn(\n",
+      "Inference Embeddings: 100%|██████████| 57/57 [00:44<00:00,  1.28it/s]\n",
+      "pre tokenize: 100%|██████████| 1/1 [00:00<00:00, 61.59it/s]\n",
+      "Inference Embeddings: 100%|██████████| 1/1 [00:00<00:00,  6.22it/s]\n",
+      "Searching: 100%|██████████| 21/21 [00:00<00:00, 68.26it/s]\n",
+      "pre tokenize:   0%|          | 0/64 [00:00<?, ?it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize: 100%|██████████| 64/64 [00:08<00:00,  7.15it/s]\n",
+      "Compute Scores: 100%|██████████| 64/64 [01:39<00:00,  1.56s/it]\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%bash\n",
+    "python -m FlagEmbedding.evaluation.beir \\\n",
+    "--eval_name beir \\\n",
+    "--dataset_dir ./beir/data \\\n",
+    "--dataset_names fiqa \\\n",
+    "--splits test dev \\\n",
+    "--corpus_embd_save_dir ./beir/corpus_embd \\\n",
+    "--output_dir ./beir/search_results \\\n",
+    "--search_top_k 1000 \\\n",
+    "--rerank_top_k 100 \\\n",
+    "--cache_path /root/.cache/huggingface/hub \\\n",
+    "--overwrite True \\\n",
+    "--k_values 10 100 \\\n",
+    "--eval_output_method markdown \\\n",
+    "--eval_output_path ./beir/beir_eval_results.md \\\n",
+    "--eval_metrics ndcg_at_10 recall_at_100 \\\n",
+    "--ignore_identical_ids True \\\n",
+    "--embedder_name_or_path BAAI/bge-large-en-v1.5 \\\n",
+    "--reranker_name_or_path BAAI/bge-reranker-large \\\n",
+    "--embedder_batch_size 1024 \\\n",
+    "--reranker_batch_size 1024 \\\n",
+    "--devices cuda:0 \\"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. bge-reranker-v2-gemma"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The second model is bge-reranker-v2-m3"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Split 'dev' not found in the dataset. Removing it from the list.\n",
+      "ignore_identical_ids is set to True. This means that the search results will not contain identical ids. Note: Dataset such as MIRACL should NOT set this to True.\n",
+      "initial target device: 100%|██████████| 4/4 [01:14<00:00, 18.51s/it]\n",
+      "pre tokenize: 100%|██████████| 15/15 [00:01<00:00, 11.21it/s]\n",
+      "You're using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize: 100%|██████████| 15/15 [00:01<00:00, 11.32it/s]\n",
+      "You're using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize: 100%|██████████| 15/15 [00:01<00:00, 10.29it/s]\n",
+      "You're using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize: 100%|██████████| 15/15 [00:01<00:00, 13.99it/s]\n",
+      "You're using a BertTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml\n",
+      "  warnings.warn(\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml\n",
+      "  warnings.warn(\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml\n",
+      "  warnings.warn(\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/site-packages/_distutils_hack/__init__.py:54: UserWarning: Reliance on distutils from stdlib is deprecated. Users must rely on setuptools to provide the distutils module. Avoid importing distutils or import setuptools first, and avoid setting SETUPTOOLS_USE_DISTUTILS=stdlib. Register concerns at https://github.com/pypa/setuptools/issues/new?template=distutils-deprecation.yml\n",
+      "  warnings.warn(\n",
+      "Inference Embeddings: 100%|██████████| 15/15 [00:12<00:00,  1.24it/s]\n",
+      "Inference Embeddings: 100%|██████████| 15/15 [00:12<00:00,  1.23it/s]\n",
+      "Inference Embeddings: 100%|██████████| 15/15 [00:12<00:00,  1.22it/s]\n",
+      "Inference Embeddings: 100%|██████████| 15/15 [00:12<00:00,  1.21it/s]\n",
+      "Chunks: 100%|██████████| 4/4 [00:30<00:00,  7.70s/it]\n",
+      "Chunks: 100%|██████████| 4/4 [00:00<00:00, 47.90it/s]\n",
+      "Searching: 100%|██████████| 21/21 [00:00<00:00, 128.34it/s]\n",
+      "initial target device: 100%|██████████| 4/4 [01:09<00:00, 17.43s/it]\n",
+      "pre tokenize:   0%|          | 0/16 [00:00<?, ?it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize:  12%|█▎        | 2/16 [00:00<00:02,  6.46it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize:  12%|█▎        | 2/16 [00:00<00:03,  4.60it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize:  25%|██▌       | 4/16 [00:00<00:02,  4.61it/s]You're using a XLMRobertaTokenizerFast tokenizer. Please note that with a fast tokenizer, using the `__call__` method is faster than using a method to encode the text followed by a call to the `pad` method to get a padded encoding.\n",
+      "pre tokenize: 100%|██████████| 16/16 [00:03<00:00,  4.12it/s]\n",
+      "pre tokenize: 100%|██████████| 16/16 [00:04<00:00,  3.78it/s]\n",
+      "pre tokenize: 100%|██████████| 16/16 [00:04<00:00,  3.95it/s]\n",
+      "pre tokenize: 100%|██████████| 16/16 [00:04<00:00,  3.81it/s]\n",
+      "Compute Scores: 100%|██████████| 67/67 [00:29<00:00,  2.30it/s]\n",
+      "Compute Scores: 100%|██████████| 67/67 [00:29<00:00,  2.27it/s]\n",
+      "Compute Scores: 100%|██████████| 67/67 [00:29<00:00,  2.27it/s]\n",
+      "Compute Scores: 100%|██████████| 67/67 [00:30<00:00,  2.19it/s]\n",
+      "Chunks: 100%|██████████| 4/4 [00:51<00:00, 12.97s/it]\n",
+      "/share/project/xzy/Envs/ft/lib/python3.11/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 8 leaked semaphore objects to clean up at shutdown\n",
+      "  warnings.warn('resource_tracker: There appear to be %d '\n"
+     ]
+    }
+   ],
+   "source": [
+    "%%bash\n",
+    "python -m FlagEmbedding.evaluation.beir \\\n",
+    "--eval_name beir \\\n",
+    "--dataset_dir ./beir/data \\\n",
+    "--dataset_names fiqa \\\n",
+    "--splits test dev \\\n",
+    "--corpus_embd_save_dir ./beir/corpus_embd \\\n",
+    "--output_dir ./beir/search_results \\\n",
+    "--search_top_k 1000 \\\n",
+    "--rerank_top_k 100 \\\n",
+    "--cache_path /root/.cache/huggingface/hub \\\n",
+    "--overwrite True \\\n",
+    "--k_values 10 100 \\\n",
+    "--eval_output_method markdown \\\n",
+    "--eval_output_path ./beir/beir_eval_results.md \\\n",
+    "--eval_metrics ndcg_at_10 recall_at_100 \\\n",
+    "--ignore_identical_ids True \\\n",
+    "--embedder_name_or_path BAAI/bge-large-en-v1.5 \\\n",
+    "--reranker_name_or_path BAAI/bge-reranker-v2-m3 \\\n",
+    "--embedder_batch_size 1024 \\\n",
+    "--reranker_batch_size 1024 \\\n",
+    "--devices cuda:0 cuda:1 cuda:2 cuda:3 \\\n",
+    "--reranker_max_length 1024 \\"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Comparison"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "{'fiqa-test': {'ndcg_at_10': 0.40991, 'ndcg_at_100': 0.48028, 'map_at_10': 0.32127, 'map_at_100': 0.34227, 'recall_at_10': 0.50963, 'recall_at_100': 0.75987, 'precision_at_10': 0.11821, 'precision_at_100': 0.01932, 'mrr_at_10': 0.47786, 'mrr_at_100': 0.4856}}\n",
+      "{'fiqa-test': {'ndcg_at_10': 0.44828, 'ndcg_at_100': 0.51525, 'map_at_10': 0.36551, 'map_at_100': 0.38578, 'recall_at_10': 0.519, 'recall_at_100': 0.75987, 'precision_at_10': 0.12299, 'precision_at_100': 0.01932, 'mrr_at_10': 0.53382, 'mrr_at_100': 0.54108}}\n"
+     ]
+    }
+   ],
+   "source": [
+    "import json\n",
+    "\n",
+    "with open('beir/search_results/bge-large-en-v1.5/bge-reranker-large/EVAL/eval_results.json') as f:\n",
+    "    results_1 = json.load(f)\n",
+    "    print(results_1)\n",
+    "    \n",
+    "with open('beir/search_results/bge-large-en-v1.5/bge-reranker-v2-m3/EVAL/eval_results.json') as f:\n",
+    "    results_2 = json.load(f)\n",
+    "    print(results_2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "From the above results we can see that bge-reranker-v2-m3 has advantage on almost all the metrics."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "ft",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.11.10"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

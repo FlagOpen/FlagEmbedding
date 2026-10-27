@@ -1,0 +1,327 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Simple RAG From Scratch"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In this tutorial, we will use BGE, Faiss, and OpenAI's GPT-4o-mini to build a simple RAG system from scratch."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 0. Preparation"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Install the required packages in the environment:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "%pip install -U numpy faiss-cpu FlagEmbedding openai"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 1. Data"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Suppose I'm a resident of New York Manhattan, and I want the AI bot to provide suggestion on where should I go for dinner. It's not reliable to let it recommend some random restaurant. So let's provide a bunch of our favorate restaurants."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "corpus = [\n",
+    "    \"Cheli: A downtown Chinese restaurant presents a distinctive dining experience with authentic and sophisticated flavors of Shanghai cuisine. Avg cost: $40-50\",\n",
+    "    \"Masa: Midtown Japanese restaurant with exquisite sushi and omakase experiences crafted by renowned chef Masayoshi Takayama. The restaurant offers a luxurious dining atmosphere with a focus on the freshest ingredients and exceptional culinary artistry. Avg cost: $500-600\",\n",
+    "    \"Per Se: A midtown restaurant features daily nine-course tasting menu and a nine-course vegetable tasting menu using classic French technique and the finest quality ingredients available. Avg cost: $300-400\",\n",
+    "    \"Ortomare: A casual, earthy Italian restaurant locates uptown, offering wood-fired pizza, delicious pasta, wine & spirits & outdoor seating. Avg cost: $30-50\",\n",
+    "    \"Banh: Relaxed, narrow restaurant in uptown, offering Vietnamese cuisine & sandwiches, famous for its pho and Vietnam sandwich. Avg cost: $20-30\",\n",
+    "    \"Living Thai: An uptown typical Thai cuisine with different kinds of curry, Tom Yum, fried rice, Thai ice tea, etc. Avg cost: $20-30\",\n",
+    "    \"Chick-fil-A: A Fast food restaurant with great chicken sandwich, fried chicken, fries, and salad, which can be found everywhere in New York. Avg cost: 10-20\",\n",
+    "    \"Joe's Pizza: Most famous New York pizza locates midtown, serving different flavors including classic pepperoni, cheese, spinach, and also innovative pizza. Avg cost: $15-25\",\n",
+    "    \"Red Lobster: In midtown, Red Lobster is a lively chain restaurant serving American seafood standards amid New England-themed decor, with fair price lobsters, shrips and crabs. Avg cost: $30-50\",\n",
+    "    \"Bourbon Steak: It accomplishes all the traditions expected from a steakhouse, offering the finest cuts of premium beef and seafood complimented by wine and spirits program. Avg cost: $100-150\",\n",
+    "    \"Da Long Yi: Locates in downtown, Da Long Yi is a Chinese Szechuan spicy hotpot restaurant that serves good quality meats. Avg cost: $30-50\",\n",
+    "    \"Mitr Thai: An exquisite midtown Thai restaurant with traditional dishes as well as creative dishes, with a wonderful bar serving cocktails. Avg cost: $40-60\",\n",
+    "    \"Yichiran Ramen: Famous Japenese ramen restaurant in both midtown and downtown, serving ramen that can be designed by customers themselves. Avg cost: $20-40\",\n",
+    "    \"BCD Tofu House: Located in midtown, it's famous for its comforting and flavorful soondubu jjigae (soft tofu stew) and a variety of authentic Korean dishes. Avg cost: $30-50\",\n",
+    "]\n",
+    "\n",
+    "user_input = \"I want some Chinese food\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 2. Indexing"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we need to figure out a fast but powerful enough method to retrieve docs in the corpus that are most closely related to our questions. Indexing is a good choice for us.\n",
+    "\n",
+    "The first step is embed each document into a vector. We use bge-base-en-v1.5 as our embedding model."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from FlagEmbedding import FlagModel\n",
+    "\n",
+    "model = FlagModel('BAAI/bge-base-en-v1.5',\n",
+    "                  query_instruction_for_retrieval=\"Represent this sentence for searching relevant passages:\",\n",
+    "                  use_fp16=True)\n",
+    "\n",
+    "embeddings = model.encode(corpus, convert_to_numpy=True)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "(14, 768)"
+      ]
+     },
+     "execution_count": 13,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "embeddings.shape"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then, let's create a Faiss index and add all the vectors into it.\n",
+    "\n",
+    "If you want to know more about Faiss, refer to the tutorial of [Faiss and indexing](https://github.com/FlagOpen/FlagEmbedding/tree/master/Tutorials/3_Indexing)."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import faiss\n",
+    "import numpy as np\n",
+    "\n",
+    "index = faiss.IndexFlatIP(embeddings.shape[1])\n",
+    "\n",
+    "index.add(embeddings)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "14"
+      ]
+     },
+     "execution_count": 15,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "index.ntotal"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## 3. Retrieve and Generate"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we come to the most exciting part. Let's first embed our query and retrieve 3 most relevant document from it:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([['Cheli: A downtown Chinese restaurant presents a distinctive dining experience with authentic and sophisticated flavors of Shanghai cuisine. Avg cost: $40-50',\n",
+       "        'Da Long Yi: Locates in downtown, Da Long Yi is a Chinese Szechuan spicy hotpot restaurant that serves good quality meats. Avg cost: $30-50',\n",
+       "        'Yichiran Ramen: Famous Japenese ramen restaurant in both midtown and downtown, serving ramen that can be designed by customers themselves. Avg cost: $20-40']],\n",
+       "      dtype='<U270')"
+      ]
+     },
+     "execution_count": 16,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "q_embedding = model.encode_queries([user_input], convert_to_numpy=True)\n",
+    "\n",
+    "D, I = index.search(q_embedding, 3)\n",
+    "res = np.array(corpus)[I]\n",
+    "\n",
+    "res"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then set up the prompt for the chatbot:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "prompt=\"\"\"\n",
+    "You are a bot that makes recommendations for restaurants. \n",
+    "Please be brief, answer in short sentences without extra information.\n",
+    "\n",
+    "These are the restaurants list:\n",
+    "{recommended_activities}\n",
+    "\n",
+    "The user's preference is: {user_input}\n",
+    "Provide the user with 2 recommended restaurants based on the user's preference.\n",
+    "\"\"\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Fill in your OpenAI API key below:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "\n",
+    "os.environ[\"OPENAI_API_KEY\"] = \"YOUR_API_KEY\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally let's see how the chatbot give us the answer!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from openai import OpenAI\n",
+    "client = OpenAI()\n",
+    "\n",
+    "response = client.chat.completions.create(\n",
+    "    model=\"gpt-4o-mini\",\n",
+    "    messages=[\n",
+    "        {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},\n",
+    "        {\n",
+    "            \"role\": \"user\",\n",
+    "            \"content\": prompt.format(user_input=user_input, recommended_activities=res)\n",
+    "        }\n",
+    "    ]\n",
+    ").choices[0].message"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "1. Cheli - Authentic Shanghai cuisine with sophisticated flavors.  \n",
+      "2. Da Long Yi - Szechuan spicy hotpot with good quality meats.\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(response.content)"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "base",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.12.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

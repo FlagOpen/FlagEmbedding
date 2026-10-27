@@ -1,0 +1,9 @@
+.bd-sidebar-primary {
+    width: 22%;
+    line-height: 1.4;
+}
+
+.col-lg-3 {
+    flex: 0 0 auto;
+    width: 22%;
+}
