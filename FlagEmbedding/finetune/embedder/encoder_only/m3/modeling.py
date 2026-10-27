@@ -220,17 +220,26 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         scores = scores.view(q_reps.size(0), -1)
         return scores
 
-    def compute_colbert_score(self, q_reps, p_reps, q_mask: torch.Tensor=None):
+    def compute_colbert_score(
+        self, q_reps, p_reps, q_mask: torch.Tensor=None, p_mask: torch.Tensor=None
+    ):
         """Compute the colbert score.
 
         Args:
             q_reps (torch.Tensor): Query representations.
             p_reps (torch.Tensor): Passage representations.
+            q_mask (torch.Tensor): Query attention mask, including CLS.
+            p_mask (torch.Tensor, optional): Passage attention mask, including CLS.
 
         Returns:
             torch.Tensor: The computed colber scores, adjusted by temperature.
         """
         token_scores = torch.einsum('qin,pjn->qipj', q_reps, p_reps)
+        if p_mask is not None:
+            # Zero padding can win MaxSim when every valid similarity is negative.
+            token_scores = token_scores.masked_fill(
+                ~p_mask[:, 1:].bool()[None, None, :, :], float('-inf')
+            )
         scores, _ = token_scores.max(-1)
         scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True)
         scores = scores / self.temperature
@@ -431,7 +440,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                 colbert_scores, colbert_loss = compute_loss_func(
                     q_colbert_vecs, p_colbert_vecs, teacher_targets=teacher_targets,
                     compute_score_func=self.compute_colbert_score,
-                    q_mask=self._get_queries_attention_mask(queries)
+                    q_mask=self._get_queries_attention_mask(queries),
+                    p_mask=self._get_queries_attention_mask(passages)
                 )
 
                 # get dense scores of current process
