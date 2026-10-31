@@ -270,7 +270,7 @@ class AbsEmbedderModel(ABC, nn.Module):
 
         if self.training:
             if teacher_scores is not None:
-                teacher_scores = torch.tensor(teacher_scores, device=device)
+                teacher_scores = torch.tensor(teacher_scores, dtype=torch.float32, device=device)
                 teacher_scores = teacher_scores.view(batch_size, -1).detach()   # (batch_size, group_size)
                 teacher_targets = F.softmax(teacher_scores, dim=-1)  # (batch_size, group_size)
             else:
