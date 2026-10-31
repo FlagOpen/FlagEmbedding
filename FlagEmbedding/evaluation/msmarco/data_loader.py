@@ -179,7 +179,7 @@ class MSMARCOEvalDataLoader(AbsEvalDataLoader):
             logging.info(f"{self.eval_name} {dataset_name} qrels saved to {save_path}")
         else:
             qrels_dict = {}
-            if qrels_save_path is None:
+            if qrels_save_path is not None:
                 with open(qrels_save_path, "r", encoding="utf-8") as f:
                     for line in tqdm(f.readlines(), desc="Loading qrels"):
                         qid, _, docid, rel = line.strip().split()
