@@ -10,6 +10,7 @@ This directory contains tests for the FlagEmbedding library, including compatibi
 - `test_tokenizer_pad_compat.py`: Tests normalization of sorted per-example tokenized records before `tokenizer.pad`, including the local BGE reranker tokenizer when available.
 - `test_infer_embedder_basic.py`: Tests basic functionality of BGE embedder models with a small public checkpoint.
 - `test_infer_reranker_basic.py`: Tests basic functionality of reranker models.
+- `test_reranker_multi_process_scores.py`: Tests worker-score aggregation for flat and layerwise reranker outputs, without model downloads.
 
 ## Running Tests
 
