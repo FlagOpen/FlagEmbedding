@@ -311,7 +311,8 @@ class AbsReranker(ABC):
             [output_queue.get() for _ in trange(last_chunk_id, desc="Chunks")],
             key=lambda x: x[0],
         )
-        scores = np.concatenate([result[1] for result in results_list])
+        # Scores are flat or layer-major; the last axis always indexes pairs.
+        scores = np.concatenate([result[1] for result in results_list], axis=-1)
         return scores
 
     # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
