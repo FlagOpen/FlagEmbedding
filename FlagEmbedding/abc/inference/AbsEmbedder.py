@@ -69,6 +69,16 @@ class AbsEmbedder(ABC):
         self.use_bf16 = use_bf16
         self.query_instruction_for_retrieval = query_instruction_for_retrieval
         self.query_instruction_format = query_instruction_format
+        # `device` (singular) is a common alias for `devices`. Without this it is silently
+        # swallowed by **kwargs, leaving `devices=None` so the model spans ALL visible GPUs
+        # (out-of-memory). Honor it as `devices` when `devices` is not explicitly set. See #907.
+        if devices is None and "device" in kwargs:
+            devices = kwargs.pop("device")
+            logger.warning(
+                "`device` is not a documented argument for %s; interpreting it as "
+                "`devices=%r`. Pass `devices=` to silence this warning.",
+                type(self).__name__, devices,
+            )
         self.target_devices = self.get_target_devices(devices)
 
         self.batch_size = batch_size
