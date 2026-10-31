@@ -5,6 +5,7 @@ import numpy as np
 
 from .base import BaseLLMEmbedder, last_token_pool
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat
+from FlagEmbedding.inference.utils import is_oom_error, shrink_batch_size_on_oom, validate_batch_size
 
 
 class PseudoMoELLMEmbedder(BaseLLMEmbedder):
@@ -95,6 +96,8 @@ class PseudoMoELLMEmbedder(BaseLLMEmbedder):
         device: Optional[str] = None,
         **kwargs: Any
     ):
+        validate_batch_size(batch_size)
+
         if device is None:
             device = self.target_devices[0]
 
@@ -153,10 +156,12 @@ class PseudoMoELLMEmbedder(BaseLLMEmbedder):
                     last_hidden_state = self.model(**inputs_batch, return_dict=True).last_hidden_state
                 _ = last_token_pool(last_hidden_state, inputs_batch['attention_mask'])
                 flag = True
-            except RuntimeError:
-                batch_size = batch_size * 3 // 4
-            except torch.cuda.OutOfMemoryError:
-                batch_size = batch_size * 3 // 4
+            except RuntimeError as e:
+                # Only genuine OOM errors trigger a retry; any other error
+                # propagates immediately with its original traceback.
+                if not is_oom_error(e):
+                    raise
+                batch_size = shrink_batch_size_on_oom(batch_size, e)
 
         # encode
         all_embeddings = []
