@@ -50,7 +50,8 @@ class FlagAutoModel:
                 :attr:`query_instruction_format`. Defaults to :data:`None`.
             devices (Optional[Union[str, List[str]]], optional): Devices to use for model inference. Defaults to :data:`None`.
             pooling_method (Optional[str], optional): Pooling method to get embedding vector from the last hidden state. Defaults to :data:`None`.
-            trust_remote_code (Optional[bool], optional): trust_remote_code for HF datasets or models. Defaults to :data:`None`.
+            trust_remote_code (Optional[bool], optional): Whether to trust custom model code. Defaults to :data:`False`
+                when omitted. Review the model code before explicitly setting this to :data:`True`.
             query_instruction_format (Optional[str], optional): The template for :attr:`query_instruction_for_retrieval`. Defaults to :data:`None`.
 
         Raises:
@@ -96,7 +97,12 @@ class FlagAutoModel:
             if pooling_method is None:
                 pooling_method = model_config.pooling_method.value
             if trust_remote_code is None:
-                trust_remote_code = model_config.trust_remote_code
+                trust_remote_code = False
+                if model_config.trust_remote_code:
+                    logger.warning(
+                        "This model is configured to use custom code. `trust_remote_code` defaults to False; "
+                        "review the model code and explicitly pass `trust_remote_code=True` if you trust it."
+                    )
             if query_instruction_format is None:
                 query_instruction_format = model_config.query_instruction_format
 
