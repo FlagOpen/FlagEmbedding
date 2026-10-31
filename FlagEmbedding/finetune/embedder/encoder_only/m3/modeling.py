@@ -129,13 +129,20 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         if not return_embedding: return token_weights
 
         if self.training:
-            sparse_embedding = torch.zeros(
-                input_ids.size(0), input_ids.size(1), self.vocab_size,
-                dtype=token_weights.dtype,
-                device=token_weights.device
-            )
-            sparse_embedding = torch.scatter(sparse_embedding, dim=-1, index=input_ids.unsqueeze(-1), src=token_weights)
-            sparse_embedding = torch.max(sparse_embedding, dim=1).values
+            weights = token_weights.squeeze(-1)
+            # Find each token's first maximum without a batch x length x vocab tensor.
+            # Gathering the original weights preserves max(dim=1)'s tie gradients.
+            with torch.no_grad():
+                maxima = weights.new_zeros(input_ids.size(0), self.vocab_size)
+                maxima.scatter_reduce_(dim=-1, index=input_ids, src=weights, reduce="amax")
+                token_maxima = maxima.gather(-1, input_ids)
+                is_maximum = (weights == token_maxima) | (weights.isnan() & token_maxima.isnan())
+                positions = torch.arange(input_ids.size(1), device=input_ids.device).expand_as(input_ids)
+                positions = positions.masked_fill(~is_maximum, input_ids.size(1))
+                first_maxima = input_ids.new_full((input_ids.size(0), self.vocab_size), input_ids.size(1))
+                first_maxima.scatter_reduce_(dim=-1, index=input_ids, src=positions, reduce="amin")
+            sparse_embedding = weights.gather(-1, first_maxima.clamp_max(input_ids.size(1) - 1))
+            sparse_embedding = sparse_embedding.masked_fill(first_maxima == input_ids.size(1), 0.)
         else:
             # Optimize suggestion from issue #1364: https://github.com/FlagOpen/FlagEmbedding/issues/1364
             # Disable when self.training = True, otherwise will cause:
