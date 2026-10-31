@@ -1,4 +1,3 @@
-import os
 import logging
 from typing import Tuple
 from pathlib import Path
@@ -65,7 +64,7 @@ class DecoderOnlyRerankerRunner(AbsRerankerRunner):
         # if 'mistral' in self.model_args.model_name_or_path.lower():
         tokenizer.padding_side = 'left'
 
-        base_model = get_model(self.model_args, tokenizer('Yes', add_special_tokens=False)['input_ids'][-1])
+        base_model = get_model(self.model_args, tokenizer('Yes', add_special_tokens=False)['input_ids'][-1], self.training_args)
 
         model = CrossDecoderModel(
             base_model,
