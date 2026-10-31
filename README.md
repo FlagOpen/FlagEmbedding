@@ -135,6 +135,10 @@ model = FlagAutoModel.from_finetuned('BAAI/bge-base-en-v1.5',
                                       query_instruction_for_retrieval="Represent this sentence for searching relevant passages:",
                                       use_fp16=True)
 ```
+`FlagAutoModel` defaults to `trust_remote_code=False`, including for recognized model names.
+Models that require custom code (for example, `BAAI/bge-code-v1`) now require explicit opt-in:
+review the model code before passing `trust_remote_code=True` to `from_finetuned`.
+
 Then, feed some sentences to the model and get their embeddings:
 ```
 sentences_1 = ["I love NLP", "I love machine learning"]
