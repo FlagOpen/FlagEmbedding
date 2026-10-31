@@ -9,6 +9,7 @@ def merge_layerwise_finetuned_llm(model_name_or_path, lora_name_or_path, save_pa
                                                  trust_remote_code=True)
     model = PeftModel.from_pretrained(model, lora_name_or_path)
     model = model.merge_and_unload()
+    model._hf_peft_config_loaded = False
     model.save_pretrained(save_path)
 
     try:
