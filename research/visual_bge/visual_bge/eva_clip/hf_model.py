@@ -25,7 +25,7 @@ except ImportError as e:
     class PretrainedConfig:
         pass
 
-from .hf_configs import arch_dict
+from FlagEmbedding.research.visual_bge.visual_bge.eva_clip.hf_configs import arch_dict
 
 # utils
 def _camel2snake(s):
