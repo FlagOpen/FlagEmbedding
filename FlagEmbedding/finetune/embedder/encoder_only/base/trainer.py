@@ -35,9 +35,3 @@ class EncoderOnlyEmbedderTrainer(AbsEmbedderTrainer):
         self._save_processing_class(output_dir)
 
         torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
-
-        # save the checkpoint for sentence-transformers library
-        # if self.is_world_process_zero():
-        #     save_ckpt_for_sentence_transformers(output_dir,
-        #                                         pooling_mode=self.args.sentence_pooling_method,
-        #                                         normlized=self.args.normlized)

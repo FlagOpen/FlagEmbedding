@@ -1,13 +1,16 @@
-import os
 import logging
-from typing import Dict, List, Union, Any, Optional
+import os
+from typing import Any, Dict, List, Optional, Union
 
 import torch
-from torch import Tensor
 import torch.nn.functional as F
+from torch import Tensor
 from transformers import PreTrainedTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel, EmbedderOutput
+from FlagEmbedding.finetune.embedder.encoder_only.utils import (
+    save_sentence_transformers_config,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -513,6 +516,12 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             return state_dict
 
         self.model.save_pretrained(output_dir, state_dict=_trans_state_dict(self.model.state_dict()))
+        save_sentence_transformers_config(
+            output_dir,
+            self.model.config.hidden_size,
+            self.sentence_pooling_method,
+            self.normalize_embeddings,
+        )
 
         if self.unified_finetuning:
             torch.save(_trans_state_dict(self.colbert_linear.state_dict()),

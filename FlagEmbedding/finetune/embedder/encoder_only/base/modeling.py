@@ -5,6 +5,9 @@ import torch
 from transformers import AutoModel, PreTrainedModel, PreTrainedTokenizer
 
 from FlagEmbedding.abc.finetune.embedder import AbsEmbedderModel
+from FlagEmbedding.finetune.embedder.encoder_only.utils import (
+    save_sentence_transformers_config,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -204,3 +207,9 @@ class BiEncoderOnlyEmbedderModel(AbsEmbedderModel):
              for k,
              v in state_dict.items()})
         self.model.save_pretrained(output_dir, state_dict=state_dict)
+        save_sentence_transformers_config(
+            output_dir,
+            self.model.config.hidden_size,
+            self.sentence_pooling_method,
+            self.normalize_embeddings,
+        )

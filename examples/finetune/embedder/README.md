@@ -11,6 +11,7 @@ In this example, we show how to finetune the embedder with your data.
   - [(2) bge-m3](#2-bge-m3)
   - [(3) bge-multilingual-gemma2](#3-bge-multilingual-gemma2)
   - [(4) bge-en-icl](#4-bge-en-icl)
+- [4. Load an encoder checkpoint with Sentence Transformers](#4-load-an-encoder-checkpoint-with-sentence-transformers)
 
 ## 1. Installation
 
@@ -383,3 +384,20 @@ Here are some new arguments:
 - **`example_passage_max_len`**: The max length of example passage.
 - **`retrieval_use_examples`**: If passed, will use examples for retrieval.
 - **`icl_suffix_str`**: The suffix string for ICL dataset.
+
+## 4. Load an encoder checkpoint with Sentence Transformers
+
+Checkpoints saved by the standard encoder-only and BGE-M3 trainers include the
+Sentence Transformers configuration for their dense embeddings. Loading a checkpoint
+preserves its `sentence_pooling_method` and `normalize_embeddings` settings:
+
+```python
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer("./test_encoder_only_m3_bge-m3_sd")
+embeddings = model.encode(["Hello world", "A second passage"])
+```
+
+Apply the query instructions and sequence length limits used for your task when
+encoding. For BGE-M3 sparse and ColBERT representations, load the checkpoint with
+`BGEM3FlagModel`.
