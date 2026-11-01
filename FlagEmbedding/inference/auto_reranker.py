@@ -46,9 +46,10 @@ class FlagAutoReranker:
         Returns:
             AbsReranker: The reranker class to load model, which is child class of :class:`AbsReranker`.
         """
-        model_name = os.path.basename(model_name_or_path)
+        model_path = os.path.normpath(model_name_or_path)
+        model_name = os.path.basename(model_path)
         if model_name.startswith("checkpoint-"):
-            model_name = os.path.basename(os.path.dirname(model_name_or_path))
+            model_name = os.path.basename(os.path.dirname(model_path))
 
         if model_class is not None:
             _model_class = RERANKER_CLASS_MAPPING[RerankerModelClass(model_class)]
