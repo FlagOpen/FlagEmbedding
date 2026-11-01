@@ -59,9 +59,10 @@ class FlagAutoModel:
         Returns:
             AbsEmbedder: The model class to load model, which is child class of :class:`AbsEmbedder`.
         """
-        model_name = os.path.basename(model_name_or_path)
+        model_path = os.path.normpath(model_name_or_path)
+        model_name = os.path.basename(model_path)
         if model_name.startswith("checkpoint-"):
-            model_name = os.path.basename(os.path.dirname(model_name_or_path))
+            model_name = os.path.basename(os.path.dirname(model_path))
 
         if model_class is not None:
             _model_class = EMBEDDER_CLASS_MAPPING[EmbedderModelClass(model_class)]
