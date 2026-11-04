@@ -20,7 +20,7 @@ Multi-Linguality
 BGE-M3 was trained on multiple datasets covering up to 170+ different languages. 
 While the amount of training data on languages are highly unbalanced, the actual model performance on different languages will have difference.
 
-For more information of datasets and evaluation results, please check out our `paper <https://arxiv.org/pdf/2402.03216s>`_ for details.
+For more information of datasets and evaluation results, please check out our `paper <https://arxiv.org/pdf/2402.03216>`_ for details.
 
 Multi-Granularity
 =================
