@@ -1,6 +1,5 @@
 import math
 import torch
-import queue
 import logging
 import numpy as np
 from tqdm import tqdm, trange
@@ -10,6 +9,7 @@ from transformers import AutoTokenizer
 from typing import Any, List, Union, Dict, Literal, Tuple, Optional
 
 from FlagEmbedding.abc.inference import AbsEmbedder
+from FlagEmbedding.abc.inference._multi_process import collect_results, run_worker
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat
 from FlagEmbedding.finetune.embedder.encoder_only.m3 import (
     EncoderOnlyEmbedderM3ModelForInference, EncoderOnlyEmbedderM3Runner
@@ -547,6 +547,7 @@ class M3Embedder(AbsEmbedder):
         pool: Dict[Literal["input", "output", "processes"], Any],
         **kwargs
     ):
+        """Score chunks in order. A failed worker stops the supplied pool; recreate it before reuse."""
         chunk_size = math.ceil(len(sentence_pairs) / len(pool["processes"]))
 
         input_queue = pool["input"]
@@ -566,11 +567,7 @@ class M3Embedder(AbsEmbedder):
             input_queue.put([last_chunk_id, chunk, kwargs])
             last_chunk_id += 1
 
-        output_queue = pool["output"]
-        results_list = sorted(
-            [output_queue.get() for _ in trange(last_chunk_id, desc="Chunks")],
-            key=lambda x: x[0],
-        )
+        results_list = collect_results(self, pool, last_chunk_id)
 
         scores_dict = self._concatenate_compute_score_results_from_multi_process([result[1] for result in results_list])
         return scores_dict
@@ -583,20 +580,7 @@ class M3Embedder(AbsEmbedder):
         """
         Internal working process to encode sentences in multi-process setup
         """
-        while True:
-            try:
-                chunk_id, sentences, kwargs = (
-                    input_queue.get()
-                )
-                embeddings = model.compute_score_single_device(
-                    sentences,
-                    device=target_device,
-                    **kwargs
-                )
-
-                results_queue.put([chunk_id, embeddings])
-            except queue.Empty:
-                break
+        run_worker(model.compute_score_single_device, target_device, input_queue, results_queue)
 
     @torch.no_grad()
     def compute_score_single_device(
