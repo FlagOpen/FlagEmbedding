@@ -86,7 +86,7 @@ def started_pools():
             pass
 
 
-def invoke(call, started_pools):
+def invoke(call, started_pools, timeout=60, abort=None):
     """Bound a broken queue wait, including on the unfixed source."""
     outcome = queue.Queue()
 
@@ -98,11 +98,13 @@ def invoke(call, started_pools):
 
     thread = threading.Thread(target=run, daemon=True)
     thread.start()
-    thread.join(60)
+    thread.join(timeout)
     if thread.is_alive():
+        if abort is not None:
+            abort()
         # Release the old collector before failing, so the regression itself leaks no
         # blocked threads. Production queues and spawned workers are otherwise real.
-        for pool, _ in started_pools:
+        for pool, _ in started_pools if abort is None else []:
             try:
                 for chunk in range(2):
                     pool["output"].put([chunk, np.zeros((1, 1))])
@@ -132,6 +134,60 @@ def test_encode_worker_failure_and_recovery(started_pools, failure, message):
         actual = invoke(lambda: model.encode(["slow", "a", "abc"]), started_pools)
         np.testing.assert_array_equal(actual, [[4], [1], [3]])
         assert len(started_pools) == 2
+    finally:
+        model.stop_self_pool()
+
+
+def send_large_result(output):
+    output.put([0, np.zeros((8192, 1024), dtype=np.float32)])
+    # Keep the process alive while its Queue feeder transmits the result.
+    time.sleep(60)
+
+
+def hold_output_queue(output):
+    time.sleep(60)
+
+
+@pytest.mark.parametrize("terminate_sender", [False, True])
+def test_large_result_transfer(started_pools, terminate_sender):
+    ctx = mp.get_context("spawn")
+    output, inputs = ctx.Queue(), ctx.Queue()
+    worker = ctx.Process(target=send_large_result, args=(output,), daemon=True)
+    peer = ctx.Process(target=hold_output_queue, args=(output,), daemon=True)
+    worker.start()
+    peer.start()
+    pool = {"input": inputs, "output": output, "processes": [worker, peer]}
+    pids = [worker.pid, peer.pid]
+    started_pools.append((pool, pids))
+    model = ToyEmbedder()
+    model.pool = pool
+    try:
+        # A large frame cannot fit in the pipe. Kill its sender after the header
+        # arrives but before the collector starts consuming the remaining bytes.
+        assert output._reader.poll(30)
+        if terminate_sender:
+            worker.kill()
+            worker.join(5)
+            assert worker.exitcode is not None
+            assert peer.is_alive()
+
+            def abort_transfer():
+                peer.terminate()
+                peer.join(5)
+                output._writer.close()
+
+            with pytest.raises(RuntimeError, match="worker"):
+                invoke(
+                    lambda: model.encode_multi_process(["a"], pool), started_pools,
+                    timeout=5, abort=abort_transfer,
+                )
+            assert model.pool is None
+            assert not set(pids) & {p.pid for p in mp.active_children()}
+        else:
+            actual = invoke(lambda: model.encode_multi_process(["a"], pool), started_pools)
+            assert actual.shape == (8192, 1024)
+            assert not actual.any()
+        assert not any(t.name == "FlagEmbedding worker monitor" for t in threading.enumerate())
     finally:
         model.stop_self_pool()
 
@@ -210,4 +266,3 @@ def test_real_model_forward_failure_and_recovery(tmp_path, started_pools):
         assert not set(started_pools[0][1]) & {p.pid for p in mp.active_children()}
     finally:
         model.stop_self_pool()
-
