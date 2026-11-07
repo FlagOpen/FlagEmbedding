@@ -1,7 +1,6 @@
 from tqdm import tqdm, trange
 from typing import cast, Any, List, Union, Optional
 
-import queue
 from multiprocessing import Queue
 
 import gc
@@ -10,6 +9,7 @@ import numpy as np
 from transformers import AutoModel, AutoTokenizer
 
 from FlagEmbedding.abc.inference import AbsEmbedder
+from FlagEmbedding.abc.inference._multi_process import run_worker
 from FlagEmbedding.utils.tokenizer_compat import pad_with_compat
 
 
@@ -305,20 +305,7 @@ class ICLLLMEmbedder(AbsEmbedder):
         """
         Internal working process to encode sentences in multi-process setup
         """
-        while True:
-            try:
-                chunk_id, sentences, kwargs = (
-                    input_queue.get()
-                )
-                embeddings = model.encode_queries_single_device(
-                    sentences,
-                    device=target_device,
-                    **kwargs
-                )
-
-                results_queue.put([chunk_id, embeddings])
-            except queue.Empty:
-                break
+        run_worker(model.encode_queries_single_device, target_device, input_queue, results_queue)
 
     @torch.no_grad()
     def encode_queries_single_device(

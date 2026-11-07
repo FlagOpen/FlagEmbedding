@@ -9,13 +9,15 @@ import math
 import gc
 import torch
 import numpy as np
-from tqdm import tqdm, trange
+from tqdm import tqdm
 from transformers import is_torch_npu_available
 
 try:
     import torch_musa
 except Exception:
     pass
+
+from ._multi_process import collect_results, run_worker
 
 logger = logging.getLogger(__name__)
 
@@ -287,6 +289,7 @@ class AbsReranker(ABC):
         pool: Dict[Literal["input", "output", "processes"], Any],
         **kwargs
     ) -> np.ndarray:
+        """Score chunks in order. A failed worker stops the supplied pool; recreate it before reuse."""
         chunk_size = math.ceil(len(sentence_pairs) / len(pool["processes"]))
 
         input_queue = pool["input"]
@@ -306,11 +309,7 @@ class AbsReranker(ABC):
             input_queue.put([last_chunk_id, chunk, kwargs])
             last_chunk_id += 1
 
-        output_queue = pool["output"]
-        results_list = sorted(
-            [output_queue.get() for _ in trange(last_chunk_id, desc="Chunks")],
-            key=lambda x: x[0],
-        )
+        results_list = collect_results(self, pool, last_chunk_id)
         scores = np.concatenate([result[1] for result in results_list])
         return scores
 
@@ -322,20 +321,7 @@ class AbsReranker(ABC):
         """
         Internal working process to encode sentences in multi-process setup
         """
-        while True:
-            try:
-                chunk_id, sentences, kwargs = (
-                    input_queue.get()
-                )
-                embeddings = model.compute_score_single_gpu(
-                    sentences,
-                    device=target_device,
-                    **kwargs
-                )
-
-                results_queue.put([chunk_id, embeddings])
-            except:
-                break
+        run_worker(model.compute_score_single_gpu, target_device, input_queue, results_queue)
 
     # copied from https://github.com/UKPLab/sentence-transformers/blob/1802076d4eae42ff0a5629e1b04e75785d4e193b/sentence_transformers/SentenceTransformer.py#L857
     @staticmethod
