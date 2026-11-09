@@ -742,7 +742,12 @@ class M3Embedder(AbsEmbedder):
 
     @staticmethod
     def _colbert_token_maxima(queries: torch.Tensor, passages: torch.Tensor) -> torch.Tensor:
-        return torch.bmm(queries, passages.transpose(1, 2)).amax(dim=-1)
+        passage_tiles = iter(passages.transpose(1, 2).split(512, dim=-1))
+        maxima = torch.bmm(queries, next(passage_tiles)).amax(dim=-1)
+        for passage_tile in passage_tiles:
+            tile_maxima = torch.bmm(queries, passage_tile).amax(dim=-1)
+            maxima = torch.maximum(maxima, tile_maxima)
+        return maxima
 
     def _concatenate_results_from_multi_process(
         self,
