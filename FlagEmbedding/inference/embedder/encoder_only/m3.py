@@ -686,12 +686,26 @@ class M3Embedder(AbsEmbedder):
             p_dense_vecs, p_sparse_vecs, p_colbert_vecs = corpus_output['dense_vecs'], corpus_output['sparse_vecs'], \
             corpus_output['colbert_vecs']
 
-            dense_scores = self.model.compute_dense_score(q_dense_vecs, p_dense_vecs)
-            sparse_scores = self.model.compute_sparse_score(q_sparse_vecs, p_sparse_vecs)
-            colbert_scores = self.model.compute_colbert_score(
-                q_colbert_vecs, p_colbert_vecs,
-                q_mask=queries_inputs['attention_mask']
-            )
+            if hasattr(self.model, "compute_dense_score_pairwise"):
+                dense_scores = self.model.compute_dense_score_pairwise(q_dense_vecs, p_dense_vecs).float()
+                sparse_scores = self.model.compute_sparse_score_pairwise(q_sparse_vecs, p_sparse_vecs).float()
+                colbert_scores = self.model.compute_colbert_score_pairwise(
+                    q_colbert_vecs, p_colbert_vecs,
+                    q_mask=queries_inputs['attention_mask']
+                ).float()
+            else:
+                dense_scores = self.model.compute_dense_score(q_dense_vecs, p_dense_vecs)
+                sparse_scores = self.model.compute_sparse_score(q_sparse_vecs, p_sparse_vecs)
+                colbert_scores = self.model.compute_colbert_score(
+                    q_colbert_vecs, p_colbert_vecs,
+                    q_mask=queries_inputs['attention_mask']
+                )
+                inx = torch.arange(0, len(sentences_batch))
+                dense_scores, sparse_scores, colbert_scores = (
+                    dense_scores[inx, inx].float(),
+                    sparse_scores[inx, inx].float(),
+                    colbert_scores[inx, inx].float(),
+                )
 
             if weights_for_different_modes is None:
                 weights_for_different_modes = [1., 1., 1.]
@@ -700,10 +714,6 @@ class M3Embedder(AbsEmbedder):
             else:
                 assert len(weights_for_different_modes) == 3
                 weight_sum = sum(weights_for_different_modes)
-
-            inx = torch.arange(0, len(sentences_batch))
-            dense_scores, sparse_scores, colbert_scores = dense_scores[inx, inx].float(), sparse_scores[
-                inx, inx].float(), colbert_scores[inx, inx].float()
 
             all_scores['colbert'].extend(
                 self._convert_to_numpy(colbert_scores, device=device).tolist()
