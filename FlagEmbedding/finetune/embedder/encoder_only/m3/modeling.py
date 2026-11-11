@@ -236,6 +236,27 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         scores = scores / self.temperature
         return scores
 
+    def compute_dense_score_pairwise(self, q_reps, p_reps):
+        """Compute pairwise dense scores for corresponding query-passage pairs."""
+        scores = (q_reps * p_reps).sum(dim=-1) / self.temperature
+        return scores
+
+    def compute_sparse_score_pairwise(self, q_reps, p_reps):
+        """Compute pairwise sparse scores for corresponding query-passage pairs."""
+        scores = (q_reps * p_reps).sum(dim=-1) / self.temperature
+        return scores
+
+    def compute_colbert_score_pairwise(self, q_reps, p_reps, q_mask: torch.Tensor = None):
+        """Compute pairwise colbert scores for corresponding query-passage pairs."""
+        token_scores = torch.einsum('bin,bjn->bij', q_reps, p_reps)
+        scores, _ = token_scores.max(-1)
+        if q_mask is not None:
+            scores = scores.sum(1) / q_mask[:, 1:].sum(-1, keepdim=True).squeeze(-1)
+        else:
+            scores = scores.sum(1) / q_reps.size(1)
+        scores = scores / self.temperature
+        return scores
+
     def ensemble_score(self, q_reps, p_reps, dense_scores=None, sparse_scores=None, colbert_scores=None):
         """Compute the ensemble score of the three methods.
 
