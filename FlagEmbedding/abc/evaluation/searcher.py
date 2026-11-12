@@ -208,12 +208,14 @@ class EvalReranker:
             Example: {"q-0": {"doc-0": 0.9}}
         """
         # truncate search results to top_k
-        for qid in search_results:
-            search_results[qid] = dict(
+        search_results = {
+            qid: dict(
                 sorted(search_results[qid].items(), key=lambda x: x[1], reverse=True)[
                     :self.rerank_top_k
                 ]
             )
+            for qid in search_results
+        }
         # generate sentence pairs
         sentence_pairs = []
         pairs = []
