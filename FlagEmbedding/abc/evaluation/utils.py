@@ -139,10 +139,10 @@ def evaluate_metrics(
     )
 
     for k in k_values:
-        ndcg[f"NDCG@{k}"] = round(sum(ndcg[f"NDCG@{k}"]) / len(scores), 5)
-        _map[f"MAP@{k}"] = round(sum(_map[f"MAP@{k}"]) / len(scores), 5)
-        recall[f"Recall@{k}"] = round(sum(recall[f"Recall@{k}"]) / len(scores), 5)
-        precision[f"P@{k}"] = round(sum(precision[f"P@{k}"]) / len(scores), 5)
+        ndcg[f"NDCG@{k}"] = round(sum(ndcg[f"NDCG@{k}"]) / len(qrels), 5)
+        _map[f"MAP@{k}"] = round(sum(_map[f"MAP@{k}"]) / len(qrels), 5)
+        recall[f"Recall@{k}"] = round(sum(recall[f"Recall@{k}"]) / len(qrels), 5)
+        precision[f"P@{k}"] = round(sum(precision[f"P@{k}"]) / len(qrels), 5)
 
     return ndcg, _map, recall, precision
 
