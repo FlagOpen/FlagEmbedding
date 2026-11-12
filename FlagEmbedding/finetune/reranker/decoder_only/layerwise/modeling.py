@@ -40,7 +40,8 @@ class CrossDecoderModel(AbsRerankerModel):
         outputs = self.model(input_ids=features['input_ids'],
                              attention_mask=features['attention_mask'],
                              position_ids=features['position_ids'] if 'position_ids' in features.keys() else None,
-                             output_hidden_states=True)
+                             output_hidden_states=True,
+                             cutoff_layers=list(range(self.start_layer, self.model.config.num_hidden_layers + 1)))
         all_logits = outputs.logits
         all_scores = []
         for logits in all_logits:
