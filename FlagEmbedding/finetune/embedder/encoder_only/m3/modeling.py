@@ -324,6 +324,16 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
             dense_vecs = torch.cat(all_dense_vecs, 0)
             if self.unified_finetuning:
                 sparse_vecs = torch.cat(all_sparse_vecs, 0)
+                max_length = max(vecs.shape[1] for vecs in all_colbert_vecs)
+                all_colbert_vecs = [
+                    F.pad(
+                        vecs,
+                        (0, 0, max_length - vecs.shape[1], 0)
+                        if self.tokenizer.padding_side == 'left'
+                        else (0, 0, 0, max_length - vecs.shape[1]),
+                    )
+                    for vecs in all_colbert_vecs
+                ]
                 colbert_vecs = torch.cat(all_colbert_vecs, 0)
 
         if self.unified_finetuning:
@@ -357,7 +367,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
         if not isinstance(queries, list):
             q_mask = queries['attention_mask']
         else:
-            q_mask_list = [sub_features['attention_mask'] for sub_features in queries]
+            # Each ColBERT sub-batch has already discarded its first token.
+            q_mask_list = [sub_features['attention_mask'][:, 1:] for sub_features in queries]
             _length = max([mask.shape[1] for mask in q_mask_list])
             if self.tokenizer.padding_side == 'right':
                 q_mask = torch.cat([
@@ -369,6 +380,8 @@ class EncoderOnlyEmbedderM3Model(AbsEmbedderModel):
                     F.pad(mask, (_length - mask.shape[1], 0), value=0)
                     for mask in q_mask_list
                 ], dim=0)
+            # Preserve the full-mask interface consumed by compute_colbert_score.
+            q_mask = F.pad(q_mask, (1, 0), value=1)
         return q_mask
 
     def forward(
