@@ -65,25 +65,27 @@ class AbsRerankerModel(ABC, nn.Module):
         """
         pass
 
-    def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
+    def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None, group_size: Optional[int] = None):
         """The computation performed at every call.
 
         Args:
             pair (Union[Dict[str, Tensor], List[Dict[str, Tensor]]], optional): The query-document pair. Defaults to ``None``.
             teacher_scores (Optional[Tensor], optional): Teacher scores of knowledge distillation. Defaults to None.
+            group_size (Optional[int], optional): Number of passages per query. When omitted, use the configured training batch size.
 
         Returns:
             RerankerOutput: Output of reranker model.
         """
         ranker_logits = self.encode(pair) # (batch_size * num, dim)
+        batch_size = self.train_batch_size if group_size is None else ranker_logits.shape[0] // group_size
         if teacher_scores is not None:
             teacher_scores = torch.Tensor(teacher_scores)
-            teacher_targets = teacher_scores.view(self.train_batch_size, -1)
+            teacher_targets = teacher_scores.view(batch_size, -1)
             teacher_targets = torch.softmax(teacher_targets.detach(), dim=-1)
 
         if self.training:
-            grouped_logits = ranker_logits.view(self.train_batch_size, -1)
-            target = torch.zeros(self.train_batch_size, device=grouped_logits.device, dtype=torch.long)
+            grouped_logits = ranker_logits.view(batch_size, -1)
+            target = torch.zeros(batch_size, device=grouped_logits.device, dtype=torch.long)
             loss = self.compute_loss(grouped_logits, target)
             if teacher_scores is not None:
                 teacher_targets = teacher_targets.to(grouped_logits.device)

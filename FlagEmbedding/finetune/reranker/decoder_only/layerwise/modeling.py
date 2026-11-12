@@ -47,35 +47,36 @@ class CrossDecoderModel(AbsRerankerModel):
             all_scores.append(logits[:, -1].contiguous())
         return all_scores
 
-    def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None):
+    def forward(self, pair: Union[Dict[str, Tensor], List[Dict[str, Tensor]]] = None, teacher_scores: Optional[Tensor] = None, group_size: Optional[int] = None):
         ranker_logits = self.encode(pair) # (batch_size * num, dim)
+        batch_size = self.train_batch_size if group_size is None else ranker_logits[0].shape[0] // group_size
 
         if self.training:
             loss = 0
             for logits in ranker_logits:
-                grouped_logits = logits.view(self.train_batch_size, -1)
-                target = torch.zeros(self.train_batch_size, device=grouped_logits.device, dtype=torch.long)
+                grouped_logits = logits.view(batch_size, -1)
+                target = torch.zeros(batch_size, device=grouped_logits.device, dtype=torch.long)
                 loss += self.compute_loss(grouped_logits, target)
 
             if teacher_scores is None:
                 teacher_scores = ranker_logits[-1].view(
-                    self.train_batch_size,
+                    batch_size,
                     -1
                 )
                 teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1)
                 for logits in ranker_logits[:-1]:
                     student_scores = logits.view(
-                        self.train_batch_size,
+                        batch_size,
                         -1
                     )
                     loss += - torch.mean(torch.sum(torch.log_softmax(student_scores, dim=-1) * teacher_targets, dim=-1))
             else:
                 teacher_scores = torch.Tensor(teacher_scores)
-                teacher_scores = teacher_scores.view(self.train_batch_size, -1)
+                teacher_scores = teacher_scores.view(batch_size, -1)
                 teacher_targets = torch.softmax(teacher_scores.detach(), dim=-1).to(ranker_logits[-1].device)
                 for logits in ranker_logits:
                     student_scores = logits.view(
-                        self.train_batch_size,
+                        batch_size,
                         -1
                     )
                     loss += - torch.mean(torch.sum(torch.log_softmax(student_scores, dim=-1) * teacher_targets, dim=-1))
