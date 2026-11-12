@@ -141,6 +141,13 @@ class BiDecoderOnlyEmbedderModel(AbsEmbedderModel):
         else:
             raise NotImplementedError(f"pooling method {self.sentence_pooling_method} not implemented")
 
+    def compute_local_score(self, q_reps, p_reps, compute_score_func=None, **kwargs):
+        """Score only each query's own passage group without cross-query scores."""
+        if compute_score_func is not None or type(self).compute_score is not BiDecoderOnlyEmbedderModel.compute_score:
+            return super().compute_local_score(q_reps, p_reps, compute_score_func, **kwargs)
+        grouped_passages = p_reps.reshape(q_reps.size(0), -1, p_reps.size(-1))
+        return self.compute_score(q_reps.unsqueeze(1), grouped_passages)
+
     def compute_score(self, q_reps, p_reps):
         """Computes the scores between query and passage representations.
 
