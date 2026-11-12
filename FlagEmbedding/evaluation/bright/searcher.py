@@ -99,7 +99,13 @@ class BrightEvalDenseRetriever(EvalRetriever):
         torch.cuda.empty_cache()
 
         faiss_index = index(corpus_embeddings=corpus_emb)
-        all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
+        corpus_id_set = set(corpus_ids) - {"N/A"}
+        max_excluded = max(
+            (len(corpus_id_set.intersection(excluded_ids.get(qid, ()))) for qid in queries_ids),
+            default=0,
+        )
+        search_depth = min(len(corpus_ids), self.search_top_k + max_excluded + int(ignore_identical_ids))
+        all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=search_depth)
 
         results = {}
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):

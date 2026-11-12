@@ -143,7 +143,8 @@ class EvalDenseRetriever(EvalRetriever):
         torch.cuda.empty_cache()
 
         faiss_index = index(corpus_embeddings=corpus_emb)
-        all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=self.search_top_k)
+        search_depth = self.search_top_k + int(ignore_identical_ids)
+        all_scores, all_indices = search(query_embeddings=queries_emb, faiss_index=faiss_index, k=search_depth)
 
         results = {}
         for idx, (scores, indices) in enumerate(zip(all_scores, all_indices)):
@@ -152,6 +153,8 @@ class EvalDenseRetriever(EvalRetriever):
                 if indice != -1:
                     if ignore_identical_ids and corpus_ids[indice] == queries_ids[idx]:
                         continue
+                    if len(results[queries_ids[idx]]) >= self.search_top_k:
+                        break
                     results[queries_ids[idx]][corpus_ids[indice]] = float(score)
 
         return results
@@ -209,8 +212,11 @@ class EvalReranker:
         """
         # truncate search results to top_k
         for qid in search_results:
+            candidates = search_results[qid].items()
+            if ignore_identical_ids:
+                candidates = [(docid, score) for docid, score in candidates if docid != qid]
             search_results[qid] = dict(
-                sorted(search_results[qid].items(), key=lambda x: x[1], reverse=True)[
+                sorted(candidates, key=lambda x: x[1], reverse=True)[
                     :self.rerank_top_k
                 ]
             )
