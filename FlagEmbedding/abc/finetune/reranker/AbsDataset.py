@@ -44,7 +44,7 @@ class AbsRerankerTrainDataset(Dataset):
                 if len(temp_dataset) == 0: continue
                 train_datasets.append(temp_dataset)
             else:
-                for file in os.listdir(data_dir):
+                for file in sorted(os.listdir(data_dir)):
                     if not (file.endswith('.json') or file.endswith('.jsonl')): continue
                     temp_dataset = self._load_dataset(os.path.join(data_dir, file))
                     if len(temp_dataset) == 0: continue
