@@ -1,0 +1,14 @@
+[
+    {
+        "query": "How to handle onChange event in React when state changes programmatically?",
+        "response": "React onChange event not firing when state is updated programmatically"
+    },
+    {
+        "query": "How to simulate a click event on a button using JavaScript?",
+        "response": "JavaScript button click event simulation"
+    },
+    {
+        "query": "Python: How to run a function asynchronously using asyncio?",
+        "response": "Asyncio: Running Python function asynchronously"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "query": "What is my money worth in other countries?",
+        "response": "exchange_rate"
+    },
+    {
+        "query": "What can I do if my card still hasn't arrived after 2 weeks?",
+        "response": "card_arrival"
+    },
+    {
+        "query": "Would I be able to open an account for my daughter?",
+        "response": "age_limit"
+    },
+    {
+        "query": "My address details have changed and I want to update them",
+        "response": "edit_personal_details"
+    },
+    {
+        "query": "If my cash withdrawal is still not showing, is something wrong?",
+        "response": "pending_cash_withdrawal"
+    },
+    {
+        "query": "How long do transfers typically take? Is there a way of speeding the process up? My friend needs the money I sent her desperately.",
+        "response": "transfer_not_received_by_recipient"
+    }
+]

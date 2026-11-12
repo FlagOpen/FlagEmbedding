@@ -1,0 +1,14 @@
+[
+    {
+        "query": "The cat is lounging on the sunny windowsill.",
+        "response": "The feline is resting on the sunny windowsill."
+    },
+    {
+        "query": "A woman is reading a book while sitting on a bench.",
+        "response": "A lady is reading a book while seated on a bench."
+    },
+    {
+        "query": "The child is drawing with crayons on a piece of paper.",
+        "response": "The kid is using crayons to draw on a sheet of paper."
+    }
+]

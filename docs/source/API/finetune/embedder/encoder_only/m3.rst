@@ -1,0 +1,8 @@
+M3
+==
+
+.. toctree::
+    m3/arguments
+    m3/modeling
+    m3/runner
+    m3/trainer

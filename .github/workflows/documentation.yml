@@ -1,0 +1,33 @@
+name: documentation
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - name: Install doc dependencies
+        run: |
+          pip install . sphinx myst_parser myst-nb sphinx-design pydata-sphinx-theme sphinxcontrib-googleanalytics
+      - name: Install content dependencies
+        run: |
+          pip install faiss-cpu mteb air-benchmark beir
+      - name: Sphinx build
+        run: |
+          sphinx-build docs/source docs/build
+      - name: Add CNAME
+        run: |
+          echo bge-model.com > docs/build/CNAME
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/build/
+          force_orphan: true

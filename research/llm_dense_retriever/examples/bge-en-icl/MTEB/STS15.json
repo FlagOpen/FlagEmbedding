@@ -1,0 +1,18 @@
+[
+    {
+        "query": "The battery and bulb A are not in the same path",
+        "response": "Bulb A and the battery are not in the same circuit."
+    },
+    {
+        "query": "Switch Y and bulb B are in the same loop",
+        "response": "Switch Y and bulb B belong to the same circuit."
+    },
+    {
+        "query": "new york city marathon canceled due to hurricane sandy",
+        "response": "nyc marathon canceled because of hurricane sandy"
+    },
+    {
+        "query": "pope francis calls for peace in syria during sunday address",
+        "response": "pope francis appeals for peace in syria in his sunday speech"
+    }
+]

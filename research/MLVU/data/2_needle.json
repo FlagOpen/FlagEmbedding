@@ -1,0 +1,4617 @@
+[
+    {
+        "video": "needle_32.mp4",
+        "duration": 467.98,
+        "question": "What does the hand coming out of the computer do?",
+        "candidates": [
+            "Delivers a product",
+            "Shakes the woman's hand",
+            "Takes the woman's credit card",
+            "Points at something on the screen"
+        ],
+        "answer": "Delivers a product",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_38.mp4",
+        "duration": 1506.62,
+        "question": "What is a popular activity on the beach during the monsoon season?",
+        "candidates": [
+            "Picnicking",
+            "Surfing",
+            "Playing volleyball",
+            "Fishing"
+        ],
+        "answer": "Fishing",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_147.mp4",
+        "duration": 622.0,
+        "question": "Where is the senior businessman having a serious conversation on the cell phone?",
+        "candidates": [
+            "By the sea shore",
+            "In a park",
+            "In his office",
+            "At a restaurant"
+        ],
+        "answer": "By the sea shore",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_33.mp4",
+        "duration": 467.89000000000004,
+        "question": "What is the woman's appearance?",
+        "candidates": [
+            "She is an elderly woman",
+            "She is a young girl",
+            "She is a middle-aged woman",
+            "She is a beautiful woman"
+        ],
+        "answer": "She is a beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_119.mp4",
+        "duration": 766.14,
+        "question": "Where is the basketball court located in the video?",
+        "candidates": [
+            "In a school",
+            "In a park",
+            "In a gym",
+            "On a cruise ship"
+        ],
+        "answer": "On a cruise ship",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_126.mp4",
+        "duration": 6008.08,
+        "question": "What color is the water on the tropical beach in the video?",
+        "candidates": [
+            "Dark blue",
+            "Clear",
+            "Green",
+            "Azure blue"
+        ],
+        "answer": "Azure blue",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_142.mp4",
+        "duration": 612.03,
+        "question": "What is at the remembrance war memorial in Toronto, Canada?",
+        "candidates": [
+            "A fountain",
+            "Thousands of Canadian flags",
+            "A large statue of a horse",
+            "A large statue of a soldier"
+        ],
+        "answer": "Thousands of Canadian flags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_29.mp4",
+        "duration": 461.57,
+        "question": "What are the little girl and her grandmother doing together?",
+        "candidates": [
+            "Watching TV",
+            "Reading a children's book",
+            "Playing a game",
+            "Eating dinner"
+        ],
+        "answer": "Reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_104.mp4",
+        "duration": 635.6,
+        "question": "What is the obstacle in the middle of the road as the car with a broken windshield rides through the mountain country village?",
+        "candidates": [
+            "A flock of sheep",
+            "A fallen tree",
+            "A group of people",
+            "A cow"
+        ],
+        "answer": "A cow",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_36.mp4",
+        "duration": 478.7,
+        "question": "What type of view is provided of the tropical beach in the video?",
+        "candidates": [
+            "Close-up view",
+            "Bottom-up view",
+            "Top down aerial view",
+            "Side view"
+        ],
+        "answer": "Top down aerial view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_20.mp4",
+        "duration": 458.58,
+        "question": "What is the weather like as the car with a broken windshield rides through the mountain country village?",
+        "candidates": [
+            "Autumn rainy day",
+            "Winter snowy day",
+            "Spring cloudy day",
+            "Summer sunny day"
+        ],
+        "answer": "Summer sunny day",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_120.mp4",
+        "duration": 341.5,
+        "question": "Who is the little girl reading a book with?",
+        "candidates": [
+            "Her friend",
+            "Her grandmother",
+            "Her teacher",
+            "Her brother"
+        ],
+        "answer": "Her grandmother",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_20.mp4",
+        "duration": 458.58,
+        "question": "From whose perspective is the scene of the car with a broken windshield riding through the mountain country village viewed?",
+        "candidates": [
+            "Pedestrian's view",
+            "Driver's view",
+            "Bird's eye view",
+            "Backseat passenger's view"
+        ],
+        "answer": "Backseat passenger's view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_138.mp4",
+        "duration": 762.02,
+        "question": "What are the two young women wearing in the street?",
+        "candidates": [
+            "Trendy summer clothes",
+            "Swimwear",
+            "Formal attire",
+            "Winter clothes"
+        ],
+        "answer": "Trendy summer clothes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_20.mp4",
+        "duration": 458.58,
+        "question": "What is the obstacle in the middle of the road as the car with a broken windshield rides through the mountain country village?",
+        "candidates": [
+            "A group of people",
+            "A fallen tree",
+            "A flock of sheep",
+            "A cow"
+        ],
+        "answer": "A cow",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_51.mp4",
+        "duration": 1504.7,
+        "question": "What nationality are the kids having fun in the paddy field?",
+        "candidates": [
+            "American",
+            "Malays",
+            "Chinese",
+            "Indian"
+        ],
+        "answer": "Malays",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_20.mp4",
+        "duration": 458.58,
+        "question": "What is the condition of the car's windshield as it rides through the mountain country village?",
+        "candidates": [
+            "The windshield is foggy",
+            "The windshield is covered in snow",
+            "The windshield is broken",
+            "The windshield is clean"
+        ],
+        "answer": "The windshield is broken",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_19.mp4",
+        "duration": 464.0,
+        "question": "What is the setting of the segment where people tourists are walking?",
+        "candidates": [
+            "A quiet forest",
+            "A bustling city",
+            "A beautiful fishing village",
+            "A crowded beach"
+        ],
+        "answer": "A beautiful fishing village",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_19.mp4",
+        "duration": 464.0,
+        "question": "Where are the people tourists walking?",
+        "candidates": [
+            "On a beach",
+            "In a forest",
+            "On the embankment in a fishing village",
+            "In a city"
+        ],
+        "answer": "On the embankment in a fishing village",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_106.mp4",
+        "duration": 744.44,
+        "question": "What are the young mother and her son doing outdoors in the video?",
+        "candidates": [
+            "They are having a picnic",
+            "They are making a snowman",
+            "They are playing with snow",
+            "They are decorating a Christmas tree"
+        ],
+        "answer": "They are decorating a Christmas tree",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_27.mp4",
+        "duration": 469.20000000000005,
+        "question": "What is attached to the ears of the black cows eating hay at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Blue tags",
+            "Red tags",
+            "Yellow tags",
+            "Nothing"
+        ],
+        "answer": "Yellow tags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_19.mp4",
+        "duration": 464.0,
+        "question": "What activity are the people tourists engaged in at the fishing village?",
+        "candidates": [
+            "Fishing",
+            "Sightseeing",
+            "Swimming",
+            "Walking the embankment"
+        ],
+        "answer": "Walking the embankment",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_54.mp4",
+        "duration": 469.72,
+        "question": "What is the serious older mature businesswoman writing on the whiteboard?",
+        "candidates": [
+            "Her personal diary",
+            "A poem",
+            "Notes",
+            "A novel"
+        ],
+        "answer": "Notes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_33.mp4",
+        "duration": 467.89000000000004,
+        "question": "What is the woman's reaction when the hand comes out of the computer?",
+        "candidates": [
+            "She is surprised",
+            "She is not surprised",
+            "She laughs",
+            "She screams"
+        ],
+        "answer": "She is surprised",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_18.mp4",
+        "duration": 494.0,
+        "question": "Where are the people tourists walking?",
+        "candidates": [
+            "In a city",
+            "In a forest",
+            "On the embankment in a fishing village",
+            "On a beach"
+        ],
+        "answer": "On the embankment in a fishing village",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_146.mp4",
+        "duration": 399.38,
+        "question": "What tool is being used by the dentist and his assistant while treating the patient's teeth in the video segment?",
+        "candidates": [
+            "Dental drill",
+            "Face bow",
+            "Dental scaler",
+            "Dental mirror"
+        ],
+        "answer": "Face bow",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_69.mp4",
+        "duration": 461.04,
+        "question": "What season is it when the little Asian girl in a bikini is creating sand piles on the beach at sunset?",
+        "candidates": [
+            "Autumn",
+            "Winter",
+            "Summer",
+            "Spring"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_18.mp4",
+        "duration": 494.0,
+        "question": "What activity are the people tourists engaged in at the fishing village?",
+        "candidates": [
+            "Swimming",
+            "Fishing",
+            "Walking the embankment",
+            "Sightseeing"
+        ],
+        "answer": "Walking the embankment",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_4.mp4",
+        "duration": 510.0,
+        "question": "What is the man in the black silhouette wearing on the lake shore?",
+        "candidates": [
+            "A hat",
+            "A hood",
+            "A suit",
+            "A swimsuit"
+        ],
+        "answer": "A hood",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_4.mp4",
+        "duration": 510.0,
+        "question": "What season is it when the man in the black silhouette is on the lake shore?",
+        "candidates": [
+            "Summer",
+            "Winter",
+            "Autumn",
+            "Spring"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_78.mp4",
+        "duration": 588.31,
+        "question": "What part of the doctor's face is shown in closeup in the video?",
+        "candidates": [
+            "Eye",
+            "Ear",
+            "Mouth",
+            "Nose"
+        ],
+        "answer": "Eye",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_97.mp4",
+        "duration": 473.59000000000003,
+        "question": "What devices are the couple using while sitting on the couch?",
+        "candidates": [
+            "Tablet and phone",
+            "Phone and TV",
+            "Laptop and phone",
+            "Laptop and TV"
+        ],
+        "answer": "Laptop and phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_4.mp4",
+        "duration": 510.0,
+        "question": "What is the man in the black silhouette holding on the lake shore?",
+        "candidates": [
+            "A fishing rod",
+            "A book",
+            "A controller",
+            "A beach ball"
+        ],
+        "answer": "A controller",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_29.mp4",
+        "duration": 461.57,
+        "question": "Who is the little girl sitting on while they read a children's book?",
+        "candidates": [
+            "Her mother",
+            "Her sister",
+            "Her father",
+            "Her grandmother"
+        ],
+        "answer": "Her grandmother",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_4.mp4",
+        "duration": 510.0,
+        "question": "What is the man in the video doing on the lake shore during the sunny summer?",
+        "candidates": [
+            "Fishing",
+            "Catching the drone",
+            "Launching the drone",
+            "Sunbathing"
+        ],
+        "answer": "Catching a flying drone quadcopter",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_104.mp4",
+        "duration": 635.6,
+        "question": "What is the condition of the car's windshield as it rides through the mountain country village?",
+        "candidates": [
+            "The windshield is covered in snow",
+            "The windshield is foggy",
+            "The windshield is broken",
+            "The windshield is clean"
+        ],
+        "answer": "The windshield is broken",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_3.mp4",
+        "duration": 496.21999999999997,
+        "question": "What is the gender of the patient the young attractive hispanic medical doctor is discussing health issues with?",
+        "candidates": [
+            "Not specified",
+            "Female",
+            "Male",
+            "Both male and female"
+        ],
+        "answer": "Female",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_120.mp4",
+        "duration": 341.5,
+        "question": "What is the activity involving the little girl and her grandmother?",
+        "candidates": [
+            "They are painting",
+            "They are gardening",
+            "They are cooking",
+            "They are reading a children's book"
+        ],
+        "answer": "They are reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_52.mp4",
+        "duration": 1507.07,
+        "question": "Where is the remembrance war memorial with thousands of Canadian flags located?",
+        "candidates": [
+            "New York, USA",
+            "London, UK",
+            "Toronto, Canada",
+            "Vancouver, Canada"
+        ],
+        "answer": "Toronto, Canada",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_3.mp4",
+        "duration": 496.21999999999997,
+        "question": "Where is the young attractive hispanic medical doctor discussing health issues with the senior patient?",
+        "candidates": [
+            "In a park",
+            "Inside office",
+            "In a hospital ward",
+            "At the patient's home"
+        ],
+        "answer": "Inside office",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_138.mp4",
+        "duration": 762.02,
+        "question": "What are the two young women doing on the bench in the street?",
+        "candidates": [
+            "Sleeping",
+            "Running",
+            "Eating",
+            "Communicating"
+        ],
+        "answer": "Communicating",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_92.mp4",
+        "duration": 458.13,
+        "question": "What is the woman wearing during the summer sunset?",
+        "candidates": [
+            "A winter coat",
+            "A dress and heels",
+            "A swimsuit",
+            "A hat and sunglasses"
+        ],
+        "answer": "A hat and sunglasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_3.mp4",
+        "duration": 496.21999999999997,
+        "question": "Who is the young attractive hispanic medical doctor discussing health issues with?",
+        "candidates": [
+            "A colleague",
+            "A male patient",
+            "A senior patient",
+            "A child patient"
+        ],
+        "answer": "A senior patient",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_3.mp4",
+        "duration": 496.21999999999997,
+        "question": "What is the ethnicity of the young medical doctor discussing health issues with the senior patient?",
+        "candidates": [
+            "Caucasian",
+            "Hispanic",
+            "African",
+            "Asian"
+        ],
+        "answer": "Hispanic",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_50.mp4",
+        "duration": 458.64,
+        "question": "What nationality are the kids having fun in the paddy field?",
+        "candidates": [
+            "Indian",
+            "Chinese",
+            "American",
+            "Malays"
+        ],
+        "answer": "Malays",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_116.mp4",
+        "duration": 343.07,
+        "question": "What type of vehicle is on the side of the desert highway for green screen or chroma key?",
+        "candidates": [
+            "A motorcycle",
+            "An SUV",
+            "A sedan",
+            "A pickup truck"
+        ],
+        "answer": "An SUV",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_143.mp4",
+        "duration": 624.8699999999999,
+        "question": "What does the hand coming out of the computer do?",
+        "candidates": [
+            "Delivers a product",
+            "Takes the woman's credit card",
+            "Points at something on the screen",
+            "Shakes the woman's hand"
+        ],
+        "answer": "Delivers a product",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_67.mp4",
+        "duration": 475.2,
+        "question": "What can be seen in the background of the power plant block in the video?",
+        "candidates": [
+            "Power poles and chimneys",
+            "Mountains",
+            "Cityscape",
+            "Forest"
+        ],
+        "answer": "Power poles and chimneys",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_139.mp4",
+        "duration": 239.06,
+        "question": "What is the habitat of the blue fin trevally shown in the video?",
+        "candidates": [
+            "Open ocean",
+            "Coral reef",
+            "Mangrove forest",
+            "Freshwater river"
+        ],
+        "answer": "Coral reef",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_94.mp4",
+        "duration": 857.22,
+        "question": "What is the female potter's position while stirring paint?",
+        "candidates": [
+            "Lying down",
+            "Kneeling",
+            "Sitting",
+            "Standing"
+        ],
+        "answer": "Sitting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_26.mp4",
+        "duration": 469.08,
+        "question": "What season is it when the black cows with yellow tags on their ears are eating hay at the farm outdoors?",
+        "candidates": [
+            "Autumn",
+            "Spring",
+            "Winter",
+            "Summer"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_88.mp4",
+        "duration": 456.0,
+        "question": "What logo is displayed on the screen in the meeting room?",
+        "candidates": [
+            "Microsoft",
+            "Google",
+            "The Goldman Sachs Group",
+            "Apple"
+        ],
+        "answer": "The Goldman Sachs Group",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_48.mp4",
+        "duration": 490.01,
+        "question": "What is the ethnicity of the children playing game on mobile phone in the video?",
+        "candidates": [
+            "Asian",
+            "African",
+            "Hispanic",
+            "Caucasian"
+        ],
+        "answer": "Asian",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_76.mp4",
+        "duration": 1522.71,
+        "question": "What is the chef doing with the lobster in the dinner preparation?",
+        "candidates": [
+            "Boiling",
+            "Grilling",
+            "Baking",
+            "Cutting"
+        ],
+        "answer": "Cutting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_96.mp4",
+        "duration": 503.59,
+        "question": "What is the ethnicity of the couple?",
+        "candidates": [
+            "Multiethnic",
+            "Caucasian",
+            "African",
+            "Asian"
+        ],
+        "answer": "Multiethnic",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_28.mp4",
+        "duration": 461.48,
+        "question": "Who is the little girl sitting on while they read a children's book?",
+        "candidates": [
+            "Her sister",
+            "Her mother",
+            "Her father",
+            "Her grandmother"
+        ],
+        "answer": "Her grandmother",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_119.mp4",
+        "duration": 766.14,
+        "question": "What is happening to the net on the basketball field in the video?",
+        "candidates": [
+            "The sea wind is pumping it",
+            "It is being replaced",
+            "It is being painted",
+            "It is being cut"
+        ],
+        "answer": "The sea wind is pumping it",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_42.mp4",
+        "duration": 470.05,
+        "question": "What is the purpose of the SUV being on the side of the desert highway?",
+        "candidates": [
+            "For a car show",
+            "For a road trip",
+            "For a car race",
+            "For green screen or chroma key"
+        ],
+        "answer": "For green screen or chroma key",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_50.mp4",
+        "duration": 458.64,
+        "question": "What are the two kids doing in the paddy field?",
+        "candidates": [
+            "Studying",
+            "Sleeping",
+            "Having fun",
+            "Playing football"
+        ],
+        "answer": "Having fun",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_67.mp4",
+        "duration": 475.2,
+        "question": "What is rising to the sky in the video segment of the power plant block?",
+        "candidates": [
+            "Smoke",
+            "Birds",
+            "Balloons",
+            "Water vapor"
+        ],
+        "answer": "Water vapor",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_98.mp4",
+        "duration": 461.7,
+        "question": "What is the young girl in the tracksuit doing on a rug in the park?",
+        "candidates": [
+            "Reading a book",
+            "Having a picnic",
+            "Doing yoga",
+            "Playing soccer"
+        ],
+        "answer": "Doing yoga",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_115.mp4",
+        "duration": 6559.77,
+        "question": "What is the team of scientists doing in the laboratory room?",
+        "candidates": [
+            "Conducting a physics experiment",
+            "Researching sample test with protection equipment and glasses",
+            "Teaching a class",
+            "Having a meeting"
+        ],
+        "answer": "Researching sample test with protection equipment and glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_94.mp4",
+        "duration": 857.22,
+        "question": "Where is the cup that the female potter is stirring paint in?",
+        "candidates": [
+            "On the floor",
+            "On the table",
+            "On the shelf",
+            "In her hand"
+        ],
+        "answer": "On the table",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_26.mp4",
+        "duration": 469.08,
+        "question": "What is attached to the ears of the black cows eating hay at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Yellow tags",
+            "Blue tags",
+            "Nothing",
+            "Red tags"
+        ],
+        "answer": "Yellow tags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_44.mp4",
+        "duration": 470.52,
+        "question": "What is being transferred to the beaker in the laboratory?",
+        "candidates": [
+            "Solid substance",
+            "Gas",
+            "Nothing",
+            "Liquid tester"
+        ],
+        "answer": "Liquid tester",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_138.mp4",
+        "duration": 762.02,
+        "question": "What accessory are the two young women wearing while sitting on the bench in the street?",
+        "candidates": [
+            "Sunglasses",
+            "Gloves",
+            "Hats",
+            "Scarves"
+        ],
+        "answer": "Sunglasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_62.mp4",
+        "duration": 497.05,
+        "question": "What is the young beautiful woman looking at while preparing for the new year?",
+        "candidates": [
+            "She is looking at the christmas lights",
+            "She is looking at the christmas stockings",
+            "She is looking at the presents",
+            "She is looking at the golden christmas toy"
+        ],
+        "answer": "She is looking at the golden christmas toy",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_68.mp4",
+        "duration": 1367.32,
+        "question": "What season is it when the little Asian girl in a bikini is creating sand piles on the beach at sunset?",
+        "candidates": [
+            "Autumn",
+            "Winter",
+            "Summer",
+            "Spring"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_116.mp4",
+        "duration": 343.07,
+        "question": "What is the purpose of the SUV being on the side of the desert highway?",
+        "candidates": [
+            "For green screen or chroma key",
+            "For a car race",
+            "For a road trip",
+            "For a car show"
+        ],
+        "answer": "For green screen or chroma key",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_40.mp4",
+        "duration": 477.20000000000005,
+        "question": "What is the nature of the den where the American toad is sitting in the video?",
+        "candidates": [
+            "Water cavity",
+            "Wooden cavity",
+            "Stone cavity",
+            "Earthen cavity"
+        ],
+        "answer": "Earthen cavity",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_96.mp4",
+        "duration": 503.59,
+        "question": "What devices are the couple using while sitting on the couch?",
+        "candidates": [
+            "Phone and TV",
+            "Tablet and phone",
+            "Laptop and phone",
+            "Laptop and TV"
+        ],
+        "answer": "Laptop and phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_46.mp4",
+        "duration": 461.25,
+        "question": "What event are the students celebrating in the park?",
+        "candidates": [
+            "Admission",
+            "Birthday",
+            "Promotion",
+            "Graduation"
+        ],
+        "answer": "Graduation",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_113.mp4",
+        "duration": 5604.42,
+        "question": "What are the volunteers searching for during the simulation drill?",
+        "candidates": [
+            "Survivors of a natural disaster",
+            "Rocket attack casualties",
+            "Hidden treasure",
+            "Lost items"
+        ],
+        "answer": "Rocket attack casualties",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_132.mp4",
+        "duration": 558.0699999999999,
+        "question": "What is the young beautiful woman looking at while preparing for the new year?",
+        "candidates": [
+            "She is looking at the presents",
+            "She is looking at the golden christmas toy",
+            "She is looking at the christmas lights",
+            "She is looking at the christmas stockings"
+        ],
+        "answer": "She is looking at the golden christmas toy",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_64.mp4",
+        "duration": 470.88,
+        "question": "What season is depicted in the video segment where the forest fire is happening?",
+        "candidates": [
+            "Spring season",
+            "Dry season",
+            "Winter season",
+            "Rainy season"
+        ],
+        "answer": "Dry season",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_70.mp4",
+        "duration": 464.76,
+        "question": "What is the weather like when the tourists are strolling in the Plaza de Espana in Seville?",
+        "candidates": [
+            "Cloudy",
+            "Snowy",
+            "Rainy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_59.mp4",
+        "duration": 460.02000000000004,
+        "question": "What is the gender of the patient receiving the microblasting routine in the video?",
+        "candidates": [
+            "Not specified",
+            "Both male and female",
+            "Female",
+            "Male"
+        ],
+        "answer": "Female",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_49.mp4",
+        "duration": 460.01,
+        "question": "What is the child doing at home in the video?",
+        "candidates": [
+            "Playing with toys",
+            "Playing game on mobile phone",
+            "Sleeping",
+            "Eating"
+        ],
+        "answer": "Playing game on mobile phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_66.mp4",
+        "duration": 475.20000000000005,
+        "question": "What is rising to the sky in the video segment of the power plant block?",
+        "candidates": [
+            "Smoke",
+            "Balloons",
+            "Water vapor",
+            "Birds"
+        ],
+        "answer": "Water vapor",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_17.mp4",
+        "duration": 867.89,
+        "question": "What does the Jack Russell dog want to do while being stroked by the owner in sports boots?",
+        "candidates": [
+            "Play fetch",
+            "Run away",
+            "Sleep",
+            "Eat"
+        ],
+        "answer": "Run away",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_84.mp4",
+        "duration": 505.83000000000004,
+        "question": "What is the profession of the person who begins work with the drawings in the video?",
+        "candidates": [
+            "Artist",
+            "Engineer",
+            "Doctor",
+            "Teacher"
+        ],
+        "answer": "Engineer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_17.mp4",
+        "duration": 867.89,
+        "question": "What is the owner wearing while stroking his Jack Russell dog?",
+        "candidates": [
+            "Flip flops",
+            "Sports boots",
+            "Sneakers",
+            "Barefoot"
+        ],
+        "answer": "Sports boots",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_17.mp4",
+        "duration": 867.89,
+        "question": "What type of dog is the owner in sports boots stroking?",
+        "candidates": [
+            "Jack Russell",
+            "German Shepherd",
+            "Golden Retriever",
+            "Bulldog"
+        ],
+        "answer": "Jack Russell",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_138.mp4",
+        "duration": 762.02,
+        "question": "What is the mood of the two young women sitting on the bench in the street?",
+        "candidates": [
+            "Sad",
+            "Positive",
+            "Angry",
+            "Indifferent"
+        ],
+        "answer": "Positive",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_93.mp4",
+        "duration": 458.01,
+        "question": "What is the woman doing during the summer sunset?",
+        "candidates": [
+            "Taking a moment to enjoy life",
+            "Reading a book",
+            "Having a picnic",
+            "Swimming in the sea"
+        ],
+        "answer": "Taking a moment to enjoy life",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_16.mp4",
+        "duration": 467.08,
+        "question": "What does the Jack Russell dog want to do while being stroked by the owner in sports boots?",
+        "candidates": [
+            "Run away",
+            "Play fetch",
+            "Eat",
+            "Sleep"
+        ],
+        "answer": "Run away",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_16.mp4",
+        "duration": 467.08,
+        "question": "What is the owner wearing while stroking his Jack Russell dog?",
+        "candidates": [
+            "Sneakers",
+            "Barefoot",
+            "Flip flops",
+            "Sports boots"
+        ],
+        "answer": "Sports boots",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_16.mp4",
+        "duration": 467.08,
+        "question": "What type of dog is the owner in sports boots stroking?",
+        "candidates": [
+            "Jack Russell",
+            "German Shepherd",
+            "Golden Retriever",
+            "Bulldog"
+        ],
+        "answer": "Jack Russell",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_40.mp4",
+        "duration": 477.20000000000005,
+        "question": "What is the American toad doing at the mouth of the den in the video?",
+        "candidates": [
+            "Jumping",
+            "Sleeping",
+            "Eating",
+            "Breathing and waiting"
+        ],
+        "answer": "Breathing and waiting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_86.mp4",
+        "duration": 470.40999999999997,
+        "question": "What is the mood of the boy walking in the water with colorful party balloons?",
+        "candidates": [
+            "Happy",
+            "Sad",
+            "Confused",
+            "Angry"
+        ],
+        "answer": "Happy",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_15.mp4",
+        "duration": 498.41999999999996,
+        "question": "Who are decorating the Christmas tree outdoors in the video?",
+        "candidates": [
+            "A young mother and her daughter",
+            "An elderly couple",
+            "A young mother and her son",
+            "A young father and his son"
+        ],
+        "answer": "A young mother and her son",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_35.mp4",
+        "duration": 455.36,
+        "question": "What are the dentist and his assistant doing to the patient's teeth in the video segment?",
+        "candidates": [
+            "Cleaning",
+            "Extracting",
+            "Treating",
+            "Whitening"
+        ],
+        "answer": "Treating",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_41.mp4",
+        "duration": 477.07,
+        "question": "What is the state of movement of the American toad at the mouth of the den in the video?",
+        "candidates": [
+            "Very little movement",
+            "No movement at all",
+            "Moderate movement",
+            "Constant movement"
+        ],
+        "answer": "Very little movement",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_59.mp4",
+        "duration": 460.02000000000004,
+        "question": "What procedure is the female employee of the cosmetology clinic performing on the patient?",
+        "candidates": [
+            "Haircut",
+            "Microblasting",
+            "Manicure",
+            "Facial"
+        ],
+        "answer": "Microblasting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_89.mp4",
+        "duration": 456.0,
+        "question": "What logo is displayed on the screen in the meeting room?",
+        "candidates": [
+            "Microsoft",
+            "Google",
+            "The Goldman Sachs Group",
+            "Apple"
+        ],
+        "answer": "The Goldman Sachs Group",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_83.mp4",
+        "duration": 464.38,
+        "question": "What is the man's age?",
+        "candidates": [
+            "Mature",
+            "Teenager",
+            "Elderly",
+            "Child"
+        ],
+        "answer": "Mature",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_106.mp4",
+        "duration": 744.44,
+        "question": "Who are decorating the Christmas tree outdoors in the video?",
+        "candidates": [
+            "A young father and his son",
+            "A young mother and her daughter",
+            "A young mother and her son",
+            "An elderly couple"
+        ],
+        "answer": "A young mother and her son",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_54.mp4",
+        "duration": 469.72,
+        "question": "What is the older mature businesswoman holding while working on corporate strategy in office?",
+        "candidates": [
+            "A cup of coffee",
+            "A mobile phone",
+            "A laptop",
+            "A marker"
+        ],
+        "answer": "A marker",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_43.mp4",
+        "duration": 1516.18,
+        "question": "What is the condition of the highway where the SUV is parked for green screen or chroma key?",
+        "candidates": [
+            "Under construction",
+            "Empty",
+            "Busy with traffic",
+            "Flooded"
+        ],
+        "answer": "Empty",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_61.mp4",
+        "duration": 496.97999999999996,
+        "question": "What is the appearance of the senior businessman by the sea shore?",
+        "candidates": [
+            "Formal with a suit",
+            "Posh looking with glasses",
+            "Sporty with a tracksuit",
+            "Casual with a hat"
+        ],
+        "answer": "Posh looking with glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_109.mp4",
+        "duration": 6005.21,
+        "question": "What does the engineer begin to work with in the video?",
+        "candidates": [
+            "Drawings",
+            "Computer Codes",
+            "Blueprints",
+            "3D Models"
+        ],
+        "answer": "Drawings",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_32.mp4",
+        "duration": 467.98,
+        "question": "What is the woman's appearance?",
+        "candidates": [
+            "She is a middle-aged woman",
+            "She is an elderly woman",
+            "She is a beautiful woman",
+            "She is a young girl"
+        ],
+        "answer": "She is a beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_86.mp4",
+        "duration": 470.40999999999997,
+        "question": "What is the kid doing with the colorful party balloons in the video?",
+        "candidates": [
+            "Sitting on the sand",
+            "Swimming in the pool",
+            "Running on the beach",
+            "Walking in the water"
+        ],
+        "answer": "Walking in the water",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_39.mp4",
+        "duration": 583.8199999999999,
+        "question": "What season is it when the silhouette fishermen are fishing on the beach?",
+        "candidates": [
+            "Winter",
+            "Spring",
+            "Monsoon",
+            "Summer"
+        ],
+        "answer": "Monsoon",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_56.mp4",
+        "duration": 462.1,
+        "question": "What is the woman doing in the garment factory?",
+        "candidates": [
+            "She is designing clothes",
+            "She is managing the factory",
+            "She is working on the production line",
+            "She is selling clothes"
+        ],
+        "answer": "She is working on the production line",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_63.mp4",
+        "duration": 467.04999999999995,
+        "question": "What type of christmas toy is the young beautiful woman hanging on the christmas tree?",
+        "candidates": [
+            "A silver christmas toy",
+            "A golden christmas toy",
+            "A red christmas toy",
+            "A blue christmas toy"
+        ],
+        "answer": "A golden christmas toy",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_81.mp4",
+        "duration": 463.1,
+        "question": "What happens to the egg when it falls on the glass floor in the video?",
+        "candidates": [
+            "It breaks and makes a mess",
+            "Nothing happens to it",
+            "It cracks but doesn't break",
+            "It bounces back"
+        ],
+        "answer": "It breaks and makes a mess",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_102.mp4",
+        "duration": 6028.639999999999,
+        "question": "What is the American toad's strategy to avoid detection in the video?",
+        "candidates": [
+            "Camouflage",
+            "Fighting",
+            "Hiding",
+            "Running away"
+        ],
+        "answer": "Camouflage",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_34.mp4",
+        "duration": 455.36,
+        "question": "What tool is being used by the dentist and his assistant while treating the patient's teeth in the video segment?",
+        "candidates": [
+            "Dental drill",
+            "Dental scaler",
+            "Dental mirror",
+            "Face bow"
+        ],
+        "answer": "Face bow",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_40.mp4",
+        "duration": 477.20000000000005,
+        "question": "What is the American toad's strategy to avoid detection in the video?",
+        "candidates": [
+            "Camouflage",
+            "Running away",
+            "Fighting",
+            "Hiding"
+        ],
+        "answer": "Camouflage",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_126.mp4",
+        "duration": 6008.08,
+        "question": "What type of beach is shown in the video?",
+        "candidates": [
+            "Pebble beach",
+            "Man-made beach",
+            "Sandy beach",
+            "Wild rocky beach"
+        ],
+        "answer": "Wild rocky beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_58.mp4",
+        "duration": 459.98,
+        "question": "What procedure is the female employee of the cosmetology clinic performing on the patient?",
+        "candidates": [
+            "Manicure",
+            "Microblasting",
+            "Haircut",
+            "Facial"
+        ],
+        "answer": "Microblasting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_143.mp4",
+        "duration": 624.8699999999999,
+        "question": "What unusual event happens while the woman is using the computer?",
+        "candidates": [
+            "The computer crashes",
+            "A hand comes out of the computer",
+            "The screen goes blank",
+            "The computer starts talking"
+        ],
+        "answer": "A hand comes out of the computer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_25.mp4",
+        "duration": 866.49,
+        "question": "What is the habitat of the blue fin trevally shown in the video?",
+        "candidates": [
+            "Mangrove forest",
+            "Freshwater river",
+            "Open ocean",
+            "Coral reef"
+        ],
+        "answer": "Coral reef",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_25.mp4",
+        "duration": 866.49,
+        "question": "Where is the group of blue fin trevally hunting in the video?",
+        "candidates": [
+            "Great Barrier Reef, Australia",
+            "Caribbean Sea, Bahamas",
+            "Red Sea, Egypt",
+            "Yap, Micronesia"
+        ],
+        "answer": "Yap, Micronesia",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_82.mp4",
+        "duration": 494.38,
+        "question": "What is the man's age?",
+        "candidates": [
+            "Elderly",
+            "Teenager",
+            "Mature",
+            "Child"
+        ],
+        "answer": "Mature",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_104.mp4",
+        "duration": 635.6,
+        "question": "What is the weather like as the car with a broken windshield rides through the mountain country village?",
+        "candidates": [
+            "Autumn rainy day",
+            "Winter snowy day",
+            "Spring cloudy day",
+            "Summer sunny day"
+        ],
+        "answer": "Summer sunny day",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_25.mp4",
+        "duration": 866.49,
+        "question": "What is the prey of the blue fin trevally in the video?",
+        "candidates": [
+            "Jellyfish",
+            "Small reef fish and anthias",
+            "Plankton",
+            "Seaweed"
+        ],
+        "answer": "Small reef fish and anthias",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_24.mp4",
+        "duration": 462.03999999999996,
+        "question": "What is the habitat of the blue fin trevally shown in the video?",
+        "candidates": [
+            "Coral reef",
+            "Freshwater river",
+            "Open ocean",
+            "Mangrove forest"
+        ],
+        "answer": "Coral reef",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_32.mp4",
+        "duration": 467.98,
+        "question": "What is the woman's reaction when the hand comes out of the computer?",
+        "candidates": [
+            "She laughs",
+            "She screams",
+            "She is not surprised",
+            "She is surprised"
+        ],
+        "answer": "She is surprised",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_128.mp4",
+        "duration": 8332.900000000001,
+        "question": "From where is the female making the video call?",
+        "candidates": [
+            "From her home living room",
+            "From her office",
+            "From her car",
+            "From a coffee shop"
+        ],
+        "answer": "From her home living room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_60.mp4",
+        "duration": 496.97999999999996,
+        "question": "What is the senior businessman doing by the sea shore?",
+        "candidates": [
+            "Reading a book",
+            "Having a serious conversation on the cell phone",
+            "Swimming in the sea",
+            "Eating lunch"
+        ],
+        "answer": "Having a serious conversation on the cell phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_24.mp4",
+        "duration": 462.03999999999996,
+        "question": "Where is the group of blue fin trevally hunting in the video?",
+        "candidates": [
+            "Yap, Micronesia",
+            "Caribbean Sea, Bahamas",
+            "Red Sea, Egypt",
+            "Great Barrier Reef, Australia"
+        ],
+        "answer": "Yap, Micronesia",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_24.mp4",
+        "duration": 462.03999999999996,
+        "question": "What is the prey of the blue fin trevally in the video?",
+        "candidates": [
+            "Small reef fish and anthias",
+            "Seaweed",
+            "Plankton",
+            "Jellyfish"
+        ],
+        "answer": "Small reef fish and anthias",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_76.mp4",
+        "duration": 1522.71,
+        "question": "Where is the chef preparing the dinner?",
+        "candidates": [
+            "In a hotel",
+            "By the ocean shore on an island",
+            "In a kitchen",
+            "In a restaurant"
+        ],
+        "answer": "By the ocean shore on an island",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_23.mp4",
+        "duration": 487.29,
+        "question": "On what surface is the chef cutting the fresh orange pumpkin?",
+        "candidates": [
+            "Marble counter",
+            "Plastic cutting board",
+            "Wooden table",
+            "Stainless steel table"
+        ],
+        "answer": "Wooden table",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_27.mp4",
+        "duration": 469.20000000000005,
+        "question": "Where are the black cows with yellow tags on their ears eating hay on a sunny day?",
+        "candidates": [
+            "At the farm",
+            "In the barn",
+            "In the forest",
+            "In the field"
+        ],
+        "answer": "At the farm",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_23.mp4",
+        "duration": 487.29,
+        "question": "What color is the pumpkin that the chef is using to prepare the soup?",
+        "candidates": [
+            "White",
+            "Green",
+            "Yellow",
+            "Orange"
+        ],
+        "answer": "Orange",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_102.mp4",
+        "duration": 6028.639999999999,
+        "question": "What is the state of movement of the American toad at the mouth of the den in the video?",
+        "candidates": [
+            "Very little movement",
+            "No movement at all",
+            "Constant movement",
+            "Moderate movement"
+        ],
+        "answer": "Very little movement",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_34.mp4",
+        "duration": 455.36,
+        "question": "Who are using the face bow in the video segment?",
+        "candidates": [
+            "The assistant alone",
+            "The dentist alone",
+            "The patient",
+            "The dentist and his assistant"
+        ],
+        "answer": "The dentist and his assistant",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_130.mp4",
+        "duration": 395.09999999999997,
+        "question": "What is the owner wearing while stroking his Jack Russell dog?",
+        "candidates": [
+            "Sneakers",
+            "Barefoot",
+            "Flip flops",
+            "Sports boots"
+        ],
+        "answer": "Sports boots",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_147.mp4",
+        "duration": 622.0,
+        "question": "What is the senior businessman doing by the sea shore?",
+        "candidates": [
+            "Eating lunch",
+            "Swimming in the sea",
+            "Reading a book",
+            "Having a serious conversation on the cell phone"
+        ],
+        "answer": "Having a serious conversation on the cell phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_80.mp4",
+        "duration": 463.02,
+        "question": "What happens to the egg when it falls on the glass floor in the video?",
+        "candidates": [
+            "It cracks but doesn't break",
+            "It breaks and makes a mess",
+            "Nothing happens to it",
+            "It bounces back"
+        ],
+        "answer": "It breaks and makes a mess",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_58.mp4",
+        "duration": 459.98,
+        "question": "What is the profession of the woman performing the microblasting routine in the video?",
+        "candidates": [
+            "Dentist",
+            "Cosmetologist",
+            "Nurse",
+            "Hair Stylist"
+        ],
+        "answer": "Cosmetologist",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_143.mp4",
+        "duration": 624.8699999999999,
+        "question": "What is the woman doing on the computer?",
+        "candidates": [
+            "Watching a movie",
+            "Playing a game",
+            "Shopping online",
+            "Writing an email"
+        ],
+        "answer": "Shopping online",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_97.mp4",
+        "duration": 473.59000000000003,
+        "question": "What are the couple planning and dreaming about?",
+        "candidates": [
+            "New job",
+            "Vacation",
+            "New home",
+            "Wedding"
+        ],
+        "answer": "New home",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_29.mp4",
+        "duration": 461.57,
+        "question": "What is the activity involving the little girl and her grandmother?",
+        "candidates": [
+            "They are painting",
+            "They are cooking",
+            "They are reading a children's book",
+            "They are gardening"
+        ],
+        "answer": "They are reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_36.mp4",
+        "duration": 478.7,
+        "question": "What color is the water on the tropical beach in the video?",
+        "candidates": [
+            "Azure blue",
+            "Green",
+            "Dark blue",
+            "Clear"
+        ],
+        "answer": "Azure blue",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_149.mp4",
+        "duration": 324.02,
+        "question": "What logo is displayed on the screen in the meeting room?",
+        "candidates": [
+            "The Goldman Sachs Group",
+            "Google",
+            "Microsoft",
+            "Apple"
+        ],
+        "answer": "The Goldman Sachs Group",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_72.mp4",
+        "duration": 471.08,
+        "question": "What is the woman doing in the flower shop?",
+        "candidates": [
+            "Cleaning the shop",
+            "Arranging books",
+            "Watering the plants",
+            "Making a bouquet of fresh flowers"
+        ],
+        "answer": "Making a bouquet of fresh flowers",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_144.mp4",
+        "duration": 6380.89,
+        "question": "What color is the pumpkin that the chef is using to prepare the soup?",
+        "candidates": [
+            "Orange",
+            "White",
+            "Yellow",
+            "Green"
+        ],
+        "answer": "Orange",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_99.mp4",
+        "duration": 866.3299999999999,
+        "question": "What time of day is it when the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Midday",
+            "Sunset",
+            "Night",
+            "Morning"
+        ],
+        "answer": "Sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_31.mp4",
+        "duration": 1374.94,
+        "question": "What is the setting of the highway road construction?",
+        "candidates": [
+            "Underwater",
+            "In space",
+            "Indoor",
+            "Outdoor"
+        ],
+        "answer": "Outdoor",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_14.mp4",
+        "duration": 468.41999999999996,
+        "question": "What are the young mother and her son doing outdoors in the video?",
+        "candidates": [
+            "They are making a snowman",
+            "They are decorating a Christmas tree",
+            "They are having a picnic",
+            "They are playing with snow"
+        ],
+        "answer": "They are decorating a Christmas tree",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_14.mp4",
+        "duration": 468.41999999999996,
+        "question": "Who are decorating the Christmas tree outdoors in the video?",
+        "candidates": [
+            "An elderly couple",
+            "A young mother and her son",
+            "A young father and his son",
+            "A young mother and her daughter"
+        ],
+        "answer": "A young mother and her son",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_106.mp4",
+        "duration": 744.44,
+        "question": "Where are the young mother and her son decorating the Christmas tree in the video?",
+        "candidates": [
+            "At a shopping mall",
+            "Indoors",
+            "Outdoors",
+            "In a park"
+        ],
+        "answer": "Outdoors",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_13.mp4",
+        "duration": 493.15,
+        "question": "What are the volunteers doing to find the casualties of the rocket attack in the simulation drill?",
+        "candidates": [
+            "Digging through the rubble",
+            "Using a metal detector",
+            "Using a search dog",
+            "Using a drone"
+        ],
+        "answer": "Digging through the rubble",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_123.mp4",
+        "duration": 6960.84,
+        "question": "What event are the students celebrating in the park?",
+        "candidates": [
+            "Promotion",
+            "Birthday",
+            "Graduation",
+            "Admission"
+        ],
+        "answer": "Graduation",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_54.mp4",
+        "duration": 469.72,
+        "question": "Where is the middle aged female executive working on the corporate strategy?",
+        "candidates": [
+            "In a cafe",
+            "In a park",
+            "In office",
+            "At home"
+        ],
+        "answer": "In office",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_75.mp4",
+        "duration": 505.0,
+        "question": "What are the two young women wearing in the street?",
+        "candidates": [
+            "Trendy summer clothes",
+            "Swimwear",
+            "Formal attire",
+            "Winter clothes"
+        ],
+        "answer": "Trendy summer clothes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_95.mp4",
+        "duration": 464.54,
+        "question": "Where is the cup that the female potter is stirring paint in?",
+        "candidates": [
+            "In her hand",
+            "On the table",
+            "On the shelf",
+            "On the floor"
+        ],
+        "answer": "On the table",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_27.mp4",
+        "duration": 469.20000000000005,
+        "question": "What color are the cows eating hay from the stall at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Spotted",
+            "Black",
+            "White",
+            "Brown"
+        ],
+        "answer": "Black",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_13.mp4",
+        "duration": 493.15,
+        "question": "What are the volunteers doing in the rubble during the simulation drill?",
+        "candidates": [
+            "Hiding from an enemy",
+            "Creating a barricade",
+            "Building a structure",
+            "Searching for rocket attack casualties"
+        ],
+        "answer": "Searching for rocket attack casualties",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_13.mp4",
+        "duration": 493.15,
+        "question": "What are the volunteers searching for during the simulation drill?",
+        "candidates": [
+            "Hidden treasure",
+            "Rocket attack casualties",
+            "Lost items",
+            "Survivors of a natural disaster"
+        ],
+        "answer": "Rocket attack casualties",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_33.mp4",
+        "duration": 467.89000000000004,
+        "question": "What unusual event happens while the woman is using the computer?",
+        "candidates": [
+            "A hand comes out of the computer",
+            "The computer crashes",
+            "The screen goes blank",
+            "The computer starts talking"
+        ],
+        "answer": "A hand comes out of the computer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_12.mp4",
+        "duration": 463.15,
+        "question": "What are the volunteers doing to find the casualties of the rocket attack in the simulation drill?",
+        "candidates": [
+            "Using a metal detector",
+            "Using a search dog",
+            "Using a drone",
+            "Digging through the rubble"
+        ],
+        "answer": "Digging through the rubble",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_12.mp4",
+        "duration": 463.15,
+        "question": "What is the context of the simulation drill where volunteers are digging through the rubble?",
+        "candidates": [
+            "An earthquake",
+            "A building demolition",
+            "A construction site accident",
+            "A rocket attack"
+        ],
+        "answer": "A rocket attack",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_141.mp4",
+        "duration": 7054.2699999999995,
+        "question": "What season is it when the little Asian girl in a bikini is creating sand piles on the beach at sunset?",
+        "candidates": [
+            "Winter",
+            "Spring",
+            "Autumn",
+            "Summer"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_12.mp4",
+        "duration": 463.15,
+        "question": "What are the volunteers searching for during the simulation drill?",
+        "candidates": [
+            "Hidden treasure",
+            "Survivors of a natural disaster",
+            "Rocket attack casualties",
+            "Lost items"
+        ],
+        "answer": "Rocket attack casualties",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_120.mp4",
+        "duration": 341.5,
+        "question": "Who is the little girl sitting on while they read a children's book?",
+        "candidates": [
+            "Her father",
+            "Her grandmother",
+            "Her sister",
+            "Her mother"
+        ],
+        "answer": "Her grandmother",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_51.mp4",
+        "duration": 1504.7,
+        "question": "What animals are tied beside the paddy field where the two Malays kids are having fun?",
+        "candidates": [
+            "Dogs",
+            "Horses",
+            "Cows",
+            "Sheep"
+        ],
+        "answer": "Cows",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_143.mp4",
+        "duration": 624.8699999999999,
+        "question": "What is the woman's reaction when the hand comes out of the computer?",
+        "candidates": [
+            "She screams",
+            "She laughs",
+            "She is surprised",
+            "She is not surprised"
+        ],
+        "answer": "She is surprised",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_67.mp4",
+        "duration": 475.2,
+        "question": "What time of the day is it in the video segment of the power plant block?",
+        "candidates": [
+            "Midday",
+            "Dusk",
+            "Night",
+            "Dawn"
+        ],
+        "answer": "Dawn",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_75.mp4",
+        "duration": 505.0,
+        "question": "What are the two young women doing on the bench in the street?",
+        "candidates": [
+            "Running",
+            "Communicating",
+            "Eating",
+            "Sleeping"
+        ],
+        "answer": "Communicating",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_95.mp4",
+        "duration": 464.54,
+        "question": "What is the female potter doing with the brush?",
+        "candidates": [
+            "Cleaning the brush",
+            "Drawing on the table",
+            "Stirring paint in a cup",
+            "Painting a picture"
+        ],
+        "answer": "Stirring paint in a cup",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_26.mp4",
+        "duration": 469.08,
+        "question": "Where are the black cows with yellow tags on their ears eating hay on a sunny day?",
+        "candidates": [
+            "In the barn",
+            "At the farm",
+            "In the forest",
+            "In the field"
+        ],
+        "answer": "At the farm",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_45.mp4",
+        "duration": 500.52,
+        "question": "What is the team of scientists doing in the laboratory room?",
+        "candidates": [
+            "Conducting a physics experiment",
+            "Having a meeting",
+            "Teaching a class",
+            "Researching sample test with protection equipment and glasses"
+        ],
+        "answer": "Researching sample test with protection equipment and glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_139.mp4",
+        "duration": 239.06,
+        "question": "What is the prey of the blue fin trevally in the video?",
+        "candidates": [
+            "Plankton",
+            "Jellyfish",
+            "Small reef fish and anthias",
+            "Seaweed"
+        ],
+        "answer": "Small reef fish and anthias",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_69.mp4",
+        "duration": 461.04,
+        "question": "What is the little Asian girl wearing while creating sand piles on the beach at sunset?",
+        "candidates": [
+            "A dress",
+            "A swimsuit",
+            "Shorts and a t-shirt",
+            "A bikini"
+        ],
+        "answer": "A bikini",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_88.mp4",
+        "duration": 456.0,
+        "question": "Where is the Goldman Sachs Group logo displayed?",
+        "candidates": [
+            "On a billboard",
+            "On a laptop",
+            "On the screen in a meeting room",
+            "On a mobile phone"
+        ],
+        "answer": "On the screen in a meeting room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_96.mp4",
+        "duration": 503.59,
+        "question": "What are the couple planning and dreaming about?",
+        "candidates": [
+            "New job",
+            "New home",
+            "Wedding",
+            "Vacation"
+        ],
+        "answer": "New home",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_28.mp4",
+        "duration": 461.48,
+        "question": "What are the little girl and her grandmother doing together?",
+        "candidates": [
+            "Playing a game",
+            "Eating dinner",
+            "Reading a children's book",
+            "Watching TV"
+        ],
+        "answer": "Reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_119.mp4",
+        "duration": 766.14,
+        "question": "What is the backdrop of the basketball in the video?",
+        "candidates": [
+            "A forest",
+            "A city skyline",
+            "A bright multi-colored cloudy sky",
+            "A clear blue sky"
+        ],
+        "answer": "A bright multi-colored cloudy sky",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_70.mp4",
+        "duration": 464.76,
+        "question": "Where are the tourists strolling and admiring the fountain?",
+        "candidates": [
+            "Plaza de Espana in Valencia",
+            "Plaza de Espana in Seville",
+            "Plaza de Espana in Barcelona",
+            "Plaza de Espana in Madrid"
+        ],
+        "answer": "Plaza de Espana in Seville",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_136.mp4",
+        "duration": 7979.45,
+        "question": "What is the serious older mature businesswoman writing on the whiteboard?",
+        "candidates": [
+            "Notes",
+            "A novel",
+            "Her personal diary",
+            "A poem"
+        ],
+        "answer": "Notes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_91.mp4",
+        "duration": 461.59999999999997,
+        "question": "What is happening to the lily of the valley flowers in the video segment?",
+        "candidates": [
+            "Raindrops are falling on them",
+            "They are blooming",
+            "They are wilting",
+            "They are being picked"
+        ],
+        "answer": "Raindrops are falling on them",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_23.mp4",
+        "duration": 487.29,
+        "question": "What is the chef preparing with the fresh orange pumpkin?",
+        "candidates": [
+            "Pumpkin pie",
+            "Creamy pumpkin soup",
+            "Roasted pumpkin",
+            "Pumpkin salad"
+        ],
+        "answer": "Creamy pumpkin soup",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_23.mp4",
+        "duration": 487.29,
+        "question": "What is the chef doing with the fresh orange pumpkin on the wooden table?",
+        "candidates": [
+            "Roasting it",
+            "Peeling it",
+            "Cutting it into slices",
+            "Boiling it"
+        ],
+        "answer": "Cutting it into slices",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_98.mp4",
+        "duration": 461.7,
+        "question": "What is the concept of the segment where the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Outdoor sports",
+            "Leisure and relaxation",
+            "Meditation in the fresh air",
+            "Physical fitness"
+        ],
+        "answer": "Meditation in the fresh air",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_66.mp4",
+        "duration": 475.20000000000005,
+        "question": "What time of the day is it in the video segment of the power plant block?",
+        "candidates": [
+            "Midday",
+            "Dawn",
+            "Night",
+            "Dusk"
+        ],
+        "answer": "Dawn",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_84.mp4",
+        "duration": 505.83000000000004,
+        "question": "What does the engineer begin to work with in the video?",
+        "candidates": [
+            "3D Models",
+            "Computer Codes",
+            "Drawings",
+            "Blueprints"
+        ],
+        "answer": "Drawings",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_22.mp4",
+        "duration": 884.64,
+        "question": "What color is the pumpkin that the chef is using to prepare the soup?",
+        "candidates": [
+            "Yellow",
+            "Orange",
+            "White",
+            "Green"
+        ],
+        "answer": "Orange",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_44.mp4",
+        "duration": 470.52,
+        "question": "What type of protective gear are the scientists wearing in the laboratory?",
+        "candidates": [
+            "Helmets",
+            "Gloves and glasses",
+            "Safety boots",
+            "None"
+        ],
+        "answer": "Gloves and glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_22.mp4",
+        "duration": 884.64,
+        "question": "What is the chef preparing with the fresh orange pumpkin?",
+        "candidates": [
+            "Pumpkin pie",
+            "Creamy pumpkin soup",
+            "Pumpkin salad",
+            "Roasted pumpkin"
+        ],
+        "answer": "Creamy pumpkin soup",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_139.mp4",
+        "duration": 239.06,
+        "question": "What species of fish is hunting small reef fish and anthias along a coral reef in the video?",
+        "candidates": [
+            "Clown fish",
+            "Barracuda",
+            "Great white shark",
+            "Blue fin trevally"
+        ],
+        "answer": "Blue fin trevally",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_93.mp4",
+        "duration": 458.01,
+        "question": "What is the status of the woman enjoying the summer sunset?",
+        "candidates": [
+            "She is a student",
+            "She is a retired woman",
+            "She is a child",
+            "She is a working woman"
+        ],
+        "answer": "She is a retired woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_26.mp4",
+        "duration": 469.08,
+        "question": "What color are the cows eating hay from the stall at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Brown",
+            "Spotted",
+            "White",
+            "Black"
+        ],
+        "answer": "Black",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_22.mp4",
+        "duration": 884.64,
+        "question": "What is the chef doing with the fresh orange pumpkin on the wooden table?",
+        "candidates": [
+            "Peeling it",
+            "Boiling it",
+            "Roasting it",
+            "Cutting it into slices"
+        ],
+        "answer": "Cutting it into slices",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_21.mp4",
+        "duration": 846.12,
+        "question": "What is the weather like as the car with a broken windshield rides through the mountain country village?",
+        "candidates": [
+            "Spring cloudy day",
+            "Summer sunny day",
+            "Winter snowy day",
+            "Autumn rainy day"
+        ],
+        "answer": "Summer sunny day",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_21.mp4",
+        "duration": 846.12,
+        "question": "From whose perspective is the scene of the car with a broken windshield riding through the mountain country village viewed?",
+        "candidates": [
+            "Backseat passenger's view",
+            "Pedestrian's view",
+            "Driver's view",
+            "Bird's eye view"
+        ],
+        "answer": "Backseat passenger's view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_40.mp4",
+        "duration": 477.20000000000005,
+        "question": "What is the state of movement of the American toad at the mouth of the den in the video?",
+        "candidates": [
+            "Moderate movement",
+            "Very little movement",
+            "Constant movement",
+            "No movement at all"
+        ],
+        "answer": "Very little movement",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_21.mp4",
+        "duration": 846.12,
+        "question": "What is the condition of the car's windshield as it rides through the mountain country village?",
+        "candidates": [
+            "The windshield is broken",
+            "The windshield is foggy",
+            "The windshield is covered in snow",
+            "The windshield is clean"
+        ],
+        "answer": "The windshield is broken",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_47.mp4",
+        "duration": 461.21000000000004,
+        "question": "Where are the students celebrating their graduation?",
+        "candidates": [
+            "In the classroom",
+            "In the park",
+            "At home",
+            "In the school auditorium"
+        ],
+        "answer": "In the park",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_64.mp4",
+        "duration": 470.88,
+        "question": "What is the result of the forest fire on the dry grass in the video segment?",
+        "candidates": [
+            "The grass is producing smoke and flame",
+            "The grass is being covered in snow",
+            "The grass is growing taller",
+            "The grass is turning green"
+        ],
+        "answer": "The grass is producing smoke and flame",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_96.mp4",
+        "duration": 503.59,
+        "question": "What are the couple surrounded by while sitting on the couch?",
+        "candidates": [
+            "Furniture",
+            "Balloons",
+            "Pillows",
+            "Cardboard boxes"
+        ],
+        "answer": "Cardboard boxes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_70.mp4",
+        "duration": 464.76,
+        "question": "What is a notable feature in the Plaza de Espana that the tourists are admiring?",
+        "candidates": [
+            "A fountain",
+            "A tree",
+            "A building",
+            "A statue"
+        ],
+        "answer": "A fountain",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_91.mp4",
+        "duration": 461.59999999999997,
+        "question": "What color are the leaves of the plant shown in the video segment?",
+        "candidates": [
+            "Green",
+            "Red",
+            "Yellow",
+            "Blue"
+        ],
+        "answer": "Green",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_135.mp4",
+        "duration": 344.4,
+        "question": "What is the background color when the man is laughing and covering his mouth?",
+        "candidates": [
+            "Blue",
+            "Black",
+            "Green",
+            "White"
+        ],
+        "answer": "White",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_59.mp4",
+        "duration": 460.02000000000004,
+        "question": "Where does the woman performing the microblasting routine work?",
+        "candidates": [
+            "Spa",
+            "Beauty Salon",
+            "Hospital",
+            "Cosmetology Clinic"
+        ],
+        "answer": "Cosmetology Clinic",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_66.mp4",
+        "duration": 475.20000000000005,
+        "question": "What can be seen in the background of the power plant block in the video?",
+        "candidates": [
+            "Power poles and chimneys",
+            "Forest",
+            "Mountains",
+            "Cityscape"
+        ],
+        "answer": "Power poles and chimneys",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_84.mp4",
+        "duration": 505.83000000000004,
+        "question": "What is the background when the engineer begins work with the drawings in the video?",
+        "candidates": [
+            "Mountains",
+            "Forest",
+            "Windmills",
+            "Cityscape"
+        ],
+        "answer": "Windmills",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_114.mp4",
+        "duration": 773.72,
+        "question": "What is the concept of the segment where the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Meditation in the fresh air",
+            "Physical fitness",
+            "Outdoor sports",
+            "Leisure and relaxation"
+        ],
+        "answer": "Meditation in the fresh air",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_93.mp4",
+        "duration": 458.01,
+        "question": "What is the woman wearing during the summer sunset?",
+        "candidates": [
+            "A swimsuit",
+            "A winter coat",
+            "A dress and heels",
+            "A hat and sunglasses"
+        ],
+        "answer": "A hat and sunglasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_43.mp4",
+        "duration": 1516.18,
+        "question": "What is the purpose of the SUV being on the side of the desert highway?",
+        "candidates": [
+            "For a car race",
+            "For a road trip",
+            "For a car show",
+            "For green screen or chroma key"
+        ],
+        "answer": "For green screen or chroma key",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_130.mp4",
+        "duration": 395.09999999999997,
+        "question": "What type of dog is the owner in sports boots stroking?",
+        "candidates": [
+            "Jack Russell",
+            "Bulldog",
+            "Golden Retriever",
+            "German Shepherd"
+        ],
+        "answer": "Jack Russell",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_62.mp4",
+        "duration": 497.05,
+        "question": "What is the young beautiful woman doing in preparation for the new year?",
+        "candidates": [
+            "She is singing christmas carols",
+            "She is wrapping presents",
+            "She is hanging a golden christmas toy on the christmas tree",
+            "She is baking cookies"
+        ],
+        "answer": "She is hanging a golden christmas toy on the christmas tree",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_11.mp4",
+        "duration": 454.52,
+        "question": "What is happening in the control room when the sound engineer is moving levers of a multitrack mixing console?",
+        "candidates": [
+            "A recording session",
+            "A press conference",
+            "A live concert",
+            "A video shoot"
+        ],
+        "answer": "A recording session",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_11.mp4",
+        "duration": 454.52,
+        "question": "Where is the sound engineer moving levers of a multitrack mixing console?",
+        "candidates": [
+            "On the stage",
+            "In the editing suite",
+            "In the control room",
+            "In the recording studio"
+        ],
+        "answer": "In the control room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_68.mp4",
+        "duration": 1367.32,
+        "question": "What is the little Asian girl wearing while creating sand piles on the beach at sunset?",
+        "candidates": [
+            "A bikini",
+            "A swimsuit",
+            "A dress",
+            "Shorts and a t-shirt"
+        ],
+        "answer": "A bikini",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_11.mp4",
+        "duration": 454.52,
+        "question": "What is the sound engineer doing in the control room during a recording session?",
+        "candidates": [
+            "Moving levers of a multitrack mixing console",
+            "Editing the video",
+            "Setting up the microphones",
+            "Adjusting the lights"
+        ],
+        "answer": "Moving levers of a multitrack mixing console",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_86.mp4",
+        "duration": 470.40999999999997,
+        "question": "What is the direction of the boy walking in the water with colorful party balloons towards?",
+        "candidates": [
+            "Towards the snowy mountain",
+            "Towards the dark forest",
+            "Towards the sparkling sunset light",
+            "Towards the crowded city"
+        ],
+        "answer": "Towards the sparkling sunset light",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_39.mp4",
+        "duration": 583.8199999999999,
+        "question": "What is a popular activity on the beach during the monsoon season?",
+        "candidates": [
+            "Fishing",
+            "Picnicking",
+            "Surfing",
+            "Playing volleyball"
+        ],
+        "answer": "Fishing",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_11.mp4",
+        "duration": 454.52,
+        "question": "What is the profession of the person moving levers of a multitrack mixing console in the video?",
+        "candidates": [
+            "Sound engineer",
+            "Cameraman",
+            "Musician",
+            "Director"
+        ],
+        "answer": "Sound engineer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_56.mp4",
+        "duration": 462.1,
+        "question": "What kind of factory is the woman working in?",
+        "candidates": [
+            "Food factory",
+            "Toy factory",
+            "Garment factory",
+            "Car factory"
+        ],
+        "answer": "Garment factory",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_10.mp4",
+        "duration": 454.52,
+        "question": "What is happening in the control room when the sound engineer is moving levers of a multitrack mixing console?",
+        "candidates": [
+            "A live concert",
+            "A video shoot",
+            "A press conference",
+            "A recording session"
+        ],
+        "answer": "A recording session",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_45.mp4",
+        "duration": 500.52,
+        "question": "What is being transferred to the beaker in the laboratory?",
+        "candidates": [
+            "Nothing",
+            "Solid substance",
+            "Gas",
+            "Liquid tester"
+        ],
+        "answer": "Liquid tester",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_10.mp4",
+        "duration": 454.52,
+        "question": "Where is the sound engineer moving levers of a multitrack mixing console?",
+        "candidates": [
+            "In the control room",
+            "In the recording studio",
+            "On the stage",
+            "In the editing suite"
+        ],
+        "answer": "In the control room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_10.mp4",
+        "duration": 454.52,
+        "question": "What is the sound engineer doing in the control room during a recording session?",
+        "candidates": [
+            "Editing the video",
+            "Moving levers of a multitrack mixing console",
+            "Setting up the microphones",
+            "Adjusting the lights"
+        ],
+        "answer": "Moving levers of a multitrack mixing console",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_81.mp4",
+        "duration": 463.1,
+        "question": "What is the result of the egg falling on the glass floor?",
+        "candidates": [
+            "The egg breaks and creates a mess",
+            "The egg disappears",
+            "The egg cracks slightly",
+            "The egg remains intact"
+        ],
+        "answer": "The egg breaks and creates a mess",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_10.mp4",
+        "duration": 454.52,
+        "question": "What is the profession of the person moving levers of a multitrack mixing console in the video?",
+        "candidates": [
+            "Musician",
+            "Cameraman",
+            "Director",
+            "Sound engineer"
+        ],
+        "answer": "Sound engineer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_9.mp4",
+        "duration": 461.25,
+        "question": "What device is the female using for the video call?",
+        "candidates": [
+            "Smartphone",
+            "Laptop",
+            "Desktop computer",
+            "Tablet"
+        ],
+        "answer": "Smartphone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_89.mp4",
+        "duration": 456.0,
+        "question": "Where is the Goldman Sachs Group logo displayed?",
+        "candidates": [
+            "On a laptop",
+            "On a billboard",
+            "On the screen in a meeting room",
+            "On a mobile phone"
+        ],
+        "answer": "On the screen in a meeting room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_41.mp4",
+        "duration": 477.07,
+        "question": "What is the American toad doing at the mouth of the den in the video?",
+        "candidates": [
+            "Jumping",
+            "Breathing and waiting",
+            "Sleeping",
+            "Eating"
+        ],
+        "answer": "Breathing and waiting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_9.mp4",
+        "duration": 461.25,
+        "question": "From where is the female making the video call?",
+        "candidates": [
+            "From her home living room",
+            "From a coffee shop",
+            "From her car",
+            "From her office"
+        ],
+        "answer": "From her home living room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_58.mp4",
+        "duration": 459.98,
+        "question": "Where does the woman performing the microblasting routine work?",
+        "candidates": [
+            "Cosmetology Clinic",
+            "Beauty Salon",
+            "Spa",
+            "Hospital"
+        ],
+        "answer": "Cosmetology Clinic",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_37.mp4",
+        "duration": 478.78,
+        "question": "What type of beach is shown in the video?",
+        "candidates": [
+            "Sandy beach",
+            "Wild rocky beach",
+            "Man-made beach",
+            "Pebble beach"
+        ],
+        "answer": "Wild rocky beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_65.mp4",
+        "duration": 500.88,
+        "question": "What season is depicted in the video segment where the forest fire is happening?",
+        "candidates": [
+            "Dry season",
+            "Winter season",
+            "Rainy season",
+            "Spring season"
+        ],
+        "answer": "Dry season",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_33.mp4",
+        "duration": 467.89000000000004,
+        "question": "What is the woman doing on the computer?",
+        "candidates": [
+            "Watching a movie",
+            "Playing a game",
+            "Shopping online",
+            "Writing an email"
+        ],
+        "answer": "Shopping online",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_39.mp4",
+        "duration": 583.8199999999999,
+        "question": "Where are the silhouette fishermen performing their popular activity during the monsoon season?",
+        "candidates": [
+            "In a forest",
+            "On the beach",
+            "In a city",
+            "On a boat"
+        ],
+        "answer": "On the beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_56.mp4",
+        "duration": 462.1,
+        "question": "Where is the woman working?",
+        "candidates": [
+            "In a restaurant",
+            "In a garment factory",
+            "In a hospital",
+            "In a school"
+        ],
+        "answer": "In a garment factory",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_85.mp4",
+        "duration": 475.83000000000004,
+        "question": "What is the background when the engineer begins work with the drawings in the video?",
+        "candidates": [
+            "Windmills",
+            "Mountains",
+            "Cityscape",
+            "Forest"
+        ],
+        "answer": "Windmills",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_1.mp4",
+        "duration": 506.12,
+        "question": "What is the backdrop of the basketball in the video?",
+        "candidates": [
+            "A clear blue sky",
+            "A city skyline",
+            "A forest",
+            "A bright multi-colored cloudy sky"
+        ],
+        "answer": "A bright multi-colored cloudy sky",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_63.mp4",
+        "duration": 467.04999999999995,
+        "question": "Who is hanging a golden christmas toy on the christmas tree in preparation for the new year?",
+        "candidates": [
+            "An old woman",
+            "A young handsome man",
+            "A young beautiful woman",
+            "A child"
+        ],
+        "answer": "A young beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_81.mp4",
+        "duration": 463.1,
+        "question": "From which perspective is the shot of the egg falling on the glass floor taken?",
+        "candidates": [
+            "From below",
+            "From the side",
+            "From a distance",
+            "From above"
+        ],
+        "answer": "From below",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_34.mp4",
+        "duration": 455.36,
+        "question": "What are the dentist and his assistant doing to the patient's teeth in the video segment?",
+        "candidates": [
+            "Whitening",
+            "Extracting",
+            "Cleaning",
+            "Treating"
+        ],
+        "answer": "Treating",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_41.mp4",
+        "duration": 477.07,
+        "question": "What animal is sitting very still at the mouth of the den in the video?",
+        "candidates": [
+            "European toad",
+            "American frog",
+            "American toad",
+            "European frog"
+        ],
+        "answer": "American toad",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_58.mp4",
+        "duration": 459.98,
+        "question": "What is the gender of the patient receiving the microblasting routine in the video?",
+        "candidates": [
+            "Male",
+            "Not specified",
+            "Both male and female",
+            "Female"
+        ],
+        "answer": "Female",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_83.mp4",
+        "duration": 464.38,
+        "question": "What is the man doing over the white background?",
+        "candidates": [
+            "Dancing",
+            "Laughing and covering his mouth with hand",
+            "Singing",
+            "Crying"
+        ],
+        "answer": "Laughing and covering his mouth with hand",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_36.mp4",
+        "duration": 478.7,
+        "question": "What type of beach is shown in the video?",
+        "candidates": [
+            "Wild rocky beach",
+            "Pebble beach",
+            "Man-made beach",
+            "Sandy beach"
+        ],
+        "answer": "Wild rocky beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_53.mp4",
+        "duration": 461.01,
+        "question": "What is significant about the remembrance war memorial in Toronto, Canada?",
+        "candidates": [
+            "It is surrounded by thousands of American flags",
+            "There are no flags around it",
+            "It is surrounded by thousands of British flags",
+            "It is surrounded by thousands of Canadian flags"
+        ],
+        "answer": "It is surrounded by thousands of Canadian flags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_100.mp4",
+        "duration": 751.67,
+        "question": "What is the chef preparing in the dinner by the ocean shore on an island?",
+        "candidates": [
+            "Lobster",
+            "Fish",
+            "Chicken",
+            "Pork"
+        ],
+        "answer": "Lobster",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_32.mp4",
+        "duration": 467.98,
+        "question": "What unusual event happens while the woman is using the computer?",
+        "candidates": [
+            "The computer crashes",
+            "The computer starts talking",
+            "The screen goes blank",
+            "A hand comes out of the computer"
+        ],
+        "answer": "A hand comes out of the computer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_124.mp4",
+        "duration": 254.78,
+        "question": "What is the weather like when the tourists are strolling in the Plaza de Espana in Seville?",
+        "candidates": [
+            "Cloudy",
+            "Rainy",
+            "Snowy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_130.mp4",
+        "duration": 395.09999999999997,
+        "question": "What does the Jack Russell dog want to do while being stroked by the owner in sports boots?",
+        "candidates": [
+            "Eat",
+            "Sleep",
+            "Play fetch",
+            "Run away"
+        ],
+        "answer": "Run away",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_147.mp4",
+        "duration": 622.0,
+        "question": "What is the appearance of the senior businessman by the sea shore?",
+        "candidates": [
+            "Posh looking with glasses",
+            "Sporty with a tracksuit",
+            "Casual with a hat",
+            "Formal with a suit"
+        ],
+        "answer": "Posh looking with glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_80.mp4",
+        "duration": 463.02,
+        "question": "From which perspective is the shot of the egg falling on the glass floor taken?",
+        "candidates": [
+            "From above",
+            "From below",
+            "From a distance",
+            "From the side"
+        ],
+        "answer": "From below",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_118.mp4",
+        "duration": 812.24,
+        "question": "What is the gender of the patient the young attractive hispanic medical doctor is discussing health issues with?",
+        "candidates": [
+            "Both male and female",
+            "Male",
+            "Female",
+            "Not specified"
+        ],
+        "answer": "Female",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_79.mp4",
+        "duration": 465.05000000000007,
+        "question": "What part of the doctor's face is shown in closeup in the video?",
+        "candidates": [
+            "Nose",
+            "Ear",
+            "Mouth",
+            "Eye"
+        ],
+        "answer": "Eye",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_29.mp4",
+        "duration": 461.57,
+        "question": "Who is the little girl reading a book with?",
+        "candidates": [
+            "Her brother",
+            "Her grandmother",
+            "Her friend",
+            "Her teacher"
+        ],
+        "answer": "Her grandmother",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_126.mp4",
+        "duration": 6008.08,
+        "question": "What type of view is provided of the tropical beach in the video?",
+        "candidates": [
+            "Close-up view",
+            "Side view",
+            "Top down aerial view",
+            "Bottom-up view"
+        ],
+        "answer": "Top down aerial view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_57.mp4",
+        "duration": 448.06,
+        "question": "Where is the woman working?",
+        "candidates": [
+            "In a garment factory",
+            "In a school",
+            "In a hospital",
+            "In a restaurant"
+        ],
+        "answer": "In a garment factory",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_142.mp4",
+        "duration": 612.03,
+        "question": "What is significant about the remembrance war memorial in Toronto, Canada?",
+        "candidates": [
+            "It is surrounded by thousands of American flags",
+            "It is surrounded by thousands of Canadian flags",
+            "There are no flags around it",
+            "It is surrounded by thousands of British flags"
+        ],
+        "answer": "It is surrounded by thousands of Canadian flags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_36.mp4",
+        "duration": 478.7,
+        "question": "What is happening with the ocean waves in the video?",
+        "candidates": [
+            "The waves are receding",
+            "The waves are crashing on a wild rocky beach",
+            "The waves are calm",
+            "The waves are crashing on a sandy beach"
+        ],
+        "answer": "The waves are crashing on a wild rocky beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_149.mp4",
+        "duration": 324.02,
+        "question": "Where is the Goldman Sachs Group logo displayed?",
+        "candidates": [
+            "On a mobile phone",
+            "On a billboard",
+            "On the screen in a meeting room",
+            "On a laptop"
+        ],
+        "answer": "On the screen in a meeting room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_73.mp4",
+        "duration": 471.08,
+        "question": "What is the woman doing in the flower shop?",
+        "candidates": [
+            "Making a bouquet of fresh flowers",
+            "Arranging books",
+            "Watering the plants",
+            "Cleaning the shop"
+        ],
+        "answer": "Making a bouquet of fresh flowers",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_0.mp4",
+        "duration": 476.12,
+        "question": "What is the backdrop of the basketball in the video?",
+        "candidates": [
+            "A clear blue sky",
+            "A bright multi-colored cloudy sky",
+            "A forest",
+            "A city skyline"
+        ],
+        "answer": "A bright multi-colored cloudy sky",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_99.mp4",
+        "duration": 866.3299999999999,
+        "question": "What is the weather like when the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Snowy",
+            "Cloudy",
+            "Rainy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_32.mp4",
+        "duration": 467.98,
+        "question": "What is the woman doing on the computer?",
+        "candidates": [
+            "Writing an email",
+            "Watching a movie",
+            "Playing a game",
+            "Shopping online"
+        ],
+        "answer": "Shopping online",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_51.mp4",
+        "duration": 1504.7,
+        "question": "What are the two kids doing in the paddy field?",
+        "candidates": [
+            "Studying",
+            "Having fun",
+            "Playing football",
+            "Sleeping"
+        ],
+        "answer": "Having fun",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_124.mp4",
+        "duration": 254.78,
+        "question": "What are the tourists doing at the Plaza de Espana in Seville?",
+        "candidates": [
+            "Admiring the fountain",
+            "Swimming in the fountain",
+            "Having a picnic",
+            "Taking a nap"
+        ],
+        "answer": "Admiring the fountain",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_75.mp4",
+        "duration": 505.0,
+        "question": "What is the mood of the two young women sitting on the bench in the street?",
+        "candidates": [
+            "Sad",
+            "Angry",
+            "Indifferent",
+            "Positive"
+        ],
+        "answer": "Positive",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_95.mp4",
+        "duration": 464.54,
+        "question": "What is the female potter's position while stirring paint?",
+        "candidates": [
+            "Standing",
+            "Sitting",
+            "Kneeling",
+            "Lying down"
+        ],
+        "answer": "Sitting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_27.mp4",
+        "duration": 469.20000000000005,
+        "question": "What are the cows with yellow tags on their ears doing at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Sleeping",
+            "Running",
+            "Eating hay",
+            "Drinking water"
+        ],
+        "answer": "Eating hay",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_9.mp4",
+        "duration": 461.25,
+        "question": "Who is the female chatting with in the video call from her home living room?",
+        "candidates": [
+            "Her boss",
+            "Her beautiful friend",
+            "Her mother",
+            "Her brother"
+        ],
+        "answer": "Her beautiful friend",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_33.mp4",
+        "duration": 467.89000000000004,
+        "question": "What does the hand coming out of the computer do?",
+        "candidates": [
+            "Takes the woman's credit card",
+            "Shakes the woman's hand",
+            "Points at something on the screen",
+            "Delivers a product"
+        ],
+        "answer": "Delivers a product",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_8.mp4",
+        "duration": 461.12,
+        "question": "What device is the female using for the video call?",
+        "candidates": [
+            "Tablet",
+            "Laptop",
+            "Smartphone",
+            "Desktop computer"
+        ],
+        "answer": "Smartphone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_118.mp4",
+        "duration": 812.24,
+        "question": "Where is the young attractive hispanic medical doctor discussing health issues with the senior patient?",
+        "candidates": [
+            "Inside office",
+            "In a park",
+            "At the patient's home",
+            "In a hospital ward"
+        ],
+        "answer": "Inside office",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_146.mp4",
+        "duration": 399.38,
+        "question": "Who are using the face bow in the video segment?",
+        "candidates": [
+            "The assistant alone",
+            "The dentist and his assistant",
+            "The patient",
+            "The dentist alone"
+        ],
+        "answer": "The dentist and his assistant",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_69.mp4",
+        "duration": 461.04,
+        "question": "What time of day is the little Asian girl in a bikini creating sand piles on the beach?",
+        "candidates": [
+            "Morning",
+            "Sunset",
+            "Afternoon",
+            "Midnight"
+        ],
+        "answer": "Sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_8.mp4",
+        "duration": 461.12,
+        "question": "From where is the female making the video call?",
+        "candidates": [
+            "From her home living room",
+            "From her office",
+            "From her car",
+            "From a coffee shop"
+        ],
+        "answer": "From her home living room",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_8.mp4",
+        "duration": 461.12,
+        "question": "What is the friend doing in the video call?",
+        "candidates": [
+            "Reading a book",
+            "Playing with a dog",
+            "Cooking dinner",
+            "Watching TV"
+        ],
+        "answer": "Playing with a dog",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_125.mp4",
+        "duration": 7369.86,
+        "question": "What is the result of the forest fire on the dry grass in the video segment?",
+        "candidates": [
+            "The grass is being covered in snow",
+            "The grass is turning green",
+            "The grass is growing taller",
+            "The grass is producing smoke and flame"
+        ],
+        "answer": "The grass is producing smoke and flame",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_8.mp4",
+        "duration": 461.12,
+        "question": "Who is the female chatting with in the video call from her home living room?",
+        "candidates": [
+            "Her boss",
+            "Her mother",
+            "Her beautiful friend",
+            "Her brother"
+        ],
+        "answer": "Her beautiful friend",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_142.mp4",
+        "duration": 612.03,
+        "question": "Where is the remembrance war memorial with thousands of Canadian flags located?",
+        "candidates": [
+            "Toronto, Canada",
+            "Vancouver, Canada",
+            "New York, USA",
+            "London, UK"
+        ],
+        "answer": "Toronto, Canada",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_97.mp4",
+        "duration": 473.59000000000003,
+        "question": "What are the couple doing on the couch?",
+        "candidates": [
+            "Choosing new home and ordering furniture online",
+            "Eating dinner",
+            "Watching TV",
+            "Reading a book"
+        ],
+        "answer": "Choosing new home and ordering furniture online",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_7.mp4",
+        "duration": 471.23,
+        "question": "Where is the woman in the bikini enjoying the summer sun and tanning during her holidays?",
+        "candidates": [
+            "At the beach",
+            "On a sun lounger",
+            "In a hot tub",
+            "In a swimming pool"
+        ],
+        "answer": "In a swimming pool",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_114.mp4",
+        "duration": 773.72,
+        "question": "What is the young girl in the tracksuit doing on a rug in the park?",
+        "candidates": [
+            "Doing yoga",
+            "Reading a book",
+            "Having a picnic",
+            "Playing soccer"
+        ],
+        "answer": "Doing yoga",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_7.mp4",
+        "duration": 471.23,
+        "question": "What is the woman wearing while enjoying the summer sun and tanning during her holidays in the swimming pool?",
+        "candidates": [
+            "A one-piece swimsuit",
+            "A sarong",
+            "A sundress",
+            "A bikini"
+        ],
+        "answer": "A bikini",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_7.mp4",
+        "duration": 471.23,
+        "question": "What is the woman in the bikini holding while enjoying her summer holidays in the swimming pool?",
+        "candidates": [
+            "A book",
+            "A cocktail",
+            "A towel",
+            "A beach ball"
+        ],
+        "answer": "A cocktail",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_120.mp4",
+        "duration": 341.5,
+        "question": "What are the little girl and her grandmother doing together?",
+        "candidates": [
+            "Reading a children's book",
+            "Eating dinner",
+            "Watching TV",
+            "Playing a game"
+        ],
+        "answer": "Reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_137.mp4",
+        "duration": 424.09999999999997,
+        "question": "What is the woman doing in the flower shop?",
+        "candidates": [
+            "Cleaning the shop",
+            "Making a bouquet of fresh flowers",
+            "Arranging books",
+            "Watering the plants"
+        ],
+        "answer": "Making a bouquet of fresh flowers",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_7.mp4",
+        "duration": 471.23,
+        "question": "What is the woman in the bikini doing during her holidays in the swimming pool?",
+        "candidates": [
+            "Enjoying the summer sun and tanning",
+            "Swimming laps",
+            "Playing water polo",
+            "Doing water aerobics"
+        ],
+        "answer": "Enjoying the summer sun and tanning",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_92.mp4",
+        "duration": 458.13,
+        "question": "What is the woman doing during the summer sunset?",
+        "candidates": [
+            "Having a picnic",
+            "Swimming in the sea",
+            "Taking a moment to enjoy life",
+            "Reading a book"
+        ],
+        "answer": "Taking a moment to enjoy life",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_50.mp4",
+        "duration": 458.64,
+        "question": "How many cows are tied beside the paddy field where the two Malays kids are having fun?",
+        "candidates": [
+            "Two",
+            "Three",
+            "Four",
+            "One"
+        ],
+        "answer": "Two",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_143.mp4",
+        "duration": 624.8699999999999,
+        "question": "What is the woman's appearance?",
+        "candidates": [
+            "She is a young girl",
+            "She is an elderly woman",
+            "She is a middle-aged woman",
+            "She is a beautiful woman"
+        ],
+        "answer": "She is a beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_98.mp4",
+        "duration": 461.7,
+        "question": "What is the weather like when the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Cloudy",
+            "Rainy",
+            "Snowy",
+            "Sunny"
+        ],
+        "answer": "Sunny",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_2.mp4",
+        "duration": 1372.5,
+        "question": "Who is the young attractive hispanic medical doctor discussing health issues with?",
+        "candidates": [
+            "A senior patient",
+            "A male patient",
+            "A child patient",
+            "A colleague"
+        ],
+        "answer": "A senior patient",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_45.mp4",
+        "duration": 500.52,
+        "question": "What equipment are the scientists using for their research in the laboratory?",
+        "candidates": [
+            "Telescope",
+            "Microscope",
+            "Pipette and beaker",
+            "Computer"
+        ],
+        "answer": "Pipette and beaker",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_139.mp4",
+        "duration": 239.06,
+        "question": "Where is the group of blue fin trevally hunting in the video?",
+        "candidates": [
+            "Great Barrier Reef, Australia",
+            "Caribbean Sea, Bahamas",
+            "Yap, Micronesia",
+            "Red Sea, Egypt"
+        ],
+        "answer": "Yap, Micronesia",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_1.mp4",
+        "duration": 506.12,
+        "question": "Where is the basketball court located in the video?",
+        "candidates": [
+            "In a gym",
+            "In a park",
+            "On a cruise ship",
+            "In a school"
+        ],
+        "answer": "On a cruise ship",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_111.mp4",
+        "duration": 5487.650000000001,
+        "question": "Where are the silhouette fishermen performing their popular activity during the monsoon season?",
+        "candidates": [
+            "In a city",
+            "In a forest",
+            "On a boat",
+            "On the beach"
+        ],
+        "answer": "On the beach",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_69.mp4",
+        "duration": 461.04,
+        "question": "What is the little Asian girl in a bikini doing on the beach at sunset?",
+        "candidates": [
+            "Building a sandcastle",
+            "Creating sand piles",
+            "Swimming in the sea",
+            "Playing with a beach ball"
+        ],
+        "answer": "Creating sand piles",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_100.mp4",
+        "duration": 751.67,
+        "question": "What is the chef doing with the lobster in the dinner preparation?",
+        "candidates": [
+            "Cutting",
+            "Grilling",
+            "Baking",
+            "Boiling"
+        ],
+        "answer": "Cutting",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_77.mp4",
+        "duration": 476.65,
+        "question": "Where is the chef preparing the dinner?",
+        "candidates": [
+            "In a restaurant",
+            "By the ocean shore on an island",
+            "In a kitchen",
+            "In a hotel"
+        ],
+        "answer": "By the ocean shore on an island",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_97.mp4",
+        "duration": 473.59000000000003,
+        "question": "What are the couple surrounded by while sitting on the couch?",
+        "candidates": [
+            "Pillows",
+            "Balloons",
+            "Furniture",
+            "Cardboard boxes"
+        ],
+        "answer": "Cardboard boxes",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_28.mp4",
+        "duration": 461.48,
+        "question": "What is the activity involving the little girl and her grandmother?",
+        "candidates": [
+            "They are gardening",
+            "They are reading a children's book",
+            "They are painting",
+            "They are cooking"
+        ],
+        "answer": "They are reading a children's book",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_48.mp4",
+        "duration": 490.01,
+        "question": "What is the child doing at home in the video?",
+        "candidates": [
+            "Eating",
+            "Sleeping",
+            "Playing game on mobile phone",
+            "Playing with toys"
+        ],
+        "answer": "Playing game on mobile phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_65.mp4",
+        "duration": 500.88,
+        "question": "What is the condition of the grass in the video segment during the forest fire?",
+        "candidates": [
+            "The grass is old and dry",
+            "The grass is wet",
+            "The grass is green and fresh",
+            "The grass is covered in snow"
+        ],
+        "answer": "The grass is old and dry",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_119.mp4",
+        "duration": 766.14,
+        "question": "What is the weather condition on the basketball court in the video?",
+        "candidates": [
+            "Sunny",
+            "Rainy",
+            "Beautiful sunset",
+            "Cloudy"
+        ],
+        "answer": "Beautiful sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_42.mp4",
+        "duration": 470.05,
+        "question": "What is the setting of the scene where the SUV is parked for green screen or chroma key?",
+        "candidates": [
+            "On a mountain",
+            "In a forest",
+            "In a desert",
+            "In a city"
+        ],
+        "answer": "In a desert",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_136.mp4",
+        "duration": 7979.45,
+        "question": "What is the middle aged female executive doing on the white board?",
+        "candidates": [
+            "Writing a letter",
+            "Drawing a portrait",
+            "Drawing a project plan scheme",
+            "Erasing notes"
+        ],
+        "answer": "Drawing a project plan scheme",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_98.mp4",
+        "duration": 461.7,
+        "question": "What time of day is it when the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Night",
+            "Morning",
+            "Sunset",
+            "Midday"
+        ],
+        "answer": "Sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_135.mp4",
+        "duration": 344.4,
+        "question": "What is the man doing over the white background?",
+        "candidates": [
+            "Singing",
+            "Crying",
+            "Dancing",
+            "Laughing and covering his mouth with hand"
+        ],
+        "answer": "Laughing and covering his mouth with hand",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_67.mp4",
+        "duration": 475.2,
+        "question": "What is the view of the power plant block in the video?",
+        "candidates": [
+            "Side view",
+            "Ground level view",
+            "Underground view",
+            "Aerial view"
+        ],
+        "answer": "Aerial view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_85.mp4",
+        "duration": 475.83000000000004,
+        "question": "What is the profession of the person who begins work with the drawings in the video?",
+        "candidates": [
+            "Engineer",
+            "Artist",
+            "Doctor",
+            "Teacher"
+        ],
+        "answer": "Engineer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_94.mp4",
+        "duration": 857.22,
+        "question": "What is the female potter doing with the brush?",
+        "candidates": [
+            "Drawing on the table",
+            "Stirring paint in a cup",
+            "Painting a picture",
+            "Cleaning the brush"
+        ],
+        "answer": "Stirring paint in a cup",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_26.mp4",
+        "duration": 469.08,
+        "question": "What are the cows with yellow tags on their ears doing at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Running",
+            "Drinking water",
+            "Eating hay",
+            "Sleeping"
+        ],
+        "answer": "Eating hay",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_44.mp4",
+        "duration": 470.52,
+        "question": "What equipment are the scientists using for their research in the laboratory?",
+        "candidates": [
+            "Computer",
+            "Pipette and beaker",
+            "Microscope",
+            "Telescope"
+        ],
+        "answer": "Pipette and beaker",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_62.mp4",
+        "duration": 497.05,
+        "question": "Who is hanging a golden christmas toy on the christmas tree in preparation for the new year?",
+        "candidates": [
+            "A young handsome man",
+            "A child",
+            "A young beautiful woman",
+            "An old woman"
+        ],
+        "answer": "A young beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_68.mp4",
+        "duration": 1367.32,
+        "question": "What time of day is the little Asian girl in a bikini creating sand piles on the beach?",
+        "candidates": [
+            "Sunset",
+            "Afternoon",
+            "Morning",
+            "Midnight"
+        ],
+        "answer": "Sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_96.mp4",
+        "duration": 503.59,
+        "question": "What are the couple doing on the couch?",
+        "candidates": [
+            "Eating dinner",
+            "Choosing new home and ordering furniture online",
+            "Reading a book",
+            "Watching TV"
+        ],
+        "answer": "Choosing new home and ordering furniture online",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_46.mp4",
+        "duration": 461.25,
+        "question": "Where are the students celebrating their graduation?",
+        "candidates": [
+            "At home",
+            "In the school auditorium",
+            "In the park",
+            "In the classroom"
+        ],
+        "answer": "In the park",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_132.mp4",
+        "duration": 558.0699999999999,
+        "question": "Who is hanging a golden christmas toy on the christmas tree in preparation for the new year?",
+        "candidates": [
+            "A young beautiful woman",
+            "A child",
+            "An old woman",
+            "A young handsome man"
+        ],
+        "answer": "A young beautiful woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_64.mp4",
+        "duration": 470.88,
+        "question": "What is the condition of the grass in the video segment during the forest fire?",
+        "candidates": [
+            "The grass is covered in snow",
+            "The grass is wet",
+            "The grass is old and dry",
+            "The grass is green and fresh"
+        ],
+        "answer": "The grass is old and dry",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_82.mp4",
+        "duration": 494.38,
+        "question": "What is the man doing over the white background?",
+        "candidates": [
+            "Singing",
+            "Laughing and covering his mouth with hand",
+            "Crying",
+            "Dancing"
+        ],
+        "answer": "Laughing and covering his mouth with hand",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_42.mp4",
+        "duration": 470.05,
+        "question": "What is the condition of the highway where the SUV is parked for green screen or chroma key?",
+        "candidates": [
+            "Busy with traffic",
+            "Flooded",
+            "Under construction",
+            "Empty"
+        ],
+        "answer": "Empty",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_70.mp4",
+        "duration": 464.76,
+        "question": "What are the tourists doing at the Plaza de Espana in Seville?",
+        "candidates": [
+            "Taking a nap",
+            "Having a picnic",
+            "Admiring the fountain",
+            "Swimming in the fountain"
+        ],
+        "answer": "Admiring the fountain",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_114.mp4",
+        "duration": 773.72,
+        "question": "What time of day is it when the young girl in a tracksuit is doing yoga in the park?",
+        "candidates": [
+            "Sunset",
+            "Night",
+            "Midday",
+            "Morning"
+        ],
+        "answer": "Sunset",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_44.mp4",
+        "duration": 470.52,
+        "question": "What is the team of scientists doing in the laboratory room?",
+        "candidates": [
+            "Conducting a physics experiment",
+            "Having a meeting",
+            "Researching sample test with protection equipment and glasses",
+            "Teaching a class"
+        ],
+        "answer": "Researching sample test with protection equipment and glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_92.mp4",
+        "duration": 458.13,
+        "question": "What is the status of the woman enjoying the summer sunset?",
+        "candidates": [
+            "She is a working woman",
+            "She is a child",
+            "She is a retired woman",
+            "She is a student"
+        ],
+        "answer": "She is a retired woman",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_40.mp4",
+        "duration": 477.20000000000005,
+        "question": "What animal is sitting very still at the mouth of the den in the video?",
+        "candidates": [
+            "European toad",
+            "American toad",
+            "European frog",
+            "American frog"
+        ],
+        "answer": "American toad",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_57.mp4",
+        "duration": 448.06,
+        "question": "What is the woman doing in the garment factory?",
+        "candidates": [
+            "She is designing clothes",
+            "She is selling clothes",
+            "She is working on the production line",
+            "She is managing the factory"
+        ],
+        "answer": "She is working on the production line",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_6.mp4",
+        "duration": 471.23,
+        "question": "Where is the woman in the bikini enjoying the summer sun and tanning during her holidays?",
+        "candidates": [
+            "In a swimming pool",
+            "On a sun lounger",
+            "In a hot tub",
+            "At the beach"
+        ],
+        "answer": "In a swimming pool",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_6.mp4",
+        "duration": 471.23,
+        "question": "What is the woman wearing while enjoying the summer sun and tanning during her holidays in the swimming pool?",
+        "candidates": [
+            "A sundress",
+            "A one-piece swimsuit",
+            "A bikini",
+            "A sarong"
+        ],
+        "answer": "A bikini",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_45.mp4",
+        "duration": 500.52,
+        "question": "What type of protective gear are the scientists wearing in the laboratory?",
+        "candidates": [
+            "Gloves and glasses",
+            "Safety boots",
+            "None",
+            "Helmets"
+        ],
+        "answer": "Gloves and glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_132.mp4",
+        "duration": 558.0699999999999,
+        "question": "What type of christmas toy is the young beautiful woman hanging on the christmas tree?",
+        "candidates": [
+            "A blue christmas toy",
+            "A silver christmas toy",
+            "A golden christmas toy",
+            "A red christmas toy"
+        ],
+        "answer": "A golden christmas toy",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_64.mp4",
+        "duration": 470.88,
+        "question": "What is happening to the old dry grass from last year in the video segment?",
+        "candidates": [
+            "It is being watered",
+            "It is growing",
+            "It is being cut",
+            "It is burning"
+        ],
+        "answer": "It is burning",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_6.mp4",
+        "duration": 471.23,
+        "question": "What is the woman in the bikini holding while enjoying her summer holidays in the swimming pool?",
+        "candidates": [
+            "A beach ball",
+            "A cocktail",
+            "A book",
+            "A towel"
+        ],
+        "answer": "A cocktail",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_81.mp4",
+        "duration": 463.1,
+        "question": "What is the floor made of where the egg falls and breaks?",
+        "candidates": [
+            "Wood",
+            "Marble",
+            "Concrete",
+            "Glass"
+        ],
+        "answer": "Glass",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_6.mp4",
+        "duration": 471.23,
+        "question": "What is the woman in the bikini doing during her holidays in the swimming pool?",
+        "candidates": [
+            "Swimming laps",
+            "Enjoying the summer sun and tanning",
+            "Doing water aerobics",
+            "Playing water polo"
+        ],
+        "answer": "Enjoying the summer sun and tanning",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_5.mp4",
+        "duration": 480.0,
+        "question": "What is the man in the black silhouette catching on the lake shore?",
+        "candidates": [
+            "A ball",
+            "A drone quadcopter",
+            "A bird",
+            "A frisbee"
+        ],
+        "answer": "A drone quadcopter",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_90.mp4",
+        "duration": 461.6,
+        "question": "What color are the leaves of the plant shown in the video segment?",
+        "candidates": [
+            "Yellow",
+            "Green",
+            "Red",
+            "Blue"
+        ],
+        "answer": "Green",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_5.mp4",
+        "duration": 480.0,
+        "question": "What is the man in the black silhouette wearing on the lake shore?",
+        "candidates": [
+            "A suit",
+            "A swimsuit",
+            "A hat",
+            "A hood"
+        ],
+        "answer": "A hood",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_41.mp4",
+        "duration": 477.07,
+        "question": "What is the nature of the den where the American toad is sitting in the video?",
+        "candidates": [
+            "Wooden cavity",
+            "Stone cavity",
+            "Earthen cavity",
+            "Water cavity"
+        ],
+        "answer": "Earthen cavity",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_59.mp4",
+        "duration": 460.02000000000004,
+        "question": "What is the profession of the woman performing the microblasting routine in the video?",
+        "candidates": [
+            "Hair Stylist",
+            "Dentist",
+            "Cosmetologist",
+            "Nurse"
+        ],
+        "answer": "Cosmetologist",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_5.mp4",
+        "duration": 480.0,
+        "question": "What season is it when the man in the black silhouette is on the lake shore?",
+        "candidates": [
+            "Autumn",
+            "Spring",
+            "Summer",
+            "Winter"
+        ],
+        "answer": "Summer",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_5.mp4",
+        "duration": 480.0,
+        "question": "What is the man in the black silhouette holding on the lake shore?",
+        "candidates": [
+            "A beach ball",
+            "A book",
+            "A controller",
+            "A fishing rod"
+        ],
+        "answer": "A controller",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_65.mp4",
+        "duration": 500.88,
+        "question": "What is the result of the forest fire on the dry grass in the video segment?",
+        "candidates": [
+            "The grass is being covered in snow",
+            "The grass is turning green",
+            "The grass is producing smoke and flame",
+            "The grass is growing taller"
+        ],
+        "answer": "The grass is producing smoke and flame",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_5.mp4",
+        "duration": 480.0,
+        "question": "What is the man in the video doing on the lake shore during the sunny summer?",
+        "candidates": [
+            "Swimming",
+            "Sunbathing",
+            "Launching the drone",
+            "Catching the drone"
+        ],
+        "answer": "Catching a flying drone quadcopter",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_83.mp4",
+        "duration": 464.38,
+        "question": "What is the background color when the man is laughing and covering his mouth?",
+        "candidates": [
+            "Blue",
+            "Green",
+            "White",
+            "Black"
+        ],
+        "answer": "White",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_4.mp4",
+        "duration": 510.0,
+        "question": "What is the man in the black silhouette catching on the lake shore?",
+        "candidates": [
+            "A drone quadcopter",
+            "A bird",
+            "A ball",
+            "A frisbee"
+        ],
+        "answer": "A drone quadcopter",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_61.mp4",
+        "duration": 496.97999999999996,
+        "question": "What is the senior businessman doing by the sea shore?",
+        "candidates": [
+            "Having a serious conversation on the cell phone",
+            "Reading a book",
+            "Swimming in the sea",
+            "Eating lunch"
+        ],
+        "answer": "Having a serious conversation on the cell phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_39.mp4",
+        "duration": 583.8199999999999,
+        "question": "What activity are the silhouette fishermen doing on the beach during the monsoon season?",
+        "candidates": [
+            "Fishing",
+            "Building sandcastles",
+            "Swimming",
+            "Sunbathing"
+        ],
+        "answer": "Fishing",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_124.mp4",
+        "duration": 254.78,
+        "question": "Where are the tourists strolling and admiring the fountain?",
+        "candidates": [
+            "Plaza de Espana in Barcelona",
+            "Plaza de Espana in Seville",
+            "Plaza de Espana in Valencia",
+            "Plaza de Espana in Madrid"
+        ],
+        "answer": "Plaza de Espana in Seville",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_35.mp4",
+        "duration": 455.36,
+        "question": "Who are using the face bow in the video segment?",
+        "candidates": [
+            "The dentist and his assistant",
+            "The assistant alone",
+            "The patient",
+            "The dentist alone"
+        ],
+        "answer": "The dentist and his assistant",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_63.mp4",
+        "duration": 467.04999999999995,
+        "question": "What is the young beautiful woman doing in preparation for the new year?",
+        "candidates": [
+            "She is hanging a golden christmas toy on the christmas tree",
+            "She is baking cookies",
+            "She is singing christmas carols",
+            "She is wrapping presents"
+        ],
+        "answer": "She is hanging a golden christmas toy on the christmas tree",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_148.mp4",
+        "duration": 6546.93,
+        "question": "What is the child doing at home in the video?",
+        "candidates": [
+            "Playing game on mobile phone",
+            "Sleeping",
+            "Playing with toys",
+            "Eating"
+        ],
+        "answer": "Playing game on mobile phone",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_80.mp4",
+        "duration": 463.02,
+        "question": "What is the floor made of where the egg falls and breaks?",
+        "candidates": [
+            "Marble",
+            "Glass",
+            "Wood",
+            "Concrete"
+        ],
+        "answer": "Glass",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_79.mp4",
+        "duration": 465.05000000000007,
+        "question": "What is painted in the colors of the Poland flag in the video?",
+        "candidates": [
+            "The doctor's coat",
+            "The doctor's medical mask",
+            "The doctor's stethoscope",
+            "The doctor's glasses"
+        ],
+        "answer": "The doctor's glasses",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_37.mp4",
+        "duration": 478.78,
+        "question": "What type of view is provided of the tropical beach in the video?",
+        "candidates": [
+            "Close-up view",
+            "Top down aerial view",
+            "Bottom-up view",
+            "Side view"
+        ],
+        "answer": "Top down aerial view",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_133.mp4",
+        "duration": 7421.88,
+        "question": "What color are the cows eating hay from the stall at the farm outdoors on a summer sunny day?",
+        "candidates": [
+            "Brown",
+            "Spotted",
+            "White",
+            "Black"
+        ],
+        "answer": "Black",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_53.mp4",
+        "duration": 461.01,
+        "question": "What is at the remembrance war memorial in Toronto, Canada?",
+        "candidates": [
+            "A fountain",
+            "A large statue of a horse",
+            "Thousands of Canadian flags",
+            "A large statue of a soldier"
+        ],
+        "answer": "Thousands of Canadian flags",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_82.mp4",
+        "duration": 494.38,
+        "question": "What is the background color when the man is laughing and covering his mouth?",
+        "candidates": [
+            "Black",
+            "White",
+            "Green",
+            "Blue"
+        ],
+        "answer": "White",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_60.mp4",
+        "duration": 496.97999999999996,
+        "question": "Where is the senior businessman having a serious conversation on the cell phone?",
+        "candidates": [
+            "In a park",
+            "By the sea shore",
+            "At a restaurant",
+            "In his office"
+        ],
+        "answer": "By the sea shore",
+        "question_type": "findNeedle"
+    },
+    {
+        "video": "needle_100.mp4",
+        "duration": 751.67,
+        "question": "Where is the chef preparing the dinner?",
+        "candidates": [
+            "In a hotel",
+            "In a restaurant",
+            "In a kitchen",
+            "By the ocean shore on an island"
+        ],
+        "answer": "By the ocean shore on an island",
+        "question_type": "findNeedle"
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "query": "can you confirm that my meeting for tomorrow has been canceled",
+        "response": "calendar"
+    },
+    {
+        "query": "please open my music application and play games by disturbed",
+        "response": "play"
+    },
+    {
+        "query": "what's the word orange mean",
+        "response": "qa"
+    },
+    {
+        "query": "find me all mails from magda with holidays word in the title",
+        "response": "email"
+    },
+    {
+        "query": "get a cup of coffee ready now",
+        "response": "iot"
+    },
+    {
+        "query": "good morning olly",
+        "response": "general"
+    }
+]

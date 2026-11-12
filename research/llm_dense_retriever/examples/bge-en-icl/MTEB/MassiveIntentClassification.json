@@ -1,0 +1,34 @@
+[
+    {
+        "query": "remind me to pay rent every month",
+        "response": "calendar_set"
+    },
+    {
+        "query": "please play yesterday from beatles",
+        "response": "play_music"
+    },
+    {
+        "query": "what will the temperatures be for the next week",
+        "response": "weather_query"
+    },
+    {
+        "query": "give me the detailed schedule for next week",
+        "response": "calendar_query"
+    },
+    {
+        "query": "what's happening in my day",
+        "response": "general_quirky"
+    },
+    {
+        "query": "dolores how was your day",
+        "response": "general_quirky"
+    },
+    {
+        "query": "who was appointed as deputy centimeter of uttar pradesh",
+        "response": "qa_factoid"
+    },
+    {
+        "query": "find me news about trumps speech",
+        "response": "news_query"
+    }
+]

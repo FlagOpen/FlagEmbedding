@@ -1,0 +1,22 @@
+[
+    {
+        "query": "A Survey on Graph Neural Networks: Algorithms and Applications",
+        "response": "cs"
+    },
+    {
+        "query": "Hamiltonian Dynamics and KAM Theory for Infinite-Dimensional Systems",
+        "response": "math"
+    },
+    {
+        "query": "Dark Matter Distribution in Dwarf Spheroidal Galaxies: Constraints from Stellar Kinematics",
+        "response": "astro-ph"
+    },
+    {
+        "query": "Decoherence and Quantum Error Correction in Topological Quantum Computers",
+        "response": "quant-ph"
+    },
+    {
+        "query": "Spin-Orbit Coupling Effects in Low-Dimensional Quantum Materials",
+        "response": "cond-mat"
+    }
+]

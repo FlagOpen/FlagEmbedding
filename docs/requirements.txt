@@ -1,0 +1,6 @@
+sphinx
+myst-nb
+myst_parser
+sphinx-design
+pydata-sphinx-theme
+# furo

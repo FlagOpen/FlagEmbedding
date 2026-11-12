@@ -1,0 +1,14 @@
+[
+    {
+        "query": "president obama vows to work with congress on immigration reform .",
+        "response": "obama pledges to collaborate with congress on immigration overhaul ."
+    },
+    {
+        "query": "britain votes to leave european union .",
+        "response": "uk votes to leave eu ."
+    },
+    {
+        "query": "russian president putin signs law banning adoption of russian children by u.s. citizens .",
+        "response": "putin bans u.s. adoptions of russian children ."
+    }
+]

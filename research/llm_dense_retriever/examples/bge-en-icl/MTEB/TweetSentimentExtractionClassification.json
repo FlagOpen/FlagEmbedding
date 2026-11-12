@@ -1,0 +1,26 @@
+[
+    {
+        "query": "I`d have responded, if I were going",
+        "response": "neutral"
+    },
+    {
+        "query": "what interview! leave me alone",
+        "response": "negative"
+    },
+    {
+        "query": "2am feedings for the baby are fun when he is all smiles and coos",
+        "response": "positive"
+    },
+    {
+        "query": "is cleaning the house for her family who is comming later today..",
+        "response": "neutral"
+    },
+    {
+        "query": "Sick. With a flu like thing.",
+        "response": "negative"
+    },
+    {
+        "query": "We saw that in none 3D - the baddie`s the best",
+        "response": "positive"
+    }
+]

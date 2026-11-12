@@ -1,0 +1,30 @@
+[
+    {
+        "query": "I am no longer available",
+        "response": "calling"
+    },
+    {
+        "query": "Cancel my reminder about my dentist appointment",
+        "response": "reminder"
+    },
+    {
+        "query": "Will it rain tomorrow?",
+        "response": "weather"
+    },
+    {
+        "query": "Create an appointment alarm for 11:30am.",
+        "response": "allarm"
+    },
+    {
+        "query": "Play a different playlist",
+        "response": "music"
+    },
+    {
+        "query": "What's the best way to fry chicken",
+        "response": "recipes"
+    },
+    {
+        "query": "what city does Ahmed live in ?",
+        "response": "people"
+    }
+]

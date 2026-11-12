@@ -1,0 +1,30 @@
+[
+    {
+        "query": "how to reset forgotten password in ubuntu?",
+        "response": " \"forgot password on ubuntu - how to reset?\""
+    },
+    {
+        "query": "ubuntu 18.04 freezes after login screen",
+        "response": "ubuntu freezing after login - how to fix?"
+    },
+    {
+        "query": "how to install NVIDIA drivers on ubuntu 20.04?",
+        "response": "NVIDIA driver installation guide for ubuntu 20.04?"
+    },
+    {
+        "query": "ubuntu won't boot after installing updates",
+        "response": "stuck at ubuntu boot screen after update - solutions?"
+    },
+    {
+        "query": "setting up SSH keys on ubuntu server",
+        "response": "SSH key authentication setup on ubuntu - step-by-step guide?"
+    },
+    {
+        "query": "how to transfer wine configuration to another machine?",
+        "response": " \"how to export and import wine settings?\""
+    },
+    {
+        "query": "how to install precise pangolin from a DVD?",
+        "response": "steps to install precise pangolin using a DVD"
+    }
+]

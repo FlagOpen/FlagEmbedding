@@ -1,0 +1,22 @@
+[
+    {
+        "query": "Excited for the new Game of Thrones episode tonight!",
+        "response": "Can't wait for tonight's Game of Thrones episode!"
+    },
+    {
+        "query": "Just finished a 5k run and feel amazing!",
+        "response": "Completed a 5k run and I'm feeling great!"
+    },
+    {
+        "query": "Had an incredible dinner at Joe's Italian Restaurant.",
+        "response": "Joe's Italian Restaurant served an amazing dinner tonight."
+    },
+    {
+        "query": "I need a vacation. Can't wait to hit the beach.",
+        "response": "Desperately need a holiday. Looking forward to beach time."
+    },
+    {
+        "query": "The new iPhone has some fantastic features!",
+        "response": "Loving the features on the new iPhone!"
+    }
+]

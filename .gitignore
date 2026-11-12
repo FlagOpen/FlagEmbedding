@@ -72,7 +72,8 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+../docs/_build/
+../docs/build/
 
 # PyBuilder
 target/
@@ -136,3 +137,10 @@ pic2.py
 
 # Pyre type checker
 .pyre/
+
+# MacOS associated
+.DS_Store
+
+# results
+en_results
+zh_results

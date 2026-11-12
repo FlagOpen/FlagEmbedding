@@ -1,0 +1,22 @@
+[
+    {
+        "query": "Financial Meltdown: Strategies for Surviving Economic Collapse",
+        "response": "collapse.txt"
+    },
+    {
+        "query": "Exclusive Comic Book Sale: Don't Miss Out on January 13th!",
+        "response": "comicbooks.txt"
+    },
+    {
+        "query": "Tchaikovsky's Untold Story: The Mystery Behind Symphony No. 7",
+        "response": "classicalmusic.txt"
+    },
+    {
+        "query": "Coffee Addiction: When It's More Than Just a Drink",
+        "response": "Coffee.txt"
+    },
+    {
+        "query": "Understanding Boeing's Micro-Missile Capabilities",
+        "response": "aviation.txt"
+    }
+]

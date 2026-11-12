@@ -1,0 +1,14 @@
+[
+    {
+        "query": "Which city, Kaiping or Ruzhou, has a greater population?",
+        "response": "Ruzhou. Ruzhou () is a city in Henan province, China. It was called Linru County (\u4e34\u6c5d\u53bf) until 1988. It has more than 100,000 inhabitants. The Fengxue Temple of Ruzhou features the Qizu Pagoda, built in 738 during the Tang Dynasty (618\u2013907)."
+    },
+    {
+        "query": "Anniversary Park is located at the south end of a university that was originally founded as what college?",
+        "response": "George Washington University The George Washington University (GW, GWU, or George Washington) is a private research university in Washington, D.C., the capital of the United States. Founded in 1821 as Columbian College, the university has since grown to comprise fourteen undergraduate and graduate colleges and schools, including the School of Media and Public Affairs, Elliott School of International Affairs, Law School, and School of Public Health. George Washington's main campus is located in the Foggy Bottom neighborhood with two satellite campuses located in the Foxhall neighborhood of Washington, D.C. and in Ashburn, Virginia. It is the second oldest and the largest institution of higher education in the District of Columbia."
+    },
+    {
+        "query": "What was the original name of the New Hampshire team whose home ballpark was a stadium constructed in 1937?",
+        "response": "Nashua Pirates  The Nashua Pirates were a minor league baseball team, based in Nashua, New Hampshire. The team started in 1983 as the Nashua Angels, an affiliate with the California Angels in the Eastern League. The club changed affiliations in 1984 to the Pittsburgh Pirates and were then renamed the Nashua Pirates. The team's home ballpark was Holman Stadium."
+    }
+]
