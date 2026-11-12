@@ -187,6 +187,7 @@ class AbsRerankerCollator(DataCollatorWithPadding):
     passage_max_len: int = 128
 
     def __call__(self, features) -> List[BatchEncoding]:
+        batch_size = len(features)
         teacher_scores = [f[1] for f in features]
         if teacher_scores[0] is None:
             teacher_scores = None
@@ -209,6 +210,7 @@ class AbsRerankerCollator(DataCollatorWithPadding):
         return {
             "pair": collated,
             "teacher_scores": teacher_scores,
+            "group_size": len(features) // batch_size,
         }
 
 class AbsLLMRerankerTrainDataset(AbsRerankerTrainDataset):
@@ -356,6 +358,7 @@ class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
         if return_tensors is None:
             return_tensors = self.return_tensors
 
+        batch_size = len(features)
         teacher_scores = [f[1] for f in features]
         if teacher_scores[0] is None:
             teacher_scores = None
@@ -404,4 +407,5 @@ class AbsLLMRerankerCollator(DataCollatorForSeq2Seq):
         return {
             "pair": collated,
             "teacher_scores": teacher_scores,
+            "group_size": len(features) // batch_size,
         }
