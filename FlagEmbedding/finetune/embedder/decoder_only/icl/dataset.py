@@ -69,12 +69,11 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
             if data_type is not None:
                 assert batch_raw_data['type'][i] == data_type, f"Data type is not consistent in the same batch"
 
-            queries.append(
-                self.args.query_instruction_format.format(
-                    batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
-                    batch_raw_data['query'][i]
-                )
-            )
+            instruction = batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval
+            query = batch_raw_data['query'][i]
+            if instruction is not None:
+                query = self.args.query_instruction_format.format(instruction, query)
+            queries.append(query)
             tmp_passages = []
             pos_idx = random.choice(list(range(len(batch_raw_data['pos'][i]))))
             pos = self._shuffle_text(batch_raw_data['pos'][i][pos_idx])
@@ -100,10 +99,9 @@ class DecoderOnlyEmbedderICLSameDatasetTrainDataset(AbsEmbedderSameDatasetTrainD
 
             if data_type is not None and data_type in ['symmetric_sts', 'symmetric_clustering']:
                 tmp_passages = [
-                    self.args.query_instruction_format.format(
-                        batch_raw_data['prompt'][i] if 'prompt' in batch_raw_data else self.args.query_instruction_for_retrieval,
-                        p
-                    ) for p in tmp_passages
+                    self.args.query_instruction_format.format(instruction, p)
+                    if instruction is not None else p
+                    for p in tmp_passages
                 ]
                 tmp_passages = self.tokenizer.batch_decode(
                     self.tokenizer(
