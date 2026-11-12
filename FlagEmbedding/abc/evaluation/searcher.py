@@ -238,6 +238,8 @@ class EvalReranker:
                     )
                 )
         # compute scores
+        if not pairs:
+            return {qid: {} for qid in search_results}
         scores = self.reranker.compute_score(pairs)
         for i, score in enumerate(scores):
             sentence_pairs[i]["score"] = float(score)
