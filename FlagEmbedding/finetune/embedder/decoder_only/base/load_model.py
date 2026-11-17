@@ -167,6 +167,8 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = PeftModel.from_pretrained(model, model_args.raw_peft)
         model = model.merge_and_unload()
 
+    tokenizer = AutoTokenizer.from_pretrained(output_dir, trust_remote_code=model_args.trust_remote_code)
+
     if os.path.exists(os.path.join(output_dir, 'embedding', 'emb.pth')):
         model.set_input_embeddings(torch.load(os.path.join(output_dir, 'embedding', 'emb.pth')))
         # modify the vocab size in the model configuration
@@ -179,7 +181,6 @@ def save_merged_model(model_args: DecoderOnlyEmbedderModelArguments, output_dir:
         model = PeftModel.from_pretrained(model, find_largest_checkpoint(output_dir))
         model = model.merge_and_unload()
 
-    tokenizer = AutoTokenizer.from_pretrained(output_dir, trust_remote_code=model_args.trust_remote_code)
     tokenizer.save_pretrained(os.path.join(output_dir, 'merged_model'))
 
     model.save_pretrained(os.path.join(output_dir, 'merged_model'))
