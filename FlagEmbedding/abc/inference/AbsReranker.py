@@ -1,5 +1,6 @@
 import logging
 from abc import ABC, abstractmethod
+from sys import is_finalizing
 from typing import Any, Union, List, Tuple, Dict, Literal, Optional
 
 import multiprocessing as mp
@@ -228,8 +229,11 @@ class AbsReranker(ABC):
                                            **kwargs)
         return scores
 
-    def __del__(self):
-        self.stop_self_pool()
+    def __del__(self, _is_finalizing=is_finalizing):
+        # multiprocessing terminates and joins our daemon workers at exit,
+        # before finalizers can run with partially cleared module globals.
+        if not _is_finalizing():
+            self.stop_self_pool()
 
     @abstractmethod
     def compute_score_single_gpu(
