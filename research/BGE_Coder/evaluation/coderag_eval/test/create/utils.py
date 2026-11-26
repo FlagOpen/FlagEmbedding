@@ -1,5 +1,6 @@
 import jsonlines
 import csv
+from tqdm import tqdm
 import os
 
 def load_jsonlines(file):

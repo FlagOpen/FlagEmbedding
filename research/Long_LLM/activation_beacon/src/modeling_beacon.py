@@ -915,10 +915,10 @@ class Memory(torch.nn.Module):
 
         if self._raw_size_to_cache > 0:
             raw_key = slice_tensor(key, index=beacon_indices == 0, dim=self.k_seq_dim)
-            raw_key = slice_tensor(raw_key, start=-raw_size_to_cache, dim=self.k_seq_dim)
+            raw_key = slice_tensor(raw_key, start=-self._raw_size_to_cache, dim=self.k_seq_dim)
 
             raw_value = slice_tensor(value, index=beacon_indices == 0, dim=self.v_seq_dim)
-            raw_value = slice_tensor(raw_value, start=-raw_size_to_cache, dim=self.v_seq_dim)        
+            raw_value = slice_tensor(raw_value, start=-self._raw_size_to_cache, dim=self.v_seq_dim)        
 
         else:
             raw_key = None
